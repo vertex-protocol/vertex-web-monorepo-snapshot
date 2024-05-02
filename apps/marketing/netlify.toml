@@ -1,0 +1,11 @@
+[[redirects]]
+from = "https://vertexprotocol.io/*"
+to = "https://vertexprotocol.com/:splat"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://www.vertexprotocol.io/*"
+to = "https://www.vertexprotocol.com/:splat"
+status = 301
+force = true

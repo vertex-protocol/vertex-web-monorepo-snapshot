@@ -1,0 +1,1715 @@
+.notifi__dark {
+  --notifi-card-secondary-background: theme('colors.surface.2');
+  --notifi-learn-more-color: theme('colors.accent.DEFAULT');
+  --notifi-placeholder-color: theme('colors.text.secondary');
+  --notifi-focus-color: theme('colors.accent.DEFAULT');
+  --notifi-toggle-handle: theme('colors.surface.1');
+  --notifi-toggle-inactive: theme('colors.disabled.DEFAULT');
+  --notifi-toggle-active: theme('colors.accent.DEFAULT');
+  --notifi-tooltip-background: theme('colors.surface.1');
+  --notifi-alert-color: theme('colors.negative.DEFAULT');
+  --notifi-link-color: theme('colors.accent.DEFAULT');
+  --notifi-checkmark-color: theme('colors.positive.DEFAULT');
+  --notifi-text-color: theme('colors.text.primary');
+  --notifi-text-active-color: theme('colors.accent.DEFAULT');
+  --notifi-secondary-font-color: theme('colors.text.tertiary');
+  --notifi-card-background: theme('colors.surface.card');
+  --notifi-intro-color: theme('colors.text.primary');
+  --notifi-input-background: theme('colors.surface.2');
+  --notifi-input-border: theme('colors.stroke.DEFAULT');
+  --notifi-button-grad: theme('colors.accent.DEFAULT');
+  --notifi-button-background: theme('colors.surface.1');
+  --notifi-button-hover-background: theme('colors.surface.1');
+  --notifi-button-disabled-background: theme('colors.surface.1');
+  --notifi-button-disabled-color: theme('colors.disabled.DEFAULT');
+  --notifi-button-text-color: theme('colors.text.primary');
+  --notifi-button-border-color: theme('colors.disabled.DEFAULT');
+  --notifi-button-border-active-color: theme('colors.accent.DEFAULT');
+  --notifi-incoming-message: theme('colors.disabled.DEFAULT');
+  --notifi-outgoing-message: theme('colors.accent.DEFAULT');
+  --notifi-settings-icon-color: theme('colors.text.primary');
+  --notifi-input-icon-fill-color: theme('colors.text.tertiary');
+  --notifi-confirmation-color: theme('colors.positive.DEFAULT');
+  --notifi-banner-background: theme('colors.surface.2');
+  --notifi-banner-icon-color: theme('colors.accent.DEFAULT');
+  --notifi-divider-line: theme('colors.stroke.DEFAULT');
+}
+
+.NotifiInput__icon path {
+  fill: var(--notifi-input-icon-fill-color);
+}
+
+input:autofill,
+input:-webkit-autofill {
+  border: none;
+  transition: background-color 50000s ease-in-out 0s;
+  -webkit-text-fill-color: var(--notifi-text-color);
+}
+
+.NotifiSubscriptionCard__container {
+  color: var(--notifi-text-color);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--notifi-card-background);
+  font-size: small;
+  min-height: 600px;
+  padding: 20px 0px 5px 0px;
+  width: 100%;
+}
+
+.NotifiAlertHistory__virtuoso {
+  min-height: 375px;
+  flex-grow: 1;
+}
+
+.NotifiPreviewCard__container {
+  flex-grow: 1;
+  padding: 0px 20px 0px 20px;
+}
+
+.NotifiPreviewCard__title {
+  color: var(--notifi-secondary-font-color);
+}
+
+.NotifiInputContainer {
+  flex-grow: 1;
+  padding: 0px 20px 0px 20px;
+}
+
+.NotifiSubscriptionCard__container *:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.NotifiFooter__container {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  line-height: 14px;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0px;
+}
+
+.NotifiFooter__poweredByContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.NotifiFooter__poweredBy {
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--notifi-text-color);
+  margin-bottom: 0 !important;
+}
+
+.NotifiFooter__logoSvg {
+  width: 62px;
+  height: 15px;
+  position: relative;
+  padding-top: 2px;
+  margin-left: 4px;
+  top: -2px;
+  fill: var(--notifi-text-color);
+}
+
+.NotifiFooter__spacer {
+  flex-grow: 1;
+}
+
+.NotifiFooter__link a {
+  color: var(--notifi-text-color);
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.NotifiAlertHistory__label {
+  font-size: 16px;
+  margin-bottom: 0px !important;
+  color: var(--notifi-text-color);
+  text-align: center;
+}
+
+.NotifiAlertHistory__notificationRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0 0 10px;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.NotifiAlertHistory__content,
+.SignupBanner__Content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding-right: 20px;
+  padding-left: 10px;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.NotifiAlertHistory__notificationRow:hover {
+  cursor: pointer;
+  background-color: var(--notifi-card-secondary-background);
+  border-radius: 16px;
+}
+
+.NotifiAlertHistory__header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.NotifiAlertHistory__notificationDate {
+  font-size: 12px;
+  line-height: 12px;
+  color: var(--notifi-text-color);
+  opacity: 60%;
+  padding-right: 25px;
+}
+
+.NotifiAlertHistory__notificationTitle,
+.SignupBanner__Title {
+  font-size: 14px;
+  line-height: 14px;
+  overflow: hidden;
+  color: var(--notifi-text-color);
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.NotifiAlertHistory__notificationImage {
+  width: 18px;
+  height: 18px;
+  padding-right: 10px;
+  margin-bottom: 15px !important;
+}
+
+.NotifiAlertHistory__notificationImage svg {
+  fill: var(--notifi-input-icon-fill-color);
+}
+
+.NotifiAlertHistory_noAlertDescription {
+  font-size: 16px;
+  line-height: 14px;
+  color: var(--notifi-secondary-font-color);
+  text-align: center;
+}
+
+.NotifiAlertHistory__notificationSubject,
+.SignupBanner__Subject {
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--notifi-text-color);
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden;
+}
+
+.NotifiAlertHistory__manageAlertLink {
+  font-size: 16px;
+  line-height: 14px;
+  color: var(--notifi-link-color);
+  cursor: pointer;
+}
+
+.NotifiEmailInput__container,
+.NotifiSmsInput__container,
+.NotifiTelegramInput__container {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--notifi-input-background);
+  border: 1px solid var(--notifi-input-border);
+  border-radius: 10px;
+  padding: 5px 10px 5px 10px;
+  font-size: 16px;
+  align-items: center;
+  height: 35px;
+  box-sizing: content-box;
+}
+
+.NotifiEmailInput::after,
+.NotifiSmsInput::after {
+  content: 'OR';
+}
+
+.NotifiEmailInput__container:focus-within,
+.NotifiSmsInput__container:focus-within,
+.NotifiTelegramInput__container:focus-within {
+  box-shadow: inset 0px 0px 0px 1px var(--notifi-focus-color);
+}
+
+.NotifiEmailInput__errorMessage,
+.NotifiSmsInput__errorMessage,
+.NotifiTelegramInput__errorMessage {
+  color: var(--notifi-alert-color);
+  font-size: 16px;
+  margin-bottom: 0px !important;
+  text-align: center;
+}
+
+.NotifiEmailInput__input,
+.NotifiSmsInput__input,
+.NotifiTelegramInput__input {
+  flex-grow: 1;
+  font-size: 16px;
+  line-height: 20px;
+  background: none;
+  outline: none;
+  border: none;
+  color: var(--notifi-text-color);
+}
+
+.NotifiEmailInput__input::placeholder,
+.NotifiSmsInput__input::placeholder,
+.NotifiTelegramInput__input::placeholder {
+  opacity: 0.5;
+}
+
+.NotifiEmailInput__input::placeholder,
+.NotifiSmsInput__input::placeholder,
+.NotifiTelegramInput__input::placeholder {
+  color: var(--notifi-placeholder-color);
+}
+
+.NotifiInput__icon {
+  margin-right: 10px;
+  margin-bottom: 0px !important;
+}
+
+.NotifiToggle__container {
+  --notifi-toggle-size: 18px;
+  --notifi-toggle-padding: 3px;
+  --notifi-toggle-container: calc(
+    var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)
+  );
+  position: relative;
+  display: inline-block;
+  width: calc(var(--notifi-toggle-container) + var(--notifi-toggle-size));
+  height: var(--notifi-toggle-container);
+}
+
+.NotifiEmailInput__label,
+.NotifiSmsInput__label,
+.NotifiTelegramInput__label .NotifiDiscordInput__label {
+  display: flex;
+  margin-bottom: 5px !important;
+  color: var(--notifi-text-color);
+}
+
+.NotifiToggle__input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.NotifiToggle__slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--notifi-toggle-inactive);
+  border-radius: var(--notifi-toggle-container);
+  transition: 0.2s;
+}
+
+.NotifiToggle__slider:before {
+  position: absolute;
+  content: '';
+  height: var(--notifi-toggle-size);
+  width: var(--notifi-toggle-size);
+  left: var(--notifi-toggle-padding);
+  bottom: var(--notifi-toggle-padding);
+  background-color: var(--notifi-toggle-handle);
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.NotifiToggle__input:checked + .NotifiToggle__slider {
+  background-color: var(--notifi-toggle-active);
+}
+
+.NotifiToggle__input:checked + .NotifiToggle__slider:before {
+  transform: translateX(var(--notifi-toggle-size));
+}
+
+.EventTypeLabelRow__container,
+.EventTypeBroadcastRow__container,
+.EventTypeDirectPushRow__container,
+.EventTypeCustomHealthCheckRow__container,
+.EventTypeHealthCheckRow__container,
+.EventTypeCustomToggleRow__container,
+.EventTypeFusionToggleRow__container,
+.BrowserAlertToggle__container {
+  display: flex;
+  flex-direction: row;
+}
+
+.EventTypeBroadcastRow__label,
+.EventTypeDirectPushRow__label,
+.EventTypeCustomToggleRow_label,
+.EventTypeHealthCheckRow__label,
+.EventTypeCustomHealthCheckRow__label,
+.EventTypeFusionToggleRow__label,
+.EventTypeCustomToggleRow__label,
+.BrowserAlertToggle__label {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  margin-right: 10px;
+  margin-bottom: 0px !important;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+}
+
+.EventTypeHealthCheckRow__container,
+.EventTypeHealthCheckRow__label {
+  margin-bottom: 0 !important;
+}
+
+.EventTypeHealthCheckRow__content {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  font-weight: 100;
+  margin-bottom: 0px !important;
+  color: var(--notifi-secondary-font-color);
+  position: relative;
+  top: -14px;
+}
+
+.EventTypeLabelRow__label {
+  color: var(--notifi-secondary-font-color);
+  flex-grow: 1;
+  margin-right: 10px;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: left;
+}
+
+.EventTypeUnsupportedRow__container {
+  display: none;
+}
+
+.NotifiSubscribeButton__button {
+  padding: 10px;
+  background: var(--notifi-button-grad);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  font-size: 16px;
+  font-weight: 200;
+  line-height: 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  color: var(--notifi-button-text-color);
+  width: 100%;
+  display: block;
+}
+
+.NotifiSubscribeButton__button:hover {
+  opacity: 0.95;
+}
+
+.NotifiSubscribeButton__button:disabled {
+  cursor: default;
+  color: var(--notifi-button-disabled-color);
+  background: var(--notifi-button-disabled-background);
+  border-color: var(--notifi-button-border-color);
+}
+
+.NotifiSmsInput__dropdownContainer {
+  position: relative;
+  /* Don't want the not-child selector to affect the sms */
+  margin-bottom: 0 !important;
+}
+
+.NotifiSmsInput__input {
+  padding-left: 10px;
+}
+
+.NotifiSmsInput__dropdownSelect {
+  height: 35px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: var(--notifi-text-color);
+  background-color: var(--notifi-input-background);
+  display: flex;
+}
+
+.NotifiSmsInput__dropdownSelect:focus-visible {
+  outline: none;
+  box-shadow: 0px 0px 0px 1px var(--notifi-focus-color);
+}
+
+.NotifiSmsInput__dropdownSelected {
+  display: flex;
+  align-items: center;
+  color: var(--notifi-text-color);
+  background-color: var(--notifi-input-background);
+  margin-top: 0;
+  margin-bottom: 0 !important;
+  cursor: pointer;
+  flex: 1;
+}
+
+.NotifiSmsInput__dropdownSelectValue {
+  margin-top: 0;
+  margin-bottom: 0 !important;
+  padding: 10px 25px 10px 0;
+  height: auto;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.NotifiSmsInput__dropdownInput {
+  bottom: 0px;
+  left: 0px;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 100%;
+  margin-bottom: 0 !important;
+}
+
+.NotifiSmsInput__dropdownSelectIcon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 10px;
+  height: 5px;
+  transition: 0.2s ease;
+  z-index: 9999;
+  cursor: pointer;
+  fill: var(--notifi-input-icon-fill-color);
+}
+
+.NotifiSmsInput__dropdownOptionList {
+  position: absolute;
+  background-color: var(--notifi-card-background);
+  border-radius: 4px;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  padding-left: 0;
+  margin-bottom: 0;
+  margin-top: 0;
+  min-width: 300px;
+  height: 270px;
+  overflow-y: scroll;
+  z-index: 99;
+  box-shadow:
+    rgb(0 0 0 / 20%) 0px 5px 5px -3px,
+    rgb(0 0 0 / 14%) 0px 8px 10px 1px,
+    rgb(0 0 0 / 12%) 0px 3px 14px 2px;
+}
+
+.NotifiSmsInput__dropdownOptionList::-webkit-scrollbar {
+  width: 5px;
+}
+
+.NotifiSmsInput__dropdownOptionList::-webkit-scrollbar-thumb {
+  background-clip: padding-box;
+  border: 4px solid var(--notifi-input-border);
+  border-radius: 10px;
+}
+
+.NotifiSmsInput__dropdownOption {
+  padding: 10px 16px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0 !important;
+  transition: 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  cursor: pointer;
+}
+
+.NotifiSmsInput__dropdownOption-selected,
+.NotifiSmsInput__dropdownOption:hover {
+  background-color: rgba(234, 126, 104, 0.08);
+  transition: 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.NotifiSmsInput__dropdownCountry {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0 !important;
+  flex: 1 1 auto;
+}
+
+.NotifiSmsInput__dropdownFlag {
+  margin-right: 16px;
+  font-weight: 400;
+}
+
+.NotifiSmsInput__dropdownFlag,
+.NotifiSmsInput__dropdownName {
+  margin-top: 0;
+  margin-bottom: 0 !important;
+}
+
+.NotifiInputSeparator__container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  overflow: hidden;
+  text-align: center;
+  justify-content: center;
+  font-size: 11px;
+  margin-top: 0px;
+  margin-bottom: 0px !important;
+  opacity: 0.2;
+}
+
+.NotifiInputSeparator__container:before,
+.NotifiInputSeparator__container:after {
+  background-color: var(--notifi-input-border);
+  content: '';
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.NotifiPreviewCard__backArrowContainer {
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
+
+.NotifiInputSeparator__content {
+  padding: 14px 0px 14px 0px;
+}
+
+.NotifiUserInfoPanelContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px 24px;
+  border-radius: 5px;
+  margin-bottom: 20px !important;
+  background-color: var(--notifi-card-secondary-background);
+  margin-top: 8px;
+}
+
+.NotifiPreviewCard__container::before {
+  content: 'Your Destinations';
+  position: relative;
+  font-size: 12px;
+  color: var(--notifi-secondary-font-color);
+}
+
+.NotifiPreviewCard__editButton {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  margin-top: 17px;
+  color: var(--notifi-link-color);
+  cursor: pointer;
+}
+
+.NotifiUserInfoPanel__emailConfirmation,
+.NotifiUserInfoPanel__telegramConfirmation {
+  flex-shrink: 0;
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+.NotifiUserInfoPanel__email a label {
+  font-size: 12px;
+}
+
+.DestinationErrorMessage__emailConfirmationLink,
+.DestinationErrorMessage__confirmationLinkLabel {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--notifi-link-color);
+  white-space: nowrap;
+}
+
+.NotifiUserInfoPanel__emailConfirmationSent,
+.DestinationError__emailConfirmationSent {
+  color: var(--notifi-confirmation-color);
+}
+
+.NotifiUserInfoPanel__emailConfirmationLabel,
+.DestinationErrorMessage__emailConfirmationLink,
+.NotifiUserInfoPanel__telegramConfirmationLabel {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--notifi-link-color);
+}
+
+.NotifiUserInfoPanel__email,
+.NotifiUserInfoPanel__telegram,
+.NotifiUserInfoPanel__discord,
+.NotifiUserInfoPanel__sms {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  align-items: baseline;
+  overflow-wrap: anywhere;
+  margin-bottom: 0px !important;
+}
+
+.NotifiUserInfoPanel__emailLabel,
+.NotifiUserInfoPanel__discordLabel,
+.NotifiUserInfoPanel__smsLabel,
+.NotifiUserInfoPanel__telegramLabel {
+  margin-bottom: 0 !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.NotifiTooltip__infoIcon {
+  margin-left: 5px;
+  margin-bottom: 0 !important;
+  fill: var(--notifi-input-icon-fill-color);
+  width: 13px;
+}
+
+.NotifiTooltip__body {
+  width: 300px;
+  visibility: hidden;
+  position: absolute;
+  left: -50px;
+  bottom: calc(100% + var(--notifi-tooltip-arrow-offset));
+  font-size: 12px;
+  z-index: 9999;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.NotifiTooltip__body::before {
+  content: '';
+  display: block;
+  width: var(--notifi-tooltip-arrow-size);
+  height: var(--notifi-tooltip-arrow-size);
+  transform: translate(-50%) rotate(45deg);
+  background-color: var(--notifi-tooltip-background);
+  position: absolute;
+  top: calc(100% - var(--notifi-tooltip-arrow-offset));
+  left: 50%;
+}
+
+.NotifiTooltip__container:hover > .NotifiTooltip__body {
+  visibility: visible;
+}
+
+.NotifiTooltip__container {
+  margin-bottom: 0 !important;
+  position: relative;
+  --notifi-tooltip-arrow-size: 10px;
+  --notifi-tooltip-arrow-offset: 7px;
+}
+
+.NotifiTooltip__arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-right-color: transparent;
+  border-style: solid;
+  top: 10px;
+  left: -5px;
+  margin-top: -5px;
+  border-width: 5px 5px 5px 0;
+  border-right-color: var(--notifi-tooltip-background);
+}
+
+.NotifiTooltip__label {
+  padding: 16px;
+  color: var(--notifi-text-color);
+  text-align: left;
+  background-color: var(--notifi-tooltip-background);
+  border-radius: 3px;
+  pointer-events: none;
+  white-space: pre-line;
+  line-height: 15px;
+}
+
+.NotifiAlertHistory__settingsIcon {
+  position: absolute;
+  left: 0px;
+  height: 20px;
+}
+
+.NotifiAlertHistory__settingsIcon path {
+  fill: var(--notifi-settings-icon-color);
+  cursor: pointer;
+}
+
+.NotifiAlertHistory__emptyAlertsBellIcon path {
+  fill: var(--notifi-button-grad);
+  cursor: pointer;
+}
+
+.NotifiAlertHistory__noAlertContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 415px;
+}
+
+.NotifiSubscriptionCardV1__alertContainer {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0px 20px 0px 20px;
+}
+
+/* ALERT DETAILS CARD */
+.NotifiAlertDetails__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.NotifiAlertDetails__topContentContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 26px;
+}
+
+.NotifiAlertDetails__topContent {
+  text-align: start;
+  font-weight: 700;
+  font-size: 16px;
+  overflow-wrap: break-word;
+}
+
+.NotifiAlertDetails__bottomContent {
+  text-align: start;
+  font-size: 14px;
+  overflow-wrap: break-word;
+}
+
+.NotifiAlertDetails__timestamp {
+  font-size: 12px;
+}
+
+/* Alert List on Edit View */
+.NotifiAlertListContainer__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.NotifiAlertListPreview__descriptionText {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--notifi-secondary-font-color);
+  margin-bottom: 40px !important;
+  position: relative;
+  display: flex;
+  flex: 1;
+  opacity: 0.7;
+  line-height: 133.187%;
+  letter-spacing: 0.14px;
+  text-align: center;
+  width: 247px;
+}
+
+.NotifiAlertHistory__container {
+  display: flex;
+  flex-flow: column;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.NotifiAlertHistory__container--hidden {
+  visibility: hidden;
+}
+
+.NotifiAlertListContainer__checkmarkIcon {
+  margin-bottom: 0px !important;
+  height: 20px;
+  width: 25px;
+}
+
+.NotifiAlertListContainer__checkmarkIcon path {
+  stroke: var(--notifi-checkmark-color);
+  stroke-width: 3px;
+}
+
+.NotifiAlertList__listItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.NotifiAlertLisPreview__checkmarkContainer {
+  justify-content: flex-start;
+  display: none;
+  flex-direction: column;
+  flex: 1;
+}
+
+.NotifiAlertListContainer__listItemContent {
+  font-weight: 200;
+  font-size: 14px;
+  margin-left: 14px;
+}
+
+.NotifiStartChatButton__button {
+  height: 49px;
+  width: 266px;
+  background: var(--notifi-button-grad);
+  border-radius: 16px;
+  border: 0;
+  margin: 28px 48px 28px 48px;
+  cursor: pointer;
+}
+
+.NotifiStartChatButton__label {
+  background-clip: text;
+  -webkit-background-clip: text;
+  background: var(--notifi-button-grad);
+  color: transparent;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 19px;
+  text-align: center;
+}
+
+.BrowserAlertToggle__label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.BrowserAlertToggle__container {
+  margin-top: 12px;
+}
+
+.NotifiEmailVerification__button,
+.NotifiTelegramVerification__button {
+  margin-left: 20px;
+  margin-right: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 16px;
+  text-align: right;
+  color: var(--notifi-link-color);
+}
+
+.NotifiExpiredTokenCard__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding-top: 32px;
+}
+
+.NotifiExpiredTokenCard__title {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.NotifiExpiredTokenCard__subtitle {
+  font-size: 13px;
+  opacity: 0.5;
+}
+
+.NotifiExpiredTokenCard__button {
+  background: var(--notifi-button-grad);
+  color: var(--notifi-button-text-color);
+  border-radius: 16px;
+  border: 0;
+  width: 243px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.NotifiExpiredTokenCard__buttonLabel {
+  color: var(--notifi-text-color);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.EventTypeHealthCheckRow__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  overflow: auto;
+  background-color: var(--notifi-button-background);
+  color: var(--notifi-text-color);
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--notifi-button-border-color);
+  margin-right: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+  transition: ease 200ms;
+}
+
+.EventTypeHealthCheckRow__button:hover {
+  background-color: var(--notifi-button-hover-background);
+  border: 1px solid var(--notifi-button-border-active-color);
+  color: var(--notifi-button-text-color);
+}
+
+.EventTypeHealthCheckRow__buttonSelected,
+.EventTypeHealthCheckRow__buttonSelected:hover {
+  border: 1px solid var(--notifi-button-border-active-color);
+  color: var(--notifi-text-active-color);
+  font-weight: 700;
+}
+
+.EventTypeHealthCheckRow__customButton {
+  text-align: center;
+  flex: 1;
+  color: var(--notifi-text-color);
+}
+
+.EventTypeHealthCheckRow__customButton:focus {
+  border: 1px solid var(--notifi-button-border-active-color);
+}
+
+.EventTypeHealthCheckRow__customButton:focus-visible {
+  outline: 1px solid var(--notifi-button-border-active-color) inset;
+}
+
+.EventTypeHealthCheckRow__buttonContainer {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  z-index: 10;
+  justify-content: flex-start;
+}
+
+.EventTypeTradingPairsRow__container {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.EventTypeTradingPairsRow__container > * {
+  margin-bottom: 0 !important;
+}
+
+.EventTypeTradingPairsRow__container > *:not(:first-child) {
+  padding-top: 10px;
+}
+
+.EventTypeTradingPairsRow__container > *:not(:last-child) {
+  padding-bottom: 10px;
+  border-bottom: 1px var(--notifi-divider-line) solid;
+}
+
+.EventTypeTradingPairsRow__addPair {
+  display: inline-block;
+  align-self: flex-start;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--notifi-link-color);
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.EventTypeTradingPairsRow__addPair:disabled {
+  cursor: default;
+  color: var(--notifi-secondary-font-color);
+}
+
+.EventTypeTradingPairsRow__addPair::before {
+  content: '+ ';
+}
+
+.TradingPairSettingsRow__container {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.TradingPairSettingsRow__dropdownContainer {
+  background-color: var(--notifi-input-background);
+  display: flex;
+  align-items: center;
+  border: 1px var(--notifi-input-border) solid;
+  border-radius: 5px;
+}
+
+.TradingPairSettingsRow__dropdownContainer::after {
+  content: '';
+  width: 1em;
+  height: 1em;
+  margin-right: 10px;
+  background-color: var(--notifi-);
+  clip-path: polygon(90% 30%, 10% 30%, 50% 70%);
+}
+
+.TradingPairSettingsRow__dropdown {
+  box-sizing: border-box;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 10px 20px;
+  margin: 0;
+  width: 100%;
+  color: inherit;
+  cursor: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.TradingPairSettingsRow__radioButton {
+  font-size: 16px;
+  line-height: 20px;
+  padding: 10px 30px;
+  margin-right: 10px;
+  margin-bottom: 0 !important;
+  border-radius: 5px;
+  border: none;
+  color: #000;
+  background-color: var(--notifi-tooltip-background);
+  cursor: pointer;
+}
+
+.TradingPairSettingsRow__radioSelected {
+  color: var(--notifi-button-text);
+  background: var(--notifi-button-grad);
+}
+
+.TradingPairAlertRow__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.TradingPairAlertRow__textContainer {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: stretch;
+  margin-right: 10px;
+  margin-bottom: 0 !important;
+}
+
+.TradingPairAlertRow__name {
+  display: block;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--notifi-text-color);
+}
+
+.TradingPairAlertRow__description {
+  display: block;
+  font-size: 16px;
+  line-height: 18px;
+  color: var(--notifi-secondary-font-color);
+}
+
+.TradingPairAlertRow__deleteIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  fill: var(--notifi-text-color);
+  cursor: pointer;
+}
+
+.TradingPairSettingsRow__priceInputContainer {
+  background-color: var(--notifi-input-background);
+  display: flex;
+  align-items: center;
+  border: 1px var(--notifi-input-border) solid;
+  border-radius: 5px;
+  padding: 0 20px;
+}
+
+.TradingPairSettingsRow__priceInput {
+  box-sizing: border-box;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 10px 20px;
+  margin: 0;
+  width: 100%;
+  color: inherit;
+  cursor: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.TradingPairSettingsRow__saveButton {
+  font-size: 16px;
+  line-height: 20px;
+  padding: 5px 20px;
+  align-self: flex-start;
+  border-radius: 5px;
+  border: none;
+  color: var(--notifi-button-text);
+  background: var(--notifi-button-grad);
+  cursor: pointer;
+}
+
+.TradingPairSettingsRow__saveButton:disabled {
+  cursor: default;
+  color: var(--notifi-secondary-font-color);
+  background-color: var(--notifi-button-disabled-color);
+}
+
+/*  new stuff */
+.NotifiAlertBox__container {
+  display: flex;
+  align-items: center;
+  padding: 0px 20px 9px 20px;
+}
+
+.NotifiAlertBox__iconSvg {
+  width: 24px;
+  height: 24px;
+}
+
+.NotifiAlertBox__btn--left,
+.NotifiAlertBox__btn--right {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 0 !important;
+}
+
+.NotifiAlertBox__btn--spacer {
+  width: 24px;
+  height: 24px;
+  padding: 10px;
+  visibility: hidden;
+  margin-bottom: 0 !important;
+}
+
+.NotifiAlertBox__content {
+  flex: 1;
+  display: flex;
+  margin-left: 8px;
+  margin-right: 8px;
+  color: var(--notifi-secondary-font-color);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+  margin-bottom: 0 !important;
+}
+
+.NotifiAlertBox__content h2 {
+  color: var(--notifi-text-color);
+  font-size: 16px;
+  line-height: 18px;
+  margin: 0 auto !important;
+}
+
+.NotifiAlertBox__iconSvg {
+  width: 20px;
+  height: 20px;
+}
+
+.NotifiAlertHistory__label {
+  font-size: 16px;
+  margin-bottom: 0px !important;
+  color: var(--notifi-text-color);
+  text-align: center;
+}
+
+.notifi-toggle-icon {
+  position: relative;
+  right: 256px;
+}
+
+.notifi-toggle-icon svg path {
+  fill: var(--notifi-settings-icon-color);
+}
+
+.NotifiPreviewCard__editButton svg {
+  display: inline;
+  height: 14px;
+  width: 14px;
+  margin-right: 4px;
+  align-items: center;
+}
+
+.DividerLine {
+  border-top: 1px solid var(--notifi-divider-line);
+  border-radius: 5px;
+  margin-bottom: 24px !important;
+}
+
+.DividerLine.history,
+.DividerLine.signup {
+  display: none;
+}
+
+.NotifiPreviewCard__dividerLine {
+  border-top: 1px solid var(--notifi-divider-line);
+  margin-bottom: 20px !important;
+}
+
+.NotifiDisclosure__hyperlink {
+  color: var(--notifi-link-color);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+}
+
+.NotifiDisclosure__label {
+  font-size: 11px;
+  color: var(--notifi-learn-more-color);
+  letter-spacing: 0.01em;
+}
+
+.NotifiDisclosure__container {
+  margin-top: 8px;
+}
+
+.notifiLogo-letters {
+  fill: var(--notifi-text-color);
+}
+
+.buttonDisabled {
+  pointer-events: auto;
+  cursor: progress;
+}
+
+.NotifiSpinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--notifi-divider-line);
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.NotifiLoadingStateCard__container {
+  margin-top: 90px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  min-height: 370px;
+}
+
+.ErrorStateCard__errorMessage,
+.ErrorStateCard__label {
+  padding: 0 20px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.GenericDetailIcon--DownArrow path,
+.GenericDetailIcon--Checkmark path {
+  stroke: var(--notifi-input-icon-fill-color);
+  fill: none;
+}
+
+.GenericDetailIcon--Clock path {
+  fill: var(--notifi-input-icon-fill-color);
+}
+
+.NotifiToggleSlider--disabled {
+  cursor: progress;
+}
+
+.NotifiAlertHistory__virtuoso::-webkit-scrollbar {
+  display: none;
+}
+
+.EventTypeDirectPushRow__label {
+  cursor: default;
+}
+
+.EventTypeDirectPushRow__container > .NotifiToggle__container {
+  visibility: hidden;
+}
+
+.ErrorStateCard__errorMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: -80px;
+  flex-grow: 1;
+  padding: 0 20px;
+}
+
+.NotifiInputContainer__LoadingSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  flex-grow: 1;
+}
+
+.verifyBanner__container,
+.SignupBanner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--notifi-banner-background);
+}
+
+.SignupBanner__Column {
+  flex-direction: column;
+  padding: 14px 0 20px 0;
+  margin: 0px 0px;
+  border-radius: 4px;
+}
+
+.verifyBanner__label,
+.SignupBanner__Label {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0 0 10px;
+}
+
+.SignupBanner__Image {
+  width: 24px;
+  height: 24px;
+  color: var(--notifi-banner-icon-color);
+  background-color: var(--notifi-settings-icon-color);
+  margin-right: 10px;
+  border-radius: 50px;
+  overflow: hidden;
+  border: 2px solid var(--notifi-button-border-active-color);
+}
+
+.verifyBanner__button,
+.SignupBanner__Button {
+  width: 72px;
+  height: 29px;
+  border-radius: 4.04px;
+  margin-right: 10px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: none;
+  background: var(--notifi-button-grad);
+  color: var(--notifi-text-color);
+}
+
+.verifyBanner__subject {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  font-weight: 500;
+}
+
+.verifyBanner__imageContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 10px 0px 6px;
+}
+
+.verifyBanner__image {
+  background-color: #FFF;
+  border-radius: 50%;
+  color: #000;
+  width: 11px;
+  height: 11px;
+}
+
+.configAlertModal__container,
+.configDestinationModal__container {
+  position: absolute;
+  z-index: 1;
+  background-color: var(--notifi-card-background);
+  width: 398px;
+  height: 600px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.configAlertModal__overlay,
+.configDestinationModal__overlay {
+  position: absolute;
+  opacity: 0.4;
+  z-index: 1;
+  background-color: var(--notifi-inner-overlay-background);
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+.configAlertModal__headerContainer {
+  background-color: var(--notifi-tab-background);
+  width: 100%;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 13px !important;
+  margin-top: 10px;
+}
+
+.configAlertModal__footerContainer,
+.configDestinationModal__headerContainer,
+.configDestinationModal__footerContainer {
+  background-color: var(--notifi-tab-background);
+  width: 100%;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 13px !important;
+  margin-top: 10px;
+}
+
+.configAlertModal__headerTitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0 !important;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.configDestinationModal__headerTitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0 !important;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.configAlertModal__footerContainer,
+.configDestinationModal__footerContainer {
+  margin-bottom: 0px !important;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 69px;
+}
+
+.configDestinationModal__footerContainer button,
+.configAlertModal__footerContainer button {
+  height: 65%;
+  flex-grow: 1;
+  margin: 0px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  background: var(--notifi-button-grad);
+  margin-bottom: 10px;
+}
+
+.configDestinationModal__destinationsContainer {
+  height: 100%;
+  margin-bottom: 0px !important;
+  padding: 0px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.configDestinationModal__telegram,
+.configDestinationModal__discord,
+.configDestinationModal__sms,
+.configDestinationModal__email {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap !important;
+  background-color: var(--notifi-card-secondary-background);
+  border-radius: 6px;
+  margin-bottom: 0px !important;
+  padding: 16px;
+}
+
+.configDestination__smsLabel,
+.configDestinationModal__telegramLabel,
+.configDestinationModal__discordLabel,
+.configDestinationModal__emailLabel {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap !important;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.configDestination__smsLabelIcon,
+.configDestinationModal__telegramLabelIcon,
+.configDestinationModal__discordLabelIcon,
+.configDestinationModal__emailLabelIcon {
+  margin-bottom: 0px !important;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.configDestinationModal__emailHelpPhrase {
+  color: var(--notifi-secondary-font-color);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.configDestinationModal__telegramId,
+.configDestinationModal__phoneNumber,
+.configDestinationModal__emailAddress {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.configDestinationModal__emailResendLink {
+  color: var(--notifi-secondary-button-font-color1);
+}
+
+.configDestinationModal__verifyButtonMessage {
+  color: var(--notifi-secondary-button-font-color2);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.configDestinationModal__verifyButtonContainer {
+  background: var(--notifi-button-grad);
+  border-radius: 6px;
+  width: 109px;
+  height: 35px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.configDestinationModal__verifiedButton {
+  background-color: var(--notifi-confirmation-color);
+  color: var(--notifi-text-color);
+  height: 35px;
+  width: 109px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.configAlertModal__overlay {
+  position: absolute;
+  opacity: 0.4;
+  z-index: 1;
+  background-color: var(--notifi-inner-overlay-background);
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+.configAlertModal__ctaIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--notifi-cta-icon-color);
+  background-color: var(--notifi-cta-background);
+  border-radius: 50%;
+}
+
+.configAlertModal__backIcon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+}
+
+.configAlertModal__closeIcon {
+  display: none;
+}
+
+.configAlertModal__EventTypeContainer {
+  height: 100%;
+  padding: 20px 24px;
+}
+
+.configAlertModal__EventTypeTradingPairsRow,
+.configAlertModal__EventTypeFusionMultiThresholdRow,
+.configAlertModal__EventTypeFusionToggleRow,
+.configAlertModal__EventTypeXMTPRow,
+.configAlertModal__EventTypeWalletBalanceRow,
+.configAlertModal__EventTypeTradingPairsRow,
+.configAlertModal__EventTypePriceChangeRow,
+.configAlertModal__EventTypeDirectPushRow,
+.configAlertModal__EventTypeBroadcastRow {
+  background-color: var(--notifi-tab-background);
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px !important;
+}
+
+.configAlertModal__EventTypeFusionHealthCheckRow,
+.configAlertModal__EventTypeHealthCheckRow,
+.configAlertModal__EventTypeCustomHealthCheckRow {
+  background-color: var(--notifi-tab-background);
+  padding: 8px 12px;
+  padding-bottom: 20px;
+  border-radius: 6px;
+  margin-bottom: 0px !important;
+}
+
+.configAlertModal__EventTypeFusionHealthCheckRow__Subtitle,
+.configAlertModal__EventTypeHealthCheckRow__Subtitle,
+.configAlertModal__EventTypeCustomHealthCheckRow__Subtitle {
+  background-color: var(--notifi-tab-background);
+  padding: 0px 12px;
+  margin-bottom: 0px !important;
+  margin-top: -6px;
+}
+
+.configAlertModal__EventTypeHealthCheckRow__ButtonContainer,
+.configAlertModal__EventTypeFusionHealthCheckRow__ButtonContainer,
+.configAlertModal__EventTypeCustomHealthCheckRow__ButtonContainer {
+  background-color: var(--notifi-tab-background);
+  padding: 0px 12px 0px 12px;
+  border-radius: 0px 0px 6px 6px;
+}

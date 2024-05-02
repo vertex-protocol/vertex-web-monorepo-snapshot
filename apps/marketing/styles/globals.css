@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    @apply bg-black-900;
+  }
+
+  button {
+    @apply select-none outline-none;
+  }
+  /* Fixes current issues with `/next/image` component 
+      see 'https://github.com/tailwindlabs/tailwindcss/discussions/9748' */
+  img,
+  video {
+    @apply h-max max-w-none;
+  }
+}
+
+/* Scroll-bar Customization */
+@layer components {
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply bg-black-700 w-2 rounded-2xl bg-white;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-black-700;
+  }
+
+  /* Handle */
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-white-600 rounded-2xl;
+  }
+
+  /* Handle on hover */
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-purple-900;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply text-transparent bg-clip-text;
+  }
+}
+
+@layer utilities {
+  .mask::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    padding: 1px; /* control the border thickness */
+    background: linear-gradient(
+      45deg,
+      rgba(181, 113, 125, 0.48),
+      rgba(89, 77, 248, 1)
+    );
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .mask-round::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 9999px;
+    padding: 1px; /* control the border thickness */
+    background: linear-gradient(
+      45deg,
+      rgba(181, 113, 125, 0.48),
+      rgba(89, 77, 248, 1)
+    );
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  pre {
+    font-family: 'PPObjectSans';
+  }
+
+  input[type='number'] {
+    -webkit-appearance: textfield;
+    appearance: textfield;
+  }
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+}

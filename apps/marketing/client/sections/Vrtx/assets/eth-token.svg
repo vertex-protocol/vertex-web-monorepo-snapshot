@@ -1,0 +1,33 @@
+<svg
+  width="20"
+  height="20"
+  viewBox="0 0 20 20"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M10.3105 2.5V8.04375L14.9962 10.1375L10.3105 2.5Z"
+    fill="white"
+    fill-opacity="0.602"
+  />
+  <path d="M10.3112 2.5L5.625 10.1375L10.3112 8.04375V2.5Z" fill="white" />
+  <path
+    d="M10.3105 13.7299V17.4968L14.9993 11.0099L10.3105 13.7299Z"
+    fill="white"
+    fill-opacity="0.602"
+  />
+  <path
+    d="M10.3112 17.4969V13.7294L5.625 11.01L10.3112 17.4969Z"
+    fill="white"
+  />
+  <path
+    d="M10.3105 12.8581L14.9962 10.1375L10.3105 8.04501V12.8581Z"
+    fill="white"
+    fill-opacity="0.2"
+  />
+  <path
+    d="M5.625 10.1375L10.3112 12.8581V8.04498L5.625 10.1375Z"
+    fill="white"
+    fill-opacity="0.602"
+  />
+</svg>
