@@ -23,4 +23,4 @@ export interface DepositProduct extends CollateralSpotProduct {
   oraclePriceUsd: BigDecimal;
 }
 
-export type DepositInfoCardType = 'weth' | 'vrtx' | 'usdb';
+export type DepositInfoCardType = 'weth' | 'vrtx' | 'usdb' | 'wmnt';

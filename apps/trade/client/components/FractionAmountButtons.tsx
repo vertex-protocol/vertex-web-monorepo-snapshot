@@ -3,9 +3,11 @@ import {
   joinClassNames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
+import {
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 
 const fractions = [0.25, 0.5, 0.75, 1];
 
@@ -59,18 +61,18 @@ function FractionAmountButton({
 }: FractionAmountButtonProps) {
   const classNames = (() => {
     if (disabled) {
-      return 'bg-surface-1 text-disabled ring-transparent';
+      return 'bg-surface-1 border-transparent text-disabled';
     }
     if (isSelected) {
-      return 'bg-surface-3 hover:bg-surface-3 ring-accent focus:ring-accent text-text-primary';
+      return 'bg-surface-3 border-accent text-text-primary';
     }
-    return 'bg-surface-2 hover:bg-overlay-hover/5 text-text-secondary ring-transparent';
+    return 'bg-surface-2 border-transparent text-text-secondary';
   })();
 
   return (
     <SecondaryButton
-      className={mergeClassNames('flex-1', classNames)}
-      size="sm"
+      className={mergeClassNames('flex-1 border', classNames)}
+      size="xs"
       onClick={onFractionSelected}
       disabled={disabled}
     >

@@ -1,7 +1,7 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import {
@@ -19,7 +19,7 @@ import { MarketFilter } from 'client/types/MarketFilter';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import { StackedAmountValueCell } from './cells/StackedAmountValueCell';
 import {
@@ -61,7 +61,8 @@ export function SpotBalancesTable({
         },
         enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-40',
+          cellContainerClassName: 'w-44',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('balanceInfo', {
@@ -77,7 +78,7 @@ export function SpotBalancesTable({
             <StackedAmountValueCell
               symbol={symbol}
               size={amount}
-              value={valueUsd}
+              valueUsd={valueUsd}
               sizeFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
             />
           );

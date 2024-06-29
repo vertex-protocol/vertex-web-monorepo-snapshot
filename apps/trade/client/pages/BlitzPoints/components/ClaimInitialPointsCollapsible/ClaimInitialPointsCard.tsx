@@ -1,5 +1,9 @@
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { GetIndexerBlitzInitialDropConditionsResponse } from '@vertex-protocol/client';
+import {
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import {
@@ -9,15 +13,12 @@ import {
   PrimaryButton,
   TextButton,
 } from '@vertex-protocol/web-ui';
-import { Countdown } from 'client/modules/rewards/components/Countdown';
-import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import { ClaimStepsAccordion } from 'client/pages/BlitzPoints/components/ClaimInitialPointsCollapsible/ClaimStepsAccordion';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { safeDiv } from 'client/utils/safeDiv';
 import Image from 'next/image';
 import { useState } from 'react';
 
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import initialClaimCompleteImg from '../../assets/initial-claim-complete-check.png';
 import initialClaimIncompleteImg from '../../assets/initial-claim-incomplete-question.png';
 
@@ -62,39 +63,33 @@ export function ClaimInitialPointsCard({
   );
 
   const completionProgress = (
-    <RewardsCard.StackedItem
+    <ValueWithLabel.Vertical
       className="gap-y-2"
       label={`Completed Steps: ${formatNumber(numCompletedSteps, {
         formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
       })} / ${formatNumber(numTotalSteps, {
         formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
       })}`}
-      value={
+      valueClassName={joinClassNames(
+        'relative overflow-hidden rounded-sm',
+        'bg-surface-card h-[18px] w-full',
+      )}
+      valueContent={
         <div
-          className={joinClassNames(
-            'relative isolate overflow-hidden rounded-sm',
-            'h-[18px] w-full',
-          )}
-        >
-          <div
-            className="bg-accent absolute inset-0 origin-left"
-            style={{
-              width: `${formatNumber(
-                safeDiv(numCompletedSteps, numTotalSteps),
-                {
-                  formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_INT,
-                },
-              )}`,
-            }}
-          />
-        </div>
+          className="bg-accent absolute inset-0 origin-left duration-300"
+          style={{
+            width: `${formatNumber(safeDiv(numCompletedSteps, numTotalSteps), {
+              formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_INT,
+            })}`,
+          }}
+        />
       }
     />
   );
 
   const collapsibleTrigger = (
     <Collapsible.Trigger asChild>
-      <PrimaryButton size="lg" className="w-52">
+      <PrimaryButton className="w-52">
         {isOpen ? 'Hide Claim Steps' : 'Claim Points'}
       </PrimaryButton>
     </Collapsible.Trigger>
@@ -134,15 +129,15 @@ export function ClaimInitialPointsCard({
               className="h-auto w-full"
             />
             {hasClaimedInitialPoints && (
-              <RewardsCard.MetricStackedItem
+              <ValueWithLabel.Vertical
                 label="Initial Points Claimed"
                 value={blitzInitialPoints}
                 valueClassName="text-6xl justify-center"
-                formatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+                numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
               />
             )}
           </div>
-          <Divider vertical className="hidden h-auto sm:block" />
+          <Divider vertical className="hidden sm:block" />
           <ClaimStepsAccordion
             className="flex-1"
             initialDropConditionsResponse={initialDropConditionsResponse}

@@ -2,11 +2,11 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { formatNumber } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 
 interface Props extends TableCellProps {

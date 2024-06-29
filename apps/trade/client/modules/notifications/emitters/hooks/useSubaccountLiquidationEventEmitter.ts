@@ -1,4 +1,4 @@
-import { usePrimaryChainId } from '@vertex-protocol/web-data';
+import { usePrimaryChainId } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useSubaccountPaginatedLiquidationEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedLiquidationEvents';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';

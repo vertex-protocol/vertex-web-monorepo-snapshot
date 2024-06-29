@@ -30,8 +30,8 @@ export function LbaPositionActionCell({
       {...rest}
     >
       <SecondaryButton
-        size="md"
         title="Withdraw Liquidity"
+        size="xs"
         disabled={isDisabled}
         onClick={() => show({ type: 'withdraw_lba_liquidity', params: {} })}
       >

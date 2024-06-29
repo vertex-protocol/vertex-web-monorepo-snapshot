@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import {
   PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 
 export function orderbookAddressesQueryKey(chainId?: PrimaryChainID) {
   return ['orderbookAddresses', chainId];
@@ -18,7 +18,7 @@ type Data = Record<number, string>;
  */
 export function useOrderbookAddresses() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({

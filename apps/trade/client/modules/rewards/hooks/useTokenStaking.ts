@@ -1,33 +1,32 @@
+import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAccountStakingState } from 'client/hooks/query/vrtxToken/useAccountStakingState';
 import { useLbaTokenWalletBalances } from 'client/hooks/query/vrtxToken/useLbaTokenWalletBalances';
 import { useStakingState } from 'client/hooks/query/vrtxToken/useStakingState';
 import { useVrtxTokenSupply } from 'client/hooks/query/vrtxToken/useVrtxTokenSupply';
 import { useLastStakingRewardsDistributionAmount } from 'client/modules/rewards/hooks/useLastStakingRewardsDistributionAmount';
 import { useStakingPoolAprs } from 'client/modules/rewards/hooks/useStakingPoolAprs';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import {
   calcStakingApr,
   calcStakingScoreRange,
   calcTimeOfMaxStakingScore,
 } from 'client/utils/calcs/stakingCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { safeDiv } from 'client/utils/safeDiv';
 import { AnnotatedSpotMarket } from 'common/productMetadata/types';
 import { useMemo } from 'react';
 
 export function useTokenStaking() {
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data: accountStakingState } = useAccountStakingState();
   const { data: stakingState } = useStakingState();
   const { data: lbaWalletBalances } = useLbaTokenWalletBalances();
   const { data: vrtxSpotMarket } = useMarket<AnnotatedSpotMarket>({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
   const { data: vrtxTokenSupply } = useVrtxTokenSupply();
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
 
   const usdcDecimals = lbaWalletBalances?.usdc.tokenDecimals;
   const vrtxDecimals = lbaWalletBalances?.vrtx.tokenDecimals;
@@ -54,8 +53,8 @@ export function useTokenStaking() {
 
     // Fraction of the total VRTX supply that is staked
     const poolLiquidSupplyFraction =
-      vrtxTokenSupply && stakingState
-        ? safeDiv(stakingState.totalStaked, vrtxTokenSupply.liquidSupply)
+      vrtxTokenSupply && poolTotalStaked
+        ? safeDiv(poolTotalStaked, vrtxTokenSupply.liquidSupply)
         : undefined;
 
     return {

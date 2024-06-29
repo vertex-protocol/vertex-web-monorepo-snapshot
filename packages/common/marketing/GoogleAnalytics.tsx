@@ -1,4 +1,4 @@
-import { GoogleTagManager } from '@next/third-parties/google';
+import { GoogleAnalytics as GATag } from '@next/third-parties/google';
 
 interface Props {
   areCookiesAccepted: boolean | null;
@@ -6,5 +6,5 @@ interface Props {
 }
 
 export function GoogleAnalytics({ areCookiesAccepted, gtmId }: Props) {
-  return areCookiesAccepted ? <GoogleTagManager gtmId={gtmId} /> : null;
+  return areCookiesAccepted ? <GATag gaId={gtmId} /> : null;
 }

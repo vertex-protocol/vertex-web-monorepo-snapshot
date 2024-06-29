@@ -1,4 +1,5 @@
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import {
@@ -10,7 +11,6 @@ import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMe
 import { VrtxRewardEpoch } from 'client/modules/rewards/types';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import { useMemo } from 'react';
 import { EpochNameCell } from './cells/EpochNameCell';
@@ -25,12 +25,58 @@ import {
 
 const columnHelper = createColumnHelper<EpochRewardsTableData>();
 
-export function EpochRewardsTable() {
+export function EpochRewardsTable({
+  isOnProtocolTokenChain,
+}: {
+  isOnProtocolTokenChain: boolean;
+}) {
   const { primaryQuoteToken } = useVertexMetadataContext();
   const { data, pageCount, paginationState, setPaginationState, isLoading } =
     useEpochRewardsTable();
 
   const columns: ColumnDef<EpochRewardsTableData, any>[] = useMemo(() => {
+    // These are only available where we have on-chain actions / data
+    const protocolChainColumns = [
+      columnHelper.accessor('rewardsUnclaimed', {
+        header: ({ header }) => (
+          <HeaderCell header={header}>Unclaimed / Deadline</HeaderCell>
+        ),
+        cell: (context) => {
+          return (
+            <EpochUnclaimedRewardsAmountCell
+              amount={context.getValue()}
+              claimDeadlineMillis={context.row.original.claimDeadlineMillis}
+              isPastClaimDeadline={context.row.original.isPastClaimDeadline}
+              isCurrent={context.row.original.isCurrent}
+            />
+          );
+        },
+        sortingFn: bigDecimalSortFn,
+        meta: {
+          cellContainerClassName: 'w-40 grow',
+        },
+      }),
+      columnHelper.display({
+        id: 'actions',
+        header: () => null,
+        cell: (context) => {
+          return (
+            <EpochRewardsLiquidClaimActionCell
+              className="pr-1"
+              isPastClaimDeadline={context.row.original.isPastClaimDeadline}
+              rewardsUnclaimed={context.row.original.rewardsUnclaimed}
+              rewardsEarned={context.row.original.rewardsEarned}
+              isCurrent={context.row.original.isCurrent}
+              epochNumber={context.row.original.epochNumber}
+            />
+          );
+        },
+        meta: {
+          cellContainerClassName: 'w-32',
+        },
+      }),
+    ];
+
     return [
       columnHelper.accessor('epochNumber', {
         header: ({ header }) => (
@@ -140,46 +186,9 @@ export function EpochRewardsTable() {
           cellContainerClassName: 'w-36',
         },
       }),
-      columnHelper.accessor('rewardsUnclaimed', {
-        header: ({ header }) => (
-          <HeaderCell header={header}>Unclaimed / Deadline</HeaderCell>
-        ),
-        cell: (context) => {
-          return (
-            <EpochUnclaimedRewardsAmountCell
-              amount={context.getValue()}
-              claimDeadlineMillis={context.row.original.claimDeadlineMillis}
-              isPastClaimDeadline={context.row.original.isPastClaimDeadline}
-              isCurrent={context.row.original.isCurrent}
-            />
-          );
-        },
-        sortingFn: bigDecimalSortFn,
-        meta: {
-          cellContainerClassName: 'w-40 grow',
-        },
-      }),
-      columnHelper.display({
-        id: 'actions',
-        header: () => null,
-        cell: (context) => {
-          return (
-            <EpochRewardsLiquidClaimActionCell
-              className="pr-1"
-              isPastClaimDeadline={context.row.original.isPastClaimDeadline}
-              rewardsUnclaimed={context.row.original.rewardsUnclaimed}
-              rewardsEarned={context.row.original.rewardsEarned}
-              isCurrent={context.row.original.isCurrent}
-              epochNumber={context.row.original.epochNumber}
-            />
-          );
-        },
-        meta: {
-          cellContainerClassName: 'w-32',
-        },
-      }),
+      ...(isOnProtocolTokenChain ? protocolChainColumns : []),
     ];
-  }, [primaryQuoteToken.symbol]);
+  }, [isOnProtocolTokenChain, primaryQuoteToken.symbol]);
 
   return (
     <DataTable

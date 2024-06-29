@@ -1,8 +1,8 @@
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { LineItemMetricProps } from 'client/components/LineItem/types';
+import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { DerivedSubaccountOverviewData } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { useMemo } from 'react';
 
@@ -10,30 +10,34 @@ export function PoolsHeroMetricsItems({
   className,
   overview,
 }: WithClassnames<{ overview?: DerivedSubaccountOverviewData }>) {
-  const poolsMetricsItems: LineItemMetricProps[] = useMemo(
-    () => [
-      {
-        tooltip: {
-          id: 'poolsAverageAPR',
+  const poolsMetricsItems = useMemo(
+    () =>
+      [
+        {
+          tooltip: {
+            id: 'poolsAverageAPR',
+          },
+          label: 'Avg. APR',
+          value: overview?.lp.averageYieldFraction,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         },
-        label: 'Avg. APR',
-        value: overview?.lp.averageYieldFraction,
-        renderValue: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-      },
-      {
-        tooltip: {
-          id: 'poolsTotalUnrealizedPnL',
+        {
+          tooltip: {
+            id: 'poolsTotalUnrealizedPnL',
+          },
+          label: 'Unrealized PnL',
+          value: overview?.lp.totalUnrealizedPnlUsd,
+          valueClassName: signDependentValue(
+            overview?.lp.totalUnrealizedPnlUsd,
+            {
+              positive: 'text-positive',
+              negative: 'text-negative',
+              zero: 'text-text-secondary',
+            },
+          ),
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        label: 'Unrealized PnL',
-        value: overview?.lp.totalUnrealizedPnlUsd,
-        valueClassName: signDependentValue(overview?.lp.totalUnrealizedPnlUsd, {
-          positive: 'text-positive',
-          negative: 'text-negative',
-          zero: 'text-text-secondary',
-        }),
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-    ],
+      ] satisfies ValueWithLabelProps[],
     [overview],
   );
 
@@ -44,13 +48,16 @@ export function PoolsHeroMetricsItems({
       childContainerClassNames="flex flex-col gap-y-0.5"
     >
       {poolsMetricsItems.map(
-        ({ tooltip, label, value, renderValue, valueClassName }, index) => (
-          <PortfolioHeroMetricsPane.LineItem
+        (
+          { tooltip, label, value, numberFormatSpecifier, valueClassName },
+          index,
+        ) => (
+          <PortfolioHeroMetricsPane.ValueWithLabel
             key={index}
             label={label}
             value={value}
             tooltip={tooltip}
-            renderValue={renderValue}
+            numberFormatSpecifier={numberFormatSpecifier}
             valueClassName={valueClassName}
           />
         ),

@@ -9,9 +9,9 @@ import { atom } from 'jotai';
 // Orderbook state
 export const orderbookViewTypeAtom = atom<OrderbookViewType>('bids_and_asks');
 
-export const marketTradesExpandedStateAtom = atom<
-  'full' | 'default' | 'collapsed'
->('default');
+export const marketActivitySelectedTabIdAtom = atom<'orderbook' | 'trades'>(
+  'orderbook',
+);
 
 // Table filters
 export const historicalTradesSelectedFilterIdAtom =
@@ -25,6 +25,3 @@ export const openEngineOrdersSelectedFilterIdAtom =
 
 export const openTriggerOrdersSelectedFilterIdAtom =
   atom<OpenOrdersFilterOptionID>('all');
-
-// Market switcher
-export const openMarketSwitcherAtom = atom<boolean>(false);

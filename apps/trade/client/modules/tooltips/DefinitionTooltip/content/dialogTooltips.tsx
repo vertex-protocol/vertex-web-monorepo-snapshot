@@ -1,6 +1,5 @@
 import { DiscList } from '@vertex-protocol/web-ui';
 import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 
 const settingsTooltips = {
@@ -20,7 +19,7 @@ const settingsTooltips = {
     title: 'Low Slippage',
     content: `Orders may fail to execute.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const singleSignatureTooltips = {
   octRememberMe: {
@@ -32,7 +31,7 @@ const singleSignatureTooltips = {
     content:
       'You are allowed to enable 1CT 5 times max per week. You can switch back to Sign Every Transaction after that, but cannot enable 1CT until the following week.',
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const takeProfitStopLossTooltips = {
   perpTp: {
@@ -88,7 +87,20 @@ const takeProfitStopLossTooltips = {
       </>
     ),
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
+
+const depositTooltips = {
+  smartContractWalletSigningPrompt: {
+    title: `Using a smart contract wallet?`,
+    content: (
+      <p>
+        If you are using Safe or another smart contract wallet, please enable
+        1CT after depositing. This is so we can request signatures for
+        transactions.
+      </p>
+    ),
+  },
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const withdrawTooltips = {
   withdrawEnableBorrowsSwitch: {
@@ -103,7 +115,7 @@ const withdrawTooltips = {
     title: `Max withdrawal`,
     content: `Your balance for the asset minus what's being held in open orders or required as margin.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const repayTooltips = {
   repayConvertEstimatedPrice: {
@@ -122,7 +134,7 @@ const repayTooltips = {
     title: `Max Deposit`,
     content: `The total amount you have in your wallet to deposit and repay.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const bridgeTooltips = {
   bridgeEstimatedReceiveAmount: {
@@ -141,17 +153,18 @@ const bridgeTooltips = {
     title: `Axelar Fee`,
     content: `The fees collected by Axelar for facilitating this bridge transaction.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const stakingTooltips = {
-  stakingEstConversionRate: {
+  stakingEstConversionRate: ({ primaryQuoteToken }) => ({
     title: `Est. Conversion Rate`,
-    content: `Compounding converts ${PRIMARY_QUOTE_SYMBOL} rewards into ${VRTX_TOKEN_INFO.symbol} using Camelot and then stakes them. The estimated conversion rate is based on the current price for the ${VRTX_TOKEN_INFO.symbol}-${PRIMARY_QUOTE_SYMBOL} market on Camelot.`,
-  },
-};
+    content: `Compounding converts ${primaryQuoteToken.symbol} rewards into ${VRTX_TOKEN_INFO.symbol} using Camelot and then stakes them. The estimated conversion rate is based on the current price for the ${VRTX_TOKEN_INFO.symbol}-${primaryQuoteToken.symbol} market on Camelot.`,
+  }),
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 export const dialogTooltips = {
   ...singleSignatureTooltips,
+  ...depositTooltips,
   ...withdrawTooltips,
   ...repayTooltips,
   ...takeProfitStopLossTooltips,

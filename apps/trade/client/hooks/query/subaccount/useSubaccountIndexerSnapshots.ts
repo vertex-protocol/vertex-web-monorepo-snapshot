@@ -3,14 +3,13 @@ import { GetIndexerMultiSubaccountSnapshotsParams } from '@vertex-protocol/clien
 import { IndexerSubaccountSnapshot } from '@vertex-protocol/indexer-client';
 import { nowInSeconds } from '@vertex-protocol/utils';
 import {
-  PrimaryChainID,
   createQueryKey,
-  useEnableSubaccountQueries,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { ZeroAddress } from 'ethers';
@@ -55,14 +54,12 @@ export function useSubaccountIndexerSnapshots<TSelectedData = Data>({
   const {
     currentSubaccount: { name: subaccountName, address: subaccountOwner },
   } = useSubaccountContext();
-  const vertexClient = useVertexClient();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
+  const vertexClient = usePrimaryChainVertexClient();
 
   // If no current subaccount, query for a subaccount that does not exist to ensure that we have data
   const subaccountOwnerForQuery = subaccountOwner ?? ZeroAddress;
 
-  const disabled =
-    !vertexClient || !secondsBeforeNow?.length || !enableSubaccountQueries;
+  const disabled = !vertexClient || !secondsBeforeNow?.length;
 
   const queryFn = async () => {
     if (disabled) {

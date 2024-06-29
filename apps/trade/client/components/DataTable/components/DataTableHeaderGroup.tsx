@@ -19,10 +19,14 @@ export function DataTableHeaderGroup<TData extends RowData>({
         if (header.isPlaceholder) {
           return null;
         }
+        const withLeftPadding = header.column.columnDef.meta?.withLeftPadding;
         return (
           <div
             key={header.id}
-            className={header.column.columnDef.meta?.cellContainerClassName}
+            className={mergeClassNames(
+              header.column.columnDef.meta?.cellContainerClassName,
+              withLeftPadding && 'pl-4',
+            )}
           >
             {flexRender(header.column.columnDef.header, header.getContext())}
           </div>

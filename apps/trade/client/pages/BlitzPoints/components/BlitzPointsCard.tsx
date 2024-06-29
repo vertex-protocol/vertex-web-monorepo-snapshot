@@ -1,13 +1,15 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
-import { BLITZ_SPECIFIC_IMAGES, IMAGES } from 'client/modules/brand/images';
+import { IMAGES } from 'common/brandMetadata/images';
 
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
-import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import { PointsPageCard } from 'client/pages/BlitzPoints/components/PointsPageCard';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import Image from 'next/image';
 
 interface Props extends WithClassnames {
@@ -32,40 +34,41 @@ export function BlitzPointsCard({
 
   return (
     <PointsPageCard
-      bgImage={BLITZ_SPECIFIC_IMAGES.blitzBrandBg}
+      bgImage={IMAGES.brandBg}
       className={joinClassNames('ring-accent flex flex-col gap-y-5', className)}
     >
-      <RewardsCard.MetricStackedItem
-        value={totalPoints}
-        formatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+      <ValueWithLabel.Vertical
+        sizeVariant="lg"
         label={
-          <div className="flex items-center gap-x-1">
+          <>
             <Image src={IMAGES.brandLogo} alt="blitz" className="h-3 w-auto" />
             Points
-          </div>
+          </>
         }
-        valueClassName="text-2xl sm:text-5xl"
+        labelClassName="flex items-center gap-x-1"
+        value={totalPoints}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+        valueClassName="sm:text-5xl"
       />
       <Divider />
       <div className="flex flex-col gap-y-4">
         <h4 className="text-text-secondary text-sm">Breakdown</h4>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <RewardsCard.MetricStackedItem
-            value={tradingPoints}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+          <ValueWithLabel.Vertical
             label="Trading Points"
-            labelClassName="text-text-tertiary"
-            definitionId="pointsTradingPoints"
+            value={tradingPoints}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+            tooltip={{ id: 'pointsTradingPoints' }}
           />
-          <RewardsCard.MetricStackedItem
-            value={referralPoints}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+          <ValueWithLabel.Vertical
             label="Referral Points"
-            labelClassName="text-text-tertiary"
-            definitionId="pointsReferralPoints"
+            value={referralPoints}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+            tooltip={{ id: 'pointsReferralPoints' }}
           />
-          <RewardsCard.StackedItem
-            value={
+          <ValueWithLabel.Vertical
+            label="Initial Points"
+            valueContent={
               showInitialPoints ? (
                 formatNumber(initialPoints, {
                   formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
@@ -79,9 +82,7 @@ export function BlitzPointsCard({
                 </div>
               )
             }
-            label="Initial Points"
-            labelClassName="text-text-tertiary"
-            definitionId="pointsInitialPoints"
+            tooltip={{ id: 'pointsInitialPoints' }}
           />
         </div>
       </div>

@@ -4,23 +4,26 @@ import {
 } from '@vertex-protocol/client';
 import {
   BigDecimal,
+  BigDecimals,
+  removeDecimals,
   sumBigDecimalBy,
   toBigDecimal,
 } from '@vertex-protocol/utils';
 import { AccountTokenClaimStateData } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 
 import { VrtxRewardEpoch } from 'client/modules/rewards/types';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { safeDiv } from 'client/utils/safeDiv';
 import { get } from 'lodash';
 
 interface Params {
   nowInMillis: number;
   indexerRewardEpoch: IndexerRewardsEpoch;
-  accountTokenClaimState: AccountTokenClaimStateData;
-  tokenClaimDeadlines: BigDecimal[];
   vrtxTokenDecimals: number;
+  /**
+   * On-chain data sources are nullable as they're only available on Arbitrum
+   */
+  accountTokenClaimState: AccountTokenClaimStateData | undefined;
+  tokenClaimDeadlines: BigDecimal[] | undefined;
 }
 
 export function toVrtxRewardEpoch({
@@ -75,11 +78,11 @@ export function toVrtxRewardEpoch({
   const epochNumber = indexerRewardEpoch.epoch;
 
   const subaccountTokenTotalClaimed = removeDecimals(
-    get(accountTokenClaimState.claimedPerEpoch, epochNumber, undefined),
+    get(accountTokenClaimState?.claimedPerEpoch, epochNumber, undefined),
     vrtxTokenDecimals,
   );
   const subaccountTokenTotalEarned = removeDecimals(
-    get(accountTokenClaimState.totalClaimablePerEpoch, epochNumber, undefined),
+    get(accountTokenClaimState?.totalClaimablePerEpoch, epochNumber, undefined),
     vrtxTokenDecimals,
   );
   const tokenClaimDeadline = get(
@@ -106,7 +109,6 @@ export function toVrtxRewardEpoch({
         distributionTimeAdjustment,
       ),
     },
-    numEligibleAddresses: indexerRewardEpoch.numEligibleAddresses,
     subaccountTokenClaim: {
       claimed: subaccountTokenTotalClaimed,
       totalEarned: subaccountTokenTotalEarned,

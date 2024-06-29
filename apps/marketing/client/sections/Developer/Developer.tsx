@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_GAP,
@@ -8,11 +7,12 @@ import {
 } from 'client/consts';
 import { DeveloperCard } from './components/DeveloperCard';
 import { DEVELOPER_CARDS } from './data';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function Developer() {
   return (
     <section
-      className={classNames(
+      className={joinClassNames(
         'flex scroll-m-10 flex-col',
         DEFAULT_SECTION_PADDING,
         DEFAULT_SECTION_GAP,
@@ -44,7 +44,7 @@ export function Developer() {
         contentClassNames="w-full sm:w-4/5 lg:w-full pt-2"
       />
       <div
-        className={classNames(
+        className={joinClassNames(
           'flex flex-col items-center gap-y-4',
           'md:flex-row md:gap-x-4',
           'lg:gap-y-0',

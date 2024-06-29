@@ -20,13 +20,7 @@ export function PortfolioFaqPage() {
       <div className="flex flex-col-reverse gap-x-20 gap-y-8 lg:flex-row lg:justify-between">
         <div className="flex flex-col gap-y-3 lg:flex-1 lg:gap-y-6">
           <PortfolioHeader>Frequently Asked Questions</PortfolioHeader>
-          <SearchBar
-            inputClassName="py-1 text-sm"
-            placeholder="Search"
-            iconSize={16}
-            query={query}
-            setQuery={setQuery}
-          />
+          <SearchBar sizeVariant="xs" query={query} setQuery={setQuery} />
           <Accordion.Root
             type="multiple"
             className="flex flex-col gap-y-3 lg:gap-y-4"

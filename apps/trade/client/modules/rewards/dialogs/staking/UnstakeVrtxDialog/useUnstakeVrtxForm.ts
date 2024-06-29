@@ -1,4 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import {
   InputValidatorFn,
   percentageValidator,
@@ -7,7 +8,7 @@ import {
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useExecuteUnstakeVrtx } from 'client/hooks/execute/vrtxToken/useExecuteUnstakeVrtx';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 import { useAccountStakingState } from 'client/hooks/query/vrtxToken/useAccountStakingState';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
@@ -20,7 +21,6 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
-import { addDecimals, removeDecimals } from 'client/utils/decimalAdjustment';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
@@ -47,16 +47,16 @@ interface UseUnstakeVrtxForm {
 }
 
 export function useUnstakeVrtxForm(): UseUnstakeVrtxForm {
-  const { protocolTokenProductId, protocolToken } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data: accountStakingState } = useAccountStakingState();
   const { data: vrtxSpotMarket } = useMarket({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
   const { hide } = useDialog();
   const amountVrtxStaked = removeDecimals(
     accountStakingState?.amountStaked,
-    protocolToken.tokenDecimals,
+    protocolTokenMetadata.token.tokenDecimals,
   );
 
   const { dispatchNotification } = useNotificationManagerContext();
@@ -171,7 +171,7 @@ export function useUnstakeVrtxForm(): UseUnstakeVrtxForm {
 
       const amountWithDecimals = addDecimals(
         submissionAmount,
-        protocolToken.tokenDecimals,
+        protocolTokenMetadata.token.tokenDecimals,
       ).toFixed();
 
       const serverExecutionResult = unstakeVrtxMutation.mutateAsync(
@@ -195,7 +195,7 @@ export function useUnstakeVrtxForm(): UseUnstakeVrtxForm {
     },
     [
       amountVrtxStaked,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
       unstakeVrtxMutation,
       dispatchNotification,
       useUnstakeVrtxForm,

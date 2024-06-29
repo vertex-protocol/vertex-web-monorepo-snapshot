@@ -1,5 +1,5 @@
 import { useRequiresDeposit } from 'client/hooks/subaccount/useRequiresDeposit';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 
 export type UserActionState = 'allow_all' | 'allow_deposit' | 'block_all';
 

@@ -32,7 +32,7 @@ export function TradingViewChart({
         id={WIDGET_CONTAINER_ID}
         ref={chartContainerRef}
         className={joinClassNames(
-          'flex h-full flex-1 delay-100 duration-200',
+          'flex h-full flex-1 delay-100',
           isReady ? 'opacity-100' : 'opacity-0',
           className,
         )}

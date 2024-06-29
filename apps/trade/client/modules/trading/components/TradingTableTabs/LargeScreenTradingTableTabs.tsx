@@ -39,7 +39,7 @@ export function LargeScreenTradingTableTabs({
                 <TradingTableTabsTrigger
                   id={id}
                   className="text-xs"
-                  isSelected={selectedTabId === id}
+                  active={selectedTabId === id}
                   associatedCount={associatedCount}
                 >
                   {label}

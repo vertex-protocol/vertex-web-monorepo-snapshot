@@ -1,9 +1,9 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import {
   NumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+  formatNumber,
+} from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
 import {
   TableCell,
   TableCellProps,
@@ -14,13 +14,10 @@ interface Props extends TableCellProps {
   formatSpecifier?: NumberFormatSpecifier;
 }
 
-export function PercentageCell({
-  fraction,
-  formatSpecifier = PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-  ...rest
-}: Props) {
+export function PercentageCell({ fraction, formatSpecifier, ...rest }: Props) {
   const formattedPercentage = formatNumber(fraction, {
-    formatSpecifier,
+    formatSpecifier:
+      formatSpecifier ?? PresetNumberFormatSpecifier.PERCENTAGE_2DP,
   });
 
   return <TableCell {...rest}>{formattedPercentage}</TableCell>;

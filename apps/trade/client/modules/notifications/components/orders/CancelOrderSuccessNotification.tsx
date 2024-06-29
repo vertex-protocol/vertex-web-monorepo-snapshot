@@ -6,8 +6,8 @@ import { ToastProps } from 'client/components/Toast/types';
 import { CancelOrderNotificationData } from 'client/modules/notifications/types';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 
 interface CancelOrderNotificationProps extends ToastProps {

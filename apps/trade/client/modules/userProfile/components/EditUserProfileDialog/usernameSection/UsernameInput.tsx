@@ -1,6 +1,4 @@
-import { Button } from '@vertex-protocol/web-ui';
-import { BaseInput } from 'client/components/Input/BaseInput';
-import { CompactInput } from 'client/components/Input/CompactInput';
+import { Button, CompactInput, Input } from '@vertex-protocol/web-ui';
 import { SavedUserProfile } from 'client/modules/userProfile/types';
 import { ReactNode } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -29,11 +27,9 @@ export function UsernameInput({
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between text-sm">
-        <BaseInput.Label
-          htmlFor={register.name}
-          label="Username"
-          className="text-text-secondary text-sm"
-        />
+        <Input.Label className="text-xs" htmlFor={register.name}>
+          Username
+        </Input.Label>
         <Button
           className="text-accent text-xs"
           onClick={clearUsername}
@@ -43,11 +39,11 @@ export function UsernameInput({
         </Button>
       </div>
       <CompactInput
+        {...register}
         id={register.name}
         type="text"
         placeholder="Enter Username"
-        error={error}
-        {...register}
+        errorTooltipContent={error}
       />
     </div>
   );

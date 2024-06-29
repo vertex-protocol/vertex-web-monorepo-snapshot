@@ -1,18 +1,20 @@
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { BigDecimal } from '@vertex-protocol/client';
+import {
+  getMarketPriceFormatSpecifier,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
+import { removeDecimals } from '@vertex-protocol/utils';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
-import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
+import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
+import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
 import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
-import { useFavoritedMarkets } from 'client/modules/markets/hooks/useFavoritedMarkets';
-import { useMemo } from 'react';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { BigDecimal } from '@vertex-protocol/client';
-import { PerpProductMetadata } from 'common/productMetadata/types';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { useEVMContext } from '@vertex-protocol/web-data';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
+import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
 import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
+import { PerpProductMetadata } from 'common/productMetadata/types';
+import { useMemo } from 'react';
 
 export interface PerpMarketTableItem {
   metadata: PerpProductMetadata;
@@ -32,7 +34,8 @@ export interface PerpMarketTableItem {
 
 export function usePerpMarketsTable() {
   const { getIsHiddenMarket, getIsNewMarket } = useVertexMetadataContext();
-  const { data: allMarketData } = useAllMarkets();
+  const { data: allMarketData, isLoading: isAllMarketDataLoading } =
+    useAllMarkets();
   const { data: latestPerpPricesData } = useLatestPerpPrices();
   const { data: latestOraclePricesData } = useLatestOraclePrices();
   const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
@@ -71,7 +74,7 @@ export function usePerpMarketsTable() {
           indexPrice: latestPerpPrices?.indexPrice,
           priceChange24hr: marketMetrics?.pastDayPriceChange,
           priceChangeFrac24hr: marketMetrics?.pastDayPriceChangeFrac,
-          volume24h: removeDecimals(marketMetrics?.pastDayVolumeQuote),
+          volume24h: removeDecimals(marketMetrics?.pastDayVolumeInPrimaryQuote),
           openInterestQuote: openInterestQuote,
           isNewMarket: getIsNewMarket(productId),
           isFavorited: favoritedMarketIds.has(productId),
@@ -96,6 +99,7 @@ export function usePerpMarketsTable() {
   ]);
 
   return {
+    isLoading: isAllMarketDataLoading,
     perpProducts: mappedData,
     toggleIsFavoritedMarket,
     disableFavoriteButton: connectionStatus.type !== 'connected',

@@ -1,13 +1,14 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { NextImageSrc, WithClassnames } from '@vertex-protocol/web-common';
-import { Summary } from 'client/components/Summary';
-import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+  formatNumber,
+  getMarketPriceFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
+import { NextImageSrc, WithClassnames } from '@vertex-protocol/web-common';
+import { Summary } from 'client/components/Summary';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import Image from 'next/image';
 import { PairMetadata } from '../types';
 
@@ -56,10 +57,9 @@ export function WithdrawLiquiditySummary({
         {feeAmount !== null && (
           <Summary.Item
             label="Fee:"
-            labelClassName="text-text-secondary"
-            value={`${formatNumber(feeAmount, {
-              formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
-            })} ${quoteSymbol}`}
+            valueEndElement={quoteSymbol}
+            numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+            value={feeAmount}
           />
         )}
         <DefinitionTooltip
@@ -95,25 +95,38 @@ function TokenSummaryItem({
       {formatNumber(amount, {
         formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
       })}{' '}
-      {symbol}
+      <span className="text-text-tertiary">{symbol}</span>
     </span>
   );
-  const dollarValueContent = valueUsd && (
-    <span className="text-text-tertiary">
-      (
-      {formatNumber(valueUsd, {
-        formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      })}
-      )
-    </span>
-  );
+
+  const dollarValueContent = (() => {
+    if (!valueUsd) {
+      return null;
+    }
+    return (
+      <span className="text-text-tertiary">
+        (
+        {formatNumber(valueUsd, {
+          formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+        })}
+        )
+      </span>
+    );
+  })();
+
   return (
-    <div className="flex items-center gap-x-2">
-      {iconSrc && (
-        <Image src={iconSrc} width={20} height={20} alt={symbol ?? ''} />
-      )}
-      {amountWithSymbolContent}
-      {dollarValueContent}
-    </div>
+    <ValueWithLabel.Horizontal
+      fitWidth
+      sizeVariant="xs"
+      label={
+        iconSrc && <Image src={iconSrc} alt={symbol ?? ''} className="size-5" />
+      }
+      valueContent={
+        <>
+          {amountWithSymbolContent}
+          {dollarValueContent}
+        </>
+      }
+    />
   );
 }

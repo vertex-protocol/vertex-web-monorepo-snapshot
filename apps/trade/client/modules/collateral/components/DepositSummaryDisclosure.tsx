@@ -1,13 +1,13 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { WithClassnames } from '@vertex-protocol/web-common';
-import { ActionSummary } from 'client/components/ActionSummary';
-import { LineItem } from 'client/components/LineItem/LineItem';
-import { LineItemMetricWithEstimationProps } from 'client/components/LineItem/types';
-import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { WithClassnames } from '@vertex-protocol/web-common';
+import { ActionSummary } from 'client/components/ActionSummary';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import { useMemo } from 'react';
 import { DepositInfoCardType } from '../deposit/types';
@@ -34,28 +34,29 @@ export function DepositSummaryDisclosure({
       estimateStateTxs,
     });
 
-  const metricItems: LineItemMetricWithEstimationProps[] = useMemo(
-    () => [
-      {
-        label: 'Balance',
-        currentValue: currentState?.vertexBalance,
-        estimatedValue: estimatedState?.vertexBalance,
-        renderValue: CustomNumberFormatSpecifier.NUMBER_AUTO,
-        valueEndElement: symbol,
-      },
-      {
-        label: 'Account Value',
-        currentValue: currentState?.accountValueUsd,
-        estimatedValue: estimatedState?.accountValueUsd,
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-      {
-        label: 'Margin Usage',
-        currentValue: currentState?.marginUsageBounded,
-        estimatedValue: estimatedState?.marginUsageBounded,
-        renderValue: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-      },
-    ],
+  const metricItems = useMemo(
+    () =>
+      [
+        {
+          label: 'Balance',
+          value: currentState?.vertexBalance,
+          newValue: estimatedState?.vertexBalance,
+          numberFormatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
+          valueEndElement: symbol,
+        },
+        {
+          label: 'Account Value',
+          value: currentState?.accountValueUsd,
+          newValue: estimatedState?.accountValueUsd,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+        },
+        {
+          label: 'Margin Usage',
+          value: currentState?.marginUsageBounded,
+          newValue: estimatedState?.marginUsageBounded,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
+        },
+      ] satisfies ValueWithLabelProps[],
     [currentState, estimatedState, symbol],
   );
 
@@ -76,17 +77,18 @@ export function DepositSummaryDisclosure({
     <div className="flex flex-col gap-y-2 px-3 pb-2.5">
       {metricItems.map(
         (
-          { currentValue, estimatedValue, label, renderValue, valueEndElement },
+          { numberFormatSpecifier, label, value, newValue, valueEndElement },
           index,
         ) => (
-          <LineItem.MetricWithEstimation
+          <ValueWithLabel.Horizontal
             key={index}
+            sizeVariant="xs"
             label={label}
-            currentValue={currentValue}
-            estimatedValue={estimatedValue}
-            renderValue={renderValue}
+            value={value}
+            newValue={newValue}
+            numberFormatSpecifier={numberFormatSpecifier}
             valueEndElement={valueEndElement}
-            arrowClassName="text-positive"
+            changeArrowClassName="text-positive"
           />
         ),
       )}

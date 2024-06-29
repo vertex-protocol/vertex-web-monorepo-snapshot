@@ -38,7 +38,6 @@ export function WalletButton({
 
   return (
     <SecondaryButton
-      size="lg"
       className={joinClassNames(
         'flex items-center justify-start px-2 py-3',
         'text-text-primary',

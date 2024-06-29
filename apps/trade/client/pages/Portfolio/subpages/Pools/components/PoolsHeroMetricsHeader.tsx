@@ -1,7 +1,7 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 
 interface PoolsHeroHeaderProps {
   totalLpValueUsd: BigDecimal | undefined;

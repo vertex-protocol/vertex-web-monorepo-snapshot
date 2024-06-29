@@ -11,7 +11,8 @@ export function TablePlaceholder({
   return (
     <div
       className={mergeClassNames(
-        'h-full w-full select-none p-5',
+        // Same left padding as a standard `TableCell`
+        'h-full w-full select-none py-5 pl-4',
         'text-text-tertiary text-sm',
         className,
       )}

@@ -1,9 +1,7 @@
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { Button, Checkbox } from '@vertex-protocol/web-ui';
+import { Button, Checkbox, CompactInput, Input } from '@vertex-protocol/web-ui';
 import { CheckboxLabelWithTooltip } from 'client/components/CheckboxLabelWithTooltip';
 import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
-import { BaseInput } from 'client/components/Input/BaseInput';
-import { CompactInput } from 'client/components/Input/CompactInput';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { useState } from 'react';
 import { useOrderFormTimeInForceInDaysErrorTooltipContent } from '../../hooks/useOrderFormTimeInForceInDaysErrorTooltipContent';
@@ -63,18 +61,19 @@ export function AdvancedOrderSettings({
       )}
       {showGoodUntilInput && (
         <CompactInput
+          {...timeInForceRegister}
           className="max-w-40"
           type="number"
+          placeholder="0"
           min={1}
           max={365}
           id={timeInForceRegister.name}
+          textAreaClassName="text-right"
           startElement={
-            <BaseInput.Label label="Time" htmlFor={timeInForceRegister.name} />
+            <Input.Label htmlFor={timeInForceRegister.name}>Time</Input.Label>
           }
-          inputClassName="text-right"
-          endElement={<span className="px-0.5 text-xs">Days</span>}
-          error={timeInForceInDaysErrorTooltipContent}
-          {...timeInForceRegister}
+          errorTooltipContent={timeInForceInDaysErrorTooltipContent}
+          endElement="Days"
         />
       )}
       {showPostOnly && (
@@ -83,11 +82,13 @@ export function AdvancedOrderSettings({
             id="post-only-order"
             checked={postOnlyChecked}
             onCheckedChange={onPostOnlyCheckedChange}
+            sizeVariant="xs"
           />
 
           <CheckboxLabelWithTooltip
             definitionId="tradingPostOnly"
             id="post-only-order"
+            sizeVariant="xs"
           >
             Post Only
           </CheckboxLabelWithTooltip>
@@ -99,10 +100,12 @@ export function AdvancedOrderSettings({
             id="reduce-only-order"
             checked={reduceOnlyChecked}
             onCheckedChange={onReduceOnlyCheckedChange}
+            sizeVariant="xs"
           />
           <CheckboxLabelWithTooltip
             definitionId="tradingReduceOnly"
             id="reduce-only-order"
+            sizeVariant="xs"
           >
             Reduce Only
           </CheckboxLabelWithTooltip>

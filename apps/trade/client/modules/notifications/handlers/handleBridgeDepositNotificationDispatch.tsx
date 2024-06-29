@@ -1,20 +1,25 @@
-import { toast } from 'react-hot-toast';
-import { createToastId } from 'client/utils/createToastId';
-import { BridgeDepositSuccessNotification } from '../components/collateral/BridgeDepositSuccessNotification';
+import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
-import { BridgeDepositNotificationData } from '../types';
-import { ActionErrorNotification } from '../components/collateral/ActionErrorNotification';
-import { asyncResult } from '@vertex-protocol/web-common';
-import { getConfirmedTxPromise } from 'client/utils/getConfirmedTxPromise';
+import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
+import { toast } from 'react-hot-toast';
+import { ActionErrorNotification } from '../components/collateral/ActionErrorNotification';
+import { BridgeDepositSuccessNotification } from '../components/collateral/BridgeDepositSuccessNotification';
+import {
+  BridgeDepositNotificationData,
+  NotificationDispatchContext,
+} from '../types';
 
-export async function handleBridgeDepositNotificationDispatch({
-  amount,
-  sourceChainName,
-  sourceTokenSymbol,
-  txResponsePromise,
-}: BridgeDepositNotificationData) {
+export async function handleBridgeDepositNotificationDispatch(
+  {
+    amount,
+    sourceChainName,
+    sourceTokenSymbol,
+    txResponsePromise,
+  }: BridgeDepositNotificationData,
+  { getConfirmedTxPromise }: NotificationDispatchContext,
+) {
   const toastId = createToastId('bridgeDeposit');
 
   const [txReceiptData, txReceiptError] = await asyncResult(

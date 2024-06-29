@@ -4,11 +4,11 @@ import {
 } from '@vertex-protocol/trigger-client';
 import { TriggerOrderStatus } from '@vertex-protocol/trigger-client/src/types/clientTypes';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useSubaccountPaginatedHistoricalTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountPaginatedHistoricalTriggerOrders';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
@@ -52,7 +52,7 @@ export function useHistoricalTriggerOrdersTable() {
   const { pageCount, paginationState, setPaginationState, getPageData } =
     useDataTablePagination<TriggerListOrdersResponse, TriggerOrderInfo>({
       pageSize: PAGE_SIZE,
-      queryPageCount: historicalTriggerOrders?.pages.length,
+      numPagesFromQuery: historicalTriggerOrders?.pages.length,
       hasNextPage,
       fetchNextPage,
       extractItems,
@@ -64,13 +64,16 @@ export function useHistoricalTriggerOrdersTable() {
     }
     return getPageData(historicalTriggerOrders)
       .map((triggerOrderInfo): HistoricalTriggerOrder | undefined => {
-        const market = marketsStaticData.all[triggerOrderInfo.order.productId];
+        const marketData =
+          marketsStaticData.all[triggerOrderInfo.order.productId];
+        const quoteData =
+          marketsStaticData.quotes[triggerOrderInfo.order.productId];
 
-        if (!market) {
+        if (!marketData || !quoteData) {
           return;
         }
 
-        const { icon, symbol } = getBaseProductMetadata(market.metadata);
+        const { icon, symbol } = getBaseProductMetadata(marketData.metadata);
         const totalAmount = removeDecimals(triggerOrderInfo.order.amount);
         const triggerPrice = toBigDecimal(
           triggerOrderInfo.order.triggerCriteria.triggerPrice,
@@ -80,13 +83,15 @@ export function useHistoricalTriggerOrdersTable() {
           timestampMillis: secondsToMilliseconds(triggerOrderInfo.updatedAt),
           status: triggerOrderInfo.status,
           marketInfo: {
-            marketName: market.metadata.marketName,
+            marketName: marketData.metadata.marketName,
             icon,
             symbol,
+            quoteSymbol: quoteData.symbol,
+            isPrimaryQuote: quoteData.isPrimaryQuote,
             amountForSide: totalAmount,
-            productType: market.type,
-            sizeIncrement: market.sizeIncrement,
-            priceIncrement: market.priceIncrement,
+            productType: marketData.type,
+            sizeIncrement: marketData.sizeIncrement,
+            priceIncrement: marketData.priceIncrement,
           },
           price: triggerPrice,
           totalSize: totalAmount.abs(),

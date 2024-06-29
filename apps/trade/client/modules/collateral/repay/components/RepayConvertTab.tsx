@@ -1,11 +1,11 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { Button } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { Form } from 'client/components/Form';
 import { InputSummary } from 'client/components/InputSummary';
 import { RepayConvertButton } from 'client/modules/collateral/repay/components/RepayConvertButton';
 import { useRepayConvertForm } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/useRepayConvertForm';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { CollateralSelectInput } from '../../components/CollateralSelectInput';
 import { DepositSummaryDisclosure } from '../../components/DepositSummaryDisclosure';
 import { useRepayConvertReplayAmountErrorTooltipContent } from '../hooks/useRepayConvertForm/useRepayConvertReplayAmountErrorTooltipContent';
@@ -126,8 +126,7 @@ export function RepayConvertTab() {
           </InputSummary.Container>
         </RepayConvertInputWrapper>
       </div>
-      {/* Adding just enough top padding here to prevent clipping of the source asset dropdown menu */}
-      <div className="flex flex-col gap-y-3 pt-6">
+      <div className="flex flex-col gap-y-3">
         <RepayConversionRateDisplay
           className="px-1"
           market={market}

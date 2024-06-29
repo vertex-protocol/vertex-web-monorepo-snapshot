@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { IndexerOraclePrice } from '@vertex-protocol/indexer-client';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 
 export function latestOraclePricesQueryKey(
   chainId?: PrimaryChainID,
@@ -16,9 +16,12 @@ export function latestOraclePricesQueryKey(
   return createQueryKey('latestOraclePrices', chainId, productIds);
 }
 
+/**
+ * Latest oracle prices, in terms of the primary quote (Product ID of 0)
+ */
 export function useLatestOraclePrices() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const { filteredProductIds: allProductIds } = useFilteredMarkets();
 
   const disabled = !vertexClient || !allProductIds.length;

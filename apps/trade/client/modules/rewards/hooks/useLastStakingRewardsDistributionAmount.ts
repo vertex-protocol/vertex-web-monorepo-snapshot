@@ -1,6 +1,6 @@
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useStakingState } from 'client/hooks/query/vrtxToken/useStakingState';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { last } from 'lodash';
 import { useMemo } from 'react';
 

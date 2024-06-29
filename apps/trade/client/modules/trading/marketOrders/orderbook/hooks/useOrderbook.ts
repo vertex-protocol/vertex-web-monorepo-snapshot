@@ -1,4 +1,9 @@
 import { BigDecimal } from '@vertex-protocol/utils';
+import {
+  getMarketSizeFormatSpecifier,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { useLatestPriceChange } from 'client/hooks/markets/useLatestPriceChange';
 import { useMarket } from 'client/hooks/markets/useMarket';
@@ -11,9 +16,6 @@ import {
 } from 'client/modules/trading/marketOrders/orderbook/hooks/types';
 import { useSelectedTickSpacingMultiplier } from 'client/modules/trading/marketOrders/orderbook/hooks/useSelectedTickSpacingMultiplier';
 import { useShowOrderbookTotalInQuote } from 'client/modules/trading/marketOrders/orderbook/hooks/useShowOrderbookTotalInQuote';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import { precisionFixed } from 'd3-format';
 import { useMemo } from 'react';
 import { mapOrderbookDataFromQueries } from './mapOrderbookDataFromQueries';
@@ -31,9 +33,13 @@ export function useOrderbook({
   const { data: marketData } = useMarket({
     productId,
   });
+  const { data: allMarketsStaticData } = useAllMarketsStaticData();
+  const quoteData = productId
+    ? allMarketsStaticData?.quotes[productId]
+    : undefined;
 
   // Orderbook query, run only when market has loaded
-  const { data: liquidityData } = useMarketLiquidity({
+  const { data: liquidityQueryData } = useMarketLiquidity({
     includeWebsocketUpdates: true,
     productId,
   });
@@ -46,20 +52,22 @@ export function useOrderbook({
 
   // Compute data
   const orderbookData = useMemo((): OrderbookData | undefined => {
-    if (!marketData || !liquidityData) {
+    if (!marketData || !liquidityQueryData || !quoteData) {
       return;
     }
-    return mapOrderbookDataFromQueries(
+    return mapOrderbookDataFromQueries({
       depth,
       showOrderbookTotalInQuote,
+      quoteSymbol: quoteData.symbol,
       tickSpacingMultiplier,
       marketData,
-      liquidityData,
-    );
+      liquidityQueryData,
+    });
   }, [
     depth,
-    liquidityData,
+    liquidityQueryData,
     marketData,
+    quoteData,
     showOrderbookTotalInQuote,
     tickSpacingMultiplier,
   ]);
@@ -86,8 +94,8 @@ export function useOrderbook({
     ? PresetNumberFormatSpecifier.NUMBER_INT
     : amountFormatSpecifier;
 
-  const symbol = showOrderbookTotalInQuote
-    ? PRIMARY_QUOTE_SYMBOL
+  const amountSymbol = showOrderbookTotalInQuote
+    ? orderbookData?.quoteSymbol
     : orderbookData?.productMetadata?.symbol;
 
   return {
@@ -100,7 +108,7 @@ export function useOrderbook({
     setNewPriceInput,
     lastPriceChange,
     lastPrice,
-    symbol,
+    amountSymbol,
     // We don't use `getMarketPriceFormatSpecifier` because we want to format depending on the selected tick spacing
     priceFormatSpecifier: `.${precisionFixed(currentTickSpacing).toFixed()}f`,
     amountFormatSpecifier,

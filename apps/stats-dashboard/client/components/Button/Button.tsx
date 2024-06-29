@@ -1,6 +1,6 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
 import Link from 'next/link';
-import React, { forwardRef, Ref } from 'react';
+import { forwardRef, Ref } from 'react';
 
 import { Spinner } from '@vertex-protocol/web-ui';
 import {
@@ -37,7 +37,7 @@ export const Button = forwardRef(function Button(
   );
 
   const className = mergeClassNames(
-    'transition-all duration-200',
+    'transition-all',
     'inline-flex items-center justify-center whitespace-nowrap',
     hasGap && 'gap-x-2',
     disabled ? 'cursor-not-allowed opacity-90' : 'cursor-pointer',

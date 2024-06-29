@@ -1,25 +1,39 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { createQueryKey } from '@vertex-protocol/web-data';
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 import { useAllMarkets24hrSnapshots } from 'client/hooks/markets/useAllMarkets24hrSnapshots';
 import { useAllProducts24hrHistoricalSnapshot } from 'client/hooks/markets/useAllProducts24hrHistoricalSnapshot';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import { calcChangeFrac } from 'client/utils/calcs/calcChangeFrac';
+import { calcMarketConversionPriceFromOraclePrice } from 'client/utils/calcs/calcMarketConversionPriceFromOraclePrice';
 import { get } from 'lodash';
 
 export interface AllMarketsHistoricalMetrics {
-  // Since beginning of time
-  totalCumulativeVolumeQuote: BigDecimal;
-  // By Product ID
+  /**
+   * Since beginning of time
+   */
+  totalCumulativeVolumeInPrimaryQuote: BigDecimal;
+  /**
+   * By Product ID
+   */
   metricsByMarket: Record<number, MarketHistoricalMetrics>;
 }
 
 interface MarketHistoricalMetrics {
   productId: number;
-  pastDayVolumeQuote: BigDecimal;
+  /**
+   * In terms of the quote currency for the mkt (ex. wETH for mETH-wETH mkt)
+   */
+  pastDayVolumeInQuote: BigDecimal;
+  /**
+   * In terms of the primary quote for Vertex (ex. USDC / USDB)
+   */
+  pastDayVolumeInPrimaryQuote: BigDecimal;
   pastDayPriceChange: BigDecimal;
   pastDayPriceChangeFrac: BigDecimal;
   pastDayNumTrades: BigDecimal;
@@ -46,14 +60,20 @@ export function useAllMarketsHistoricalMetrics() {
     const historical24hrMarketSnapshotsByProductId =
       marketSnapshots?.historical24hr;
 
-    let totalCumulativeVolumeQuote = BigDecimals.ZERO;
+    let totalCumulativeVolumeInPrimaryQuote = BigDecimals.ZERO;
 
     const metricsByMarket: Record<number, MarketHistoricalMetrics> = {};
 
     Object.values(latestMarketsData.allMarkets).forEach((market) => {
       const productId = market.productId;
+      const quoteProductId = market.metadata.quoteProductId;
 
-      // Volume
+      const quoteOraclePrice =
+        quoteProductId === QUOTE_PRODUCT_ID
+          ? BigDecimals.ONE
+          : latestMarketsData.allMarkets[quoteProductId].product.oraclePrice;
+
+      // Volumes are in terms of the quote currency for the market, not in terms of the primary quote
       const earliestDailyCumulativeVolume = get(
         historical24hrMarketSnapshotsByProductId?.cumulativeVolumes,
         productId,
@@ -64,13 +84,14 @@ export function useAllMarketsHistoricalMetrics() {
         productId,
         BigDecimals.ZERO,
       );
-
-      totalCumulativeVolumeQuote = totalCumulativeVolumeQuote.plus(
-        latestCumulativeVolume,
-      );
-      const pastDayVolumeQuote = latestCumulativeVolume.minus(
+      const pastDayVolumeInQuote = latestCumulativeVolume.minus(
         earliestDailyCumulativeVolume,
       );
+
+      totalCumulativeVolumeInPrimaryQuote =
+        totalCumulativeVolumeInPrimaryQuote.plus(
+          latestCumulativeVolume.multipliedBy(quoteOraclePrice),
+        );
 
       // Trades
       const earliestDailyCumulativeNumTrades = get(
@@ -91,11 +112,19 @@ export function useAllMarketsHistoricalMetrics() {
       // Price change
       const currentPrice =
         latestMarketPrices?.[productId]?.safeAverage ??
-        market.product.oraclePrice;
+        calcMarketConversionPriceFromOraclePrice(
+          market.product.oraclePrice,
+          quoteOraclePrice,
+        );
       // Default to current price to get a 0% change
-      const earliestDailyPrice =
-        productSnapshots?.[productId]?.product.oraclePrice ?? currentPrice;
-
+      const earliestProductOraclePrice =
+        productSnapshots?.[productId]?.product.oraclePrice;
+      const earliestDailyPrice = earliestProductOraclePrice
+        ? calcMarketConversionPriceFromOraclePrice(
+            earliestProductOraclePrice,
+            quoteOraclePrice,
+          )
+        : currentPrice;
       const pastDayPriceChange = currentPrice.minus(earliestDailyPrice);
       const pastDayPriceChangeFrac = calcChangeFrac(
         currentPrice,
@@ -104,7 +133,9 @@ export function useAllMarketsHistoricalMetrics() {
 
       metricsByMarket[productId] = {
         productId,
-        pastDayVolumeQuote,
+        pastDayVolumeInPrimaryQuote:
+          pastDayVolumeInQuote.multipliedBy(quoteOraclePrice),
+        pastDayVolumeInQuote,
         pastDayPriceChange,
         pastDayPriceChangeFrac,
         pastDayNumTrades,
@@ -112,7 +143,7 @@ export function useAllMarketsHistoricalMetrics() {
     });
 
     return {
-      totalCumulativeVolumeQuote,
+      totalCumulativeVolumeInPrimaryQuote,
       metricsByMarket,
     };
   };

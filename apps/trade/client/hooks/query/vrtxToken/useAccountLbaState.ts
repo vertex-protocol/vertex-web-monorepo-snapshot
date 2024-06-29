@@ -3,13 +3,12 @@ import { ILBA__factory } from '@vertex-protocol/client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  useEnableSubaccountQueries,
+  QueryDisabledError,
   useEVMContext,
   useIsChainType,
   usePrimaryChainPublicClient,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { ZeroAddress } from 'ethers';
 import { Address } from 'viem';
 
@@ -30,15 +29,13 @@ export interface AccountLbaState {
  */
 export function useAccountLbaState() {
   const { isArb } = useIsChainType();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const publicClient = usePrimaryChainPublicClient();
   const {
     connectionStatus: { address },
   } = useEVMContext();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
 
-  const disabled =
-    !vertexClient || !publicClient || !isArb || !enableSubaccountQueries;
+  const disabled = !vertexClient || !publicClient || !isArb;
   const addressForQuery = address ?? ZeroAddress;
 
   const queryFn = async (): Promise<AccountLbaState> => {

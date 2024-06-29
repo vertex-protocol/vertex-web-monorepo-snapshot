@@ -4,13 +4,12 @@ import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   PrimaryChainID,
-  useEnableSubaccountQueries,
+  QueryDisabledError,
   useEVMContext,
   usePrimaryChainId,
   usePrimaryChainPublicClient,
-} from '@vertex-protocol/web-data';
+} from '@vertex-protocol/react-client';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { QueryState } from 'client/types/QueryState';
 
 import { useMemo } from 'react';
@@ -39,7 +38,6 @@ export function useAllDepositableTokenBalances(): QueryState<Data> {
     connectionStatus: { address },
   } = useEVMContext();
   const { data: allMarkets } = useAllMarkets();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
 
   const spotProducts = useMemo(
     () => {
@@ -47,7 +45,7 @@ export function useAllDepositableTokenBalances(): QueryState<Data> {
         return [];
       }
       return [
-        allMarkets.quoteProduct,
+        allMarkets.primaryQuoteProduct,
         ...Object.values(allMarkets.spotMarkets),
       ];
     },
@@ -55,11 +53,7 @@ export function useAllDepositableTokenBalances(): QueryState<Data> {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [allMarkets == null],
   );
-  const disabled =
-    spotProducts.length === 0 ||
-    !address ||
-    !publicClient ||
-    !enableSubaccountQueries;
+  const disabled = spotProducts.length === 0 || !address || !publicClient;
 
   const queryFn = async (): Promise<Data | undefined> => {
     if (disabled) {

@@ -1,9 +1,9 @@
+import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
 import { SignaturePendingNotification } from 'client/modules/notifications/components/SignaturePendingNotification';
-import { asyncResult } from '@vertex-protocol/web-common';
 import { createToastId } from 'client/utils/createToastId';
-import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
+import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import toast from 'react-hot-toast';
 import { ClosePositionErrorNotification } from '../components/positions/ClosePositionErrorNotification';
 import { ClosePositionSuccessNotification } from '../components/positions/ClosePositionSuccessNotification';
@@ -37,11 +37,7 @@ export async function handleClosePositionNotificationDispatch(
   }
 
   const verifyOrderActionResult = async () => {
-    const orderActionResult = await closePositionNotificationData.executeResult;
-    if (orderActionResult?.status === 'failure') {
-      throw new Error('Server execution result failed');
-    }
-    return orderActionResult?.status;
+    await closePositionNotificationData.executeResult;
   };
 
   const [, orderActionError] = await asyncResult(verifyOrderActionResult());

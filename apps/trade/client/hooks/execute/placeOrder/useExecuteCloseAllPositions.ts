@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { addDecimals } from '@vertex-protocol/utils';
 import { useExecuteCancelReduceOnlyOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelReduceOnlyOrdersWithNotification';
 import { PLACE_ENGINE_ORDER_QUERY_KEYS } from 'client/hooks/execute/placeOrder/placeEngineOrderQueryKeys';
 import { usePlaceOrderMutationFn } from 'client/hooks/execute/placeOrder/usePlaceOrderMutationFn';
@@ -12,18 +13,20 @@ import { useRefetchQueries } from 'client/hooks/execute/util/useRefetchQueries';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
-import { addDecimals } from 'client/utils/decimalAdjustment';
 import { delay } from 'client/utils/delay';
 import { roundToString } from 'client/utils/rounding';
 import { chunk } from 'lodash';
 import { useCallback } from 'react';
 import { EmptyObject } from 'type-fest';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 
 export interface ExecuteCloseAllPositionsResult {
   numFailed: number;
+  numPositionsToClose: number;
 }
 
 export function useExecuteCloseAllPositions() {
+  const { trackEvent } = useAnalyticsContext();
   const { cancelReduceOnlyOrdersWithNotification } =
     useExecuteCancelReduceOnlyOrdersWithNotification();
   const { data: perpBalances } = usePerpPositions();
@@ -48,6 +51,7 @@ export function useExecuteCloseAllPositions() {
       if (!positions?.length) {
         return {
           numFailed: 0,
+          numPositionsToClose: 0,
         };
       }
 
@@ -113,7 +117,7 @@ export function useExecuteCloseAllPositions() {
       // Cancel reduce only orders for closed positions
       cancelReduceOnlyOrdersWithNotification(closedProductIds);
 
-      return { numFailed };
+      return { numFailed, numPositionsToClose: positions.length };
     },
     [
       perpBalances,
@@ -128,8 +132,15 @@ export function useExecuteCloseAllPositions() {
 
   return useMutation({
     mutationFn,
-    onSuccess() {
+    onSuccess(data) {
       refetchPlaceEngineOrderRelatedQueries();
+
+      trackEvent({
+        type: 'close_all_positions_placed',
+        data: {
+          numPositions: data.numPositionsToClose,
+        },
+      });
     },
     onError(error, variables) {
       logExecuteError('CloseAllPositions', error, variables);

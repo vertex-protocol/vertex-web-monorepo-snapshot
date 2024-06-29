@@ -24,7 +24,7 @@ function Section({ title, children }: WithChildren<{ title?: string }>) {
   return (
     <div className="flex flex-col gap-y-1.5">
       {!!title && <span className="text-text-primary">{title}</span>}
-      <div className="flex flex-col gap-y-1.5 font-normal">{children}</div>
+      <div className="flex flex-col gap-y-1.5">{children}</div>
     </div>
   );
 }

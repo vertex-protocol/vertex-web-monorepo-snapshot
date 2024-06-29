@@ -1,28 +1,33 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
 import { ComponentPropsWithRef, forwardRef } from 'react';
+import { Except } from 'type-fest';
+import { SizeVariant } from '../../types';
 import { Button } from './Button';
-import { TabButtonProps } from './TabButton';
 import {
   STANDARD_BUTTON_HORIZONTAL_PADDING_CLASSNAME,
   STANDARD_BUTTON_TEXT_SIZE_CLASSNAME,
   STANDARD_BUTTON_VERTICAL_PADDING_CLASSNAME,
 } from './consts';
+import { ButtonProps } from './types';
 
-export type SegmentControlButtonProps = TabButtonProps;
+export type SegmentControlButtonProps = Except<ButtonProps, 'isLoading'> & {
+  size?: SizeVariant;
+  active?: boolean;
+};
 
 const SegmentedControlButton = forwardRef<
   HTMLButtonElement,
   SegmentControlButtonProps
 >(function SegmentedControlButton(
-  { className, size = 'lg', active, disabled, ...rest },
+  { className, size = 'base', active, ...rest },
   ref,
 ) {
   const stateClassNames = (() => {
+    if (rest.disabled) {
+      return 'text-disabled';
+    }
     if (active) {
       return 'ring-1 ring-inset ring-stroke bg-surface-2 text-text-primary';
-    }
-    if (disabled) {
-      return 'text-disabled';
     }
     return 'text-text-tertiary hover:text-text-secondary';
   })();
@@ -37,7 +42,6 @@ const SegmentedControlButton = forwardRef<
         stateClassNames,
         className,
       )}
-      disabled={disabled}
       ref={ref}
       {...rest}
     />

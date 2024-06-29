@@ -1,17 +1,16 @@
+import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
-import { asyncResult } from '@vertex-protocol/web-common';
 import { createToastId } from 'client/utils/createToastId';
-import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
+import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import toast from 'react-hot-toast';
-import { SignaturePendingNotification } from '../components/SignaturePendingNotification';
 import { PlaceOrderErrorNotification } from '../components/orders/PlaceOrderErrorNotification';
 import { PlaceOrderSuccessNotification } from '../components/orders/PlaceOrderSuccessNotification';
+import { SignaturePendingNotification } from '../components/SignaturePendingNotification';
 import {
   NotificationDispatchContext,
   PlaceOrderNotificationData,
 } from '../types';
-import { EngineServerExecuteResult } from '@vertex-protocol/engine-client/src/types/serverExecuteTypes';
 
 export async function handlePlaceOrderNotificationDispatch(
   placeOrderNotificationData: PlaceOrderNotificationData,
@@ -37,16 +36,8 @@ export async function handlePlaceOrderNotificationDispatch(
   }
 
   const verifyOrderActionResult = async (): Promise<string | undefined> => {
-    // This typecast is only true for regular orders (not trigger orders), so do appropriate sanity checks below
-    // when looking for digest
-    const orderActionResult =
-      (await placeOrderNotificationData.executeResult) as EngineServerExecuteResult<'place_order'>;
-    if (orderActionResult.status === 'failure') {
-      throw new Error('Server execution result failed');
-    }
-    if (orderActionResult.data) {
-      return orderActionResult.data.digest;
-    }
+    const awaitedResult = await placeOrderNotificationData.executeResult;
+    return awaitedResult.data.digest;
   };
 
   const [engineDigest, orderActionError] = await asyncResult(

@@ -2,13 +2,13 @@ import { GetIndexerBlitzInitialDropConditionsResponse } from '@vertex-protocol/c
 import { BigDecimal } from '@vertex-protocol/utils';
 import { useAddressBlitzInitialPointsDropStatus } from 'client/hooks/query/points/useAddressBlitzInitialPointsDropStatus';
 import { useAddressBlitzPoints } from 'client/hooks/query/points/useAddressBlitzPoints';
+import { useSubaccountReferralCode } from 'client/hooks/query/subaccount/useSubaccountReferralCode';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
-import { useReferralLink } from 'client/modules/rewards/hooks/useReferralLink';
 import { sumBy } from 'lodash';
 import { useMemo } from 'react';
 
 interface UseBlitzPointsPage {
-  referralLink: string | undefined;
+  referralCode: string | null | undefined;
   // Initial claim
   initialDropConditionsResponse:
     | GetIndexerBlitzInitialDropConditionsResponse
@@ -36,7 +36,7 @@ export function useBlitzPointsPage(): UseBlitzPointsPage {
   const { data: blitzPointsData } = useAddressBlitzPoints();
   const { data: initialDropConditionsResponse } =
     useAddressBlitzInitialPointsDropStatus();
-  const referralLink = useReferralLink();
+  const { data: referralCodeData } = useSubaccountReferralCode();
 
   const numCompletedInitialClaimSteps = useMemo(() => {
     if (!initialDropConditionsResponse) {
@@ -63,7 +63,7 @@ export function useBlitzPointsPage(): UseBlitzPointsPage {
     hasInitialPoints,
     numCompletedInitialClaimSteps,
     numTotalInitialClaimSteps,
-    referralLink,
+    referralCode: referralCodeData?.referralCode,
     blastGold: blitzPointsData?.blast.gold,
     blastPoints: blitzPointsData?.blast.points,
     blitzClaimedInitialPoints: blitzPointsData?.blitz.initialPoints,

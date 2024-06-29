@@ -10,7 +10,7 @@ import { useMemo } from 'react';
  * Util hook for retrieving the latest & last completed reward epochs for the user
  */
 export function useLatestRewardsEpochs() {
-  const { protocolToken } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data: rewardsData } = useAddressPaginatedRewards({
     // We need the 2 most recent epochs - the current and the most recently completed
     pageSize: 2,
@@ -19,7 +19,7 @@ export function useLatestRewardsEpochs() {
   const { data: tokenClaimDeadlines } = useTokenClaimDeadlines();
 
   const mappedData = useMemo(() => {
-    if (!accountTokenClaimState || !rewardsData || !tokenClaimDeadlines) {
+    if (!rewardsData) {
       return {};
     }
 
@@ -33,7 +33,7 @@ export function useLatestRewardsEpochs() {
       ? toVrtxRewardEpoch({
           indexerRewardEpoch: currentEpochData,
           nowInMillis,
-          vrtxTokenDecimals: protocolToken.tokenDecimals,
+          vrtxTokenDecimals: protocolTokenMetadata.token.tokenDecimals,
           accountTokenClaimState,
           tokenClaimDeadlines,
         })
@@ -42,7 +42,7 @@ export function useLatestRewardsEpochs() {
       ? toVrtxRewardEpoch({
           indexerRewardEpoch: lastCompletedEpochData,
           nowInMillis,
-          vrtxTokenDecimals: protocolToken.tokenDecimals,
+          vrtxTokenDecimals: protocolTokenMetadata.token.tokenDecimals,
           accountTokenClaimState,
           tokenClaimDeadlines,
         })
@@ -54,7 +54,7 @@ export function useLatestRewardsEpochs() {
     };
   }, [
     accountTokenClaimState,
-    protocolToken.tokenDecimals,
+    protocolTokenMetadata.token.tokenDecimals,
     rewardsData,
     tokenClaimDeadlines,
   ]);

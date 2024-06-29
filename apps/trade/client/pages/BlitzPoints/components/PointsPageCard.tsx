@@ -17,10 +17,7 @@ export function PointsPageCard({
   bgImage,
 }: PointsCardProps) {
   return (
-    // Background color darkens the image
-    <Card
-      className={joinClassNames('bg-background/80 relative p-6', className)}
-    >
+    <Card className={joinClassNames('relative bg-transparent p-6', className)}>
       {children}
       {bgImage && (
         <Image

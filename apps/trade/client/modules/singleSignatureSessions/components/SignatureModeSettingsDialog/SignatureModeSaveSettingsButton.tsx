@@ -30,7 +30,6 @@ export function SignatureModeSaveSettingsButton({
   })();
   return (
     <PrimaryButton
-      size="lg"
       type="submit"
       onClick={onSubmit}
       disabled={buttonState !== 'enabled' && buttonState !== 'success'}

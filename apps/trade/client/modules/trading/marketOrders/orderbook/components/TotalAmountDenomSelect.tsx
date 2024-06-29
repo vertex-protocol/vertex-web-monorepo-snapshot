@@ -1,16 +1,17 @@
 import { Icons, Select, useSelect } from '@vertex-protocol/web-ui';
 import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import { useMemo } from 'react';
 
 interface Props {
   symbol: string | undefined;
+  quoteSymbol: string | undefined;
   showOrderbookTotalInQuote: boolean;
   setShowOrderbookTotalInQuote: (value: boolean) => void;
 }
 
 export function TotalAmountDenomSelect({
   symbol,
+  quoteSymbol,
   showOrderbookTotalInQuote,
   setShowOrderbookTotalInQuote,
 }: Props) {
@@ -18,7 +19,7 @@ export function TotalAmountDenomSelect({
     () => [
       {
         id: 'quote',
-        label: PRIMARY_QUOTE_SYMBOL,
+        label: quoteSymbol ?? '',
         value: 'quote',
       },
       {
@@ -27,7 +28,7 @@ export function TotalAmountDenomSelect({
         value: 'asset',
       },
     ],
-    [symbol],
+    [quoteSymbol, symbol],
   );
 
   const selectedValue = showOrderbookTotalInQuote ? 'quote' : 'asset';
@@ -63,7 +64,7 @@ export function TotalAmountDenomSelect({
       >
         {selectedOption?.label}
       </Select.Trigger>
-      <Select.Options className="w-20">
+      <Select.Options className="min-w-20">
         {selectOptions.map(({ label, value }) => (
           <Select.Option
             key={value}

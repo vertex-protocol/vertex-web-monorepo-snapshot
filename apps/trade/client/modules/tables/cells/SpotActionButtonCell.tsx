@@ -9,10 +9,10 @@ import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMe
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { clientEnv } from 'common/environment/clientEnv';
+import { ARB_CHAIN_IDS } from 'client/modules/envSpecificContent/consts/chainIds';
+import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
 import { useMemo } from 'react';
 import { getTableButtonOnClickHandler } from '../utils/getTableButtonOnClickHandler';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 
 interface ButtonConfig {
   label: string;
@@ -31,20 +31,19 @@ export function SpotActionButtonCell({
   className,
   ...rest
 }: SpotActionButtonCellProps) {
-  const { trackEvent } = useAnalyticsContext();
   const userActionState = useUserActionState();
   const showDialogForProduct = useShowDialogForProduct();
   const { show } = useDialog();
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
+  const canShowStakeAction = useIsEnabledForChainIds(ARB_CHAIN_IDS);
 
   const isNegativeBalance = balanceAmount.isNegative();
   const isDepositRepayStakeDisabled = userActionState === 'block_all';
   const isWithdrawOrBorrowDisabled = userActionState !== 'allow_all';
 
   const buttonConfigs: ButtonConfig[] = useMemo(() => {
-    const isVrtx =
-      productId === protocolTokenProductId &&
-      clientEnv.base.brandName === 'vertex';
+    const showStake =
+      canShowStakeAction && productId === protocolTokenMetadata.productId;
 
     const configs = [
       {
@@ -53,10 +52,6 @@ export function SpotActionButtonCell({
           showDialogForProduct({
             dialogType: isNegativeBalance ? 'repay' : 'deposit',
             productId,
-          });
-          trackEvent({
-            type: 'deposit_clicked',
-            data: { fromLocation: 'balance_table' },
           });
         },
         disabled: isDepositRepayStakeDisabled,
@@ -75,7 +70,7 @@ export function SpotActionButtonCell({
       },
     ];
 
-    if (isVrtx) {
+    if (showStake) {
       configs.unshift({
         label: 'Stake',
         onClick: () => show({ type: 'stake_vrtx', params: {} }),
@@ -85,14 +80,14 @@ export function SpotActionButtonCell({
 
     return configs;
   }, [
+    canShowStakeAction,
+    productId,
+    protocolTokenMetadata.productId,
     isNegativeBalance,
     isDepositRepayStakeDisabled,
     isWithdrawOrBorrowDisabled,
-    productId,
-    protocolTokenProductId,
     showDialogForProduct,
     show,
-    trackEvent,
   ]);
 
   return (
@@ -106,8 +101,8 @@ export function SpotActionButtonCell({
       {buttonConfigs.map(({ label, disabled, onClick }) => (
         <SecondaryButton
           key={label}
-          size="md"
-          className="w-24 font-medium"
+          size="sm"
+          className="w-24"
           onClick={getTableButtonOnClickHandler(onClick)}
           disabled={disabled}
         >

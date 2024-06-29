@@ -1,4 +1,5 @@
 import { isSpotBalance } from '@vertex-protocol/client';
+import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { Card, PrimaryButton } from '@vertex-protocol/web-ui';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useExecuteMintTokens } from 'client/hooks/execute/useExecuteMintTokens';
@@ -7,8 +8,6 @@ import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCu
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
 import { CollateralAssetSelect } from 'client/modules/collateral/components/CollateralAssetSelect';
 import { CollateralSpotProduct } from 'client/modules/collateral/types';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { AnnotatedSpotBalanceWithProduct } from 'common/productMetadata/types';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -102,9 +101,9 @@ export const Faucet = () => {
         Obtain testnet funds. 10 tokens per request. (95 for{' '}
         {primaryQuoteToken.symbol})
       </p>
-      <div className="relative flex h-full flex-col items-start gap-y-2 rounded-md text-sm">
+      <div className="relative flex flex-1 flex-col gap-y-2 rounded-md text-left text-sm">
         <p>Select an asset</p>
-        <div className="bg-surface-2 h-10 w-full rounded-md">
+        <div className="h-10 rounded-md">
           <CollateralAssetSelect
             selectedProduct={availableProducts.find(
               (option) => option.productId === selectedProductId,
@@ -114,13 +113,12 @@ export const Faucet = () => {
             onProductSelected={(productId: number) => {
               setSelectedProductId(productId);
             }}
-            className="h-full w-full"
+            className="bg-surface-2 h-full w-full rounded"
           />
         </div>
       </div>
-      <div className="flex w-full flex-col gap-2">
+      <div className="flex flex-col gap-2">
         <PrimaryButton
-          size="lg"
           isLoading={mintTokens.isPending || txState.type === 'pending'}
           onClick={() => {
             if (selectedProductId == null) {
@@ -133,7 +131,7 @@ export const Faucet = () => {
         >
           Mint Tokens
         </PrimaryButton>
-        <div className="dark:text-disabled">Status: {statusText}</div>
+        <div className="text-text-tertiary text-sm">Status: {statusText}</div>
       </div>
     </Card>
   );

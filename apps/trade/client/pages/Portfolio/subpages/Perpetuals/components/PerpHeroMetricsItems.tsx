@@ -1,40 +1,41 @@
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { LineItemMetricProps } from 'client/components/LineItem/types';
+import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useMemo } from 'react';
 
 export function PerpHeroMetricsItems({ className }: WithClassnames) {
   const { data: overview } = useDerivedSubaccountOverview();
 
-  const perpMetricItems: LineItemMetricProps[] = useMemo(
-    () => [
-      {
-        tooltip: {
-          id: 'perpOpenPositionsPnl',
+  const perpMetricItems = useMemo(
+    () =>
+      [
+        {
+          tooltip: {
+            id: 'perpOpenPositionsPnl',
+          },
+          label: 'PnL',
+          value: overview?.perp.totalUnrealizedPnlUsd,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        label: 'PnL',
-        value: overview?.perp.totalUnrealizedPnlUsd,
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-      {
-        tooltip: {
-          id: 'perpOpenPositionsNotional',
+        {
+          tooltip: {
+            id: 'perpOpenPositionsNotional',
+          },
+          label: 'Total Notional',
+          value: overview?.perp.totalNotionalValueUsd,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        label: 'Total Notional',
-        value: overview?.perp.totalNotionalValueUsd,
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-      {
-        tooltip: {
-          id: 'perpOpenPositionsMarginUsed',
+        {
+          tooltip: {
+            id: 'perpOpenPositionsMarginUsed',
+          },
+          label: 'Margin Used',
+          value: overview?.perp.totalMarginUsedUsd,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        label: 'Margin Used',
-        value: overview?.perp.totalMarginUsedUsd,
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-    ],
+      ] satisfies ValueWithLabelProps[],
     [
       overview?.perp.totalUnrealizedPnlUsd,
       overview?.perp.totalNotionalValueUsd,
@@ -48,15 +49,17 @@ export function PerpHeroMetricsItems({ className }: WithClassnames) {
       className={className}
       childContainerClassNames="flex flex-col gap-y-0.5"
     >
-      {perpMetricItems.map(({ tooltip, label, value, renderValue }, index) => (
-        <PortfolioHeroMetricsPane.LineItem
-          key={index}
-          label={label}
-          value={value}
-          tooltip={tooltip}
-          renderValue={renderValue}
-        />
-      ))}
+      {perpMetricItems.map(
+        ({ tooltip, label, value, numberFormatSpecifier }, index) => (
+          <PortfolioHeroMetricsPane.ValueWithLabel
+            key={index}
+            label={label}
+            value={value}
+            tooltip={tooltip}
+            numberFormatSpecifier={numberFormatSpecifier}
+          />
+        ),
+      )}
     </PortfolioHeroMetricsPane.Items>
   );
 }

@@ -1,5 +1,8 @@
-import { WithChildren, WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import {
+  WithChildren,
+  WithClassnames,
+  joinClassNames,
+} from '@vertex-protocol/web-common';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { FAQ_DATA } from '../data';
@@ -43,7 +46,7 @@ function FAQSlide({
   const ChevronIcon = active ? FiChevronUp : FiChevronDown;
   const iconContent = (
     <div
-      className={classNames(
+      className={joinClassNames(
         'text-white-700 rounded-lg p-2',
         active ? 'bg-white-400' : 'bg-transparent',
       )}
@@ -56,13 +59,13 @@ function FAQSlide({
   );
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'overflow-hidden duration-500',
         active ? 'max-h-screen' : 'max-h-16 md:max-h-20',
       )}
     >
       <div
-        className={classNames(
+        className={joinClassNames(
           'bg-white-600 relative z-10 h-px w-full overflow-hidden',
           'before:bg-faqBorder before:absolute before:-z-10 before:h-full before:w-full before:duration-1000',
           active
@@ -73,7 +76,7 @@ function FAQSlide({
       <HomePageButton
         as="div"
         onClick={() => setActiveSlide(index)}
-        className={classNames(
+        className={joinClassNames(
           'flex h-16 flex-1 items-center justify-between text-sm font-normal',
           'sm:text-xl',
           'md:h-20',
@@ -84,7 +87,7 @@ function FAQSlide({
         {label}
       </HomePageButton>
       <div
-        className={classNames(
+        className={joinClassNames(
           'text-white-700 w-full overflow-hidden pb-8 text-xs font-normal',
           'sm:text-base',
           'md:text-lg',

@@ -6,8 +6,8 @@ import {
   useVrtxPriceChartData,
   VrtxPriceChartDataItem,
 } from 'client/pages/VertexToken/pool/VrtxMarketCard/hooks/useVrtxPriceChartData';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import {
   formatTimestamp,
   TimeFormatSpecifier,
@@ -35,10 +35,10 @@ export function VrtxPriceChart({
   // This is unfortunately required for mobile, where the parent is flex-col. Without it, `ResponsiveContainer` has a height of 0
   minHeightClassName: string;
 }>) {
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data } = useVrtxPriceChartData();
   const { data: vrtxSpotMarket } = useMarket({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
 
   if (!data) {

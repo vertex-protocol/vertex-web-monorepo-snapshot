@@ -1,13 +1,13 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { HistoricalLiquidationEvent } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
+import { LIQUIDATION_MULTI_BALANCE_CELL_CONTAINER_CLASSNAME } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/consts';
 import { LiquidationInfo } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/LiquidationAmountInfoCell/components/LiquidationInfo';
 import { LpLiquidationInfo } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/LiquidationAmountInfoCell/components/LpLiquidationInfo';
-import { LIQUIDATION_MULTI_BALANCE_CELL_CONTAINER_CLASSNAME } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/consts';
-import { joinClassNames } from '@vertex-protocol/web-common';
+import { HistoricalLiquidationEvent } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 
 type LiquidationAmountInfoCellProps = TableCellProps &
   Pick<HistoricalLiquidationEvent, 'spot' | 'perp' | 'decomposedLps'>;
@@ -32,7 +32,7 @@ export function LiquidationAmountInfoCell({
           key={decomposedLp.baseMetadata.symbol}
           metadata={{
             base: decomposedLp.baseMetadata,
-            quote: decomposedLp.quoteToken,
+            quote: decomposedLp.primaryQuoteToken,
           }}
           amountLp={decomposedLp.amountLpDecomposed}
           lpValueUsd={decomposedLp.lpValueUsd}

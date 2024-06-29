@@ -4,8 +4,8 @@ import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { NumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { NumberFormatSpecifier } from '@vertex-protocol/react-client';
 
 interface Props extends TableCellProps {
   // The asset size to display

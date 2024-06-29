@@ -18,7 +18,7 @@ export function DepositVrtxStakingCta({
     <div className="text-xs">
       Looking to stake {VRTX_TOKEN_INFO.symbol}?{' '}
       <LinkButton
-        color="accent"
+        colorVariant="accent"
         as="button"
         onClick={() => show({ type: 'stake_vrtx', params: {} })}
       >

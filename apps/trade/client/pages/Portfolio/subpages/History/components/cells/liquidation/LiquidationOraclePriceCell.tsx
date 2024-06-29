@@ -4,7 +4,7 @@ import {
 } from 'client/components/DataTable/cells/TableCell';
 import { HistoricalLiquidationEvent } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { LIQUIDATION_MULTI_BALANCE_CELL_CONTAINER_CLASSNAME } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/consts';
 

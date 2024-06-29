@@ -1,6 +1,9 @@
-import { EVMContextParams, WagmiConfigParams } from '@vertex-protocol/web-data';
+import {
+  EVMContextParams,
+  WagmiConnectorOptions,
+} from '@vertex-protocol/react-client';
 import { arbitrumSepolia, mantleSepoliaTestnet } from '@wagmi/core/chains';
-import { CONNECTOR_OPTIONS_METADATA } from 'client/modules/brand/consts/connectorMetadata';
+import { CONNECTOR_OPTIONS_METADATA } from 'common/brandMetadata/connectorMetadata';
 import { clientEnv } from 'common/environment/clientEnv';
 import {
   arbitrum,
@@ -20,7 +23,7 @@ import {
 } from 'wagmi/chains';
 
 export function getEVMContextParams(): EVMContextParams {
-  const connectorOptions: WagmiConfigParams['connectorOptions'] = {
+  const connectorOptions: WagmiConnectorOptions = {
     walletConnect: {
       projectId: clientEnv.integrations.walletConnectProjectId,
       metadata: CONNECTOR_OPTIONS_METADATA.walletConnect,
@@ -38,7 +41,7 @@ export function getEVMContextParams(): EVMContextParams {
       };
     case 'vertexTestnet':
       return {
-        supportedChainEnvs: ['testnet', 'mantleTestnet'],
+        supportedChainEnvs: ['arbitrumTestnet', 'mantleTestnet'],
         supportedChains: [
           arbitrumSepolia,
           mantleSepoliaTestnet,
@@ -49,7 +52,7 @@ export function getEVMContextParams(): EVMContextParams {
       };
     case 'vertexMainnet':
       return {
-        supportedChainEnvs: ['mainnet'],
+        supportedChainEnvs: ['arbitrum', 'mantle'],
         supportedChains: [
           arbitrum,
           mainnet,
@@ -61,6 +64,7 @@ export function getEVMContextParams(): EVMContextParams {
           avalanche,
           fantom,
           mantle,
+          blast,
         ],
         connectorOptions,
       };
@@ -72,8 +76,20 @@ export function getEVMContextParams(): EVMContextParams {
       };
     case 'blitzMainnet':
       return {
-        supportedChainEnvs: ['blastMainnet'],
-        supportedChains: [blast, mainnet],
+        supportedChainEnvs: ['blast'],
+        supportedChains: [
+          blast,
+          mainnet,
+          // Additional chains for bridging
+          arbitrum,
+          optimism,
+          bsc,
+          polygon,
+          base,
+          avalanche,
+          fantom,
+          mantle,
+        ],
         connectorOptions,
       };
   }

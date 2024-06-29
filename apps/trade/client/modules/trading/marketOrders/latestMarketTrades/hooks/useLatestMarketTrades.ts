@@ -1,11 +1,15 @@
-import { BigDecimal } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
+import {
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { useLatestOrderFillsForProduct } from 'client/hooks/query/markets/useLatestOrderFillsForProduct';
 import { useSetPriceInput } from 'client/modules/trading/hooks/useSetPriceInput';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';

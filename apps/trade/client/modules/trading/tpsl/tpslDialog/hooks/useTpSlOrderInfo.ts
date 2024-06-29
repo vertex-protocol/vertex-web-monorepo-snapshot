@@ -3,15 +3,14 @@ import {
   TriggerCriteriaType,
   TriggerOrderInfo,
 } from '@vertex-protocol/client';
-import { BigDecimals } from 'client/utils/BigDecimals';
+import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
 import { calcIndexerSummaryUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { safeDiv } from 'client/utils/safeDiv';
 import { useMemo } from 'react';
 import { getIsTriggerPriceAbove } from '../../triggerCriteriaUtils';
-import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
 import { TpSlOrderInfo, TriggerCriteriaPriceType } from '../types';
-import { safeDiv } from 'client/utils/safeDiv';
 
 interface Params {
   productId: number;
@@ -22,7 +21,7 @@ export function useTpSlOrderInfo({
   productId,
   relevantOrder,
 }: Params): TpSlOrderInfo {
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
   const { data: indexerSnapshot } = useSubaccountIndexerSnapshot();
 
   return useMemo(() => {

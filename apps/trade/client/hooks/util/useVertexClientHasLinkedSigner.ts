@@ -1,8 +1,8 @@
 import { VertexClient } from '@vertex-protocol/client';
-import { useVertexClient } from '@vertex-protocol/web-data';
+import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
 
 export function useVertexClientHasLinkedSigner() {
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   return getVertexClientHasLinkedSigner(vertexClient);
 }

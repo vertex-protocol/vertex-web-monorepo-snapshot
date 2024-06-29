@@ -1,15 +1,16 @@
 import {
   joinClassNames,
+  mergeClassNames,
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
 import { clamp } from 'lodash';
-import React, { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Range } from 'react-range';
 import { IMarkProps, IThumbProps, ITrackProps } from 'react-range/lib/types';
 
 interface Props {
-  renderValue?: (val?: number) => React.ReactNode;
+  renderValue?: (val?: number) => ReactNode;
   // Fires when a user action causes a value change - safe to set `amountSource` here
   onValueChange: (value: number) => void;
   disabled?: boolean;
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export function RangeSlider({
+  className,
   value,
   onValueChange,
   disabled,
@@ -35,7 +37,12 @@ export function RangeSlider({
 
   return (
     <div
-      className={joinClassNames('p-3 pb-4', disabled && 'cursor-not-allowed')}
+      className={mergeClassNames(
+        // Padding to account for the absolutely positioned thumb
+        'px-4 py-2',
+        disabled && 'cursor-not-allowed',
+        className,
+      )}
     >
       <Range
         disabled={disabled}
@@ -74,7 +81,7 @@ interface SliderTrackProps {
 function SliderTrack({ props, children }: WithChildren<SliderTrackProps>) {
   return (
     <div
-      className="from-grad-slider-start via-grad-slider-mid to-grad-slider-end h-2.5 rounded-sm bg-gradient-to-r"
+      className="from-grad-slider-start/60 via-grad-slider-mid/80 to-grad-slider-end/60 h-2.5 rounded-sm bg-gradient-to-r"
       {...props}
     >
       {children}
@@ -90,7 +97,7 @@ interface SliderThumbProps {
   props: IThumbProps;
   sliderValue: number;
   disabled?: boolean;
-  renderValue: (val?: number) => React.ReactNode;
+  renderValue: (val?: number) => ReactNode;
 }
 
 function SliderThumb({
@@ -105,7 +112,7 @@ function SliderThumb({
       className={joinClassNames(
         'bg-surface-card border-accent rounded border',
         'px-2 py-1 lg:px-1.5 lg:py-0.5',
-        'text-text-primary text-xs font-medium',
+        'text-text-primary text-xs',
         disabled && 'text-text-tertiary',
       )}
     >

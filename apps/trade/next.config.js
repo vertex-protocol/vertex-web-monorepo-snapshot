@@ -18,8 +18,7 @@ const nextConfig = {
 
     return config;
   },
-  // Without this, Next.js is unable to resolve imports from the common package
-  transpilePackages: [],
+  transpilePackages: ['@vertex-protocol/react-client'],
   async redirects() {
     return [
       {

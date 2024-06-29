@@ -1,5 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { usePrimaryChainId, useVertexClient } from '@vertex-protocol/web-data';
+import {
+  usePrimaryChainId,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { latestOrderFillsForProductQueryKey } from 'client/hooks/query/markets/useLatestOrderFillsForProduct';
 import { marketLiquidityQueryKey } from 'client/hooks/query/markets/useMarketLiquidity';
 import {
@@ -22,7 +25,7 @@ export function useHandleProductIdChange({
 }: Params) {
   const primaryChainId = usePrimaryChainId();
   const queryClient = useQueryClient();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   useEffect(() => {
     if (!isActiveWebsocket || !vertexClient || !productId) {

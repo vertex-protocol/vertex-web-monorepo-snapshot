@@ -1,3 +1,7 @@
+import {
+  ProductEngineType,
+  QUOTE_PRODUCT_ID,
+} from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { safeParseForData, WithChildren } from '@vertex-protocol/web-common';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
@@ -9,14 +13,15 @@ import {
 } from 'client/hooks/subaccount/useUserStateError';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
-import { useOrderFormConversionPrices } from 'client/modules/trading/orderPlacement/hooks/useOrderFormConversionPrices';
-import { useOrderFormEnableMaxSizeLogic } from 'client/modules/trading/orderPlacement/hooks/useOrderFormEnableMaxSizeLogic';
-import { useOrderFormError } from 'client/modules/trading/orderPlacement/hooks/useOrderFormError';
-import { useOrderFormMaxOrderSizes } from 'client/modules/trading/orderPlacement/hooks/useOrderFormMaxOrderSizes';
-import { useOrderFormOnChangeSideEffects } from 'client/modules/trading/orderPlacement/hooks/useOrderFormOnChangeSideEffects';
-import { useOrderFormProductData } from 'client/modules/trading/orderPlacement/hooks/useOrderFormProductData';
-import { useOrderFormSubmitHandler } from 'client/modules/trading/orderPlacement/hooks/useOrderFormSubmitHandler';
-import { useOrderFormValidators } from 'client/modules/trading/orderPlacement/hooks/useOrderFormValidators';
+import { useOrderFormConversionPrices } from 'client/modules/trading/hooks/orderFormContext/useOrderFormConversionPrices';
+import { useOrderFormEnableMaxSizeLogic } from 'client/modules/trading/hooks/orderFormContext/useOrderFormEnableMaxSizeLogic';
+import { useOrderFormError } from 'client/modules/trading/hooks/orderFormContext/useOrderFormError';
+import { useOrderFormMarketSelection } from 'client/modules/trading/hooks/orderFormContext/useOrderFormMarketSelection';
+import { useOrderFormMaxOrderSizes } from 'client/modules/trading/hooks/orderFormContext/useOrderFormMaxOrderSizes';
+import { useOrderFormOnChangeSideEffects } from 'client/modules/trading/hooks/orderFormContext/useOrderFormOnChangeSideEffects';
+import { useOrderFormProductData } from 'client/modules/trading/hooks/orderFormContext/useOrderFormProductData';
+import { useOrderFormSubmitHandler } from 'client/modules/trading/hooks/orderFormContext/useOrderFormSubmitHandler';
+import { useOrderFormValidators } from 'client/modules/trading/hooks/orderFormContext/useOrderFormValidators';
 import {
   OrderFormError,
   OrderFormValidators,
@@ -25,7 +30,6 @@ import { usePerpOrderFormEstimateStateTxs } from 'client/pages/PerpTrading/conte
 import { usePerpOrderFormOnChangeSideEffects } from 'client/pages/PerpTrading/context/hooks/usePerpOrderFormOnChangeSideEffects';
 import { PerpOrderFormValues } from 'client/pages/PerpTrading/context/types';
 import { useSelectedPerpLeverage } from 'client/pages/PerpTrading/hooks/useSelectedPerpLeverage';
-import { useSelectedPerpMarket } from 'client/pages/PerpTrading/hooks/useSelectedPerpMarket';
 import { perpPriceInputAtom } from 'client/store/trading/perpTradingStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
@@ -37,25 +41,65 @@ import {
   usePerpOrderFormTradingAccountMetrics,
 } from './hooks/usePerpOrderFormTradingAccountMetrics';
 
-export type PerpOrderFormContextData = {
-  form: UseFormReturn<PerpOrderFormValues>;
-  validators: OrderFormValidators;
-  userStateError: UserStateError | undefined;
-  formError: OrderFormError | undefined;
-  buttonState: BaseActionButtonState;
+export interface PerpOrderFormContextData {
+  // Market selection
   currentMarket: PerpStaticMarketData | undefined;
+  /**
+   * RHF instance to pass to `<Form />`
+   */
+  form: UseFormReturn<PerpOrderFormValues>;
+  /**
+   * Validators for the form
+   */
+  validators: OrderFormValidators;
+  /**
+   * Errors associated with the current state of the user
+   */
+  userStateError: UserStateError | undefined;
+  /**
+   * Errors associated with the form fields
+   */
+  formError: OrderFormError | undefined;
+  /**
+   * State of the submit button
+   */
+  buttonState: BaseActionButtonState;
+  /**
+   * Conversion price from base to quote without slippage, used to convert between asset and quote amounts
+   */
   inputConversionPrice: BigDecimal | undefined;
+  /**
+   * Minimum order size, in terms of the asset, for the currently selected market
+   */
   minAssetOrderSize: BigDecimal | undefined;
+  /**
+   * A validated order amount input, in terms of the base asset of the market
+   */
   validatedAssetAmountInput: BigDecimal | undefined;
+  /**
+   * Conversion price from base to quote with slippage included
+   */
   executionConversionPrice: BigDecimal | undefined;
+  /**
+   * Configured slippage for the current order type
+   */
   slippageFraction: number;
+  /**
+   * Allowed increments for the input fields
+   */
   inputIncrements: {
     price: BigDecimal | undefined;
     size: BigDecimal | undefined;
   };
+  /**
+   * Estimated account status changes corresponding to the current order form input
+   */
   tradingAccountMetrics: OrderFormPerpTradingAccountMetrics;
+  /**
+   * Form submit handler
+   */
   onSubmit: () => void;
-};
+}
 
 const PerpOrderFormContext = createContext<PerpOrderFormContextData>(
   {} as PerpOrderFormContextData,
@@ -65,7 +109,7 @@ const PerpOrderFormContext = createContext<PerpOrderFormContextData>(
 export const usePerpOrderFormContext = () => useContext(PerpOrderFormContext);
 
 export function PerpOrderFormContextProvider({ children }: WithChildren) {
-  const { currentMarket } = useSelectedPerpMarket();
+  const { currentMarket } = useOrderFormMarketSelection(ProductEngineType.PERP);
   const { data: latestMarketPrices } = useLatestMarketPrice({
     productId: currentMarket?.productId,
   });
@@ -241,6 +285,8 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
     currentMarket,
     mutateAsync: executePlaceOrder.mutateAsync,
     allowAnyOrderSizeIncrement: false,
+    // Multi-quote not supported for perps
+    quoteProductId: QUOTE_PRODUCT_ID,
   });
 
   /**

@@ -1,16 +1,18 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import {
   AdditionalSubaccountInfoFactory,
   EstimatedBaseSubaccountInfo,
   useEstimateSubaccountInfoChange,
 } from 'client/hooks/subaccount/useEstimateSubaccountInfoChange';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { useCallback } from 'react';
-import { first } from 'lodash';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
+import { first } from 'lodash';
+import { useCallback } from 'react';
 
 interface Params {
   productId: number | undefined;
@@ -29,7 +31,7 @@ export function useCollateralEstimateSubaccountInfoChange({
   productId,
   estimateStateTxs,
 }: Params) {
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
   const additionalInfoFactory = useCallback<
     AdditionalSubaccountInfoFactory<AdditionalInfo>
   >(

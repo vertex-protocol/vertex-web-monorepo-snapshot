@@ -1,11 +1,11 @@
+import { BigDecimals } from '@vertex-protocol/utils';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import {
   MarketTradeRowItem,
   useLatestMarketTrades,
 } from 'client/modules/trading/marketOrders/latestMarketTrades/hooks/useLatestMarketTrades';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import {
   formatTimestamp,
   TimeFormatSpecifier,

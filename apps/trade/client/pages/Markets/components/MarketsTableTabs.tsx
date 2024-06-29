@@ -1,7 +1,7 @@
 import {
   Content as TabsContent,
-  Root as TabsRoot,
   TabsList,
+  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import { UnderlinedTabs } from '@vertex-protocol/web-ui';

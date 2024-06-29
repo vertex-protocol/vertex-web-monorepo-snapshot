@@ -1,10 +1,10 @@
 import { Product } from '@vertex-protocol/contracts';
 import {
   BigDecimal,
+  BigDecimals,
   TimeInSeconds,
   toBigDecimal,
 } from '@vertex-protocol/utils';
-import { BigDecimals } from 'client/utils/BigDecimals';
 
 /**
  * Calculates a value "index" to track APR. Defined as:

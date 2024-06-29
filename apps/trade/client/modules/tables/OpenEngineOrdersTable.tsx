@@ -1,14 +1,17 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import {
+  getMarketPriceFormatSpecifier,
+  getMarketQuoteSizeFormatSpecifier,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -19,8 +22,6 @@ import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWi
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useMemo } from 'react';
 import { CancelAllOrdersHeaderCell } from './cells/CancelAllOrdersHeaderCell';
 import { CancelOrderCell } from './cells/CancelOrderCell';
@@ -45,7 +46,6 @@ export function OpenEngineOrdersTable({
   pageSize,
   hasBackground,
 }: WithClassnames<Props>) {
-  const { primaryQuoteToken } = useVertexMetadataContext();
   const { data, isLoading } = useOpenEngineOrdersTable(marketFilter);
 
   const isDesktop = useIsDesktop();
@@ -63,7 +63,8 @@ export function OpenEngineOrdersTable({
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('orderType', {
@@ -130,8 +131,10 @@ export function OpenEngineOrdersTable({
         cell: (context) => (
           <AmountWithSymbolCell
             amount={context.getValue()}
-            symbol={primaryQuoteToken.symbol}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+            symbol={context.row.original.marketInfo.quoteSymbol}
+            formatSpecifier={getMarketQuoteSizeFormatSpecifier(
+              context.row.original.marketInfo.isPrimaryQuote,
+            )}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -211,7 +214,7 @@ export function OpenEngineOrdersTable({
         },
       }),
     ];
-  }, [marketFilter, primaryQuoteToken.symbol]);
+  }, [marketFilter]);
 
   const onRowClicked = (row: Row<OpenEngineOrderTableItem>) => {
     if (isDesktop || !isConnected) {

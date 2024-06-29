@@ -1,10 +1,10 @@
-import { useTabs } from 'client/hooks/ui/tabs/useTabs';
+import { MoneyMarketsTable } from 'client/modules/tables/MoneyMarketsTable';
 import { FundingRateMarketsTable } from '../tables/FundingRateMarketsTable';
-import { MoneyMarketsTable } from '../tables/MoneyMarketsTable';
 import { PerpMarketsTable } from '../tables/PerpMarketsTable';
 import { SpotMarketsTable } from '../tables/SpotMarketsTable';
+import { useTabs } from 'client/hooks/ui/tabs/useTabs';
 
-const TABS = [
+const MARKETS_TABS = [
   {
     id: 'perps',
     label: 'Perps',
@@ -28,11 +28,11 @@ const TABS = [
 ] as const;
 
 export function useMarketsTabs() {
-  const { selectedTabId, setSelectedUntypedTabId, tabs } = useTabs(TABS);
+  const { selectedTabId, setSelectedUntypedTabId } = useTabs(MARKETS_TABS);
 
   return {
     selectedTabId,
     setSelectedUntypedTabId,
-    tabs,
+    tabs: MARKETS_TABS,
   };
 }

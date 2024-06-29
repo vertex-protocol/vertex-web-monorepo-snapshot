@@ -1,13 +1,15 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
 import { PerpStaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
 import {
   AdditionalSubaccountInfoFactory,
   EstimatedSubaccountInfo,
   useEstimateSubaccountInfoChange,
 } from 'client/hooks/subaccount/useEstimateSubaccountInfoChange';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { useCallback, useMemo } from 'react';
 
 interface AdditionalSubaccountInfo {

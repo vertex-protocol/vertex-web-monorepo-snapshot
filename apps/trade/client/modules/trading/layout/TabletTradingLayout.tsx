@@ -14,7 +14,7 @@ export function TabletTradingLayout({
   return (
     <LargeScreenTradingLayout
       heroComponent={
-        <MarketDataTabs className="h-full" productId={productId} isTablet />
+        <MarketDataTabs className="h-full" productId={productId} withChartTab />
       }
       AccountHealth={AccountHealth}
       productId={productId}

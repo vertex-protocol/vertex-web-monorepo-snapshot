@@ -26,7 +26,6 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
   return (
     <div className="flex flex-col gap-y-3">
       <SecondaryButton
-        size="md"
         onClick={() => {
           showDialogForProduct({
             dialogType: 'deposit',
@@ -38,7 +37,6 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
         Deposit
       </SecondaryButton>
       <SecondaryButton
-        size="md"
         onClick={() => {
           hide();
           pushTradePage({
@@ -50,7 +48,6 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
         Trade
       </SecondaryButton>
       <SecondaryButton
-        size="md"
         onClick={() => {
           showDialogForProduct({
             dialogType: 'withdraw',
@@ -62,7 +59,6 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
         Withdraw
       </SecondaryButton>
       <SecondaryButton
-        size="md"
         onClick={() => {
           showDialogForProduct({
             dialogType: 'borrow',
@@ -74,7 +70,6 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
         Borrow
       </SecondaryButton>
       <SecondaryButton
-        size="md"
         onClick={() => {
           showDialogForProduct({
             dialogType: 'repay',

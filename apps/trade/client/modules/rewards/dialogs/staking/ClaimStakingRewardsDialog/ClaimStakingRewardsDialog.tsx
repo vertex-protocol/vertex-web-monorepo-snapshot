@@ -1,21 +1,20 @@
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
 import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
-import { NewPill } from 'client/components/NewPill';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import Image from 'next/image';
 import { StakingClaimAndStakeChangeItems } from '../components/StakingClaimAndStakeChangeItems';
 import { StakingRadioGroup } from '../components/StakingRadioGroup';
-import { useClaimStakingRewardsDialog } from './useClaimStakingRewardsDialog';
 
 // Assets
 import camelotLogo from './assets/camelot.svg';
+import { useClaimStakingRewardsDialog } from './useClaimStakingRewardsDialog';
 
 export function ClaimStakingRewardsDialog() {
   const {
@@ -64,15 +63,14 @@ export function ClaimStakingRewardsDialog() {
       <div className="flex flex-col gap-y-3.5">
         <StakingRadioGroup.LineItem
           label="Available Rewards"
-          value={formatNumber(claimableStakingRewards, {
-            formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
-          })}
-          symbol={usdcSymbol}
+          value={claimableStakingRewards}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          valueEndElement={usdcSymbol}
         />
         <StakingRadioGroup.LineItem
           label="Conversion Rate"
-          definitionId="stakingEstConversionRate"
-          value={
+          tooltip={{ id: 'stakingEstConversionRate' }}
+          valueContent={
             <div className="flex gap-x-1 text-xs">
               <AmountWithSymbol
                 formattedSize="1"
@@ -110,11 +108,7 @@ export function ClaimStakingRewardsDialog() {
           <StakingRadioGroup.Card
             value="claim_and_stake"
             active={selectedRadioId === 'claim_and_stake'}
-            title={
-              <span className="flex items-center gap-x-2">
-                Compound Rewards <NewPill />
-              </span>
-            }
+            title="Compound Rewards"
             description={`Compound your staking rewards into more staked ${protocolTokenSymbol}. Available for amounts under ${formatNumber(
               5000,
               {
@@ -133,7 +127,6 @@ export function ClaimStakingRewardsDialog() {
           />
         </StakingRadioGroup.Root>
         <PrimaryButton
-          size="lg"
           isLoading={actionButtonState === 'loading'}
           disabled={actionButtonState === 'disabled'}
           onClick={onSubmit}

@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { useVertexClient } from '@vertex-protocol/web-data';
+import {
+  QueryDisabledError,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 
 export function serverTimeQueryKey() {
   return ['serverTime'];
@@ -10,7 +12,7 @@ export function serverTimeQueryKey() {
  * Query for server time that refreshes every 5 seconds.
  */
 export function useServerTime() {
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({

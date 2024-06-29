@@ -5,8 +5,7 @@ import {
   calcIndexerSpotBalanceValue,
   IndexerSubaccountSnapshot,
 } from '@vertex-protocol/indexer-client';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { BigDecimals } from 'client/utils/BigDecimals';
+import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 import {
   calcIndexerSummaryCumulativeLpPnl,
   calcIndexerSummaryCumulativePnl,

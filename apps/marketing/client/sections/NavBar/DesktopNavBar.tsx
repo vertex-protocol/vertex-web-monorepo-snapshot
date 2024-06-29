@@ -1,9 +1,9 @@
-import classNames from 'classnames';
 import { GradientButton } from 'client/components/Button/GradientButton';
 import { DEFAULT_SECTION_WIDTH, EXTERNAL_LINKS } from 'client/consts';
 import Link from 'next/link';
 import { DesktopNavLinks } from './components/DesktopNavLinks';
 import { NavLogoButton } from './components/NavLogoButton';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function DesktopNavBar() {
   const outerPaddingClassName = 'px-18 py-7 sm:px-16 xl:px-28';
@@ -11,13 +11,13 @@ export function DesktopNavBar() {
     'px-5 py-3 text-white duration-500 lg:pl-8 lg:pr-2.5';
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'fixed z-20 flex w-full items-center justify-center',
         outerPaddingClassName,
       )}
     >
       <nav
-        className={classNames(
+        className={joinClassNames(
           'backdrop-blur-nav flex flex-col rounded-2xl',
           'bg-black-800 shadow-black-900/30 shadow-lg',
           innerPaddingClassName,

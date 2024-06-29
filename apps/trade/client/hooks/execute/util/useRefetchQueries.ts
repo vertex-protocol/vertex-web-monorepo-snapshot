@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
-import { TransactionResponse } from 'ethers';
+import { TxResponse } from 'client/types/TxResponse';
 import { useEffect } from 'react';
 
 /**
@@ -36,7 +36,7 @@ export function useRefetchQueries(
  */
 export function useRefetchQueriesOnContractTransaction(
   queryKeys: unknown[][],
-  txResponse: TransactionResponse | undefined,
+  txResponse: TxResponse | undefined,
   afterMillis: number = 2000,
 ) {
   const queryClient = useQueryClient();
@@ -49,6 +49,7 @@ export function useRefetchQueriesOnContractTransaction(
     let timeout: NodeJS.Timeout;
 
     if (type === 'confirmed') {
+      console.debug('Refetching query keys', queryKeys);
       timeout = setTimeout(() => {
         queryKeys.forEach((queryKey) =>
           queryClient.refetchQueries({

@@ -35,7 +35,7 @@ export function MobileTradingTableTabs({
               <TradingTableTabsTrigger
                 className="w-full px-4 text-xs"
                 id={id}
-                isSelected={selectedTabId === id}
+                active={selectedTabId === id}
                 associatedCount={associatedCount}
               >
                 {label}

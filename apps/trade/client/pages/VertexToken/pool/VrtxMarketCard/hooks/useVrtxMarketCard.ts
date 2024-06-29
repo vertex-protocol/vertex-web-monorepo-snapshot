@@ -1,14 +1,13 @@
-import { BigDecimal } from '@vertex-protocol/utils';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useLatestMarketPrice } from 'client/hooks/markets/useLatestMarketPrice';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useStakingState } from 'client/hooks/query/vrtxToken/useStakingState';
 import { useVrtxTokenSupply } from 'client/hooks/query/vrtxToken/useVrtxTokenSupply';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
 import { AnnotatedSpotMarket, Token } from 'common/productMetadata/types';
 
 interface UseVrtxMarketCard {
@@ -27,20 +26,20 @@ interface UseVrtxMarketCard {
 }
 
 export function useVrtxMarketCard(): UseVrtxMarketCard {
-  const { primaryQuoteToken, protocolToken, protocolTokenProductId } =
+  const { primaryQuoteToken, protocolTokenMetadata } =
     useVertexMetadataContext();
   const pushTradePage = usePushTradePage();
 
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
 
   // Vertex market
   const { data: vrtxSpotMarket } = useMarket<AnnotatedSpotMarket>({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
   const { data: allMarketsHistoricalMetrics } =
     useAllMarketsHistoricalMetrics();
   const { data: latestVrtxMarketPrice } = useLatestMarketPrice({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
 
   // Vertex token
@@ -48,25 +47,18 @@ export function useVrtxMarketCard(): UseVrtxMarketCard {
   const { data: stakingState } = useStakingState();
 
   const historicalMetrics =
-    allMarketsHistoricalMetrics?.metricsByMarket?.[protocolTokenProductId];
+    allMarketsHistoricalMetrics?.metricsByMarket?.[
+      protocolTokenMetadata.productId
+    ];
 
-  const liquidTokenSupply = removeDecimals(
-    vrtxTokenSupply?.liquidSupply,
-    protocolToken.tokenDecimals,
-  );
+  const liquidTokenSupply = vrtxTokenSupply?.liquidSupply;
   const marketCap = vrtxSpotMarket
     ? liquidTokenSupply?.multipliedBy(vrtxSpotMarket.product.oraclePrice)
-    : undefined;
-  const fdv = vrtxSpotMarket
-    ? removeDecimals(
-        vrtxTokenSupply?.totalSupply,
-        protocolToken.tokenDecimals,
-      )?.multipliedBy(vrtxSpotMarket.product.oraclePrice)
     : undefined;
 
   const totalStaked = removeDecimals(
     stakingState?.totalStaked,
-    protocolToken.tokenDecimals,
+    protocolTokenMetadata.token.tokenDecimals,
   );
   const percentStaked = liquidTokenSupply
     ? totalStaked?.div(liquidTokenSupply)
@@ -74,14 +66,14 @@ export function useVrtxMarketCard(): UseVrtxMarketCard {
 
   const onTradeClick = () => {
     pushTradePage({
-      productId: protocolTokenProductId,
+      productId: protocolTokenMetadata.productId,
     });
   };
 
   return {
     tokens: {
       primaryQuoteToken,
-      protocolToken,
+      protocolToken: protocolTokenMetadata.token,
     },
     marketPriceFormatSpecifier: getMarketPriceFormatSpecifier(
       vrtxSpotMarket?.priceIncrement,
@@ -90,7 +82,9 @@ export function useVrtxMarketCard(): UseVrtxMarketCard {
     liquidTokenSupply: liquidTokenSupply,
     marketCapUsd: marketCap?.multipliedBy(quotePriceUsd),
     pastDayPriceChangeFrac: historicalMetrics?.pastDayPriceChangeFrac,
-    pastDayVolumeQuote: removeDecimals(historicalMetrics?.pastDayVolumeQuote),
+    pastDayVolumeQuote: removeDecimals(
+      historicalMetrics?.pastDayVolumeInPrimaryQuote,
+    ),
     percentStaked,
     onTradeClick,
   };

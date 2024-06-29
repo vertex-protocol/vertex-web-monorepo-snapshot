@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import {
+  createQueryKey,
   PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { createQueryKey } from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 
 export function subaccountReferralCodeQueryKey(
   chainId?: PrimaryChainID,
@@ -26,7 +26,7 @@ export function useSubaccountReferralCode() {
   const {
     currentSubaccount: { address, name },
   } = useSubaccountContext();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   const disabled = !vertexClient || !address;
 

@@ -16,8 +16,8 @@ import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/hooks/useP
 import { usePortfolioChartXAxisFormatter } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartXAxisFormatter';
 import { ChartComponentProps } from 'client/pages/Portfolio/charts/types';
 import { currencyAxisFormatter } from 'client/pages/Portfolio/charts/utils/axisFormatters';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { COLORS } from 'common/theme/colors';
 import {
   Area,

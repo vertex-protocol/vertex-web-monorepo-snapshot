@@ -23,12 +23,13 @@ import { SpotLeverageOnDisclosure } from './components/SpotLeverageOnDisclosure'
 
 export function SpotOrderPlacementSection({ className }: WithClassnames) {
   const { show } = useDialog();
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
 
   const {
     form,
     onSubmit,
     currentMarket,
+    quoteMetadata,
     validators,
     inputConversionPrice,
     inputIncrements,
@@ -53,7 +54,7 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
   const isStopOrder = priceType === 'stop';
 
   const showVrtxBorrowWarning =
-    currentMarket?.productId === protocolTokenProductId &&
+    currentMarket?.productId === protocolTokenMetadata.productId &&
     leverageEnabled &&
     orderSide === 'short';
 
@@ -77,7 +78,8 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
             <StopMarketOrderDismissible isStopOrder={isStopOrder} />
             <OrderFormInputs
               validators={validators}
-              marketSymbol={marketSymbol}
+              quoteSymbol={quoteMetadata?.symbol}
+              baseSymbol={marketSymbol}
               inputIncrements={inputIncrements}
               minAssetOrderSize={minAssetOrderSize}
               formError={formError}
@@ -104,7 +106,7 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
               <SpotOrderSubmitWithSummary
                 onSlippageAdjust={() => {
                   show({
-                    type: 'control_center',
+                    type: 'account_center',
                     params: { initialShowSettingsContent: true },
                   });
                 }}

@@ -1,9 +1,7 @@
-import {
-  getTruncatedAddress,
-  joinClassNames,
-} from '@vertex-protocol/web-common';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { ProfileAvatarIcon } from 'client/modules/userProfile/components/ProfileAvatarIcon';
 import { ProfileAvatar } from 'client/modules/userProfile/types';
+import { getTruncatedAddress } from 'client/utils/getTruncatedAddress';
 
 interface Props {
   watchedUsername: string;

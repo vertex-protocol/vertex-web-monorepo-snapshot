@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
-import { IconType } from 'react-icons';
 import { Except } from 'type-fest';
 import { CardButtonBaseProps } from './CardButton';
+import { IconType } from '../../Icons';
 
 export type NavCardBaseProps = Except<
   CardButtonBaseProps,
-  'endIcon' | 'startIcon' | 'title'
+  'startIcon' | 'endIcon' | 'title'
 > & {
-  icon?: IconType;
   title: ReactNode;
+  icon?: IconType;
   contentClassName?: string;
   description: ReactNode;
 };

@@ -7,10 +7,10 @@ import { NotificationPositionInfo } from 'client/modules/notifications/component
 import { OrderNotificationValueItem } from 'client/modules/notifications/components/orders/OrderNotificationValueItem';
 import { PlaceOrderNotificationData } from 'client/modules/notifications/types';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import { removeDecimals } from '@vertex-protocol/utils';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { OrderSuccessIcon } from '../OrderSuccessIcon';
 import { CounterPill } from '@vertex-protocol/web-ui';
 

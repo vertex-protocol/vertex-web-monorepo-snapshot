@@ -1,12 +1,14 @@
-import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
-import { useQuery } from '@tanstack/react-query';
-import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/base/useSquidSDK';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { getSquidRouteRequest } from 'client/modules/collateral/bridge/hooks/utils/getSquidRouteRequest';
-import { createQueryKey } from '@vertex-protocol/web-data';
-import { useVertexClient } from '@vertex-protocol/web-data';
 import { Squid } from '@0xsquid/sdk';
+import { useQuery } from '@tanstack/react-query';
+import {
+  createQueryKey,
+  QueryDisabledError,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/base/useSquidSDK';
+import { getSquidRouteRequest } from 'client/modules/collateral/bridge/hooks/utils/getSquidRouteRequest';
+import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
 
 export type EstimatedBridgeRoute = Awaited<ReturnType<Squid['getRoute']>>;
 
@@ -32,16 +34,16 @@ export function useEstimatedBridgeRoute(
   params: BridgeRequestParams | undefined,
 ) {
   const squidSDK = useSquidSDK();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
-    currentSubaccount: { address: subaccountAddr, name: subaccountName },
+    currentSubaccount: { address: subaccountAddress, name: subaccountName },
   } = useSubaccountContext();
 
-  const disabled = !params || !squidSDK || !subaccountAddr || !vertexClient;
+  const disabled = !params || !squidSDK || !subaccountAddress || !vertexClient;
 
   return useQuery({
     queryKey: estimatedBridgeRouteQueryKey(
-      subaccountAddr,
+      subaccountAddress,
       subaccountName,
       params,
     ),
@@ -53,10 +55,8 @@ export function useEstimatedBridgeRoute(
       return squidSDK.getRoute(
         getSquidRouteRequest({
           ...params,
-          subaccount: {
-            address: subaccountAddr,
-            name: subaccountName,
-          },
+          subaccountAddress,
+          subaccountName,
           endpointAddress: vertexClient.context.contractAddresses.endpoint,
         }),
       );

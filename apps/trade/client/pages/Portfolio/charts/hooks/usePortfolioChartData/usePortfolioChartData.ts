@@ -1,21 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-} from '@vertex-protocol/web-data';
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshots } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshots';
 import { QueryState } from 'client/types/QueryState';
 import { getSubaccountMetricsFromIndexerSnapshot } from 'client/utils/calcs/getSubaccountMetricsFromIndexerSnapshot';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
+import { secondsToMilliseconds } from 'date-fns';
 import { ChartTimespan } from '../../types';
 import { useChartQueryTimes } from '../useChartQueryTimes';
 import { calcDecimalAdjustedDeltas } from './calcDecimalAdjustedDeltas';
 import { calcDecimalAdjustedUsdValue } from './calcDecimalAdjustedUsdValue';
-import { secondsToMilliseconds } from 'date-fns';
 
 export interface PortfolioChartDataItem {
   timestampMillis: number;
@@ -66,7 +66,7 @@ export function usePortfolioChartData(
     currentSubaccount: { address, name },
   } = useSubaccountContext();
   const queryTimes = useChartQueryTimes(timespan);
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
   const { data: indexerSummaries, ...rest } = useSubaccountIndexerSnapshots({
     secondsBeforeNow: queryTimes?.secondsBeforeNow,
     // Longer refetch as we need quite a lot of data

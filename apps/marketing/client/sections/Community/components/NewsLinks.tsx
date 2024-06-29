@@ -1,16 +1,16 @@
-import classNames from 'classnames';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import { formatDate } from 'client/utils/formatDate';
 import Link from 'next/link';
 import { NEWS_LINKS } from '../data';
 import { CommunityGradientPill } from './CommunityGradientPill';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function NewsLinks() {
   return (
     <div className="flex flex-col items-start gap-y-7">
       <CommunityGradientPill content="In the media" />
       <div
-        className={classNames(
+        className={joinClassNames(
           'grid gap-y-11',
           'sm:grid-cols-2 sm:gap-x-8',
           'md:h-40 md:grid-cols-3',

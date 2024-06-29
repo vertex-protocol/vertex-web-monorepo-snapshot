@@ -4,19 +4,19 @@ import {
   WithClassnames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { CounterPill, TextButton } from '@vertex-protocol/web-ui';
+import { CounterPill, TabTextButton } from '@vertex-protocol/web-ui';
 import { TabIdentifiable } from 'client/hooks/ui/tabs/types';
 
 export interface TableTabProps<TTabID extends string>
   extends WithChildren,
     WithClassnames,
     TabIdentifiable<TTabID> {
-  isSelected: boolean;
+  active: boolean;
   associatedCount?: number;
 }
 
 export function TradingTableTabsTrigger<TTabID extends string>({
-  isSelected,
+  active,
   id,
   children,
   className,
@@ -24,10 +24,10 @@ export function TradingTableTabsTrigger<TTabID extends string>({
 }: TableTabProps<TTabID>) {
   return (
     <TabsTrigger asChild value={id}>
-      <TextButton
+      <TabTextButton
         id={id}
         className={mergeClassNames('px-4 py-1.5 text-xs', className)}
-        active={isSelected}
+        active={active}
         endIcon={
           !!associatedCount && (
             <CounterPill>{associatedCount.toFixed()}</CounterPill>
@@ -35,7 +35,7 @@ export function TradingTableTabsTrigger<TTabID extends string>({
         }
       >
         {children}
-      </TextButton>
+      </TabTextButton>
     </TabsTrigger>
   );
 }

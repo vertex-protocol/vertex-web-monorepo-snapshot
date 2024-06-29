@@ -3,7 +3,7 @@ import {
   InputSummary,
   InputSummaryItemProps,
 } from 'client/components/InputSummary';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 interface Props {

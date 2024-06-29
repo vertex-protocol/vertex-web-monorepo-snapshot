@@ -1,21 +1,30 @@
+import {
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { PrimaryButton } from '@vertex-protocol/web-ui';
+import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
-import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useArbRewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/ArbRewardsSummaryCard/useArbRewardsSummaryCard';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { RewardsSummaryCard } from '../RewardsSummaryCard';
 
 export function ArbRewardsSummaryCard() {
   const {
-    onChainTotalRealizedRewards,
+    totalRealizedRewards,
+    estimatedWeekRewards,
     unclaimedRealizedRewards,
     claimedRewards,
+    currentWeek,
+    currentRound,
+    currentWeekEndTimeMillis,
     disableClaimButton,
     onClaimClick,
     isClaimSuccess,
     isClaiming,
     arbToken,
+    roundDurationInWeeks,
+    isArbRewardsCompleted,
   } = useArbRewardsSummaryCard();
 
   const claimButtonLabel = (() => {
@@ -28,22 +37,39 @@ export function ArbRewardsSummaryCard() {
     return `Claim ARB Incentives`;
   })();
 
+  const formattedCurrentWeek = formatNumber(currentWeek, {
+    formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
+  });
+
+  const formattedCurrentRound = formatNumber(currentRound, {
+    formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
+  });
+
   const metricItems = (() => {
     return (
       <>
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
           label="Total Earned"
-          definitionId="rewardsArbTotalEarned"
-          value={onChainTotalRealizedRewards}
-          symbol={arbToken.symbol}
-          formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          tooltip={{ id: 'rewardsFoundationTotalEarned' }}
+          value={totalRealizedRewards}
+          valueEndElement={arbToken.symbol}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
           label="Claimed"
           value={claimedRewards}
-          symbol={arbToken.symbol}
-          formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          valueEndElement={arbToken.symbol}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
+        {!isArbRewardsCompleted && (
+          <ValueWithLabel.Vertical
+            label="Est. New"
+            tooltip={{ id: 'rewardsFoundationEstNew' }}
+            value={estimatedWeekRewards}
+            valueEndElement={arbToken.symbol}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          />
+        )}
       </>
     );
   })();
@@ -65,32 +91,44 @@ export function ArbRewardsSummaryCard() {
         }
         metricItems={metricItems}
         actionMetric={
-          <RewardsCard.MetricStackedItem
-            definitionId="rewardsArbAvailableToClaim"
+          <ValueWithLabel.Vertical
             label="Available to Claim"
+            tooltip={{ id: 'rewardsFoundationAvailableToClaim' }}
             value={unclaimedRealizedRewards}
-            symbol={arbToken.symbol}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+            valueEndElement={arbToken.symbol}
           />
         }
         action={
           <RewardsSummaryCard.ActionWithHelperText helperText="Rewards are claimable a few days after each week ends.">
             <PrimaryButton
-              size="lg"
               onClick={onClaimClick}
               isLoading={isClaiming}
               disabled={disableClaimButton}
-              className={joinClassNames(
-                !isClaiming && !disableClaimButton && 'bg-[#3A80D2]',
-                // The default purple text during loading looks a bit odd with the blue style, so overriding to be white
-                isClaiming && 'text-text-secondary',
-              )}
             >
               {claimButtonLabel}
             </PrimaryButton>
           </RewardsSummaryCard.ActionWithHelperText>
         }
-        footer={<div className="text-sm">Arb Incentives Completed</div>}
+        footer={
+          isArbRewardsCompleted ? (
+            <div className="text-sm">Arb Incentives Completed</div>
+          ) : (
+            <RewardsSummaryCard.FooterCountdown
+              label={
+                <div className="flex items-center gap-x-2.5">
+                  <span className="text-text-primary font-medium">
+                    Round {formattedCurrentRound}: Week {formattedCurrentWeek}/
+                    {roundDurationInWeeks}
+                  </span>
+                  <Divider className="h-3" vertical />
+                  <span>Week {formattedCurrentWeek} ends in:</span>
+                </div>
+              }
+              countdownTimeMillis={currentWeekEndTimeMillis}
+            />
+          )
+        }
       />
     </RewardsSummaryCard.Container>
   );

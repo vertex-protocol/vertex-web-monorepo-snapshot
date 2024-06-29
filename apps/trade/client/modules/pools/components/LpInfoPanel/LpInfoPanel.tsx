@@ -1,12 +1,12 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { LineItem } from 'client/components/LineItem/LineItem';
-import { LpBalanceItem } from 'client/hooks/subaccount/useLpBalances';
-import { LpInfoPanelTokenPairHeader } from 'client/modules/pools/components/LpInfoPanel/LpInfoPanelTokenPairHeader';
-import { PairMetadata } from 'client/modules/pools/types';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { LpBalanceItem } from 'client/hooks/subaccount/useLpBalances';
+import { LpInfoPanelTokenPairHeader } from 'client/modules/pools/components/LpInfoPanel/LpInfoPanelTokenPairHeader';
+import { PairMetadata } from 'client/modules/pools/types';
 
 interface Props {
   metadata: PairMetadata | undefined;
@@ -23,21 +23,24 @@ export function LpInfoPanel({
     <div className="bg-surface-1 flex flex-col gap-y-3.5 rounded px-3.5 py-3 text-xs">
       <LpInfoPanelTokenPairHeader metadata={metadata} />
       <div className="flex flex-col gap-y-1">
-        <LineItem.Metric
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
           label="Liquidity Provided"
           value={currentLpBalance?.lpValueUsd}
-          renderValue={PresetNumberFormatSpecifier.CURRENCY_2DP}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
         />
-        <LineItem.Metric
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
           label="LP Tokens"
           value={currentLpBalance?.lpAmount}
-          renderValue={CustomNumberFormatSpecifier.NUMBER_AUTO}
+          numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
         />
-        <LineItem.Metric
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
           label="APR"
           value={currentYield}
           valueClassName="text-positive"
-          renderValue={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         />
       </div>
     </div>

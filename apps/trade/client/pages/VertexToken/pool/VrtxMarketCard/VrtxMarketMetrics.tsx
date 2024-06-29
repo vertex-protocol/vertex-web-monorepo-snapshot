@@ -1,12 +1,12 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
+import { Divider } from '@vertex-protocol/web-ui';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 
 interface Props {
@@ -34,31 +34,37 @@ export function VrtxMarketMetrics({
         className,
       )}
     >
-      <RewardsCard.MetricStackedItem
-        value={pastDayVolumeQuote}
-        formatSpecifier={CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED}
+      <ValueWithLabel.Vertical
         label="24h Volume"
+        value={pastDayVolumeQuote}
+        numberFormatSpecifier={
+          CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED
+        }
         valueClassName={METRIC_VALUE_CLASSNAME}
-        symbol={primaryQuoteToken.symbol}
+        valueEndElement={primaryQuoteToken.symbol}
       />
-      <RewardsCard.MetricStackedItem
-        value={marketCapUsd}
-        formatSpecifier={CustomNumberFormatSpecifier.CURRENCY_LARGE_ABBREVIATED}
+      <ValueWithLabel.Vertical
         label="Market Cap"
+        value={marketCapUsd}
+        numberFormatSpecifier={
+          CustomNumberFormatSpecifier.CURRENCY_LARGE_ABBREVIATED
+        }
         valueClassName={METRIC_VALUE_CLASSNAME}
       />
       <Divider className="hidden w-12 sm:block" />
-      <RewardsCard.MetricStackedItem
-        value={liquidTokenSupply}
-        formatSpecifier={CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED}
+      <ValueWithLabel.Vertical
         label="Liquid Supply"
+        value={liquidTokenSupply}
+        numberFormatSpecifier={
+          CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED
+        }
         valueClassName={METRIC_VALUE_CLASSNAME}
-        symbol={VRTX_TOKEN_INFO.symbol}
+        valueEndElement={VRTX_TOKEN_INFO.symbol}
       />
-      <RewardsCard.MetricStackedItem
-        value={percentStaked}
-        formatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
+      <ValueWithLabel.Vertical
         label="Percent Staked"
+        value={percentStaked}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         valueClassName={METRIC_VALUE_CLASSNAME}
       />
     </div>

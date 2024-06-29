@@ -16,7 +16,6 @@ export function PortfolioChartUserStateCTA({
           <>
             <p>Connect your wallet to start trading.</p>
             <PrimaryButton
-              size="md"
               onClick={() => show({ type: 'connect', params: {} })}
             >
               Connect Wallet
@@ -28,7 +27,6 @@ export function PortfolioChartUserStateCTA({
           <>
             <p>Deposit funds into your account to start trading.</p>
             <PrimaryButton
-              size="md"
               onClick={() => show({ type: 'deposit', params: {} })}
             >
               Deposit Funds

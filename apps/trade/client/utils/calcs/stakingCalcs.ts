@@ -1,5 +1,4 @@
-import { BigDecimal, TimeInSeconds } from '@vertex-protocol/utils';
-import { BigDecimals } from 'client/utils/BigDecimals';
+import { BigDecimal, BigDecimals, TimeInSeconds } from '@vertex-protocol/utils';
 import { safeDiv } from 'client/utils/safeDiv';
 import { mapValues } from 'lodash';
 

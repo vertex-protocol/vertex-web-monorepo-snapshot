@@ -42,7 +42,7 @@ export const BLITZ_COLORS = {
     divider: '#FCFDFF',
     accent: '#FF036D',
     hover: '#FCFDFF',
-    disabled: '#9699AC',
+    disabled: '#07070A',
   },
   'grad-slider': {
     start: '#FF036D',
@@ -52,6 +52,10 @@ export const BLITZ_COLORS = {
   'grad-nav-surface': {
     start: '#101014',
     end: '#07070A',
+  },
+  'grad-overlay-dialog': {
+    start: '#181623',
+    end: '0B0B0E',
   },
   // Risk Bar
   risk: {

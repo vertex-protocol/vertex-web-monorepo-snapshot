@@ -1,10 +1,9 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { Summary } from 'client/components/Summary';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
+import { Summary } from 'client/components/Summary';
 
 interface Props {
   lpValueUsd: BigDecimal | undefined;
@@ -23,23 +22,24 @@ export function ProvideLiquiditySummary({
     <Summary.Container>
       <Summary.Item
         label="Provide:"
-        value={`${formatNumber(lpValueUsd, {
-          formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-          defaultValue: 0,
-        })} Liquidity`}
+        value={lpValueUsd}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
+        defaultValue={0}
+        valueEndElement="Liquidity"
       />
       <Summary.Item
         label="Est. Received:"
-        value={`${formatNumber(lpAmount, {
-          formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
-          defaultValue: 0,
-        })} LP Tokens`}
+        value={lpAmount}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+        defaultValue={0}
+        valueEndElement="LP Tokens"
       />
       <Summary.Item
         label="Fee:"
-        value={`${formatNumber(feeAmount, {
-          formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
-        })} ${quoteSymbol}`}
+        value={feeAmount}
+        defaultValue={0}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+        valueEndElement={quoteSymbol}
       />
     </Summary.Container>
   );

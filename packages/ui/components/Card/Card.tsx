@@ -1,7 +1,10 @@
 import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
 import { ComponentPropsWithRef, forwardRef } from 'react';
+import { SizeVariant } from '../../types';
 
 export const CARD_ROUNDED_CLASSNAMES = 'rounded-lg';
+
+export const CARD_BORDER_RADIUS_VARIANT: Extract<SizeVariant, 'lg'> = 'lg';
 
 export const CARD_CLASSNAMES = joinClassNames(
   'bg-surface-card shadow-elevation ring-1 ring-stroke',

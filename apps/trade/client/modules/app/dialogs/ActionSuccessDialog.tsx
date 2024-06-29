@@ -28,7 +28,7 @@ export function ActionSuccessDialog({
         <CheckmarkIcon size={100} />
         <p className="text-center">{description}</p>
         {!!cta && (
-          <PrimaryButton className="w-full" size="lg" onClick={cta.onClick}>
+          <PrimaryButton className="w-full" onClick={cta.onClick}>
             {cta.label}
           </PrimaryButton>
         )}

@@ -8,7 +8,6 @@ export interface VrtxRewardEpoch {
   };
   // Global properties
   totalRewards: BigDecimal;
-  numEligibleAddresses: number;
   // % share of the subaccount rewards in the epoch
   subaccountShareFrac: BigDecimal;
   // Fees collected for the subaccount in terms of quote

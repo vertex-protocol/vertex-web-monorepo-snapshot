@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
-import { BigDecimal } from '@vertex-protocol/utils';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
+import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useSubaccountOpenEngineOrders } from 'client/hooks/query/subaccount/useSubaccountOpenEngineOrders';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
+import { EngineOrderType } from 'client/modules/trading/types';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { QueryState } from 'client/types/QueryState';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
-import { EngineOrderType } from 'client/modules/trading/types';
 import { secondsToMilliseconds } from 'date-fns';
+import { useMemo } from 'react';
 
 export interface OpenEngineOrderTableItem {
   orderType: EngineOrderType;
@@ -42,16 +42,18 @@ export function useOpenEngineOrdersTable(
     isError: ordersIsError,
     data: ordersData,
   } = useSubaccountOpenEngineOrders();
+  const { data: allMarketsStaticData } = useAllMarketsStaticData();
 
   const openEngineOrders = useMemo(() => {
-    if (!filteredMarkets || !ordersData) {
+    if (!filteredMarkets || !ordersData || !allMarketsStaticData) {
       return;
     }
 
     return Object.values(filteredMarkets).flatMap((market) => {
       const ordersForProduct = ordersData?.[market.productId];
+      const quoteData = allMarketsStaticData.quotes[market.productId];
 
-      if (!ordersForProduct?.length) {
+      if (!ordersForProduct?.length || !quoteData) {
         return [];
       }
 
@@ -83,6 +85,8 @@ export function useOpenEngineOrdersTable(
               marketName: market.metadata.marketName,
               icon,
               symbol,
+              quoteSymbol: quoteData.symbol,
+              isPrimaryQuote: quoteData.isPrimaryQuote,
               amountForSide: decimalAdjustedTotalAmount,
               productType: market.type,
               priceIncrement: market.priceIncrement,
@@ -108,7 +112,7 @@ export function useOpenEngineOrdersTable(
         },
       );
     });
-  }, [filteredMarkets, ordersData]);
+  }, [allMarketsStaticData, filteredMarkets, ordersData]);
 
   return {
     data: openEngineOrders,

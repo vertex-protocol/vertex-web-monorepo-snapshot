@@ -1,4 +1,11 @@
-import { useForm } from 'react-hook-form';
+import { asyncResult } from '@vertex-protocol/utils';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { useExecuteSlowModeUpdateLinkedSigner } from 'client/hooks/execute/useExecuteSlowModeUpdateLinkedSigner';
+import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
+import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
+import { useSlowModeFeeAllowance } from 'client/hooks/subaccount/useSlowModeFeeAllowance';
+import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
+import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import {
   SignatureModeSlowModeSettingsAction,
   SignatureModeSlowModeSettingsActionButtonState,
@@ -6,17 +13,10 @@ import {
   SignatureModeSlowModeSettingsFormValues,
   UseSignatureModeSlowModeSettingsDialog,
 } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/hooks/types';
-import { useSlowModeFeeAllowance } from 'client/hooks/subaccount/useSlowModeFeeAllowance';
 import { watchFormError } from 'client/utils/form/watchFormError';
-import { useCallback, useMemo } from 'react';
 import { isHexString, Wallet, ZeroAddress } from 'ethers';
-import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
-import { useExecuteSlowModeUpdateLinkedSigner } from 'client/hooks/execute/useExecuteSlowModeUpdateLinkedSigner';
-import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { asyncResult } from '@vertex-protocol/web-common';
-import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
+import { useCallback, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
 
 export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowModeSettingsDialog {
   const { dispatchNotification } = useNotificationManagerContext();

@@ -6,5 +6,6 @@ declare module '@tanstack/table-core' {
   interface ColumnMeta<TData extends RowData, TValue> {
     cellContainerClassName?: string;
     expandedCell?: ColumnDefTemplate<CellContext<TData, TValue>>;
+    withLeftPadding?: boolean;
   }
 }

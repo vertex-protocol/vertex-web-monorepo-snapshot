@@ -1,12 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { toBigDecimal } from '@vertex-protocol/utils';
-import { usePrimaryChainId, useVertexClient } from '@vertex-protocol/web-data';
-
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+import {
+  QueryDisabledError,
+  usePrimaryChainId,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 
 export function useNSubmissions() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({

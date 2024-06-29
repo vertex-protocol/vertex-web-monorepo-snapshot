@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { EngineOrder } from '@vertex-protocol/engine-client';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { QueryState } from 'client/types/QueryState';
 
 // Product ID -> EngineOrder[]
@@ -33,7 +33,7 @@ export function subaccountOpenEngineOrdersQueryKey(
  */
 export function useSubaccountOpenEngineOrders(): QueryState<SubaccountOpenEngineOrders> {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const { filteredProductIds: allProductIds } = useFilteredMarkets();
   const {
     currentSubaccount: { name, address },

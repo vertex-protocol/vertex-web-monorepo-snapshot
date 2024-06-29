@@ -6,7 +6,6 @@ export interface ModifyOrderParams {
   digest: string;
   orderType: OrderType;
   isTrigger: boolean;
-
   newPrice: BigDecimal;
 }
 

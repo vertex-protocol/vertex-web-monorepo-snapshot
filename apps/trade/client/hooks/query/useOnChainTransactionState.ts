@@ -1,11 +1,15 @@
-import { useMemo } from 'react';
-import { TransactionReceipt, TransactionResponse } from 'ethers';
 import { useQuery } from '@tanstack/react-query';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { usePrimaryChainId } from '@vertex-protocol/web-data';
+import {
+  QueryDisabledError,
+  usePrimaryChainId,
+} from '@vertex-protocol/react-client';
+import { TxResponse } from 'client/types/TxResponse';
+import { TransactionReceipt } from 'ethers';
+import { useMemo } from 'react';
+import { useGetConfirmedTxPromise } from '../util/useGetConfirmedTxPromise';
 
 interface Params {
-  txResponse?: TransactionResponse;
+  txResponse: TxResponse | undefined;
 }
 
 type UseOnChainTransactionState =
@@ -34,6 +38,8 @@ export function useOnChainTransactionState({
   txResponse,
 }: Params): UseOnChainTransactionState {
   const primaryChainId = usePrimaryChainId();
+  const getConfirmedTxPromise = useGetConfirmedTxPromise();
+
   const disabled = !txResponse;
   const { data, error, isLoading } = useQuery({
     queryKey: ['onChainTransactionState', primaryChainId, txResponse?.hash],
@@ -41,26 +47,19 @@ export function useOnChainTransactionState({
       if (disabled) {
         throw new QueryDisabledError();
       }
-      return txResponse.wait();
+      return getConfirmedTxPromise(Promise.resolve(txResponse));
     },
     enabled: !disabled,
   });
 
   return useMemo((): UseOnChainTransactionState => {
     if (data) {
-      if (data.status === 1) {
-        return {
-          type: 'confirmed',
-          receipt: data,
-          error: undefined,
-        };
-      } else {
-        return {
-          type: 'error',
-          receipt: data,
-          error: error ?? new Error(`Transaction ${data?.hash} reverted`),
-        };
-      }
+      // getConfirmedTxPromise checks for `status` of value 1, so no need to check data.status here
+      return {
+        type: 'confirmed',
+        receipt: data,
+        error: undefined,
+      };
     } else if (isLoading) {
       return {
         type: 'pending',

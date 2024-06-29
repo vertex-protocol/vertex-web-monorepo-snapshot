@@ -20,6 +20,7 @@ export interface OrderbookRowItem {
 
 export interface OrderbookData {
   productMetadata: BaseProductMetadata;
+  quoteSymbol: string;
   priceIncrement: BigDecimal;
   sizeIncrement: BigDecimal;
   // Total cumulative amount in either asset currency (ex. wETH) or quote currency (ex. USDC) - the background color fill adapts to this as per figma
@@ -42,7 +43,7 @@ export interface UseOrderbook {
   priceFormatSpecifier: string;
   amountFormatSpecifier: string;
   cumulativeAmountSpecifier: string;
-  symbol: string | undefined;
+  amountSymbol: string | undefined;
   currentTickSpacing: number;
   tickSpacingMultiplier: OrderbookPriceTickSpacingMultiplier;
   setTickSpacingMultiplier: (

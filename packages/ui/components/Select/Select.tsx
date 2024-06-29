@@ -1,4 +1,5 @@
 import {
+  SelectTriggerProps as BaseSelectTriggerProps,
   Root,
   SelectContent,
   SelectContentProps,
@@ -6,7 +7,6 @@ import {
   SelectItemIndicator,
   SelectItemProps,
   SelectTrigger,
-  SelectTriggerProps,
   SelectViewport,
 } from '@radix-ui/react-select';
 import {
@@ -14,22 +14,42 @@ import {
   WithClassnames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
+import { ReactNode, forwardRef } from 'react';
+import { getStateOverlayClassNames } from '../../utils';
 
-export interface BaseSelectTriggerProps
-  extends WithClassnames<SelectTriggerProps> {
-  endIcon?: React.ReactNode;
+export interface SelectTriggerProps
+  extends WithClassnames<BaseSelectTriggerProps> {
+  endIcon?: ReactNode;
+  stateClassNameOverrides?: string;
 }
 
-const Trigger = forwardRef<HTMLButtonElement, BaseSelectTriggerProps>(
-  function Trigger({ children, endIcon, disabled, className, ...rest }, ref) {
+const Trigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
+  function Trigger(
+    {
+      children,
+      endIcon,
+      disabled,
+      className,
+      stateClassNameOverrides,
+      ...rest
+    },
+    ref,
+  ) {
+    // Since we want to handle the disabled trigger state differently and without the
+    // disabled state overlay, consumers are responsible for the disabled overlay if needed
+    // ex. `CollateralInputSelect` has a disabled trigger state, but the disabled overlay
+    // is managed by its container.
+    const hoverStateOverlayClassNames = getStateOverlayClassNames({
+      borderRadiusVariant: 'base',
+      stateClassNameOverrides,
+    });
+
     return (
       <SelectTrigger
         className={mergeClassNames(
-          'flex items-center gap-x-2 rounded text-xs',
-          'bg-surface-1 transition',
-          'px-2 py-1',
-          disabled ? 'cursor-not-allowed opacity-80' : 'hover:bg-surface-2',
+          'flex items-center gap-x-2',
+          'rounded px-2 py-1 text-xs',
+          disabled ? 'cursor-not-allowed' : hoverStateOverlayClassNames,
           className,
         )}
         disabled={disabled}
@@ -43,9 +63,27 @@ const Trigger = forwardRef<HTMLButtonElement, BaseSelectTriggerProps>(
   },
 );
 
+const PillTrigger = forwardRef<
+  HTMLButtonElement,
+  Omit<SelectTriggerProps, 'stateClassNameOverrides'>
+>(function PillTrigger({ className, ...rest }, ref) {
+  return (
+    <Trigger
+      className={mergeClassNames(
+        'bg-surface-2 rounded-full',
+        'text-text-primary text-sm',
+        className,
+      )}
+      stateClassNameOverrides="before:rounded-full"
+      ref={ref}
+      {...rest}
+    />
+  );
+});
+
 export interface SelectOptionsProps
   extends WithChildren<WithClassnames<SelectContentProps>> {
-  header?: React.ReactNode;
+  header?: ReactNode;
   viewportClassName?: string;
 }
 
@@ -87,8 +125,8 @@ const Options = forwardRef<HTMLDivElement, SelectOptionsProps>(function Options(
 });
 
 export interface SelectOptionProps extends WithClassnames<SelectItemProps> {
-  selectionStartIcon?: React.ReactNode;
-  selectionEndIcon?: React.ReactNode;
+  selectionStartIcon?: ReactNode;
+  selectionEndIcon?: ReactNode;
 }
 
 const Option = forwardRef<HTMLDivElement, SelectOptionProps>(function Option(
@@ -103,14 +141,19 @@ const Option = forwardRef<HTMLDivElement, SelectOptionProps>(function Option(
   },
   ref,
 ) {
+  const hoverStateOverlayClassNames = getStateOverlayClassNames({
+    borderRadiusVariant: 'base',
+  });
+
   return (
     <SelectItem
       className={mergeClassNames(
-        'flex select-none items-center justify-between text-xs',
-        'text-text-tertiary rounded p-1 transition',
-        disabled
-          ? 'cursor-not-allowed'
-          : 'text-text-tertiary hover:bg-overlay-hover/5 data-[state=checked]:text-text-primary cursor-pointer',
+        'flex items-center justify-between gap-x-1',
+        'select-none rounded p-1',
+        'text-text-secondary text-xs',
+        'data-[state=checked]:text-text-primary',
+        disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+        hoverStateOverlayClassNames,
         className,
       )}
       ref={ref}
@@ -131,6 +174,7 @@ const Option = forwardRef<HTMLDivElement, SelectOptionProps>(function Option(
 export const Select = {
   Root,
   Trigger,
+  PillTrigger,
   Options,
   Option,
 };

@@ -13,7 +13,6 @@ export const NOOP_TOKEN: Token = {
 };
 
 export const NOOP_MARKET_DETAILS: MarketDetailsMetadata = {
-  subtitle: '',
   description: '',
-  cmcLink: '',
+  moreDetailsLink: '',
 };

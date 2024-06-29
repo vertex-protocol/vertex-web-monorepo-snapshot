@@ -1,13 +1,19 @@
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import Image from 'next/image';
 import { SocialSharingTheme } from '../hooks/socialSharingConfig';
 
 interface Props {
   themes: SocialSharingTheme[];
+  selectedTheme: SocialSharingTheme;
   setTheme: (theme: SocialSharingTheme) => void;
 }
 
-export function SocialSharingThemeSelector({ themes, setTheme }: Props) {
+export function SocialSharingThemeSelector({
+  themes,
+  selectedTheme,
+  setTheme,
+}: Props) {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="text-text-primary px-5">Choose theme</div>
@@ -21,8 +27,12 @@ export function SocialSharingThemeSelector({ themes, setTheme }: Props) {
             return (
               <SecondaryButton
                 key={id}
-                size="lg"
-                className="divide-overlay-divider/10 bg-surface-1 flex w-28 flex-col divide-y p-0"
+                className={joinClassNames(
+                  'divide-overlay-divider/10 bg-surface-1 flex w-28 flex-col divide-y border p-0',
+                  selectedTheme === theme
+                    ? 'border-accent bg-surface-2'
+                    : 'border-transparent',
+                )}
                 onClick={() => setTheme(theme)}
               >
                 <div className="relative h-14 w-full p-2">

@@ -1,6 +1,11 @@
 import * as Popover from '@radix-ui/react-popover';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { Button, Icons, SecondaryButton } from '@vertex-protocol/web-ui';
+import {
+  Button,
+  getStateOverlayClassNames,
+  Icons,
+  SecondaryButton,
+} from '@vertex-protocol/web-ui';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { DialogType } from 'client/modules/app/dialogs/types';
 
@@ -44,7 +49,6 @@ export function MarginManagerTableActionsPopover({
             'px-1.5',
             className,
           )}
-          size="md"
         >
           <Icons.FiMoreVertical size={18} />
         </SecondaryButton>
@@ -86,14 +90,20 @@ export function MarginManagerTableActionsPopover({
             return false;
           })();
 
+          const hoverStateOverlayClassNames = getStateOverlayClassNames({
+            borderRadiusVariant: 'base',
+          });
+
           return (
             <Popover.Close asChild key={type}>
               <Button
                 className={joinClassNames(
-                  'hover:bg-surface-2 rounded',
                   'flex items-center justify-start',
-                  'px-1.5 py-px',
-                  'text-text-tertiary hover:bg-overlay-hover/5 text-xs capitalize',
+                  'rounded px-1.5 py-px',
+                  'text-xs capitalize',
+                  isActionDisabled
+                    ? 'text-disabled'
+                    : ['text-text-secondary', hoverStateOverlayClassNames],
                 )}
                 disabled={isActionDisabled}
                 onClick={() => performOnClickAction(action)}

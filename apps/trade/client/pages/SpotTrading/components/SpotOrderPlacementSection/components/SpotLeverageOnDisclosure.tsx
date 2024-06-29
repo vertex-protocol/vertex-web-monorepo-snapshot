@@ -7,7 +7,7 @@ import {
   PrimaryButton,
 } from '@vertex-protocol/web-ui';
 import { LinkButton } from 'client/components/LinkButton';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -34,13 +34,12 @@ export function SpotLeverageOnDisclosure() {
       />
       <div
         className={joinClassNames(
-          'bg-surface-1',
+          'bg-surface-card',
           'absolute z-20 flex flex-col',
-          'gap-y-4 px-4 pb-2.5',
+          'gap-y-4 p-3 pt-0',
         )}
       >
         <DisclosureCard
-          className="border-stroke bg-surface-1 border"
           title="Switching Leverage ON"
           description={
             <div className="flex flex-col gap-y-2.5">
@@ -53,7 +52,7 @@ export function SpotLeverageOnDisclosure() {
                 <DiscList.Item>
                   <LinkButton
                     as={Link}
-                    color="accent"
+                    colorVariant="accent"
                     href={LINKS.spotTradingLearnMore}
                     external
                   >
@@ -63,7 +62,7 @@ export function SpotLeverageOnDisclosure() {
                 <DiscList.Item>
                   <LinkButton
                     as={Link}
-                    color="accent"
+                    colorVariant="accent"
                     href={LINKS.termsOfUse}
                     external
                   >
@@ -81,14 +80,14 @@ export function SpotLeverageOnDisclosure() {
                 id="spot-leverage-disclaimer"
                 checked={checked}
                 onCheckedChange={onCheckedChange}
+                sizeVariant="xs"
               />
-              <Checkbox.Label id="spot-leverage-disclaimer">
+              <Checkbox.Label id="spot-leverage-disclaimer" sizeVariant="xs">
                 I understand the risks
               </Checkbox.Label>
             </Checkbox.Row>
           </div>
           <PrimaryButton
-            size="lg"
             className="w-full"
             disabled={!checked}
             onClick={dismissLeverageDisclosure}

@@ -2,7 +2,7 @@ import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DialogType } from 'client/modules/app/dialogs/types';
 import { useEffect } from 'react';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 
 /**
  * Manages app-wide flows for automatically showing / hiding dialogs

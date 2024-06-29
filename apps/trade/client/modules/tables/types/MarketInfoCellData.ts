@@ -6,6 +6,8 @@ export interface MarketInfoCellData {
   marketName: string;
   icon: TokenIconMetadata;
   symbol: string;
+  quoteSymbol: string;
+  isPrimaryQuote: boolean;
   amountForSide: BigDecimal;
   productType: ProductEngineType;
   sizeIncrement: BigDecimal;

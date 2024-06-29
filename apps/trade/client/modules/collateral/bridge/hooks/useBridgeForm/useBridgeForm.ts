@@ -1,9 +1,9 @@
-import { toBigDecimal } from '@vertex-protocol/utils';
+import { removeDecimals, toBigDecimal } from '@vertex-protocol/utils';
 import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useDebounce } from 'ahooks';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 import { useRequiresInitialDeposit } from 'client/hooks/subaccount/useRequiresInitialDeposit';
@@ -22,8 +22,7 @@ import { useBridgeFormData } from 'client/modules/collateral/bridge/hooks/useBri
 import { useBridgeFormOnChangeSideEffects } from 'client/modules/collateral/bridge/hooks/useBridgeForm/useBridgeFormOnChangeSideEffects';
 import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { referralCodeAtom } from 'client/store/rewardsStore';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { blitzReferralCodeAtom } from 'client/store/referralsStore';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { useAtom } from 'jotai';
@@ -31,7 +30,8 @@ import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 export function useBridgeForm(): UseBridgeForm {
-  const [referralCodeAtomValue] = useAtom(referralCodeAtom);
+  // Only blitz uses our backend referral system
+  const [referralCodeAtomValue] = useAtom(blitzReferralCodeAtom);
   const { dispatchNotification } = useNotificationManagerContext();
   const isInitialDeposit = useRequiresInitialDeposit();
 

@@ -3,8 +3,7 @@ import {
   PerpBalanceWithProduct,
   SpotBalanceWithProduct,
 } from '@vertex-protocol/contracts';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { BigDecimals } from 'client/utils/BigDecimals';
+import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 
 export interface InitialMaintMetrics {
   initial: BigDecimal;

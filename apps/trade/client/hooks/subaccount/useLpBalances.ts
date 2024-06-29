@@ -3,16 +3,20 @@ import {
   calcLpBalanceValue,
   ProductEngineType,
 } from '@vertex-protocol/contracts';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { createQueryKey } from '@vertex-protocol/web-data';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { BigDecimals } from 'client/utils/BigDecimals';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
+import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import {
   calcLpBalanceHealth,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import {
   PerpProductMetadata,
@@ -57,6 +61,11 @@ function lpBalancesQueryKey(lastUpdated: number) {
   return createQueryKey('lpBalances', lastUpdated);
 }
 
+/**
+ * Fetches LP balances for the current subaccount
+ *
+ * Note: Also includes balances where the pool is disabled (when quote for the market isn't product ID of 0)
+ */
 export function useLpBalances(): UseLpBalances {
   const {
     data: summaryData,
@@ -64,7 +73,7 @@ export function useLpBalances(): UseLpBalances {
     isLoading: summaryLoading,
     dataUpdatedAt,
   } = useCurrentSubaccountSummary();
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
 
   const disabled = !summaryData;
 

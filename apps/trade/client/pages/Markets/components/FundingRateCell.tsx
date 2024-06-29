@@ -1,7 +1,7 @@
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { marketsPageFundingRatePeriodAtom } from 'client/store/marketsPageStore';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { useAtom } from 'jotai';
 import { PerpMarketTableItem } from '../hooks/usePerpMarketsTable';

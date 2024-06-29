@@ -24,6 +24,9 @@ import { handleActionErrorHandlerNotificationDispatch } from 'client/modules/not
 import { handleCloseMultiPositionsNotificationDispatch } from 'client/modules/notifications/handlers/handleCloseMultiPositionsNotificationDispatch';
 import { useEnableTradingNotifications } from '../trading/hooks/useEnableTradingNotifications';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
+import { handleAcceptReferralNotificationDispatch } from './handlers/handleAcceptReferralNotificationDispatch';
+import { ReferralNotificationsEmitter } from './emitters/ReferralNotificationsEmitter';
+import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
 
 type NotificationManagerContextData = {
   dispatchNotification(params: DispatchNotificationParams): void;
@@ -48,20 +51,26 @@ export function NotificationManagerContextProvider({ children }: WithChildren) {
     useEnableTradingNotifications().enableTradingNotifications,
   );
 
+  const getConfirmedTxPromise = useGetConfirmedTxPromise();
+
   const dispatchContext = useMemo((): NotificationDispatchContext => {
     return {
       isSingleSignature: isSingleSignatureSession,
+      getConfirmedTxPromise,
     };
-  }, [isSingleSignatureSession]);
+  }, [getConfirmedTxPromise, isSingleSignatureSession]);
 
   const dispatchNotification = useCallback(
     (params: DispatchNotificationParams) => {
       switch (params.type) {
         case 'action_error_handler':
-          handleActionErrorHandlerNotificationDispatch(params.data);
+          handleActionErrorHandlerNotificationDispatch(
+            params.data,
+            dispatchContext,
+          );
           break;
         case 'bridge_deposit':
-          handleBridgeDepositNotificationDispatch(params.data);
+          handleBridgeDepositNotificationDispatch(params.data, dispatchContext);
           break;
         case 'cancel_order':
           if (enableTradingNotificationsRef.current) {
@@ -111,6 +120,9 @@ export function NotificationManagerContextProvider({ children }: WithChildren) {
         case 'new_feature':
           handleNewFeatureNotificationDispatch(params.data);
           break;
+        case 'accept_referral':
+          handleAcceptReferralNotificationDispatch(params.data);
+          break;
       }
     },
     [dispatchContext, enableTradingNotificationsRef],
@@ -127,6 +139,7 @@ export function NotificationManagerContextProvider({ children }: WithChildren) {
       <Toaster position="bottom-right" gutter={8} />
       <SubaccountNotificationsEventEmitter />
       <NewFeatureNotificationsEmitter />
+      <ReferralNotificationsEmitter />
       {children}
     </NotificationManagerContext.Provider>
   );

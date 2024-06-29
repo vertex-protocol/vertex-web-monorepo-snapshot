@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { BigDecimals } from './BigDecimals';
+import { BigDecimals } from '@vertex-protocol/utils';
 
 /**
  * Util to safely divide two numbers or BigDecimals.

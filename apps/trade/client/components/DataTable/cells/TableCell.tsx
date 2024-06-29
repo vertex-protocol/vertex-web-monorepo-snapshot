@@ -14,7 +14,7 @@ export function TableCell({ className, children, onClick }: TableCellProps) {
     <div
       className={mergeClassNames(
         'text-text-primary whitespace-nowrap text-xs',
-        'pointer-events-none flex h-full items-center pl-4',
+        'pointer-events-none flex h-full items-center',
         className,
       )}
       onClick={onClick}

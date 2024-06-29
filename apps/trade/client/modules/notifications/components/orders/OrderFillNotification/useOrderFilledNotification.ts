@@ -1,5 +1,5 @@
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { useMemo } from 'react';
 import {

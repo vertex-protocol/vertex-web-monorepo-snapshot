@@ -1,6 +1,9 @@
+import { removeDecimals } from '@vertex-protocol/utils';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
+import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 
 import {
   RealizedPnlEvent,
@@ -10,13 +13,11 @@ import {
 import { MarketFilter } from 'client/types/MarketFilter';
 import { calcPerpEntryCostBeforeLeverage } from 'client/utils/calcs/perpEntryCostCalcs';
 import { calcPnlFrac } from 'client/utils/calcs/pnlCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 import { RealizedPnlEventItem } from '../types/RealizedPnlEventItem';
-import { secondsToMilliseconds } from 'date-fns';
 
 interface Params {
   marketFilter?: MarketFilter;
@@ -33,13 +34,12 @@ export const useRealizedPnlEventsTable = ({
   pageSize,
   enablePagination,
 }: Params) => {
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
   const {
     filteredMarkets,
     filteredProductIds,
     isLoading: loadingFilteredMarkets,
   } = useFilteredMarkets(marketFilter);
-
   const {
     data: realizedPnlEvents,
     isLoading: loadingRealizedPnlEvents,
@@ -50,20 +50,22 @@ export const useRealizedPnlEventsTable = ({
     pageSize,
     productIds: filteredProductIds,
   });
+  const { data: allMarketsStaticData } = useAllMarketsStaticData();
 
   const { getPageData, pageCount, paginationState, setPaginationState } =
     useDataTablePagination<RealizedPnlEventsResponse, RealizedPnlEvent>({
       pageSize,
-      queryPageCount: realizedPnlEvents?.pages.length,
+      numPagesFromQuery: realizedPnlEvents?.pages.length,
       hasNextPage,
       fetchNextPage,
       extractItems,
     });
 
   const mappedData: RealizedPnlEventItem[] | undefined = useMemo(() => {
-    if (!realizedPnlEvents || !filteredMarkets) {
-      return undefined;
+    if (!realizedPnlEvents || !filteredMarkets || !allMarketsStaticData) {
+      return;
     }
+
     // Default to first page if there isn't pagination
     const pageData = enablePagination
       ? getPageData(realizedPnlEvents)
@@ -81,17 +83,14 @@ export const useRealizedPnlEventsTable = ({
           exitPrice,
           preBalances,
         }): RealizedPnlEventItem | undefined => {
-          const market = filteredMarkets[productId];
+          const marketData = filteredMarkets[productId];
+          const quoteData = allMarketsStaticData.quotes[productId];
 
-          if (!market) {
-            console.warn(
-              '[useRealizedPnlTable] Could not find product',
-              productId,
-            );
+          if (!marketData || !quoteData) {
             return;
           }
 
-          const { icon, symbol } = getBaseProductMetadata(market.metadata);
+          const { icon, symbol } = getBaseProductMetadata(marketData.metadata);
 
           const decimalAdjustedFilledAmount = removeDecimals(
             reduceOnlyBaseFilledAmount,
@@ -109,24 +108,29 @@ export const useRealizedPnlEventsTable = ({
             preEventTrackedVars.netEntryUnrealized.multipliedBy(filledFraction);
           const realizedPnlFrac = calcPnlFrac(
             realizedPnl,
-            calcPerpEntryCostBeforeLeverage(market, filledNetEntryUnrealized),
+            calcPerpEntryCostBeforeLeverage(
+              marketData,
+              filledNetEntryUnrealized,
+            ),
           );
           const realizedPnlUsd =
             decimalAdjustedRealizedPnl.multipliedBy(quotePrice);
           const marketPriceFormatSpecifier = getMarketPriceFormatSpecifier(
-            market.priceIncrement,
+            marketData.priceIncrement,
           );
 
           return {
             timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
             marketInfo: {
-              marketName: market.metadata.marketName,
+              marketName: marketData.metadata.marketName,
               icon,
               symbol,
+              quoteSymbol: quoteData.symbol,
+              isPrimaryQuote: quoteData.isPrimaryQuote,
               amountForSide: decimalAdjustedPreBalanceAmount,
-              productType: market.type,
-              priceIncrement: market.priceIncrement,
-              sizeIncrement: market.sizeIncrement,
+              productType: marketData.type,
+              priceIncrement: marketData.priceIncrement,
+              sizeIncrement: marketData.sizeIncrement,
             },
             pnlInfo: {
               realizedPnlFrac,
@@ -142,6 +146,7 @@ export const useRealizedPnlEventsTable = ({
       )
       .filter(nonNullFilter);
   }, [
+    allMarketsStaticData,
     enablePagination,
     filteredMarkets,
     getPageData,

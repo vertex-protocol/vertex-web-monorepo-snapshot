@@ -27,7 +27,6 @@ export function HistoryTabsPopover({
     <Popover.Root>
       <Popover.Trigger asChild>
         <SecondaryButton
-          size="md"
           className="text-text-tertiary rounded p-0.5 lg:p-1"
           startIcon={<Icons.FiMoreVertical className="text-sm lg:text-lg" />}
         />

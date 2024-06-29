@@ -1,7 +1,7 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import Image, { ImageProps } from 'next/image';
 import Link from 'next/link';
-import React, { ComponentPropsWithRef, ReactNode } from 'react';
+import { ComponentPropsWithRef, ReactNode } from 'react';
 import { RxArrowRight, RxExternalLink } from 'react-icons/rx';
 
 interface EdgeTileLinkProps
@@ -13,7 +13,7 @@ interface EdgeTileLinkProps
   linkIconClassName?: string;
 }
 
-const transClassName = 'transition-all duration-300 ease-in-out';
+const transClassName = 'transition-all duration-300';
 
 const innerBoxClassName = joinClassNames(
   'flex w-full min-w-[86px] h-[86px] items-center justify-center',

@@ -1,68 +1,69 @@
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useLbaTokenWalletBalances } from 'client/hooks/query/vrtxToken/useLbaTokenWalletBalances';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import { useMemo } from 'react';
 
 export function VrtxBalancesCard() {
   const showDialogForProduct = useShowDialogForProduct();
   const userActionState = useUserActionState();
-  const { protocolToken, protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data: lbaTokenWalletBalances } = useLbaTokenWalletBalances();
   const { balances } = useSpotBalances();
 
   const { decimalAdjustedSpotBalance, decimalAdjustedWalletBalance } =
     useMemo(() => {
       const vrtxSpotBalance = balances?.find(
-        (balance) => balance.productId === protocolTokenProductId,
+        (balance) => balance.productId === protocolTokenMetadata.productId,
       );
 
       return {
         decimalAdjustedSpotBalance: vrtxSpotBalance?.amount,
         decimalAdjustedWalletBalance: removeDecimals(
           lbaTokenWalletBalances?.vrtx.balanceAmount,
-          protocolToken.tokenDecimals,
+          protocolTokenMetadata.token.tokenDecimals,
         ),
       };
     }, [
       balances,
       lbaTokenWalletBalances,
-      protocolToken.tokenDecimals,
-      protocolTokenProductId,
+      protocolTokenMetadata.token.tokenDecimals,
+      protocolTokenMetadata.productId,
     ]);
 
   const onDepositVrtxClick = () => {
     showDialogForProduct({
       dialogType: 'deposit',
-      productId: protocolTokenProductId,
+      productId: protocolTokenMetadata.productId,
     });
   };
   const onWithdrawVrtxClick = () => {
     showDialogForProduct({
       dialogType: 'withdraw',
-      productId: protocolTokenProductId,
+      productId: protocolTokenMetadata.productId,
     });
   };
 
   return (
     <RewardsCard.Container className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-      <RewardsCard.MetricStackedItem
+      <ValueWithLabel.Vertical
         label="VRTX Balance"
         value={decimalAdjustedSpotBalance}
-        formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-        symbol={VRTX_TOKEN_INFO.symbol}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+        valueEndElement={VRTX_TOKEN_INFO.symbol}
       />
-      <RewardsCard.MetricStackedItem
+      <ValueWithLabel.Vertical
         label="VRTX in Wallet"
         value={decimalAdjustedWalletBalance}
-        formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-        symbol={VRTX_TOKEN_INFO.symbol}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+        valueEndElement={VRTX_TOKEN_INFO.symbol}
       />
       <div className="col-span-2 flex items-center gap-x-3">
         <SecondaryButton

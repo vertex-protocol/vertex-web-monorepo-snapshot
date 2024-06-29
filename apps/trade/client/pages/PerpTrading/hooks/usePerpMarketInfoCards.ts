@@ -1,19 +1,17 @@
-import { BigDecimal } from '@vertex-protocol/utils';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { useLatestPriceChange } from 'client/hooks/markets/useLatestPriceChange';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
 import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
 import { useNextFundingTime } from 'client/modules/trading/hooks/useNextFundingTime';
-
-import { useSelectedPerpMarket } from 'client/pages/PerpTrading/hooks/useSelectedPerpMarket';
+import { usePerpOrderFormContext } from 'client/pages/PerpTrading/context/PerpOrderFormContext';
 import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
 import {
   AnnotatedPerpMarket,
   PerpProductMetadata,
@@ -44,11 +42,11 @@ interface UsePerpMarketInfoCards {
 
 export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
   const { primaryQuoteToken } = useVertexMetadataContext();
-  const { currentMarket: staticMarketData } = useSelectedPerpMarket();
+  const { currentMarket: staticMarketData } = usePerpOrderFormContext();
   const productId = staticMarketData?.productId;
 
   const { data: perpMarket } = useMarket<AnnotatedPerpMarket>({ productId });
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
   const { millisToNextFunding } = useNextFundingTime();
   const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
   const { data: fundingRatesData } = useAllMarkets24HrFundingRates();
@@ -88,7 +86,9 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
       indexPrice,
       priceChange24hr: marketPriceChange,
       priceChangeFrac24hr: marketMetrics?.pastDayPriceChangeFrac,
-      quoteVolume24hr: removeDecimals(marketMetrics?.pastDayVolumeQuote),
+      quoteVolume24hr: removeDecimals(
+        marketMetrics?.pastDayVolumeInPrimaryQuote,
+      ),
       latestPriceChange: latestPriceChange ?? marketPriceChange,
     };
   }, [

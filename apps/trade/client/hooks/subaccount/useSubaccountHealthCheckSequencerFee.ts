@@ -1,6 +1,6 @@
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
 import { useMemo } from 'react';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 
 /**
  * Returns the decimal adjusted health check sequencer fee, which is taken for mint / burn LP events

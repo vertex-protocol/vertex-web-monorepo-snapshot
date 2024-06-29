@@ -9,7 +9,7 @@ export function SignatureModeSlowModeEntrypoint({ className }: WithClassnames) {
     <div className={mergeClassNames('text-xs', className)}>
       Using a Safe or another smart contract wallet?{' '}
       <LinkButton
-        color="white"
+        colorVariant="primary"
         onClick={() => {
           show({
             type: 'signature_mode_slow_mode_settings',

@@ -21,6 +21,10 @@ export interface Token extends BaseProductMetadata {
 
 export interface SpotProductMetadata {
   token: Token;
+  // For usual cases, this is the product ID of 0
+  quoteProductId: number;
+  // Whether LPs are enabled
+  hasLpPool: boolean;
   marketName: string;
   marketDetails: MarketDetailsMetadata;
 }
@@ -28,6 +32,10 @@ export interface SpotProductMetadata {
 export interface PerpProductMetadata extends BaseProductMetadata {
   marketName: string;
   marketDetails: MarketDetailsMetadata;
+  // For usual cases, this is the product ID of 0
+  quoteProductId: number;
+  // Whether LPs are enabled
+  hasLpPool: boolean;
 }
 
 export interface AnnotatedSpotBalanceWithProduct

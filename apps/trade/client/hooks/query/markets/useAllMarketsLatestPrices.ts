@@ -1,14 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
+import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 
 import { AllLatestMarketPricesData } from './types';
 
@@ -20,7 +19,7 @@ export function allLatestMarketPricesQueryKey(
 }
 
 export function useAllMarketsLatestPrices() {
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const primaryChainId = usePrimaryChainId();
   const { filteredProductIds: allProductIds } = useFilteredMarkets();
 

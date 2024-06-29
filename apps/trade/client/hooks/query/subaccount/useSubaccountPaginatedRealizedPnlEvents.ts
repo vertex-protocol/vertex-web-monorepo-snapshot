@@ -6,13 +6,13 @@ import {
 } from '@vertex-protocol/indexer-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { calcOrderFillPrice } from 'client/utils/calcs/calcOrderFillPrice';
 import { calcPreMatchEventBalanceAmount } from 'client/utils/calcs/calcPreMatchEventBalanceAmount';
 import { isReducePositionMatchEvent } from 'client/utils/isReducePositionMatchEvent';
@@ -64,7 +64,7 @@ export function useSubaccountPaginatedRealizedPnlEvents({
   productIds,
 }: Params) {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
     currentSubaccount: { address: subaccountOwner, name: subaccountName },
   } = useSubaccountContext();

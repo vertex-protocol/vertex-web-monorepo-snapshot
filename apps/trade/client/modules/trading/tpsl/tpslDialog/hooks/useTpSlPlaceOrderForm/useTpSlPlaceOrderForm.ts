@@ -8,8 +8,8 @@ import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubacco
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { watchFormError } from 'client/utils/form/watchFormError';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';

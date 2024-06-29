@@ -1,12 +1,10 @@
 import { UserTutorialFlowStepID } from 'client/modules/localstorage/userState/types/userTutorialFlowTypes';
 import { useSavedUserState } from 'client/modules/localstorage/userState/useSavedUserState';
 import { useCallback } from 'react';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 
 export function useTutorialFlowState() {
   const { savedUserState, setSavedUserState, didLoadPersistedValue } =
     useSavedUserState();
-  const { trackEvent } = useAnalyticsContext();
 
   const markStepAsComplete = useCallback(
     (step: UserTutorialFlowStepID) => {
@@ -20,16 +18,11 @@ export function useTutorialFlowState() {
   );
 
   const dismissFlow = useCallback(() => {
-    trackEvent({
-      type: 'tutorial_flow',
-      data: { tutorialStatus: 'dismissed' },
-    });
-
     setSavedUserState((prev) => {
       prev.tutorial.isDismissed = true;
       return prev;
     });
-  }, [trackEvent, setSavedUserState]);
+  }, [setSavedUserState]);
 
   return {
     tutorialFlowState: savedUserState.tutorial,

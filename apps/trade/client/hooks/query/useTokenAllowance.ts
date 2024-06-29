@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { IERC20__factory } from '@vertex-protocol/client';
-import { toBigDecimal } from '@vertex-protocol/utils';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   useEVMContext,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
+import { toBigDecimal } from '@vertex-protocol/utils';
 import { ZeroAddress } from 'ethers';
 
 interface Params {
@@ -25,15 +25,15 @@ export function tokenAllowanceQueryKey(
   return createQueryKey(
     'tokenAllowance',
     chainId,
-    accountAddress,
-    spenderAddress,
-    tokenAddress,
+    accountAddress?.toLowerCase(),
+    spenderAddress?.toLowerCase(),
+    tokenAddress?.toLowerCase(),
   );
 }
 
 export function useTokenAllowance({ tokenAddress, spenderAddress }: Params) {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
     connectionStatus: { address },
   } = useEVMContext();
@@ -45,8 +45,8 @@ export function useTokenAllowance({ tokenAddress, spenderAddress }: Params) {
     queryKey: tokenAllowanceQueryKey(
       primaryChainId,
       accountAddress,
-      tokenAddress,
       spenderAddress,
+      tokenAddress,
     ),
     queryFn: async () => {
       if (disabled) {

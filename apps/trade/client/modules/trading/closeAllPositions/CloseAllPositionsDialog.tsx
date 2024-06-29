@@ -54,7 +54,6 @@ function ActionButtons({
     <div className="flex flex-col gap-y-3">
       <SecondaryButton
         destructive
-        size="lg"
         isLoading={buttonState === 'loading'}
         onClick={closeAllPositions}
       >

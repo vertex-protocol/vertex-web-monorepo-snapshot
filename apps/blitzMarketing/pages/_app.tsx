@@ -10,7 +10,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 
 import backgroundImage from 'public/blitz/blitz-background.png';
-import { ibmMono } from 'utils/fonts';
+import { ibmMono, pixelify } from 'utils/fonts';
 import '../styles/globals.css';
 
 const queryClient = new QueryClient();
@@ -31,7 +31,9 @@ function App({ Component, pageProps }: AppProps) {
     <main
       className={joinClassNames(
         ibmMono.variable,
-        'font-pixelify antialiased',
+        pixelify.variable,
+        pixelify.className,
+        'antialiased',
         'relative h-screen w-screen overflow-hidden',
       )}
     >

@@ -1,16 +1,16 @@
 import {
-  NextImageSrc,
-  WithChildren,
   joinClassNames,
+  NextImageSrc,
   useCopyText,
+  WithChildren,
 } from '@vertex-protocol/web-common';
-import { getTruncatedAddress } from '@vertex-protocol/web-common/utils/getTruncatedAddress';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import { ButtonProps } from 'client/components/Button/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiCopy } from 'react-icons/fi';
 import { MdArrowOutward } from 'react-icons/md';
+import { getTruncatedAddress } from 'trade/client/utils/getTruncatedAddress';
 
 export type VrtxLinkProps = Exclude<ButtonProps<typeof Link>, 'as'>;
 

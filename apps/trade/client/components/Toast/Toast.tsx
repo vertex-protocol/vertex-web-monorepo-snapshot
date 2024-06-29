@@ -19,7 +19,7 @@ function Container({ visible, children, className }: ToastContainerProps) {
   return (
     <div
       className={mergeClassNames(
-        'flex flex-col rounded px-2 transition-opacity duration-200',
+        'flex flex-col rounded px-2 transition-opacity',
         'bg-background border-stroke group cursor-default overflow-clip border',
         // Apply a min-width to fit content without overflow with w-[360px] as the ideal width
         'max-w-screen w-[360px] min-w-min',
@@ -103,7 +103,7 @@ export function FooterLink({
   return (
     <LinkButton
       as={Link}
-      color="white"
+      colorVariant="primary"
       // w-max keeps the text content left-aligned, hence we don't need items-start from parent usages
       className={joinClassNames('text-2xs w-max', className)}
       {...rest}

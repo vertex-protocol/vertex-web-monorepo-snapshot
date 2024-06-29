@@ -5,6 +5,7 @@ interface SharedButtonProps {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   iconClassName?: string;
+  loadingIconSize?: number | string;
   disabled?: boolean;
   isLoading?: boolean;
 }
@@ -33,5 +34,3 @@ export type ButtonProps =
   | ButtonAsHTMLButtonProps
   | ButtonAsLinkProps
   | ButtonAsDivProps;
-
-export type StandardButtonSize = 'sm' | 'md' | 'lg';

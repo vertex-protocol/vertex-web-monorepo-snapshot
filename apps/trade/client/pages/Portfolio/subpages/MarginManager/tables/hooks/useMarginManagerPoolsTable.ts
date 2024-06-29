@@ -1,9 +1,9 @@
 import { BigDecimal, ProductEngineType } from '@vertex-protocol/client';
+import { BigDecimals } from '@vertex-protocol/utils';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useLpBalances } from 'client/hooks/subaccount/useLpBalances';
 import { QueryState } from 'client/types/QueryState';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
@@ -34,8 +34,8 @@ export function useMarginManagerPoolsTable(): QueryState<
   const { data: marketsStaticData, isLoading: marketsStaticDataLoading } =
     useAllMarketsStaticData();
   const { balances, isLoading: balancesLoading } = useLpBalances();
-  const quotePrice = useQuotePriceUsd();
-  const quoteMetadata = marketsStaticData?.quote;
+  const quotePrice = usePrimaryQuotePriceUsd();
+  const quoteMetadata = marketsStaticData?.primaryQuote;
 
   const mappedData = useMemo((): MarginManagerPoolsTableItem[] | undefined => {
     if (!quoteMetadata || !balances) {

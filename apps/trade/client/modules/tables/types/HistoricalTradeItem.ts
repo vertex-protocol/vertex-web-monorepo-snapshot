@@ -6,8 +6,7 @@ export interface HistoricalTradeItem {
   marketInfo: MarketInfoCellData;
   orderType: OrderType;
   timestampMillis: number;
-  tradeFee: BigDecimal;
-  sequencerFee: BigDecimal;
+  tradeFeeQuote: BigDecimal;
   filledPrice: BigDecimal;
   filledAmount: BigDecimal;
   filledAmountAbs: BigDecimal;

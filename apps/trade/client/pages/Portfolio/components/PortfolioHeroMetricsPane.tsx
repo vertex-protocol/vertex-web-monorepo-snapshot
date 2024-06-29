@@ -1,12 +1,11 @@
-import { BigDecimal } from '@vertex-protocol/client';
 import {
   WithChildren,
   WithClassnames,
   joinClassNames,
 } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
-import { LineItem } from 'client/components/LineItem/LineItem';
-import { LineItemMetricProps } from 'client/components/LineItem/types';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
 import { PRIVACY_BLUR_CLASSNAME } from 'client/modules/privacy/consts';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
@@ -61,36 +60,35 @@ function Header({
   );
 }
 
+interface ItemsProps extends WithClassnames<WithChildren> {
+  header: ReactNode;
+  childContainerClassNames?: string;
+}
+
 function Items({
   className,
   children,
   header,
   childContainerClassNames,
-}: WithClassnames<
-  WithChildren<{ header: ReactNode; childContainerClassNames?: string }>
->) {
+}: ItemsProps) {
   return (
-    <div className={joinClassNames('flex flex-col gap-y-2 text-sm', className)}>
-      <div className="text-text-primary">{header}</div>
+    <div className={joinClassNames('flex flex-col gap-y-2', className)}>
+      <div className="text-text-primary text-sm">{header}</div>
       <Divider />
       <div className={childContainerClassNames}>{children}</div>
     </div>
   );
 }
 
-function Item<TValue = BigDecimal>({
-  className,
-  valueClassName,
-  ...rest
-}: LineItemMetricProps<TValue>) {
+function Item({ valueClassName, ...rest }: ValueWithLabelProps) {
   const [areAccountValuesPrivate] = usePrivacySetting(
     'areAccountValuesPrivate',
   );
+
   return (
-    <LineItem.Metric
-      className={joinClassNames('text-2xs sm:text-xs', className)}
+    <ValueWithLabel.Horizontal
+      sizeVariant="sm"
       valueClassName={joinClassNames(
-        'text-2xs sm:text-xs',
         areAccountValuesPrivate && PRIVACY_BLUR_CLASSNAME,
         valueClassName,
       )}
@@ -102,5 +100,5 @@ function Item<TValue = BigDecimal>({
 export const PortfolioHeroMetricsPane = {
   Header,
   Items,
-  LineItem: Item,
+  ValueWithLabel: Item,
 };

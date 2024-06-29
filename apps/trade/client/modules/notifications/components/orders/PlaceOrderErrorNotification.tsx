@@ -4,7 +4,7 @@ import { ActionToast } from 'client/components/Toast/ActionToast/ActionToast';
 import { ToastProps } from 'client/components/Toast/types';
 import { PlaceOrderNotificationData } from 'client/modules/notifications/types';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { capitalize } from 'lodash';
 
 interface PlaceOrderErrorProps extends ToastProps {

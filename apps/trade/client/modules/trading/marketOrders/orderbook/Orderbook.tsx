@@ -1,10 +1,10 @@
+import { BigDecimals } from '@vertex-protocol/utils';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { OrderbookSettings } from 'client/modules/trading/marketOrders/orderbook/components/OrderbookSettings';
 import { OrderbookRowItem } from 'client/modules/trading/marketOrders/orderbook/hooks/types';
 import { useOrderbook } from 'client/modules/trading/marketOrders/orderbook/hooks/useOrderbook';
 import { orderbookViewTypeAtom } from 'client/store/trading/commonTradingStore';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import { safeDiv } from 'client/utils/safeDiv';
 import { useAtom } from 'jotai';
 import { useCallback } from 'react';
@@ -15,21 +15,14 @@ import { OrderbookPriceBox } from './components/OrderbookPriceBox';
 
 export interface Props extends WithClassnames {
   productId: number | undefined;
-  oneSidedDepth: number;
-  dualSidedDepth: number;
 }
+
+const DEPTH = 50;
 
 const SKELETON_ROW = <MarketOrderRow.Skeleton numCols={3} />;
 
-export function Orderbook({
-  className,
-  productId,
-  oneSidedDepth,
-  dualSidedDepth,
-}: Props) {
+export function Orderbook({ className, productId }: Props) {
   const [viewType] = useAtom(orderbookViewTypeAtom);
-
-  const depth = viewType === 'bids_and_asks' ? dualSidedDepth : oneSidedDepth;
 
   const {
     orderbookData,
@@ -39,7 +32,7 @@ export function Orderbook({
     priceFormatSpecifier,
     amountFormatSpecifier,
     cumulativeAmountSpecifier,
-    symbol,
+    amountSymbol,
     tickSpacingMultiplier,
     currentTickSpacing,
     setTickSpacingMultiplier,
@@ -47,7 +40,7 @@ export function Orderbook({
     setShowOrderbookTotalInQuote,
   } = useOrderbook({
     productId,
-    depth,
+    depth: DEPTH,
   });
 
   const renderRow = useCallback(
@@ -92,37 +85,17 @@ export function Orderbook({
   );
 
   const orderbook = (() => {
-    if (viewType === 'only_asks') {
-      return (
-        <MarketOrderRows
-          rows={orderbookData?.asks}
-          numRows={depth}
-          skeletonRow={SKELETON_ROW}
-          renderRow={renderRow}
-        />
-      );
-    }
-
-    if (viewType === 'only_bids') {
-      return (
-        <MarketOrderRows
-          numRows={depth}
-          rows={orderbookData?.bids}
-          skeletonRow={SKELETON_ROW}
-          renderRow={renderRow}
-        />
-      );
-    }
-
     return (
       <div className="flex h-full flex-col gap-y-1">
-        <MarketOrderRows
-          className="flex-1 flex-col-reverse"
-          rows={orderbookData?.asks}
-          numRows={depth}
-          skeletonRow={SKELETON_ROW}
-          renderRow={renderRow}
-        />
+        {viewType !== 'only_bids' && (
+          <MarketOrderRows
+            className="no-scrollbar flex-1 flex-col-reverse overflow-y-auto"
+            rows={orderbookData?.asks}
+            numRows={DEPTH}
+            skeletonRow={SKELETON_ROW}
+            renderRow={renderRow}
+          />
+        )}
         <OrderbookPriceBox
           lastPriceChange={lastPriceChange}
           lastPrice={lastPrice}
@@ -132,14 +105,17 @@ export function Orderbook({
             spreadFrac: orderbookData?.spread?.frac,
             isHighSpread: orderbookData?.spread?.isHigh,
           }}
+          viewType={viewType}
         />
-        <MarketOrderRows
-          className="flex-1"
-          numRows={depth}
-          rows={orderbookData?.bids}
-          skeletonRow={SKELETON_ROW}
-          renderRow={renderRow}
-        />
+        {viewType !== 'only_asks' && (
+          <MarketOrderRows
+            className="no-scrollbar flex-1 overflow-y-auto"
+            numRows={DEPTH}
+            rows={orderbookData?.bids}
+            skeletonRow={SKELETON_ROW}
+            renderRow={renderRow}
+          />
+        )}
       </div>
     );
   })();
@@ -154,6 +130,7 @@ export function Orderbook({
       <OrderbookSettings
         priceIncrement={orderbookData?.priceIncrement}
         symbol={orderbookData?.productMetadata.symbol}
+        quoteSymbol={orderbookData?.quoteSymbol}
         currentTickSpacing={currentTickSpacing}
         tickSpacingMultiplier={tickSpacingMultiplier}
         setTickSpacingMultiplier={setTickSpacingMultiplier}
@@ -163,11 +140,8 @@ export function Orderbook({
       <div className="flex flex-1 flex-col overflow-hidden">
         <MarketOrdersHeaderRow.Container>
           <MarketOrdersHeaderRow.Item label="Price" />
-          <MarketOrdersHeaderRow.Item
-            label="Size"
-            symbol={orderbookData?.productMetadata?.symbol}
-          />
-          <MarketOrdersHeaderRow.Item label="Total" symbol={symbol} />
+          <MarketOrdersHeaderRow.Item label="Size" />
+          <MarketOrdersHeaderRow.Item label="Total" symbol={amountSymbol} />
         </MarketOrdersHeaderRow.Container>
         <div className="no-scrollbar flex-1 overflow-y-auto">{orderbook}</div>
       </div>

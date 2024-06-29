@@ -2,8 +2,8 @@ import { LBA_AIRDROP_EPOCH } from '@vertex-protocol/client';
 import { Icons } from '@vertex-protocol/web-ui';
 
 import { VrtxRewardEpoch } from 'client/modules/rewards/types';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import {
   formatTimestamp,
   TimeFormatSpecifier,
@@ -28,7 +28,7 @@ export function VrtxClaimDeadlineWarning({
       <Icons.BsExclamation className="bg-overlay-accent/20 h-5 w-5 shrink-0 rounded-full" />
       <div>
         You have until{' '}
-        <span className="text-accent font-medium">
+        <span className="text-accent">
           {formatTimestamp(claimDeadlineMillis, {
             formatSpecifier: TimeFormatSpecifier.MMM_D_HH_12H_O,
           })}

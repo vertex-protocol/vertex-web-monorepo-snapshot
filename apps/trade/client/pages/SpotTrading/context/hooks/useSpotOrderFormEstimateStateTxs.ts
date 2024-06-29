@@ -1,22 +1,22 @@
-import { BalanceSide, QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { BalanceSide } from '@vertex-protocol/contracts';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { addDecimals } from 'client/utils/decimalAdjustment';
+import { addDecimals, BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
 
 interface Params {
   orderSide: BalanceSide;
   productId: number | undefined;
+  quoteProductId: number | undefined;
   enableMaxSizeLogic: boolean;
   validatedAssetAmountInput: BigDecimal | undefined;
   executionConversionPrice: BigDecimal | undefined;
-  maxAssetOrderSize?: BigDecimal;
+  maxAssetOrderSize: BigDecimal | undefined;
 }
 
 export function useSpotOrderFormEstimateStateTxs({
   orderSide,
   productId,
+  quoteProductId,
   enableMaxSizeLogic,
   validatedAssetAmountInput,
   executionConversionPrice,
@@ -30,6 +30,8 @@ export function useSpotOrderFormEstimateStateTxs({
 
     if (
       !productId ||
+      // We can't do !quoteProductId because it can be 0
+      quoteProductId == null ||
       !validatedAssetAmountInput ||
       !executionConversionPrice ||
       invalidOrderSize
@@ -50,7 +52,7 @@ export function useSpotOrderFormEstimateStateTxs({
       {
         type: 'apply_delta',
         tx: {
-          productId: QUOTE_PRODUCT_ID,
+          productId: quoteProductId,
           amountDelta: quoteAmountDelta,
           vQuoteDelta: BigDecimals.ZERO,
         },
@@ -69,6 +71,7 @@ export function useSpotOrderFormEstimateStateTxs({
     maxAssetOrderSize,
     validatedAssetAmountInput,
     productId,
+    quoteProductId,
     executionConversionPrice,
     orderSide,
   ]);

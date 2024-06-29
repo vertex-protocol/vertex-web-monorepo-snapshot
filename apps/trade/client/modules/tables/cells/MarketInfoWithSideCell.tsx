@@ -12,7 +12,6 @@ interface Props extends TableCellProps {
 }
 
 export function MarketInfoWithSideCell({
-  className,
   alwaysShowOrderDirection,
   marketInfo,
   ...rest
@@ -24,7 +23,6 @@ export function MarketInfoWithSideCell({
   return (
     <TableCell {...rest}>
       <MarketInfoWithSide
-        className={className}
         isPerp={isPerp}
         alwaysShowOrderDirection={alwaysShowOrderDirection}
         marketName={marketName}

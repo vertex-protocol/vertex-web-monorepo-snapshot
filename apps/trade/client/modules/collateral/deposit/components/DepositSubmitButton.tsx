@@ -36,7 +36,6 @@ export function DepositSubmitButton({
   return (
     <PrimaryButton
       className={className}
-      size="lg"
       type="submit"
       isLoading={isLoading}
       disabled={state === 'disabled'}

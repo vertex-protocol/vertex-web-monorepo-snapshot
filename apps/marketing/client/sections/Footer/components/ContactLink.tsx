@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import { EXTERNAL_LINKS } from 'client/consts';
 import Link from 'next/link';
@@ -6,7 +6,7 @@ import Link from 'next/link';
 export function ContactLink() {
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'inline items-center justify-start py-2',
         'text-white-700 text-left text-xs',
         'md:text-base',

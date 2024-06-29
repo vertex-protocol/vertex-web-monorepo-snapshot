@@ -6,11 +6,13 @@ import {
 } from '@vertex-protocol/web-ui';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RepayConvertTab } from 'client/modules/collateral/repay/components/RepayConvertTab';
 import { RepayDepositTab } from 'client/modules/collateral/repay/components/RepayDepositTab';
 import { useHasRepayableBalances } from 'client/modules/collateral/repay/hooks/useHasRepayableBalances';
+import { useEffect } from 'react';
 
 const TABS = [
   {
@@ -34,15 +36,25 @@ export function RepayDialog() {
     <BaseAppDialog onClose={hide}>
       <BaseDialog.Title onClose={hide}>Repay</BaseDialog.Title>
       {/*Relative required for the RepayConvertDisclosure*/}
-      <BaseDialog.Body className="relative flex flex-col">
-        {canRepay ? <RepayContent /> : <NoBorrows />}
+      <BaseDialog.Body className="relative">
+        {canRepay ? <RepayTabs /> : <NoBorrows />}
       </BaseDialog.Body>
     </BaseAppDialog>
   );
 }
 
-function RepayContent() {
+function RepayTabs() {
   const { setSelectedUntypedTabId, selectedTabId, tabs } = useTabs(TABS);
+  const { trackEvent } = useAnalyticsContext();
+
+  useEffect(() => {
+    trackEvent({
+      type: 'repay_tab_view',
+      data: {
+        repayDialogTab: selectedTabId,
+      },
+    });
+  }, [selectedTabId, trackEvent]);
 
   return (
     <Tabs.Root
@@ -57,10 +69,9 @@ function RepayContent() {
             return (
               <Tabs.Trigger value={id} key={id} asChild>
                 <SegmentedControl.Button
-                  size="lg"
                   as="div"
                   active={isSelected}
-                  className="w-full capitalize"
+                  className="flex-1 capitalize"
                 >
                   {id}
                 </SegmentedControl.Button>
@@ -81,12 +92,12 @@ function RepayContent() {
 function NoBorrows() {
   const { hide } = useDialog();
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex flex-col">
       <div className="text-text-primary flex flex-col items-center gap-y-2 text-center text-sm">
         <Icons.MdTaskAlt size={97} className="text-positive" />
         <div>You have no borrows at the moment.</div>
       </div>
-      <SecondaryButton size="lg" onClick={hide} className="mt-6 w-full">
+      <SecondaryButton onClick={hide} className="mt-6 w-full">
         Close
       </SecondaryButton>
     </div>

@@ -4,12 +4,12 @@ import {
 } from '@vertex-protocol/contracts';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { AnnotatedSubaccountSummary } from 'client/hooks/query/subaccount/annotateSubaccountSummary';
 import { useCurrentSubaccountEstimatedSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountEstimatedSummary';
 import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
 import { useDebounceFalsy } from 'client/hooks/util/useDebounceFalsy';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
 import { EmptyObject } from 'type-fest';
 
@@ -58,7 +58,7 @@ export function useEstimateSubaccountInfoChange<TAdditionalInfo = EmptyObject>({
     estimateStateTxs,
   });
 
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
 
   const estimatedSubaccountInfo = useMemo(() => {
     // If there are no transactions, force this to be undefined to indicate that there is no change

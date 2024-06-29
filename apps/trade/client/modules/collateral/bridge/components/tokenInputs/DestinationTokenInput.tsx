@@ -1,12 +1,20 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { Select, useSelect, SelectOption } from '@vertex-protocol/web-ui';
-import { BridgeTokenInput } from 'client/modules/collateral/bridge/components/tokenInputs/BridgeTokenInput';
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
+import {
+  CompactInput,
+  Select,
+  SelectOption,
+  useSelect,
+} from '@vertex-protocol/web-ui';
 import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/useBridgeForm/types';
 import { DestinationBridgeToken } from 'client/modules/collateral/bridge/types';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { BridgeTokenSelect } from './BridgeTokenSelect';
 
 interface Props {
   form: UseFormReturn<BridgeFormValues>;
@@ -14,6 +22,7 @@ interface Props {
   allDestinationTokens: DestinationBridgeToken[];
   estimatedReceiveAmount: BigDecimal | undefined;
   estimatedReceiveValueUsd: BigDecimal | undefined;
+  disabled?: boolean;
 }
 
 export function DestinationTokenInput({
@@ -22,6 +31,7 @@ export function DestinationTokenInput({
   allDestinationTokens,
   estimatedReceiveAmount,
   estimatedReceiveValueUsd,
+  disabled,
 }: Props) {
   const options = useMemo((): SelectOption<
     string,
@@ -51,55 +61,59 @@ export function DestinationTokenInput({
   const selectedVertexProductToken =
     selectedDestinationToken?.vertexProduct.metadata.token;
 
-  const disableSelect = allDestinationTokens.length === 0;
+  const selectElement = (
+    <Select.Root
+      value={value}
+      onValueChange={onValueChange}
+      open={open}
+      onOpenChange={onOpenChange}
+      disabled={disabled}
+    >
+      <BridgeTokenSelect.Trigger
+        open={open}
+        disabled={disabled}
+        selectedToken={
+          // Use the symbol / icon of the vertex product instead of what Axelar data gives
+          selectedVertexProductToken
+            ? {
+                iconUrl: selectedVertexProductToken.icon.url,
+                symbol: selectedVertexProductToken.symbol,
+              }
+            : undefined
+        }
+      />
+      <BridgeTokenSelect.Options>
+        {selectOptions.map((option) => {
+          const vertexProductToken =
+            option.original.vertexProduct.metadata.token;
+          return (
+            <BridgeTokenSelect.Option
+              isSelected={option.value === value}
+              key={vertexProductToken.address}
+              symbol={vertexProductToken.symbol}
+              iconUrl={vertexProductToken.icon.url}
+              optionValue={vertexProductToken.address}
+            />
+          );
+        })}
+      </BridgeTokenSelect.Options>
+    </Select.Root>
+  );
 
   return (
-    <BridgeTokenInput.Container>
-      <Select.Root
-        value={value}
-        onValueChange={onValueChange}
-        open={open}
-        onOpenChange={onOpenChange}
-        disabled={disableSelect}
-      >
-        <BridgeTokenInput.SelectTrigger
-          open={open}
-          selectedToken={
-            // Use the symbol / icon of the vertex product instead of what Axelar data gives
-            selectedVertexProductToken
-              ? {
-                  iconUrl: selectedVertexProductToken.icon.url,
-                  symbol: selectedVertexProductToken.symbol,
-                }
-              : undefined
-          }
-          disabled={disableSelect}
+    <CompactInput
+      readOnly
+      disabled={disabled}
+      value={formatNumber(estimatedReceiveAmount, {
+        formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
+      })}
+      inputContainerClassName="pl-0"
+      startElement={selectElement}
+      endElement={
+        <EstimatedCurrencyValueItem
+          estimatedValueUsd={estimatedReceiveValueUsd}
         />
-        <BridgeTokenInput.SelectOptions>
-          {selectOptions.map((option) => {
-            const vertexProductToken =
-              option.original.vertexProduct.metadata.token;
-            return (
-              <BridgeTokenInput.SelectOption
-                isSelected={option.value === value}
-                key={vertexProductToken.address}
-                symbol={vertexProductToken.symbol}
-                iconUrl={vertexProductToken.icon.url}
-                optionValue={vertexProductToken.address}
-              />
-            );
-          })}
-        </BridgeTokenInput.SelectOptions>
-      </Select.Root>
-      {/*Use type="text" here as we're formatting the number*/}
-      <BridgeTokenInput.Input
-        readOnly
-        value={formatNumber(estimatedReceiveAmount, {
-          formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
-        })}
-        estimatedValueUsd={estimatedReceiveValueUsd}
-        type="text"
-      />
-    </BridgeTokenInput.Container>
+      }
+    />
   );
 }

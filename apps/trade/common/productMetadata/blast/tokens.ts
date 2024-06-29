@@ -1,7 +1,7 @@
 import { blast, blastSepolia } from '@wagmi/core/chains';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import { TOKEN_ICONS } from 'common/productMetadata/tokenIcons';
 import { Token } from 'common/productMetadata/types';
+import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 
 const blastSepoliaChainId = blastSepolia.id;
 const blastMainnetChainId = blast.id;
@@ -15,7 +15,7 @@ export const USDB_BLAST_SEPOLIA: Token = {
   chainId: blastSepoliaChainId,
   tokenDecimals: 6,
   name: 'USDB',
-  symbol: PRIMARY_QUOTE_SYMBOL,
+  symbol: PRIMARY_QUOTE_SYMBOLS.usdb,
   icon: TOKEN_ICONS.usdb,
 };
 
@@ -46,7 +46,7 @@ export const USDB_BLAST: Token = {
   chainId: blastMainnetChainId,
   tokenDecimals: 18,
   name: 'USDB',
-  symbol: PRIMARY_QUOTE_SYMBOL,
+  symbol: PRIMARY_QUOTE_SYMBOLS.usdb,
   icon: TOKEN_ICONS.usdb,
 };
 

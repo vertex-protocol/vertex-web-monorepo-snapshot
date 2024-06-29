@@ -1,10 +1,10 @@
-import classNames from 'classnames';
 import { GradientButton } from 'client/components/Button/GradientButton';
 import { EXTERNAL_LINKS, SECTION_IDS } from 'client/consts';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HeroBanner } from './components/HeroBanner';
 import { HeroMetrics } from './components/HeroMetrics';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 // Images
 import desktopShots from 'client/sections/Hero/assets/desktop-hero-shots.svg';
@@ -16,7 +16,7 @@ export function Hero() {
 
   return (
     <section
-      className={classNames(
+      className={joinClassNames(
         'z-10 -mb-28 flex w-full gap-y-20',
         'flex-col justify-center overflow-visible',
         'sm:items-center sm:gap-y-8',
@@ -27,7 +27,7 @@ export function Hero() {
       <div className="flex flex-col gap-y-14 md:gap-y-20 lg:gap-y-28 xl:gap-y-32">
         <div className="flex flex-1 flex-col items-center justify-center gap-y-6 xl:gap-y-8">
           <div
-            className={classNames(
+            className={joinClassNames(
               'bg-black-800 border-white-400 text-white-700',
               'rounded-full border px-4 py-1.5 text-xs',
               'sm:text-sm',
@@ -38,7 +38,7 @@ export function Hero() {
           </div>
           <HeroBanner />
           <GradientButton
-            className={classNames(
+            className={joinClassNames(
               'z-20 px-8 py-2 text-sm',
               'sm:text-base',
               'lg:py-3 lg:text-lg',

@@ -3,7 +3,7 @@ import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
 import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
 import { LinkButton } from 'client/components/LinkButton';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -48,7 +48,7 @@ export function DelayedWithdrawalWarning() {
           </p>
           <LinkButton
             external
-            color="accent"
+            colorVariant="accent"
             as={Link}
             href={LINKS.faqGasFeesDocs}
             className="inline-flex items-center gap-x-0.5"

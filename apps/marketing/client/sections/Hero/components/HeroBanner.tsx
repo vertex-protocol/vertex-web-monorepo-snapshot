@@ -1,16 +1,16 @@
-import classNames from 'classnames';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function HeroBanner() {
   return (
     <div className="font-dmSans text-white-700 flex max-w-[682px] flex-col items-center gap-y-3.5 lg:gap-y-5">
       <div
-        className={classNames(
+        className={joinClassNames(
           'text-center font-sans font-bold',
           'md:tracking-normal',
         )}
       >
         <div
-          className={classNames(
+          className={joinClassNames(
             'text-xl leading-none text-purple-800',
             'sm:text-3xl',
             'lg:text-4xl',
@@ -20,7 +20,7 @@ export function HeroBanner() {
           Decentralized trading
         </div>
         <div
-          className={classNames(
+          className={joinClassNames(
             'text-6xl leading-tight text-white',
             'sm:-mt-2 sm:text-8xl',
             'lg:text-9xl',
@@ -31,7 +31,7 @@ export function HeroBanner() {
         </div>
       </div>
       <p
-        className={classNames(
+        className={joinClassNames(
           'px-3 text-center text-base leading-tight',
           'xs:px-10',
           'sm:px-32',

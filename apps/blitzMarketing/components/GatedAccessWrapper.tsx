@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import {
-  getIsGeolocationBlocked,
+  getIsGeolocationBlockedWithFetch,
   WithChildren,
 } from '@vertex-protocol/web-common';
 import { LocationRestrictedSection } from 'components/LocationRestrictedSection';
@@ -14,6 +14,6 @@ export function GatedAccessWrapper({ children }: WithChildren) {
 function useIsGeolocationBlocked() {
   return useQuery({
     queryKey: ['isGeolocationBlocked'],
-    queryFn: getIsGeolocationBlocked,
+    queryFn: getIsGeolocationBlockedWithFetch,
   });
 }

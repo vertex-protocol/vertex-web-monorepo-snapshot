@@ -1,6 +1,6 @@
 import { BalanceSide, BigDecimal } from '@vertex-protocol/client';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 
 interface Props {
   priceIncrement: BigDecimal | undefined;

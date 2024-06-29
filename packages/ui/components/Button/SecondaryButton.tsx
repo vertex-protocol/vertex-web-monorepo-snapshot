@@ -1,52 +1,56 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
 import { forwardRef } from 'react';
+import { SizeVariant } from '../../types';
+import { getStateOverlayClassNames } from '../../utils';
 import { Button } from './Button';
 import {
-  BUTTON_RING_CLASSNAME,
   STANDARD_BUTTON_HORIZONTAL_PADDING_CLASSNAME,
   STANDARD_BUTTON_TEXT_SIZE_CLASSNAME,
   STANDARD_BUTTON_VERTICAL_PADDING_CLASSNAME,
 } from './consts';
-import { ButtonProps, StandardButtonSize } from './types';
+import { ButtonProps } from './types';
 
 export type SecondaryButtonProps = ButtonProps & {
-  size: StandardButtonSize;
+  size?: SizeVariant;
   destructive?: boolean;
 };
 
+/**
+ * @param size - The size of the button. Default is 'base'.
+ * @param destructive - Whether the button is destructive or not. Default is false.
+ */
 export const SecondaryButton = forwardRef(function SecondaryButton(
-  { size, className, destructive, ...rest }: SecondaryButtonProps,
+  { size = 'base', className, destructive, ...rest }: SecondaryButtonProps,
   ref,
 ) {
+  const stateOverlayClassNames = getStateOverlayClassNames({
+    borderRadiusVariant: 'base',
+    disabled: rest.disabled,
+    isLoading: rest.isLoading,
+  });
+
   const stateClassNames = (() => {
-    if (rest.disabled || rest.isLoading) {
-      return [
-        'text-disabled bg-surface-card ring-disabled',
-        // The mergeClassNames on Button below will resolve the different text colors
-        rest.isLoading && destructive ? 'text-negative' : '',
-        rest.isLoading && !destructive ? 'text-text-tertiary' : '',
-      ];
+    if (rest.isLoading || rest.disabled) {
+      return 'text-text-primary border-disabled';
     }
-
-    const variantClassNames = destructive
-      ? 'hover:ring-negative hover:bg-surface-3 hover:text-negative'
-      : 'hover:ring-accent hover:bg-surface-3 hover:text-text-primary';
-
-    return ['text-text-primary bg-surface-2', 'ring-stroke', variantClassNames];
+    return [
+      destructive ? 'text-negative' : 'text-text-primary',
+      'border-transparent',
+    ];
   })();
 
   return (
     <Button
+      ref={ref}
       className={mergeClassNames(
-        'rounded',
-        BUTTON_RING_CLASSNAME,
+        'bg-surface-2 rounded border',
+        stateClassNames,
+        stateOverlayClassNames,
         STANDARD_BUTTON_HORIZONTAL_PADDING_CLASSNAME[size],
         STANDARD_BUTTON_VERTICAL_PADDING_CLASSNAME[size],
         STANDARD_BUTTON_TEXT_SIZE_CLASSNAME[size],
-        stateClassNames,
         className,
       )}
-      ref={ref}
       {...rest}
     />
   );

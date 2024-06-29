@@ -1,6 +1,6 @@
+import { BigDecimals } from '@vertex-protocol/utils';
 import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import { roundToDecimalPlaces } from 'client/utils/rounding';
 import { useEffect, useRef } from 'react';
 

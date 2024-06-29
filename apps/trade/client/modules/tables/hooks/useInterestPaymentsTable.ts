@@ -4,10 +4,10 @@ import {
   IndexerProductPayment,
 } from '@vertex-protocol/client';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useSubaccountPaginatedPaymentEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedPaymentEvents';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { SpotProductMetadata } from 'common/productMetadata/types';
 import { secondsToMilliseconds } from 'date-fns';
@@ -56,7 +56,7 @@ export function useInterestPaymentsTable({
       IndexerProductPayment
     >({
       pageSize,
-      queryPageCount: interestPaymentsData?.pages.length,
+      numPagesFromQuery: interestPaymentsData?.pages.length,
       hasNextPage,
       fetchNextPage,
       extractItems,
@@ -76,7 +76,7 @@ export function useInterestPaymentsTable({
       .map((item: IndexerProductPayment) => {
         const spotProduct =
           item.productId === QUOTE_PRODUCT_ID
-            ? allMarketsStaticData.quote
+            ? allMarketsStaticData.primaryQuote
             : allMarketsStaticData.spot[item.productId];
 
         if (!spotProduct) {

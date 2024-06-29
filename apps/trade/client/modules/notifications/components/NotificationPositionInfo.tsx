@@ -37,7 +37,7 @@ export function NotificationPositionInfo({
         src={metadata.icon.asset}
       />
       <div className="flex flex-col">
-        <p className="text-text-primary font-medium">{metadata.marketName}</p>
+        <p className="text-text-primary">{metadata.marketName}</p>
         <p
           className={joinClassNames(
             'text-2xs uppercase',

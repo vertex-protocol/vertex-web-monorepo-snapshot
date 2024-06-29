@@ -4,8 +4,8 @@ import {
   NextImageSrc,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import Image from 'next/image';
 
 interface Props extends WithClassnames {

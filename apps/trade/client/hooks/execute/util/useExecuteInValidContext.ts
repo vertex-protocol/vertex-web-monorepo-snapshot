@@ -1,14 +1,21 @@
 import { VertexClient } from '@vertex-protocol/client';
-import { useEVMContext, useVertexClient } from '@vertex-protocol/web-data';
+import {
+  useEVMContext,
+  usePrimaryChainPublicClient,
+  usePrimaryChainVertexClient,
+  usePrimaryChainWalletClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { Subaccount } from 'client/context/subaccount/types';
-import { useCallback, useMemo } from 'react';
-import { Chain } from 'viem';
+import { Signer } from 'ethers';
+import { useCallback } from 'react';
 
 export interface ValidExecuteContext {
-  primaryChain: Chain;
   vertexClient: VertexClient;
+  publicClient: NonNullable<ReturnType<typeof usePrimaryChainPublicClient>>;
+  walletClient: NonNullable<ReturnType<typeof usePrimaryChainWalletClient>>;
   subaccount: Required<Subaccount>;
+  signer: Signer;
 }
 
 /**
@@ -18,46 +25,47 @@ export interface ValidExecuteContext {
 export function useExecuteInValidContext<TParams = unknown, TData = unknown>(
   fn: (params: TParams, context: ValidExecuteContext) => Promise<TData>,
 ): (params: TParams) => Promise<TData> {
-  const vertexClient = useVertexClient();
-  const { connectionStatus, primaryChain } = useEVMContext();
+  const vertexClient = usePrimaryChainVertexClient();
+  const publicClient = usePrimaryChainPublicClient();
+  const walletClient = usePrimaryChainWalletClient();
+
   const {
-    currentSubaccount: { name: currentSubaccountName },
-  } = useSubaccountContext();
-
-  const executeContext = useMemo((): ValidExecuteContext | undefined => {
-    if (!vertexClient) {
-      return;
-    }
-    if (connectionStatus.type !== 'connected') {
-      return;
-    }
-
-    return {
-      vertexClient,
-      primaryChain,
-      subaccount: {
-        name: currentSubaccountName,
-        address: connectionStatus.address,
-      },
-    };
-  }, [
-    connectionStatus.address,
-    connectionStatus.type,
-    currentSubaccountName,
-    primaryChain,
-    vertexClient,
-  ]);
+    connectionStatus: { signer },
+  } = useEVMContext();
+  const { currentSubaccount } = useSubaccountContext();
 
   return useCallback(
     async (params: TParams) => {
-      if (connectionStatus.type !== 'connected') {
+      if (!vertexClient) {
+        throw new Error('Vertex client not initialized');
+      }
+      if (!publicClient) {
+        throw new Error('Public client not initialized');
+      }
+      if (!walletClient) {
+        throw new Error('Wallet client not initialized');
+      }
+
+      // Need to destructure here for typecheck statement on address to work
+      const { address, chainId, name } = currentSubaccount;
+      if (!address || !signer) {
         throw new Error('Wallet not connected');
       }
-      if (!executeContext) {
-        throw new Error('Execution context not initialized');
-      }
+
+      const executeContext: ValidExecuteContext = {
+        vertexClient,
+        publicClient,
+        walletClient,
+        signer,
+        subaccount: {
+          address,
+          chainId,
+          name,
+        },
+      };
+
       return fn(params, executeContext);
     },
-    [connectionStatus.type, executeContext, fn],
+    [currentSubaccount, fn, signer, vertexClient, publicClient, walletClient],
   );
 }

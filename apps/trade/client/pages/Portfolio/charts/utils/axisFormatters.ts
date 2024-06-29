@@ -1,8 +1,8 @@
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+} from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import {
   TimeFormatSpecifier,
   formatTimestamp,

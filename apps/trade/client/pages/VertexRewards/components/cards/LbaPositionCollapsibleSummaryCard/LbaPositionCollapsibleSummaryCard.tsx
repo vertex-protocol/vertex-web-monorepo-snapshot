@@ -1,13 +1,14 @@
-import { VERTEX_SPECIFIC_LINKS } from '@vertex-protocol/web-common';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { Divider, Icons, PrimaryButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
 import { LinkButton } from 'client/components/LinkButton';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
-
 import poolIcon from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/vrtx-lba-pool-icon.svg';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import { isBefore } from 'date-fns';
 import { now } from 'lodash';
 import Link from 'next/link';
@@ -56,17 +57,17 @@ export function LbaPositionCollapsibleSummaryCard() {
 
   const metricItems = (
     <>
-      <RewardsCard.StackedItem
-        definitionId="rewardsLbaPositionValue"
+      <ValueWithLabel.Vertical
+        tooltip={{ id: 'rewardsLbaPositionValue' }}
         label="Position"
-        value={positionValueContent}
+        valueContent={positionValueContent}
       />
-      <RewardsCard.MetricStackedItem
-        definitionId="rewardsLbaTotalRewardsEarned"
+      <ValueWithLabel.Vertical
+        tooltip={{ id: 'rewardsLbaTotalRewardsEarned' }}
         label="Total Rewards"
         value={totalRewardsEarned}
-        formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-        symbol={vrtxToken.symbol}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+        valueEndElement={vrtxToken.token.symbol}
       />
     </>
   );
@@ -79,7 +80,7 @@ export function LbaPositionCollapsibleSummaryCard() {
       <LbaPositionTable />
       <LinkButton
         className="w-max gap-x-1 text-xs"
-        color="white"
+        colorVariant="primary"
         as={Link}
         href={VERTEX_SPECIFIC_LINKS.vestingScheduleGraphic}
         withExternalIcon
@@ -95,13 +96,13 @@ export function LbaPositionCollapsibleSummaryCard() {
       {!isBeforeVesting && (
         <>
           <LinkButton
-            color="white"
+            colorVariant="primary"
             disabled={disableWithdrawUnlockedButton}
             onClick={() => show({ type: 'withdraw_lba_liquidity', params: {} })}
           >
             Withdraw Liquidity
           </LinkButton>
-          <Divider className="h-3" vertical />
+          <Divider vertical />
         </>
       )}
       <span>Reward distributions have ended</span>
@@ -121,18 +122,17 @@ export function LbaPositionCollapsibleSummaryCard() {
           />
         }
         actionMetric={
-          <RewardsCard.MetricStackedItem
-            definitionId="rewardsLbaPositionAvailableToClaim"
+          <ValueWithLabel.Vertical
+            tooltip={{ id: 'rewardsLbaPositionAvailableToClaim' }}
             label="Available to Claim"
             value={claimableLbaRewards}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-            symbol={vrtxToken.symbol}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+            valueEndElement={vrtxToken.token.symbol}
           />
         }
         metricItems={metricItems}
         action={
           <PrimaryButton
-            size="lg"
             onClick={onClaimClick}
             isLoading={isClaiming}
             disabled={disableClaimButton}

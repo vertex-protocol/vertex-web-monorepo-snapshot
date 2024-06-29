@@ -1,13 +1,13 @@
-import { LineItem } from 'client/components/LineItem/LineItem';
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { BalancesButtons } from 'client/modules/tables/detailDialogs/components/BalancesButtons';
 import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
 import { SpotBalanceTableItem } from 'client/modules/tables/hooks/useSpotBalancesTable';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 
 export type SpotBalanceDetailsDialogParams = SpotBalanceTableItem;
 
@@ -29,33 +29,32 @@ export function SpotBalanceDetailsDialog({
 
   const metricItems = (
     <div className="flex flex-col gap-y-4">
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Balance"
-        renderValue={(val) => (
-          <div className="flex gap-x-1">
-            {formatNumber(val?.balanceAmount, {
-              formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
+        value={balanceAmount}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+        valueEndElement={
+          <span>
+            (
+            {formatNumber(balanceAmountValueUsd, {
+              formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
             })}
-            <div className="text-text-tertiary">
-              (
-              {formatNumber(val?.balanceAmountValueUsd, {
-                formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-              })}
-              )
-            </div>
-          </div>
-        )}
-        value={{ balanceAmount, balanceAmountValueUsd }}
+            )
+          </span>
+        }
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Deposit APR"
-        renderValue={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         value={depositAPR}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Borrow APR"
-        renderValue={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         value={borrowAPR}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
       />
     </div>
   );

@@ -1,9 +1,9 @@
 import {
   BigDecimal,
   BigDecimalish,
+  millisToSeconds,
   PlaceOrderParams,
   PlaceTriggerOrderParams,
-  millisToSeconds,
   toBigDecimal,
 } from '@vertex-protocol/client';
 import {
@@ -12,13 +12,15 @@ import {
   getTriggerOrderNonce,
   OrderExpirationType,
 } from '@vertex-protocol/contracts';
-import { toPrintableObject } from '@vertex-protocol/utils';
+import {
+  toPrintableObject,
+  VERTEX_PRODUCT_DECIMALS,
+} from '@vertex-protocol/utils';
 import { ExecutePlaceOrderParams } from 'client/hooks/execute/placeOrder/types';
 import { ValidExecuteContext } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useOrderbookAddresses } from 'client/hooks/query/markets/useOrderbookAddresses';
 import { useGetRecvTime } from 'client/hooks/util/useGetRecvTime';
-import { VERTEX_PRODUCT_DECIMALS } from 'client/utils/decimalAdjustment';
 import { roundToIncrement, roundToString } from 'client/utils/rounding';
 import { addDays, getTime } from 'date-fns';
 import { useCallback } from 'react';
@@ -106,7 +108,7 @@ export function usePlaceOrderMutationFn() {
         order,
         nonce,
         verifyingAddr: orderbookAddresses?.[params.productId],
-        chainId: context.primaryChain.id,
+        chainId: context.subaccount.chainId,
       };
 
       // Mutate depending on whether we are placing a trigger order or not

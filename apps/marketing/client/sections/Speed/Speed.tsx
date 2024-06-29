@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_PADDING,
@@ -12,6 +11,7 @@ import { range } from 'lodash';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import logo from 'assets/logo-light.svg';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function Speed() {
   const { containerRef, isInView, incrementToString } = useSpeedSection();
@@ -24,7 +24,7 @@ export function Speed() {
 
   return (
     <section
-      className={classNames(
+      className={joinClassNames(
         'flex flex-col items-start justify-center',
         'gap-y-6 md:gap-y-16 xl:gap-y-24',
         DEFAULT_SECTION_PADDING,
@@ -40,7 +40,7 @@ export function Speed() {
         className="items-start px-0 pb-6 md:pb-0"
       />
       <div
-        className={classNames(
+        className={joinClassNames(
           'flex w-full flex-col items-start justify-center gap-y-9',
           'text-black-500 font-bold',
           'md:gap-y-4',
@@ -69,7 +69,7 @@ export function Speed() {
               <Image
                 src={logo}
                 alt="Vertex"
-                className={classNames(
+                className={joinClassNames(
                   '-mt-0.5 flex h-full justify-start delay-300 duration-500 md:scale-90',
                   inView ? 'opacity-100' : 'opacity-0',
                 )}

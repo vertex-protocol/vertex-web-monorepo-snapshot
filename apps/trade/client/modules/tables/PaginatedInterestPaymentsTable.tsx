@@ -5,7 +5,7 @@ import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { ProductInfoCell } from 'client/modules/tables/cells/ProductInfoCell';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import { AmountWithSymbolCell } from './cells/AmountWithSymbolCell';
 import { DateTimeCell } from './cells/DateTimeCell';
@@ -40,7 +40,8 @@ export const PaginatedInterestPaymentsTable = ({
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('metadata', {

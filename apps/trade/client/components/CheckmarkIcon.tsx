@@ -1,4 +1,4 @@
-import { WithClassnames, mergeClassNames } from '@vertex-protocol/web-common';
+import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
 
 interface Props extends WithClassnames {

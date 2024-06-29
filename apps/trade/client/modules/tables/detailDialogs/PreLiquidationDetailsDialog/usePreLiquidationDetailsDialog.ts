@@ -6,16 +6,21 @@ import {
   calcIndexerLpBalanceValue,
   calcIndexerPerpBalanceValue,
 } from '@vertex-protocol/indexer-client';
-import { BigDecimal, toPrintableObject } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  removeDecimals,
+  toPrintableObject,
+} from '@vertex-protocol/utils';
 import { NextImageSrc } from '@vertex-protocol/web-common';
+import {
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshotsAtTimes } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshotsAtTimes';
 import { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
 import { calcIndexerSummaryUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { millisecondsToSeconds } from 'date-fns';
 import { first, get } from 'lodash';
@@ -53,7 +58,7 @@ interface UsePreLiquidationDetailsDialog {
 export function usePreLiquidationDetailsDialog({
   liquidationTimestampMillis,
 }: PreLiquidationDetailsDialogParams) {
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
   const {
     data: allMarketsStaticData,
     isLoading: isLoadingMarketData,
@@ -90,7 +95,7 @@ export function usePreLiquidationDetailsDialog({
 
       const marketData =
         productId === QUOTE_PRODUCT_ID
-          ? allMarketsStaticData.quote
+          ? allMarketsStaticData.primaryQuote
           : get(allMarketsStaticData.all, productId, undefined);
       if (!marketData) return;
 

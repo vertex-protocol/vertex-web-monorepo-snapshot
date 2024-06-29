@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { nowInSeconds } from '@vertex-protocol/client';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
 
 interface Params {
@@ -31,7 +31,7 @@ export function useAllMarketsHistoricalSnapshots({
     'allMarketHistoricalSnapshots',
     true,
   );
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   const disabled = !vertexClient;
 

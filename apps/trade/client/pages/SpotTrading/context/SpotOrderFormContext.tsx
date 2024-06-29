@@ -1,22 +1,27 @@
+import { ProductEngineType } from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { safeParseForData, WithChildren } from '@vertex-protocol/web-common';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
-import { SpotStaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
+import {
+  SpotStaticMarketData,
+  StaticMarketQuoteData,
+} from 'client/hooks/markets/useAllMarketsStaticData';
 import { useLatestMarketPrice } from 'client/hooks/markets/useLatestMarketPrice';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
-import { useSpotLeverageEnabled } from 'client/modules/trading/hooks/useSpotLeverageEnabled';
-import { useOrderFormConversionPrices } from 'client/modules/trading/orderPlacement/hooks/useOrderFormConversionPrices';
-import { useOrderFormEnableMaxSizeLogic } from 'client/modules/trading/orderPlacement/hooks/useOrderFormEnableMaxSizeLogic';
-import { useOrderFormError } from 'client/modules/trading/orderPlacement/hooks/useOrderFormError';
+import { useOrderFormConversionPrices } from 'client/modules/trading/hooks/orderFormContext/useOrderFormConversionPrices';
+import { useOrderFormEnableMaxSizeLogic } from 'client/modules/trading/hooks/orderFormContext/useOrderFormEnableMaxSizeLogic';
+import { useOrderFormError } from 'client/modules/trading/hooks/orderFormContext/useOrderFormError';
+import { useOrderFormMarketSelection } from 'client/modules/trading/hooks/orderFormContext/useOrderFormMarketSelection';
 import {
   OrderFormMaxOrderSizes,
   useOrderFormMaxOrderSizes,
-} from 'client/modules/trading/orderPlacement/hooks/useOrderFormMaxOrderSizes';
-import { useOrderFormOnChangeSideEffects } from 'client/modules/trading/orderPlacement/hooks/useOrderFormOnChangeSideEffects';
-import { useOrderFormProductData } from 'client/modules/trading/orderPlacement/hooks/useOrderFormProductData';
-import { useOrderFormSubmitHandler } from 'client/modules/trading/orderPlacement/hooks/useOrderFormSubmitHandler';
-import { useOrderFormValidators } from 'client/modules/trading/orderPlacement/hooks/useOrderFormValidators';
+} from 'client/modules/trading/hooks/orderFormContext/useOrderFormMaxOrderSizes';
+import { useOrderFormOnChangeSideEffects } from 'client/modules/trading/hooks/orderFormContext/useOrderFormOnChangeSideEffects';
+import { useOrderFormProductData } from 'client/modules/trading/hooks/orderFormContext/useOrderFormProductData';
+import { useOrderFormSubmitHandler } from 'client/modules/trading/hooks/orderFormContext/useOrderFormSubmitHandler';
+import { useOrderFormValidators } from 'client/modules/trading/hooks/orderFormContext/useOrderFormValidators';
+import { useSpotLeverageEnabled } from 'client/modules/trading/hooks/useSpotLeverageEnabled';
 import {
   OrderFormError,
   OrderFormValidators,
@@ -32,34 +37,84 @@ import {
   SpotOrderFormUserStateError,
   SpotOrderFormValues,
 } from 'client/pages/SpotTrading/context/types';
-import { useSelectedSpotMarket } from 'client/pages/SpotTrading/hooks/useSelectedSpotMarket';
 import { spotPriceInputAtom } from 'client/store/trading/spotTradingStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { createContext, useContext, useMemo } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 
-export type SpotOrderFormContextData = {
-  form: UseFormReturn<SpotOrderFormValues>;
-  validators: OrderFormValidators;
-  userStateError: SpotOrderFormUserStateError | undefined;
-  formError: OrderFormError | undefined;
-  buttonState: BaseActionButtonState;
+export interface SpotOrderFormContextData {
+  // Market selection
   currentMarket: SpotStaticMarketData | undefined;
+  /**
+   * RHF instance to pass to `<Form />`
+   */
+  form: UseFormReturn<SpotOrderFormValues>;
+  /**
+   * Validators for the form
+   */
+  validators: OrderFormValidators;
+  /**
+   * Errors associated with the current state of the user
+   */
+  userStateError: SpotOrderFormUserStateError | undefined;
+  /**
+   * Errors associated with the form
+   */
+  formError: OrderFormError | undefined;
+  /**
+   * State of the submit button
+   */
+  buttonState: BaseActionButtonState;
+  /**
+   * Metadata for the quote of the currently selected market
+   */
+  quoteMetadata: StaticMarketQuoteData | undefined;
+  /**
+   * Query result for max order sizes
+   */
   maxOrderSizes: OrderFormMaxOrderSizes | undefined;
+  /**
+   * Minimum order size, in terms of the asset, for the currently selected market
+   */
   minAssetOrderSize: BigDecimal | undefined;
+  /**
+   * Whether the current state of the market + form allows any arbitrary order size to be submitted. Usually, only sizes adhering to the sizeIncrement of the market are allowed.
+   * However, spot markets with a corresponding LP pool can execute any arbitrary order size
+   */
   allowAnyOrderSizeIncrement: boolean;
+  /**
+   * Conversion price from base -> quote with slippage included
+   */
   executionConversionPrice: BigDecimal | undefined;
+  /**
+   * Configured slippage for the current order type
+   */
   slippageFraction: number;
+  /**
+   * A validated order amount input, in terms of the base asset of the market
+   */
   validatedAssetAmountInput: BigDecimal | undefined;
+  /**
+   * Conversion price from base -> quote without slippage, this is used to convert between asset and quote amounts
+   */
   inputConversionPrice: BigDecimal | undefined;
+  /**
+   * Allowed increments for the input fields
+   */
   inputIncrements: {
     price: BigDecimal | undefined;
     size: BigDecimal | undefined;
   };
+  /**
+   * Estimated account status changes corresponding to the current order form input
+   */
   tradingAccountMetrics: SpotOrderFormTradingAccountMetrics;
+  /**
+   * Form submit handler
+   */
   onSubmit: () => void;
-};
+}
 
 const SpotOrderFormContext = createContext<SpotOrderFormContextData>(
   {} as SpotOrderFormContextData,
@@ -69,7 +124,9 @@ const SpotOrderFormContext = createContext<SpotOrderFormContextData>(
 export const useSpotOrderFormContext = () => useContext(SpotOrderFormContext);
 
 export function SpotOrderFormContextProvider({ children }: WithChildren) {
-  const { currentMarket } = useSelectedSpotMarket();
+  const { currentMarket, quoteMetadata } = useOrderFormMarketSelection(
+    ProductEngineType.SPOT,
+  );
   const { data: latestMarketPrices } = useLatestMarketPrice({
     productId: currentMarket?.productId,
   });
@@ -122,7 +179,10 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
   const priceType = useSpotForm.watch('priceType');
   const orderSide = useSpotForm.watch('side');
 
-  const allowAnyOrderSizeIncrement = priceType === 'market';
+  // Trades for any size are only allowed for market orders in markets where a LP pool is available
+  const allowAnyOrderSizeIncrement = Boolean(
+    priceType === 'market' && currentMarket?.metadata.hasLpPool,
+  );
 
   /**
    * Validate fields
@@ -218,6 +278,7 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
   const estimateStateTxs = useSpotOrderFormEstimateStateTxs({
     orderSide,
     productId,
+    quoteProductId: quoteMetadata?.productId,
     validatedAssetAmountInput,
     executionConversionPrice,
     maxAssetOrderSize,
@@ -229,6 +290,7 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
    */
   const tradingAccountMetrics = useSpotOrderFormAccountMetrics({
     currentMarket,
+    quoteMetadata,
     estimateStateTxs,
     orderSide,
   });
@@ -243,6 +305,7 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
     mutateAsync: executePlaceOrder.mutateAsync,
     spotLeverageEnabled,
     allowAnyOrderSizeIncrement,
+    quoteProductId: quoteMetadata?.productId,
   });
 
   /**
@@ -292,6 +355,7 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
       validatedAssetAmountInput,
       tradingAccountMetrics,
       inputConversionPrice,
+      quoteMetadata,
     };
   }, [
     currentMarket,
@@ -311,6 +375,7 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
     validatedAssetAmountInput,
     tradingAccountMetrics,
     inputConversionPrice,
+    quoteMetadata,
   ]);
 
   return (

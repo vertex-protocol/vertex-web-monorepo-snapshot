@@ -6,8 +6,8 @@ import {
 } from '@vertex-protocol/client';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import { useAddressPaginatedRewards } from 'client/hooks/query/rewards/useAddressPaginatedRewards';
+import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import { useTokenClaimDeadlines } from 'client/hooks/query/vrtxToken/useTokenClaimDeadlines';
 import { toVrtxRewardEpoch } from 'client/modules/rewards/utils/toVrtxRewardEpoch';
 import { isBefore } from 'date-fns';
@@ -44,7 +44,9 @@ function extractItems(
 
 export function useEpochRewardsTable() {
   const {
-    protocolToken: { tokenDecimals },
+    protocolTokenMetadata: {
+      token: { tokenDecimals },
+    },
   } = useVertexMetadataContext();
   const {
     data: paginatedRewardsData,
@@ -67,7 +69,7 @@ export function useEpochRewardsTable() {
       GetIndexerPaginatedRewardsResponse,
       IndexerRewardsEpoch
     >({
-      queryPageCount: paginatedRewardsData?.pages.length,
+      numPagesFromQuery: paginatedRewardsData?.pages.length,
       pageSize: PAGE_SIZE,
       hasNextPage,
       fetchNextPage,
@@ -75,11 +77,7 @@ export function useEpochRewardsTable() {
     });
 
   const mappedEpochs = useMemo((): EpochRewardsTableData[] | undefined => {
-    if (
-      !paginatedRewardsData ||
-      !accountTokenClaimState ||
-      !tokenClaimDeadlines
-    ) {
+    if (!paginatedRewardsData) {
       return;
     }
 

@@ -1,16 +1,20 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { isSpotProduct } from '@vertex-protocol/contracts';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { createQueryKey } from '@vertex-protocol/web-data';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { BigDecimals } from 'client/utils/BigDecimals';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
+import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { calcBorrowAPR, calcDepositAPR } from 'client/utils/calcs/calcSpotApr';
 import {
   calcSpotBalanceHealth,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import {
   AnnotatedSpotBalanceWithProduct,
@@ -43,7 +47,7 @@ function spotBalancesQueryKey(lastUpdated: number) {
 }
 
 export function useSpotBalances(): UseSpotBalances {
-  const quotePrice = useQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const {
     data: summaryData,
@@ -81,11 +85,12 @@ export function useSpotBalances(): UseSpotBalances {
         return {
           productId: balanceWithProduct.productId,
           oraclePrice: balance.oraclePrice,
-          oraclePriceUsd: balance.oraclePrice.multipliedBy(quotePrice),
+          oraclePriceUsd:
+            balance.oraclePrice.multipliedBy(primaryQuotePriceUsd),
           amount: roundedBalanceAmount,
           valueUsd: balance.oraclePrice
             .multipliedBy(roundedBalanceAmount)
-            .multipliedBy(quotePrice),
+            .multipliedBy(primaryQuotePriceUsd),
           amountBorrowed: BigDecimal.min(roundedBalanceAmount, 0),
           amountDeposited: BigDecimal.max(roundedBalanceAmount, 0),
           metadata: balanceWithProduct.metadata,

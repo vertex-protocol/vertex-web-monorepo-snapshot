@@ -1,10 +1,10 @@
 import { MutationStatus } from '@tanstack/react-query';
-import { TransactionResponse } from 'ethers';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
+import { TxResponse } from 'client/types/TxResponse';
 
 interface Params {
   mutationStatus: MutationStatus;
-  txResponse: TransactionResponse | undefined;
+  txResponse: TxResponse | undefined;
 }
 
 /**

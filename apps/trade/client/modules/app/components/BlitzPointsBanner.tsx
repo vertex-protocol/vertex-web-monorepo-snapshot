@@ -2,8 +2,8 @@ import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Button, Icons } from '@vertex-protocol/web-ui';
 import { LinkButton } from 'client/components/LinkButton';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { useIsEnabledForBrand } from 'client/modules/brand/hooks/useIsEnabledForBrand';
-import { BLITZ_SPECIFIC_IMAGES } from 'client/modules/brand/images';
+import { IMAGES } from 'common/brandMetadata/images';
+import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -31,16 +31,16 @@ export function BlitzPointsBanner({ className }: WithClassnames) {
         <div className="flex flex-col gap-1.5 text-xs sm:flex-row">
           Earn your share of Blitz Points, Blast Points and Gold. Deposit and
           trade to start earning.
-          <LinkButton as={Link} href={ROUTES.points} color="white">
+          <LinkButton as={Link} href={ROUTES.points} colorVariant="primary">
             Visit Points Page
           </LinkButton>
         </div>
       </div>
       <Image
-        src={BLITZ_SPECIFIC_IMAGES.blitzBrandBg}
+        src={IMAGES.brandBg}
         alt="blitz background"
         fill
-        className="-z-10 object-cover brightness-50"
+        className="-z-10 object-cover"
       />
     </div>
   );

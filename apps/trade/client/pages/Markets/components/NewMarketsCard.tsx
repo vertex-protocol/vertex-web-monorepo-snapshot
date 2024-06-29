@@ -15,9 +15,7 @@ interface MarketListContainerProps {
 function MarketListContainer({ title, content }: MarketListContainerProps) {
   return (
     <div className="flex flex-col gap-y-4">
-      <span className="text-text-primary w-max text-sm font-medium">
-        {title}
-      </span>
+      <span className="text-text-primary w-max text-sm">{title}</span>
       <div
         className={joinClassNames(
           'grid w-max gap-x-8 gap-y-3.5',
@@ -49,7 +47,7 @@ function MarketListItem({
     <div className="flex w-max items-center gap-x-2.5">
       <Image src={iconSrc} alt={alt} width={16} height={16} />
       <LinkButton
-        color="white"
+        colorVariant="primary"
         className="text-sm"
         onClick={() =>
           pushTradePage({
@@ -107,7 +105,7 @@ export function NewMarketsCard() {
   }
 
   return (
-    <Card className="bg-overlay-accent/20 ring-accent min-w-max p-4">
+    <Card insetRing className="bg-overlay-accent/20 ring-accent min-w-max p-4">
       {newMarkets}
     </Card>
   );

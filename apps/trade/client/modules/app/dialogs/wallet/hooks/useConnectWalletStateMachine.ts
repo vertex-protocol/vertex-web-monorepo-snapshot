@@ -1,7 +1,7 @@
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useSavedUserState } from 'client/modules/localstorage/userState/useSavedUserState';
 import { useCallback, useEffect, useState } from 'react';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 
 type OnboardingFlowState = 'connect' | 'terms_of_use' | 'key_features';

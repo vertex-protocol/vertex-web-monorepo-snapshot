@@ -1,3 +1,4 @@
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { Select, SelectOption, useSelect } from '@vertex-protocol/web-ui';
 import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
 import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/useBridgeForm/types';
@@ -58,7 +59,6 @@ export function SourceChainSelect({
   );
 
   const disabled = allSourceChains.length === 0;
-
   return (
     <Select.Root
       value={value}
@@ -69,7 +69,13 @@ export function SourceChainSelect({
     >
       <Select.Trigger
         endIcon={<UpDownChevronIcon open={open} size={16} />}
-        className="bg-surface-2 text-text-primary rounded-full text-sm font-medium opacity-100 hover:opacity-90"
+        className={joinClassNames(
+          'rounded-full text-sm',
+          disabled
+            ? 'text-disabled bg-surface-1'
+            : 'text-text-primary bg-surface-2',
+        )}
+        stateClassNameOverrides="before:rounded-full"
         disabled={disabled}
       >
         {triggerContent}

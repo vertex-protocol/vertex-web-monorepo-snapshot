@@ -1,10 +1,12 @@
 import { LBA_AIRDROP_EPOCH } from '@vertex-protocol/client';
-import { BigDecimal } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAccountLbaState } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { get } from 'lodash';
 import { useMemo } from 'react';
 
@@ -24,7 +26,7 @@ export interface AccountLbaTokenAllocation {
  * Util hook to derive token allocation state for LBA
  */
 export function useAccountLbaTokenAllocation() {
-  const { protocolToken } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data: lbaState } = useAccountLbaState();
   const { data: tokenClaimState } = useAccountTokenClaimState();
 
@@ -39,15 +41,15 @@ export function useAccountLbaTokenAllocation() {
         LBA_AIRDROP_EPOCH,
         BigDecimals.ZERO,
       ),
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
     const preClaimedAmount = removeDecimals(
       lbaState.depositedVrtx,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
     const totalClaimedLbaAmount = removeDecimals(
       get(tokenClaimState.claimedPerEpoch, LBA_AIRDROP_EPOCH, BigDecimals.ZERO),
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
 
     return {
@@ -56,7 +58,7 @@ export function useAccountLbaTokenAllocation() {
       totalInitialPhaseAmount: totalLbaRewards,
       unclaimedAmount: totalLbaRewards.minus(totalClaimedLbaAmount),
     };
-  }, [lbaState, tokenClaimState, protocolToken.tokenDecimals]);
+  }, [lbaState, tokenClaimState, protocolTokenMetadata.token.tokenDecimals]);
 
   return {
     data: mappedData,

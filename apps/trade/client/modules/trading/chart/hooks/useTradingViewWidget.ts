@@ -8,7 +8,12 @@ import {
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { WIDGET_CONFIG } from '../config/widgetConfig';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
+import {
+  SizeClass,
+  useSizeClass,
+} from 'client/hooks/ui/breakpoints/useSizeClass';
 import { useIsClient } from '@vertex-protocol/web-common';
+import { cloneDeep } from 'lodash';
 
 interface UseTradingViewWidget {
   tvWidget: IChartingLibraryWidget | undefined;
@@ -32,11 +37,40 @@ async function getImportedWidgetConstructor() {
   return constructor;
 }
 
+function getWidgetOptions({
+  symbol,
+  datafeed,
+  sizeClass,
+}: {
+  symbol: string;
+  datafeed: IBasicDataFeed;
+  sizeClass: SizeClass;
+}) {
+  const options = {
+    ...cloneDeep(WIDGET_CONFIG.options),
+    symbol: symbol,
+    // Tradingview expects olsendb as the timezone, which is close to, but not the same, as IANA
+    // This is good enough for most cases
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as
+      | Timezone
+      | undefined,
+    datafeed,
+  };
+
+  // default hide drawing tools on mobile
+  if (sizeClass === 'mobile') {
+    options.enabled_features?.push('hide_left_toolbar_by_default');
+  }
+
+  return options;
+}
+
 export function useTradingViewWidget({
   selectedSymbolInfo,
   datafeed,
 }: Params): UseTradingViewWidget {
   const isClient = useIsClient();
+  const { value: sizeClass } = useSizeClass();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const [isReady, setIsReady] = useState<boolean>();
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
@@ -62,16 +96,12 @@ export function useTradingViewWidget({
     const createWidget = async () => {
       const ChartWidget = await getImportedWidgetConstructor();
 
-      const widget = new ChartWidget({
-        ...WIDGET_CONFIG.options,
+      const options = getWidgetOptions({
         symbol: selectedSymbolRef.current?.ticker ?? initialTicker,
-        // Tradingview expects olsendb as the timezone, which is close to, but not the same, as IANA
-        // This is good enough for most cases
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as
-          | Timezone
-          | undefined,
         datafeed,
+        sizeClass,
       });
+      const widget = new ChartWidget(options);
 
       console.debug('[useCreateWidget] Chart widget created');
 
@@ -107,7 +137,14 @@ export function useTradingViewWidget({
     return () => {
       isCancelled = true;
     };
-  }, [chartContainerRef, datafeed, hasSymbol, isClient, selectedSymbolRef]);
+  }, [
+    chartContainerRef,
+    datafeed,
+    hasSymbol,
+    isClient,
+    selectedSymbolRef,
+    sizeClass,
+  ]);
 
   const prevWidgetRef = useRef<IChartingLibraryWidget>();
   useEffect(() => {

@@ -1,25 +1,61 @@
 import { useMutation } from '@tanstack/react-query';
-import { ApproveAllowanceParams } from '@vertex-protocol/client';
+import { IERC20__factory } from '@vertex-protocol/client';
+import { toPrintableObject } from '@vertex-protocol/utils';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   useExecuteInValidContext,
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
-import { ContractTransactionResponse } from 'ethers';
-import { useCallback } from 'react';
 import { tokenAllowanceQueryKey } from 'client/hooks/query/useTokenAllowance';
+import { BigNumberish, ContractTransactionResponse } from 'ethers';
+import { useCallback, useRef } from 'react';
 
-const REFETCH_QUERY_KEYS = [tokenAllowanceQueryKey()];
+interface Params {
+  /**
+   * Includes decimals - ie. not a float
+   */
+  amount: BigNumberish;
+  /**
+   * Address that wants to receive/spend the token
+   */
+  spenderAddress: string;
+  /**
+   * Address of the ERC20 token to approve
+   */
+  tokenAddress: string;
+}
 
+/**
+ * A generic hook for approving an allowance for a token
+ */
 export function useExecuteApproveAllowance() {
+  // Default the query key to the most generic "catch-all", this ref should be updated during the mutation
+  const refetchQueryKeysRef = useRef<string[][]>([tokenAllowanceQueryKey()]);
+
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (
-        params: ApproveAllowanceParams,
+        params: Params,
         context: ValidExecuteContext,
       ): Promise<ContractTransactionResponse> => {
-        return context.vertexClient.spot.approveAllowance(params);
+        console.log('Approve Allowance', toPrintableObject(params));
+
+        refetchQueryKeysRef.current = [
+          tokenAllowanceQueryKey(
+            context.subaccount.chainId,
+            context.subaccount.address,
+            params.spenderAddress,
+            params.tokenAddress,
+          ),
+        ];
+
+        const token = IERC20__factory.connect(
+          params.tokenAddress,
+          context.signer,
+        );
+
+        return token.approve(params.spenderAddress, params.amount.toString());
       },
       [],
     ),
@@ -32,7 +68,10 @@ export function useExecuteApproveAllowance() {
     },
   });
 
-  useRefetchQueriesOnContractTransaction(REFETCH_QUERY_KEYS, mutation.data);
+  useRefetchQueriesOnContractTransaction(
+    refetchQueryKeysRef.current,
+    mutation.data,
+  );
 
   return mutation;
 }

@@ -4,12 +4,12 @@ import {
   IndexerLpEvent,
 } from '@vertex-protocol/indexer-client';
 import { BigDecimal } from '@vertex-protocol/utils';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedLpEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedLpEvents';
 import { PairMetadata } from 'client/modules/pools/types';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
@@ -36,7 +36,7 @@ function extractItems(data: GetIndexerSubaccountLpEventsResponse) {
 export function useHistoricalLpEventsTable() {
   const { data: allMarketsStaticData, isLoading: marketsDataLoading } =
     useAllMarketsStaticData();
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
   const {
     data: subaccountPaginatedEvents,
     isLoading,
@@ -52,7 +52,7 @@ export function useHistoricalLpEventsTable() {
       GetIndexerSubaccountLpEventsResponse,
       IndexerLpEvent
     >({
-      queryPageCount: subaccountPaginatedEvents?.pages.length,
+      numPagesFromQuery: subaccountPaginatedEvents?.pages.length,
       pageSize: PAGE_SIZE,
       hasNextPage,
       fetchNextPage,
@@ -78,7 +78,8 @@ export function useHistoricalLpEventsTable() {
 
         let metadata: PairMetadata = {
           base: getBaseProductMetadata(marketData.metadata),
-          quote: allMarketsStaticData.quote.metadata.token,
+          // LPs can only be in the primary quote
+          quote: allMarketsStaticData.primaryQuote.metadata.token,
         };
 
         const decimalAdjustedLpAmountDelta = removeDecimals(lpDelta);

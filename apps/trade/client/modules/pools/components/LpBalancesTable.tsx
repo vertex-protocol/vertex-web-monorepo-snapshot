@@ -1,7 +1,10 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
+import {
+  CustomNumberFormatSpecifier,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
@@ -15,7 +18,6 @@ import { PercentageCell } from 'client/modules/tables/cells/PercentageCell';
 import { PnlCell } from 'client/modules/tables/cells/PnlCell';
 import { StackedTokenPairCell } from 'client/modules/tables/cells/StackedTokenPairCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useMemo } from 'react';
 import { LpTableItem, useLpTable } from '../hooks/useLpTable';
 
@@ -42,7 +44,8 @@ export function LpBalancesTable({
         },
         enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-40',
+          cellContainerClassName: 'w-44',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('valueUsd', {
@@ -99,7 +102,6 @@ export function LpBalancesTable({
                   amount={baseAmount}
                   symbol={metadata.base.symbol}
                   formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                  className="pl-0"
                 />
               }
               bottom={
@@ -107,7 +109,6 @@ export function LpBalancesTable({
                   amount={quoteAmount}
                   symbol={metadata.quote.symbol}
                   formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                  className="pl-0"
                 />
               }
             />

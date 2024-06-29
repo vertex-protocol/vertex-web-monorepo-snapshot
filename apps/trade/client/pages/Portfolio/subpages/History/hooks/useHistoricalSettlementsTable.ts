@@ -3,13 +3,16 @@ import {
   GetIndexerSubaccountSettlementEventsResponse,
   IndexerSettlementEvent,
 } from '@vertex-protocol/indexer-client';
-import { BigDecimal } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useSubaccountPaginatedSettlementEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedSettlementEvents';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
@@ -29,6 +32,9 @@ function extractItems(data: GetIndexerSubaccountSettlementEventsResponse) {
 export function useHistoricalSettlementsTable() {
   const { data: marketsStaticData, isLoading: marketsDataLoading } =
     useAllMarketsStaticData();
+  const {
+    primaryQuoteToken: { symbol: primaryQuoteSymbol },
+  } = useVertexMetadataContext();
 
   const {
     data: subaccountPaginatedEvents,
@@ -46,7 +52,7 @@ export function useHistoricalSettlementsTable() {
       IndexerSettlementEvent
     >({
       pageSize: PAGE_SIZE,
-      queryPageCount: subaccountPaginatedEvents?.pages.length,
+      numPagesFromQuery: subaccountPaginatedEvents?.pages.length,
       hasNextPage,
       fetchNextPage,
       extractItems,
@@ -61,20 +67,23 @@ export function useHistoricalSettlementsTable() {
         const { timestamp, snapshot, quoteDelta } = item;
 
         const productId = snapshot.market.productId;
-        const perpProduct = marketsStaticData?.perp?.[productId];
+        const perpMarketData = marketsStaticData?.perp?.[productId];
 
-        if (!perpProduct) {
+        if (!perpMarketData) {
           console.warn(`ProductId ${productId} not found`);
           return undefined;
         }
 
         return {
           marketInfo: {
-            marketName: perpProduct.metadata.marketName,
-            icon: perpProduct.metadata.icon,
-            symbol: perpProduct.metadata.symbol,
-            sizeIncrement: perpProduct.sizeIncrement,
-            priceIncrement: perpProduct.priceIncrement,
+            marketName: perpMarketData.metadata.marketName,
+            icon: perpMarketData.metadata.icon,
+            symbol: perpMarketData.metadata.symbol,
+            // Perps are always quoted in the primary quote token
+            quoteSymbol: primaryQuoteSymbol,
+            isPrimaryQuote: true,
+            sizeIncrement: perpMarketData.sizeIncrement,
+            priceIncrement: perpMarketData.priceIncrement,
             // We don't have access to the prior position side here, so we just set to zero
             amountForSide: BigDecimals.ZERO,
             productType: ProductEngineType.PERP,
@@ -84,7 +93,12 @@ export function useHistoricalSettlementsTable() {
         };
       })
       .filter(nonNullFilter);
-  }, [subaccountPaginatedEvents, marketsStaticData, getPageData]);
+  }, [
+    subaccountPaginatedEvents,
+    marketsStaticData,
+    getPageData,
+    primaryQuoteSymbol,
+  ]);
 
   return {
     isLoading: isLoading || isFetchingNextPage || marketsDataLoading,

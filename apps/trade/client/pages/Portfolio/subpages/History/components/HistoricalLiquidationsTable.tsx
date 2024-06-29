@@ -39,7 +39,8 @@ export function HistoricalLiquidationsTable() {
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('liquidatedBalanceTypes', {

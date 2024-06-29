@@ -1,11 +1,9 @@
-import { useEVMContext } from '@vertex-protocol/web-data';
-import {
-  arbitrum,
-  arbitrumSepolia,
-  blast,
-  blastSepolia,
-} from '@wagmi/core/chains';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import {
+  ARB_CHAIN_IDS,
+  MANTLE_CHAIN_IDS,
+} from 'client/modules/envSpecificContent/consts/chainIds';
 import {
   NEW_FEATURE_DISCLOSURE_KEYS,
   NewFeatureDisclosureKey,
@@ -23,12 +21,9 @@ type EnabledChainIdsFilter = number[] | undefined;
  * Use `satisfies` to have type-checking that also works when `NewFeatureDisclosureKey` is `never` (when there are no keys)
  */
 const ENABLED_NOTIFICATION_CHAIN_IDS: Record<string, EnabledChainIdsFilter> = {
-  // min_order_size_update: [
-  //   arbitrumSepolia.id,
-  //   arbitrum.id,
-  //   blastSepolia.id,
-  //   blast.id,
-  // ],
+  one_click_trading: undefined,
+  arb_new_incentives: ARB_CHAIN_IDS,
+  mantle_new_incentives: MANTLE_CHAIN_IDS,
 } satisfies Record<NewFeatureDisclosureKey, EnabledChainIdsFilter>;
 
 export function NewFeatureNotificationsEmitter() {
@@ -37,10 +32,11 @@ export function NewFeatureNotificationsEmitter() {
     primaryChain: { id: primaryChainId },
   } = useEVMContext();
   const { dispatchNotification } = useNotificationManagerContext();
-  const { savedUserState } = useSavedUserState();
+  const { savedUserState, didLoadPersistedValue } = useSavedUserState();
   const { currentDialog } = useDialog();
 
-  const canShowFeatureNotifications = !!address && !currentDialog;
+  const canShowFeatureNotifications =
+    !!address && !currentDialog && didLoadPersistedValue;
   const dismissedKeys = savedUserState.dismissedDisclosures;
 
   useEffect(() => {

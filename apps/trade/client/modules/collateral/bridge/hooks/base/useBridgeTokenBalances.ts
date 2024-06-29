@@ -1,10 +1,12 @@
-import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/base/useSquidSDK';
-import { createQueryKey } from '@vertex-protocol/web-data';
-import { useEVMContext } from '@vertex-protocol/web-data';
 import { useQuery } from '@tanstack/react-query';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { BigDecimal } from '@vertex-protocol/client';
 import { toBigDecimal } from '@vertex-protocol/utils';
+import {
+  createQueryKey,
+  QueryDisabledError,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
+import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/base/useSquidSDK';
 
 export function bridgeTokenBalancesQueryKey(
   address?: string,

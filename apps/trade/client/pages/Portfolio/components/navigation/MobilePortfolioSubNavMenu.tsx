@@ -21,7 +21,6 @@ export function MobilePortfolioSubNavMenu({ className }: WithClassnames) {
       {navItems.map(({ associatedCount, disabled, href, label, selected }) => {
         return (
           <TabButton
-            size="sm"
             active={selected}
             as={Link}
             key={label}

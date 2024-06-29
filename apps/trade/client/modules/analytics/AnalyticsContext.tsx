@@ -1,17 +1,22 @@
 import spindl from '@spindl-xyz/attribution';
 import { WithChildren } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
+import { useSizeClass } from 'client/hooks/ui/breakpoints';
 import { AnalyticsGlobalEventsReporter } from 'client/modules/analytics/AnalyticsGlobalEventsReporter';
-import { AnalyticsEvent } from 'client/modules/analytics/types';
+import {
+  AnalyticsBaseEventProperties,
+  AnalyticsEvent,
+} from 'client/modules/analytics/types';
+import { useCookiePreference } from 'client/modules/analytics/useCookiePreference';
 import { SENSITIVE_DATA } from 'common/environment/sensitiveData';
 import { createContext, useCallback, useContext, useMemo } from 'react';
-import { useCookiePreference } from 'client/modules/analytics/useCookiePreference';
 
 interface AnalyticsContextData {
+  areCookiesAccepted: boolean | null;
+
   updateUserAddress(address: string): Promise<void>;
 
   trackEvent(event: AnalyticsEvent): void;
-  areCookiesAccepted: boolean | null;
 }
 
 const AnalyticsContext = createContext<AnalyticsContextData>(
@@ -32,6 +37,7 @@ spindl.configure({
 spindl.enableAutoPageViews();
 
 export function AnalyticsContextProvider({ children }: WithChildren) {
+  const { value: sizeClass } = useSizeClass();
   const {
     primaryChainMetadata: { isTestnet },
   } = useEVMContext();
@@ -39,6 +45,12 @@ export function AnalyticsContextProvider({ children }: WithChildren) {
 
   // Supported on all mainnet and when cookies are enabled
   const disabled = isTestnet || !areCookiesAccepted;
+
+  const baseEventProperties = useMemo((): AnalyticsBaseEventProperties => {
+    return {
+      sizeClass,
+    };
+  }, [sizeClass]);
 
   const updateUserAddress = useCallback<
     AnalyticsContextData['updateUserAddress']
@@ -57,9 +69,9 @@ export function AnalyticsContextProvider({ children }: WithChildren) {
       if (disabled) {
         return;
       }
-      spindl.track(event.type, event.data);
+      spindl.track(event.type, { ...baseEventProperties, ...event.data });
     },
-    [disabled],
+    [baseEventProperties, disabled],
   );
 
   const value: AnalyticsContextData = useMemo(() => {

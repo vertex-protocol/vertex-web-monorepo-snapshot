@@ -5,7 +5,7 @@ import {
   toBigDecimal,
 } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import {
   BridgeChain,
   DestinationBridgeToken,

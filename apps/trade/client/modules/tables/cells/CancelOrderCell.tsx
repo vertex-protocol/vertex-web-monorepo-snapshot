@@ -40,9 +40,9 @@ export function CancelOrderCell({ order, className }: Props) {
       className={joinClassNames('pointer-events-auto px-3', className)}
     >
       <SecondaryButton
-        className="w-full"
         destructive
-        size="md"
+        className="flex-1"
+        size="sm"
         title="Cancel Order"
         disabled={isDisabled}
         isLoading={isCancelling}

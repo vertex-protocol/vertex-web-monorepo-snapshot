@@ -1,5 +1,5 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { IMAGES } from 'client/modules/brand/images';
+import { IMAGES } from 'common/brandMetadata/images';
 import Image from 'next/image';
 
 interface Props extends WithClassnames {

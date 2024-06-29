@@ -14,6 +14,7 @@ interface Props {
   showOrderbookTotalInQuote: boolean;
   setShowOrderbookTotalInQuote: (value: boolean) => void;
   symbol: string | undefined;
+  quoteSymbol: string | undefined;
   priceIncrement: BigDecimal | undefined;
 }
 
@@ -24,6 +25,7 @@ function BaseOrderbookSettings({
   showOrderbookTotalInQuote,
   setShowOrderbookTotalInQuote,
   symbol,
+  quoteSymbol,
   priceIncrement,
 }: Props) {
   return (
@@ -42,6 +44,7 @@ function BaseOrderbookSettings({
         />
         <TotalAmountDenomSelect
           symbol={symbol}
+          quoteSymbol={quoteSymbol}
           showOrderbookTotalInQuote={showOrderbookTotalInQuote}
           setShowOrderbookTotalInQuote={setShowOrderbookTotalInQuote}
         />

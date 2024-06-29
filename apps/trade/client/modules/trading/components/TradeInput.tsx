@@ -1,10 +1,11 @@
-import React, { ReactNode } from 'react';
-import { BaseInput } from 'client/components/Input/BaseInput';
 import {
   CompactInput,
   CompactInputProps,
-} from 'client/components/Input/CompactInput';
+  Input,
+} from '@vertex-protocol/web-ui';
+import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
+import React, { ReactNode } from 'react';
 
 export interface TradeInputProps
   extends Omit<CompactInputProps, 'startElement' | 'endElement'> {
@@ -16,28 +17,27 @@ export interface TradeInputProps
 
 export const TradeInput = React.forwardRef<HTMLInputElement, TradeInputProps>(
   function TradeInput(
-    { symbol, label, definitionId, id, error, ...inputProps }: TradeInputProps,
+    { symbol, label, definitionId, id, error, ...rest }: TradeInputProps,
     ref,
   ) {
     return (
       <CompactInput
-        {...inputProps}
         type="number"
         min={0}
         id={id}
+        name={id}
         ref={ref}
+        errorTooltipContent={error}
         startElement={
-          <BaseInput.Label
-            label={label}
-            definitionId={definitionId}
-            htmlFor={id}
-          />
+          <DefinitionTooltip definitionId={definitionId}>
+            <Input.Label className="text-xs" htmlFor={id}>
+              {label}
+            </Input.Label>
+          </DefinitionTooltip>
         }
-        error={error}
-        inputClassName="text-right"
-        endElement={
-          <span className="px-0.5 text-xs empty:hidden">{symbol}</span>
-        }
+        textAreaClassName="text-right"
+        endElement={symbol}
+        {...rest}
       />
     );
   },

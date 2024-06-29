@@ -1,6 +1,6 @@
 import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { Card } from '@vertex-protocol/web-ui';
 import { ReactNode } from 'react';
+import { Card } from '../Card';
 
 export interface DisclosureCardProps extends WithClassnames {
   title: ReactNode;
@@ -22,11 +22,7 @@ export function DisclosureCard({
       )}
     >
       <div
-        className={mergeClassNames(
-          'text-sm font-medium',
-          'text-accent',
-          titleClassName,
-        )}
+        className={mergeClassNames('text-sm', 'text-accent', titleClassName)}
       >
         {title}
       </div>

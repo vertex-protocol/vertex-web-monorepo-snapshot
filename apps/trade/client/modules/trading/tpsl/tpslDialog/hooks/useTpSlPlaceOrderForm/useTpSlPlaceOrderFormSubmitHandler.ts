@@ -1,15 +1,14 @@
 import { toBigDecimal, TriggerCriteriaType } from '@vertex-protocol/client';
+import { addDecimals } from '@vertex-protocol/utils';
 import { ExecutePlaceTriggerOrderParams } from 'client/hooks/execute/placeOrder/types';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
-import { addDecimals } from 'client/utils/decimalAdjustment';
 import { roundToString } from 'client/utils/rounding';
 import { useCallback } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { TpSlPositionData, TriggerCriteriaPriceType } from '../../types';
 import { TpSlPlaceOrderFormValues } from './types';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
-import { UseFormReturn } from 'react-hook-form';
 
 interface Params {
   productId: number;
@@ -32,7 +31,6 @@ export function useTpSlPlaceOrderFormSubmitHandler({
   setSavedTpSlTriggerPriceType,
   mutateAsync,
 }: Params) {
-  const { trackEvent } = useAnalyticsContext();
   const { dispatchNotification } = useNotificationManagerContext();
   const {
     savedSettings: {
@@ -88,14 +86,6 @@ export function useTpSlPlaceOrderFormSubmitHandler({
         },
       });
 
-      trackEvent({
-        type: 'tpsl_placed',
-        data: {
-          priceType: values.triggerCriteriaPriceType,
-          isTakeProfit,
-        },
-      });
-
       dispatchNotification({
         type: 'action_error_handler',
         data: {
@@ -111,8 +101,6 @@ export function useTpSlPlaceOrderFormSubmitHandler({
       slippageFraction,
       productId,
       mutateAsync,
-      trackEvent,
-      isTakeProfit,
       dispatchNotification,
       isTriggerPriceAbove,
       setSavedTpSlTriggerPriceType,

@@ -1,6 +1,10 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
 import { WithClassnames } from '@vertex-protocol/web-common';
+import {
+  PresetNumberFormatSpecifier,
+  getMarketPriceFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
@@ -19,8 +23,6 @@ import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWi
 import { PnlCell } from 'client/modules/tables/cells/PnlCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
 import { useMemo } from 'react';
 import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
 import { MarginWeightCell } from './cells/MarginWeightCell';
@@ -56,7 +58,8 @@ export function MarginManagerPerpPositionsTable({ className }: WithClassnames) {
           ),
           enableSorting: false,
           meta: {
-            cellContainerClassName: 'w-32',
+            cellContainerClassName: 'w-36',
+            withLeftPadding: true,
           },
         }),
         columnHelper.accessor('positionAmount', {
@@ -175,7 +178,7 @@ export function MarginManagerPerpPositionsTable({ className }: WithClassnames) {
                 <SecondaryButton
                   className="w-full"
                   destructive
-                  size="sm"
+                  size="xs"
                   title="Close Position"
                   onClick={getTableButtonOnClickHandler(() => {
                     show({

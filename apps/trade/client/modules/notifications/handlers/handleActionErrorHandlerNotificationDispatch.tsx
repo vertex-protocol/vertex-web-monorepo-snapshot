@@ -1,15 +1,18 @@
+import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
 import { ActionErrorNotification } from 'client/modules/notifications/components/collateral/ActionErrorNotification';
-import { asyncResult } from '@vertex-protocol/web-common';
 import { createToastId } from 'client/utils/createToastId';
-import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
+import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import toast from 'react-hot-toast';
-import { ActionErrorHandlerNotificationData } from '../types';
-import { getConfirmedTxPromise } from 'client/utils/getConfirmedTxPromise';
+import {
+  ActionErrorHandlerNotificationData,
+  NotificationDispatchContext,
+} from '../types';
 
 export async function handleActionErrorHandlerNotificationDispatch(
   data: ActionErrorHandlerNotificationData,
+  { getConfirmedTxPromise }: NotificationDispatchContext,
 ) {
   const toastId = createToastId('action_error_handler');
   const executionData = data.executionData;

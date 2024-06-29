@@ -1,11 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { LINKS } from 'client/modules/brand/links';
-import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { LINKS } from 'common/brandMetadata/links/links';
+import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import { VOVRTX_INFO } from 'common/productMetadata/vertexTokenInfo';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -27,7 +28,7 @@ export function TokenStakingPoolStats({
   lastRewardsDistributionAmount,
   usdcSymbol,
 }: Props) {
-  const { protocolToken } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
 
   return (
     <RewardsCard.Container>
@@ -39,7 +40,7 @@ export function TokenStakingPoolStats({
             external
             href={LINKS.stats}
             withExternalIcon
-            color="white"
+            colorVariant="primary"
             className="text-xs"
           >
             Protocol Revenue
@@ -54,36 +55,40 @@ export function TokenStakingPoolStats({
         Staking Pool Stats
       </RewardsCard.Header>
       <RewardsCard.MetricsPane>
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
           label="Total Staked"
           value={poolTotalStaked}
-          symbol={protocolToken.symbol}
-          formatSpecifier={CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED}
+          valueEndElement={protocolTokenMetadata.token.symbol}
+          numberFormatSpecifier={
+            CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED
+          }
         />
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
           label="% of Liquid Supply"
           value={poolLiquidSupplyFraction}
-          formatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         />
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
           label="voVRTX Pool Size"
-          definitionId="stakingPoolSize"
+          tooltip={{ id: 'stakingPoolSize' }}
           value={poolTotalScore}
-          symbol={VOVRTX_INFO.symbol}
-          formatSpecifier={CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED}
+          valueEndElement={VOVRTX_INFO.symbol}
+          numberFormatSpecifier={
+            CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED
+          }
         />
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
           label="Avg. Staking Rewards"
-          definitionId="stakingPoolAvgStakingRewards"
+          tooltip={{ id: 'stakingPoolAvgStakingRewards' }}
           value={poolAvgApr}
-          formatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         />
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
           label="7d Protocol Fees Distribution"
-          definitionId="stakingFeeDistribution"
+          tooltip={{ id: 'stakingFeeDistribution' }}
           value={lastRewardsDistributionAmount}
-          symbol={usdcSymbol}
-          formatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+          valueEndElement={usdcSymbol}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
         />
       </RewardsCard.MetricsPane>
     </RewardsCard.Container>

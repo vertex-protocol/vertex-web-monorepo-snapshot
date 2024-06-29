@@ -1,10 +1,9 @@
-import { WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 
 export function HeroMetrics({ className }: WithClassnames) {
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'flex justify-center gap-x-8',
         'md:gap-x-20',
         'lg:gap-x-28',

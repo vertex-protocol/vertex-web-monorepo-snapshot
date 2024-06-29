@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
+import { PLACE_ENGINE_ORDER_QUERY_KEYS } from 'client/hooks/execute/placeOrder/placeEngineOrderQueryKeys';
 import { usePlaceOrderMutationFn } from 'client/hooks/execute/placeOrder/usePlaceOrderMutationFn';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import { OPEN_TRIGGER_ORDER_QUERY_KEYS } from 'client/hooks/execute/util/refetchQueryKeys';
 import { useExecuteInValidContext } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchOpenEngineOrders } from 'client/hooks/execute/util/useRefetchOpenEngineOrders';
 import { useRefetchQueries } from 'client/hooks/execute/util/useRefetchQueries';
-import { PLACE_ENGINE_ORDER_QUERY_KEYS } from 'client/hooks/execute/placeOrder/placeEngineOrderQueryKeys';
 
 export function useExecutePlaceOrder() {
   const placeOrderMutationFn = usePlaceOrderMutationFn();
@@ -21,7 +21,7 @@ export function useExecutePlaceOrder() {
 
   return useMutation({
     mutationFn,
-    onSuccess(data, variables) {
+    onSuccess(_, variables) {
       if (variables.priceType === 'stop') {
         refetchOpenTriggerOrderQueries();
       } else {

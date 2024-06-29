@@ -16,7 +16,7 @@ import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWi
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import { useDialog } from '../app/dialogs/hooks/useDialog';
 import { AmountWithSymbolCell } from './cells/AmountWithSymbolCell';
@@ -67,7 +67,8 @@ export function PaginatedRealizedPnlEventsTable({
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('marketInfo', {
@@ -181,7 +182,7 @@ export function PaginatedRealizedPnlEventsTable({
           return (
             <TableCell className="pointer-events-auto px-4">
               <SecondaryButton
-                size="md"
+                size="sm"
                 className="w-full"
                 startIcon={<Icons.RiShareForwardFill size={12} />}
                 onClick={getTableButtonOnClickHandler(() => {

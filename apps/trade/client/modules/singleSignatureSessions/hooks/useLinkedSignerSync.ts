@@ -1,4 +1,7 @@
-import { useVertexClient } from '@vertex-protocol/web-data';
+import {
+  useEVMContext,
+  useVertexClientContext,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
 import { useSavedSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSavedSubaccountSigningPreference';
@@ -11,15 +14,17 @@ import { useEffect, useRef } from 'react';
  * - Update local state given backend state on initial load
  */
 export function useLinkedSignerSync() {
+  const { primaryChainEnv } = useEVMContext();
+  const { setLinkedSigner, vertexClientsByChainEnv } = useVertexClientContext();
   const {
     signingPreference: { current: localSigningPreference },
     currentSubaccount,
   } = useSubaccountContext();
-  const vertexClient = useVertexClient();
 
   // Sync vertex client & local state
+  const didLoadVertexClients = !!vertexClientsByChainEnv;
   useEffect(() => {
-    if (!vertexClient) {
+    if (!didLoadVertexClients) {
       return;
     }
 
@@ -32,17 +37,25 @@ export function useLinkedSignerSync() {
     }
 
     console.debug(
-      '[useLinkedSignerSync] Updating linked signer on Vertex Client',
+      `[useLinkedSignerSync] Updating linked signer on Vertex Client for ${primaryChainEnv}`,
       linkedSigner?.address ?? null,
     );
-    vertexClient.setLinkedSigner(linkedSigner);
-  }, [localSigningPreference, vertexClient]);
+    setLinkedSigner({
+      signer: linkedSigner,
+      chainEnv: primaryChainEnv,
+    });
+  }, [
+    didLoadVertexClients,
+    localSigningPreference,
+    primaryChainEnv,
+    setLinkedSigner,
+  ]);
 
   // Consume the saved state directly for a BE <> Local sync, this is because we don't have access to the private key
   // if backend is configured as sign-once but local has no saved setting
   const {
     signingPreference: savedSigningPreference,
-    isLoading: isLoadingSavedSigningPreference,
+    didLoadPersistedValue: didLoadSigningPreferencePersistedValue,
     saveSigningPreference,
   } = useSavedSubaccountSigningPreference(currentSubaccount);
 
@@ -53,7 +66,7 @@ export function useLinkedSignerSync() {
   // state has not yet updated
   const hasRunBackendSyncRef = useRef(false);
 
-  // Reset on subaccount change
+  // Reset on subaccount changes
   useEffect(() => {
     hasRunBackendSyncRef.current = false;
   }, [currentSubaccount]);
@@ -63,7 +76,7 @@ export function useLinkedSignerSync() {
     if (
       !currentSubaccount.address ||
       hasRunBackendSyncRef.current ||
-      isLoadingSavedSigningPreference ||
+      !didLoadSigningPreferencePersistedValue ||
       !backendLinkedSigner
     ) {
       return;
@@ -71,26 +84,20 @@ export function useLinkedSignerSync() {
     const backendIsSignOnce = backendLinkedSigner.signer !== ZeroAddress;
 
     // Nothing configured locally
-    if (savedSigningPreference == null) {
-      saveSigningPreference(
-        backendIsSignOnce
-          ? {
-              type: 'sign_once',
-              rememberMe: false,
-            }
-          : {
-              type: 'sign_always',
-            },
-      );
+    if (savedSigningPreference == null && backendIsSignOnce) {
+      saveSigningPreference({
+        type: 'sign_once',
+        rememberMe: false,
+      });
     } else if (
-      savedSigningPreference.type === 'sign_once' &&
+      savedSigningPreference?.type === 'sign_once' &&
       !backendIsSignOnce
     ) {
       saveSigningPreference({
         type: 'sign_always',
       });
     } else if (
-      savedSigningPreference.type === 'sign_always' &&
+      savedSigningPreference?.type === 'sign_always' &&
       backendIsSignOnce
     ) {
       saveSigningPreference({
@@ -103,7 +110,7 @@ export function useLinkedSignerSync() {
   }, [
     backendLinkedSigner,
     currentSubaccount.address,
-    isLoadingSavedSigningPreference,
+    didLoadSigningPreferencePersistedValue,
     saveSigningPreference,
     savedSigningPreference,
   ]);

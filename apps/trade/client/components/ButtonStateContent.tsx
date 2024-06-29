@@ -15,12 +15,16 @@ function LoadingButtonContent({
 }: {
   singleSignatureMessage: string;
 }) {
-  const isSingleSignature = useIsSingleSignatureSession({
+  const isSingleSignatureSession = useIsSingleSignatureSession({
     requireActive: true,
   });
 
   return (
-    <>{isSingleSignature ? singleSignatureMessage : 'Confirm Transaction'}</>
+    <>
+      {isSingleSignatureSession
+        ? singleSignatureMessage
+        : 'Confirm Transaction'}
+    </>
   );
 }
 

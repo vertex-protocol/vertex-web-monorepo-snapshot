@@ -4,8 +4,8 @@ import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+} from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 
 interface Props extends TableCellProps {

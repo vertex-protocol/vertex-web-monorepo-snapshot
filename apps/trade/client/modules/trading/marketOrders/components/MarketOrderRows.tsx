@@ -1,6 +1,6 @@
 import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { range } from 'lodash';
-import { Fragment } from 'react';
+import { Fragment, ReactNode } from 'react';
 
 interface RowIdentifiable {
   id: string;
@@ -9,8 +9,8 @@ interface RowIdentifiable {
 interface Props<TRow extends RowIdentifiable> extends WithClassnames {
   rows: TRow[] | undefined;
   numRows: number;
-  renderRow: (row: TRow) => React.ReactNode;
-  skeletonRow: React.ReactNode;
+  renderRow: (row: TRow) => ReactNode;
+  skeletonRow: ReactNode;
 }
 
 export function MarketOrderRows<TRow extends RowIdentifiable>({

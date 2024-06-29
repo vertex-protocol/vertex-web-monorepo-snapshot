@@ -1,16 +1,13 @@
 import { ProductEngineType } from '@vertex-protocol/client';
-import { openMarketSwitcherAtom } from 'client/store/trading/commonTradingStore';
-import { useAtom } from 'jotai';
-import { useMemo } from 'react';
-import { TradeSwitcherItem } from './useTradeSwitcher/types';
+import { useMemo, useState } from 'react';
+import { MarketSwitcherItem } from './useMarketSwitcher/types';
 import {
-  useTradeSwitcher,
-  UseTradeSwitcher,
-} from './useTradeSwitcher/useTradeSwitcher';
+  useMarketSwitcher,
+  UseMarketSwitcher,
+} from './useMarketSwitcher/useMarketSwitcher';
 
-interface UseTradingMarketSwitcher extends UseTradeSwitcher {
-  selectedMarket: TradeSwitcherItem | undefined;
-  displayedMarkets: TradeSwitcherItem[];
+interface UseTradingMarketSwitcher extends UseMarketSwitcher {
+  selectedMarket: MarketSwitcherItem | undefined;
   isMarketSwitcherOpen: boolean;
   disableMarketSwitcherButton: boolean;
   setIsMarketSwitcherOpen: (open: boolean) => void;
@@ -21,20 +18,18 @@ export function useTradingMarketSwitcher(
   defaultMarketType: ProductEngineType,
 ): UseTradingMarketSwitcher {
   const { allMarkets, displayedMarkets, ...rest } =
-    useTradeSwitcher(defaultMarketType);
+    useMarketSwitcher(defaultMarketType);
 
-  const [isMarketSwitcherOpen, setIsMarketSwitcherOpen] = useAtom(
-    openMarketSwitcherAtom,
-  );
+  const [isMarketSwitcherOpen, setIsMarketSwitcherOpen] = useState(false);
 
   const selectedMarket = useMemo(() => {
     if (!allMarkets) {
       return;
     }
-    return allMarkets.find((item) => item.market.productId === productId);
+    return allMarkets.find((item) => item.productId === productId);
   }, [allMarkets, productId]);
 
-  const disableMarketSwitcherButton = !displayedMarkets.length;
+  const disableMarketSwitcherButton = !allMarkets || !allMarkets.length;
 
   return {
     allMarkets,

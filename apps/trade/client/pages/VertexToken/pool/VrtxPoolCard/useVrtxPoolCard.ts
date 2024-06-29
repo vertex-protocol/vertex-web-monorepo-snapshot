@@ -3,7 +3,7 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useLpYields } from 'client/hooks/markets/useLpYields';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAccountLbaState } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import {
@@ -12,7 +12,7 @@ import {
 } from 'client/hooks/subaccount/useLpBalances';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { AnnotatedSpotMarket, Token } from 'common/productMetadata/types';
 import { useMemo } from 'react';
 
@@ -37,30 +37,30 @@ interface UseVrtxPoolCard {
 }
 
 export function useVrtxPoolCard(): UseVrtxPoolCard {
-  const { primaryQuoteToken, protocolToken, protocolTokenProductId } =
+  const { primaryQuoteToken, protocolTokenMetadata } =
     useVertexMetadataContext();
   const showDialogForProduct = useShowDialogForProduct();
 
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
   const userActionState = useUserActionState();
 
   const { data: accountTokenClaimState } = useAccountTokenClaimState();
   const { data: accountLbaState } = useAccountLbaState();
 
   const { data: vrtxSpotMarket } = useMarket<AnnotatedSpotMarket>({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
   const { data: lpYields } = useLpYields();
   // Data here is decimal adjusted
   const { balances: lpBalances } = useLpBalances();
 
-  const vrtxPoolApr = lpYields?.[protocolTokenProductId];
+  const vrtxPoolApr = lpYields?.[protocolTokenMetadata.productId];
 
   const lpBalance = useMemo(() => {
     return lpBalances?.find(
-      (balance) => balance.productId === protocolTokenProductId,
+      (balance) => balance.productId === protocolTokenMetadata.productId,
     );
-  }, [lpBalances, protocolTokenProductId]);
+  }, [lpBalances, protocolTokenMetadata.productId]);
 
   const lpTokenValueUsd = useMemo(() => {
     if (!vrtxSpotMarket) {
@@ -88,28 +88,32 @@ export function useVrtxPoolCard(): UseVrtxPoolCard {
 
     return removeDecimals(
       totalLpBalance.multipliedBy(lpTokenValueUsd),
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
-  }, [accountLbaState, lpTokenValueUsd, protocolToken.tokenDecimals]);
+  }, [
+    accountLbaState,
+    lpTokenValueUsd,
+    protocolTokenMetadata.token.tokenDecimals,
+  ]);
 
   const onProvideLiquidityClick = () => {
     showDialogForProduct({
       dialogType: 'provide_liquidity',
-      productId: protocolTokenProductId,
+      productId: protocolTokenMetadata.productId,
     });
   };
 
   const onWithdrawLiquidityClick = () => {
     showDialogForProduct({
       dialogType: 'withdraw_liquidity',
-      productId: protocolTokenProductId,
+      productId: protocolTokenMetadata.productId,
     });
   };
 
   return {
     lbaTokens: {
       primaryQuoteToken,
-      protocolToken,
+      protocolToken: protocolTokenMetadata.token,
     },
     lpBalance,
     pool: {
@@ -119,7 +123,7 @@ export function useVrtxPoolCard(): UseVrtxPoolCard {
     lbaPosition: {
       vrtxRewards: removeDecimals(
         accountTokenClaimState?.claimableLbaRewards,
-        protocolToken.tokenDecimals,
+        protocolTokenMetadata.token.tokenDecimals,
       ),
       lpValueUsd: lbaLpValueUsd,
     },

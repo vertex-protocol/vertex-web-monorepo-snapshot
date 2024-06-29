@@ -1,11 +1,11 @@
+import { asyncResult } from '@vertex-protocol/utils';
+import { useExecuteClaimFoundationRewards } from 'client/hooks/execute/foundationToken/useExecuteClaimFoundationRewards';
+import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
+import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
+import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { useCallback } from 'react';
-import { useExecuteClaimArbRewards } from 'client/hooks/execute/vrtxToken/useExecuteClaimArbRewards';
-import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
-import { asyncResult } from '@vertex-protocol/web-common';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { getConfirmedTxPromise } from 'client/utils/getConfirmedTxPromise';
 
 /**
  * Util hook for claiming ARB Rewards
@@ -13,8 +13,9 @@ import { getConfirmedTxPromise } from 'client/utils/getConfirmedTxPromise';
 export function useClaimArbRewards() {
   const { show } = useDialog();
   const { dispatchNotification } = useNotificationManagerContext();
+  const getConfirmedTxPromise = useGetConfirmedTxPromise();
 
-  const mutation = useExecuteClaimArbRewards();
+  const mutation = useExecuteClaimFoundationRewards();
   const { isLoading, isSuccess } = useOnChainMutationStatus({
     mutationStatus: mutation.status,
     txResponse: mutation.data,
@@ -51,7 +52,7 @@ export function useClaimArbRewards() {
         },
       });
     }
-  }, [dispatchNotification, mutation, show]);
+  }, [dispatchNotification, getConfirmedTxPromise, mutation, show]);
 
   return {
     claim,

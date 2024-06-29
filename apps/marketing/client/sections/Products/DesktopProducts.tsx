@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_GAP,
@@ -10,13 +9,14 @@ import { useState } from 'react';
 import { ProductInfoButton } from './components/ProductInfoButton';
 import { SelectedProductCard } from './components/SelectedProductCard';
 import { PRODUCT_DATA } from './data';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function DesktopProducts() {
   const [selectedCard, setSelectedCard] = useState(PRODUCT_DATA[0]);
 
   return (
     <section
-      className={classNames(
+      className={joinClassNames(
         DEFAULT_SECTION_PADDING,
         DEFAULT_SECTION_GAP,
         DEFAULT_SECTION_WIDTH,
@@ -57,7 +57,7 @@ export function DesktopProducts() {
           </div>
         </div>
         <div
-          className={classNames(
+          className={joinClassNames(
             'flex flex-1 items-center justify-start',
             'md:pl-4 lg:pl-6 xl:pl-8',
           )}

@@ -1,6 +1,6 @@
 import { nativeTokenConstant } from '@0xsquid/sdk/dist/constants';
 import { ChainType, Token as SquidToken } from '@0xsquid/squid-types';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/base/useSquidSDK';
 import {
@@ -77,7 +77,7 @@ export function useBridgeData() {
       // Destination chain (i.e. where Vertex is deployed)
       if (baseChainData.chainId === primaryChain.id) {
         const spotProducts = [
-          marketsStaticData.quote,
+          marketsStaticData.primaryQuote,
           ...Object.values(marketsStaticData.spot),
         ];
 

@@ -14,10 +14,13 @@ import crvIcon from 'public/tokens/crv.svg';
 import dogeIcon from 'public/tokens/doge.svg';
 import dotIcon from 'public/tokens/dot.svg';
 import dydxIcon from 'public/tokens/dydx.svg';
+import enaIcon from 'public/tokens/ena.svg';
 import ethIcon from 'public/tokens/eth.svg';
 import filIcon from 'public/tokens/fil.svg';
 import ftmIcon from 'public/tokens/ftm.svg';
 import galaIcon from 'public/tokens/gala.svg';
+import gmMemeIcon from 'public/tokens/gm-meme.svg';
+import gmci30Icon from 'public/tokens/gmci-30.svg';
 import icpIcon from 'public/tokens/icp.svg';
 import imxIcon from 'public/tokens/imx.svg';
 import injIcon from 'public/tokens/inj.svg';
@@ -28,8 +31,11 @@ import linkIcon from 'public/tokens/link.svg';
 import ltcIcon from 'public/tokens/ltc.svg';
 import maticIcon from 'public/tokens/matic.svg';
 import memeIcon from 'public/tokens/meme.svg';
+import methIcon from 'public/tokens/meth.svg';
 import mkrIcon from 'public/tokens/mkr.svg';
+import mntIcon from 'public/tokens/mnt.svg';
 import nearIcon from 'public/tokens/near.svg';
+import ondoIcon from 'public/tokens/ondo.svg';
 import opIcon from 'public/tokens/op.svg';
 import pepeIcon from 'public/tokens/pepe.svg';
 import pythIcon from 'public/tokens/pyth.svg';
@@ -39,6 +45,7 @@ import solIcon from 'public/tokens/sol.svg';
 import stxIcon from 'public/tokens/stx.svg';
 import suiIcon from 'public/tokens/sui.svg';
 import tiaIcon from 'public/tokens/tia.svg';
+import tonIcon from 'public/tokens/ton.svg';
 import trxIcon from 'public/tokens/trx.svg';
 import uniIcon from 'public/tokens/uni.svg';
 import usdbIcon from 'public/tokens/usdb.svg';
@@ -48,6 +55,7 @@ import vovrtxIcon from 'public/tokens/vovrtx.svg';
 import vrtxIcon from 'public/tokens/vrtx.svg';
 import wbtcIcon from 'public/tokens/wbtc.svg';
 import wethIcon from 'public/tokens/weth.svg';
+import wifIcon from 'public/tokens/wif.svg';
 import wldIcon from 'public/tokens/wld.svg';
 import xrpIcon from 'public/tokens/xrp.svg';
 
@@ -61,6 +69,10 @@ export const TOKEN_ICONS = {
     url: '/tokens/ada.svg',
     asset: adaIcon,
   },
+  ape: {
+    url: '/tokens/ape.svg',
+    asset: apeIcon,
+  },
   apt: {
     url: '/tokens/apt.svg',
     asset: aptIcon,
@@ -68,6 +80,10 @@ export const TOKEN_ICONS = {
   arb: {
     url: '/tokens/arb.svg',
     asset: arbIcon,
+  },
+  atom: {
+    url: '/tokens/atom.svg',
+    asset: atomIcon,
   },
   avax: {
     url: '/tokens/avax.svg',
@@ -89,13 +105,13 @@ export const TOKEN_ICONS = {
     url: '/tokens/btc.svg',
     asset: btcIcon,
   },
-  crv: {
-    url: '/tokens/crv.svg',
-    asset: crvIcon,
-  },
   comp: {
     url: '/tokens/comp.svg',
     asset: compIcon,
+  },
+  crv: {
+    url: '/tokens/crv.svg',
+    asset: crvIcon,
   },
   doge: {
     url: '/tokens/doge.svg',
@@ -109,6 +125,10 @@ export const TOKEN_ICONS = {
     url: '/tokens/dydx.svg',
     asset: dydxIcon,
   },
+  ena: {
+    url: '/tokens/ena.svg',
+    asset: enaIcon,
+  },
   eth: {
     url: '/tokens/eth.svg',
     asset: ethIcon,
@@ -120,6 +140,18 @@ export const TOKEN_ICONS = {
   ftm: {
     url: '/tokens/ftm.svg',
     asset: ftmIcon,
+  },
+  gala: {
+    url: '/tokens/gala.svg',
+    asset: galaIcon,
+  },
+  gmMeme: {
+    url: '/tokens/gm-meme.svg',
+    asset: gmMemeIcon,
+  },
+  gmci30: {
+    url: '/tokens/gmci-30.svg',
+    asset: gmci30Icon,
   },
   icp: {
     url: '/tokens/icp.svg',
@@ -136,6 +168,10 @@ export const TOKEN_ICONS = {
   jto: {
     url: '/tokens/jto.png',
     asset: jtoIcon,
+  },
+  jup: {
+    url: '/tokens/jup.svg',
+    asset: jupIcon,
   },
   ldo: {
     url: '/tokens/ldo.svg',
@@ -157,13 +193,25 @@ export const TOKEN_ICONS = {
     url: '/tokens/meme.svg',
     asset: memeIcon,
   },
+  meth: {
+    url: '/tokens/meth.svg',
+    asset: methIcon,
+  },
   mkr: {
     url: '/tokens/mkr.svg',
     asset: mkrIcon,
   },
+  mnt: {
+    url: '/tokens/mnt.svg',
+    asset: mntIcon,
+  },
   near: {
     url: '/tokens/near.svg',
     asset: nearIcon,
+  },
+  ondo: {
+    url: '/tokens/ondo.svg',
+    asset: ondoIcon,
   },
   op: {
     url: '/tokens/op.svg',
@@ -201,6 +249,14 @@ export const TOKEN_ICONS = {
     url: '/tokens/tia.svg',
     asset: tiaIcon,
   },
+  ton: {
+    url: '/tokens/ton.svg',
+    asset: tonIcon,
+  },
+  trx: {
+    url: '/tokens/trx.svg',
+    asset: trxIcon,
+  },
   uni: {
     url: '/tokens/uni.svg',
     asset: uniIcon,
@@ -233,6 +289,10 @@ export const TOKEN_ICONS = {
     url: '/tokens/weth.svg',
     asset: wethIcon,
   },
+  wif: {
+    url: '/tokens/wif.svg',
+    asset: wifIcon,
+  },
   wld: {
     url: '/tokens/wld.svg',
     asset: wldIcon,
@@ -240,25 +300,5 @@ export const TOKEN_ICONS = {
   xrp: {
     url: '/tokens/xrp.svg',
     asset: xrpIcon,
-  },
-  trx: {
-    url: '/tokens/trx.svg',
-    asset: trxIcon,
-  },
-  gala: {
-    url: '/tokens/gala.svg',
-    asset: galaIcon,
-  },
-  atom: {
-    url: '/tokens/atom.svg',
-    asset: atomIcon,
-  },
-  ape: {
-    url: '/tokens/ape.svg',
-    asset: apeIcon,
-  },
-  jup: {
-    url: '/tokens/jup.svg',
-    asset: jupIcon,
   },
 } satisfies Record<string, TokenIconMetadata>;

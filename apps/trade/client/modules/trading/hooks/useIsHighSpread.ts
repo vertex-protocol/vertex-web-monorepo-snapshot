@@ -1,6 +1,6 @@
+import { BigDecimals } from '@vertex-protocol/utils';
 import { useLatestMarketPrice } from 'client/hooks/markets/useLatestMarketPrice';
 import { isHighSpread } from 'client/modules/trading/utils/isHighSpread';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import { useMemo } from 'react';
 
 export function useIsHighSpread(productId: number | undefined) {

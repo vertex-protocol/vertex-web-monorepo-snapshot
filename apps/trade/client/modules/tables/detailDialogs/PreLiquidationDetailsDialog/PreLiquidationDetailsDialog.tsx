@@ -1,28 +1,29 @@
 import * as Accordion from '@radix-ui/react-accordion';
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { useCopyText } from '@vertex-protocol/web-common';
 import { Spinner, TextButton } from '@vertex-protocol/web-ui';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
-import { LineItem } from 'client/components/LineItem/LineItem';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { PreLiquidationBalanceAccordionItem } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/PreLiquidationBalanceAccordionItem';
 import { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
 import { usePreLiquidationDetailsDialog } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/usePreLiquidationDetailsDialog';
 import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import {
-  formatTimestamp,
   TimeFormatSpecifier,
+  formatTimestamp,
 } from 'client/utils/formatTimestamp';
 import { signDependentValue } from 'client/utils/signDependentValue';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import { useState } from 'react';
 
 export function PreLiquidationDetailsDialog(
   params: PreLiquidationDetailsDialogParams,
 ) {
+  const { primaryQuoteToken } = useVertexMetadataContext();
   const [openAccordionIds, setOpenAccordionIds] = useState<string[]>([]);
   const { hide } = useDialog();
   const { isLoading, isError, perpBalances, spotBalances, rawJsonData } =
@@ -86,26 +87,36 @@ export function PreLiquidationDetailsDialog(
 
             const metrics = (
               <>
-                <LineItem.Metric
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
                   label="Oracle Price"
-                  renderValue={balance.priceFormatSpecifier}
+                  numberFormatSpecifier={balance.priceFormatSpecifier}
                   value={balance.oraclePrice}
                 />
-                <LineItem.Metric
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
                   label="Balance"
-                  renderValue={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+                  numberFormatSpecifier={
+                    CustomNumberFormatSpecifier.NUMBER_PRECISE
+                  }
                   value={balance.balanceAmount}
                   valueEndElement={balance.symbol}
                 />
-                <LineItem.Metric
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
                   label="Value"
-                  renderValue={PresetNumberFormatSpecifier.CURRENCY_2DP}
+                  numberFormatSpecifier={
+                    PresetNumberFormatSpecifier.CURRENCY_2DP
+                  }
                   value={balance.balanceValueUsd}
                 />
                 {!balance.lpBalanceValueUsd.isZero() && (
-                  <LineItem.Metric
+                  <ValueWithLabel.Horizontal
+                    sizeVariant="xs"
                     label="LP Value"
-                    renderValue={PresetNumberFormatSpecifier.CURRENCY_2DP}
+                    numberFormatSpecifier={
+                      PresetNumberFormatSpecifier.CURRENCY_2DP
+                    }
                     value={balance.lpBalanceValueUsd}
                   />
                 )}
@@ -132,20 +143,25 @@ export function PreLiquidationDetailsDialog(
 
             const metrics = (
               <>
-                <LineItem.Metric
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
                   label="Oracle Price"
-                  renderValue={balance.priceFormatSpecifier}
+                  numberFormatSpecifier={balance.priceFormatSpecifier}
                   value={balance.oraclePrice}
                 />
-                <LineItem.Metric
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
                   label="Balance"
-                  renderValue={balance.sizeFormatSpecifier}
+                  numberFormatSpecifier={balance.sizeFormatSpecifier}
                   value={balance.balanceAmount}
                   valueEndElement={balance.symbol}
                 />
-                <LineItem.Metric
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
                   label="Unrealized PnL"
-                  renderValue={PresetNumberFormatSpecifier.CURRENCY_2DP}
+                  numberFormatSpecifier={
+                    PresetNumberFormatSpecifier.CURRENCY_2DP
+                  }
                   value={balance.unrealizedPnlUsd}
                   valueClassName={signDependentValue(balance.unrealizedPnlUsd, {
                     positive: 'text-positive',
@@ -153,11 +169,12 @@ export function PreLiquidationDetailsDialog(
                     zero: 'text-text-secondary',
                   })}
                 />
-                <LineItem.Metric
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
                   label="Unsettled"
-                  renderValue={PresetNumberFormatSpecifier.NUMBER_2DP}
+                  numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
                   value={balance.unsettledQuote}
-                  valueEndElement={PRIMARY_QUOTE_SYMBOL}
+                  valueEndElement={primaryQuoteToken.symbol}
                 />
               </>
             );

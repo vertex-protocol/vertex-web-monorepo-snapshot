@@ -1,13 +1,13 @@
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
+import { useMarket } from 'client/hooks/markets/useMarket';
 import {
   useMaxOrderSize,
   UseMaxOrderSizeParams,
 } from 'client/hooks/query/subaccount/useMaxOrderSize';
-import { useMarket } from 'client/hooks/markets/useMarket';
-import { useMemo } from 'react';
-import { roundToPrecision } from 'client/utils/rounding';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { QueryState } from 'client/types/QueryState';
+import { calcMarketConversionPriceFromOraclePrice } from 'client/utils/calcs/calcMarketConversionPriceFromOraclePrice';
+import { roundToPrecision } from 'client/utils/rounding';
+import { useMemo } from 'react';
 
 /**
  * A wrapper hook around the max order size query that applies:
@@ -19,8 +19,9 @@ export function useMaxOrderSizeEstimation(
   params: UseMaxOrderSizeParams | undefined,
 ): QueryState<BigDecimal> {
   const { data: marketData } = useMarket({ productId: params?.productId });
-
-  const oraclePrice = marketData?.product.oraclePrice;
+  const { data: quoteData } = useMarket({
+    productId: marketData?.metadata.quoteProductId,
+  });
 
   const roundedPriceForQuery = useMemo(() => {
     if (!params) {
@@ -38,12 +39,22 @@ export function useMaxOrderSizeEstimation(
     if (!roundedPriceForQuery || !params) {
       return;
     }
+
+    const baseOraclePrice = marketData?.product.oraclePrice;
+    const quoteOraclePrice = quoteData?.product.oraclePrice;
+
     // Backend errors on prices that are out of the 20% -> 500% range from the current ORACLE price, so skip the query if the price is outside of this range
-    if (oraclePrice) {
-      if (
-        oraclePrice.multipliedBy(5).lt(roundedPriceForQuery) ||
-        oraclePrice.multipliedBy(0.2).gt(roundedPriceForQuery)
-      ) {
+    if (baseOraclePrice && quoteOraclePrice) {
+      const impliedMarketOraclePrice = calcMarketConversionPriceFromOraclePrice(
+        baseOraclePrice,
+        quoteOraclePrice,
+      );
+      const isInvalidPrice =
+        impliedMarketOraclePrice.multipliedBy(5).lt(roundedPriceForQuery) ||
+        impliedMarketOraclePrice.multipliedBy(0.2).gt(roundedPriceForQuery);
+
+      // Perform the check only if we have a valid market oracle price
+      if (impliedMarketOraclePrice.gt(0) && isInvalidPrice) {
         return;
       }
     }
@@ -52,7 +63,12 @@ export function useMaxOrderSizeEstimation(
       ...params,
       price: roundedPriceForQuery,
     };
-  }, [roundedPriceForQuery, params, oraclePrice]);
+  }, [
+    roundedPriceForQuery,
+    params,
+    marketData?.product.oraclePrice,
+    quoteData?.product.oraclePrice,
+  ]);
 
   const { data, ...rest } = useMaxOrderSize(maxOrderSizeParams);
 

@@ -3,15 +3,16 @@ import {
   GetIndexerInterestFundingPaymentsResponse,
   IndexerProductPayment,
 } from '@vertex-protocol/client';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedPaymentEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedPaymentEvents';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 import { MarketInfoCellData } from '../types/MarketInfoCellData';
-import { secondsToMilliseconds } from 'date-fns';
 
 export interface FundingPaymentsTableItem {
   timestampMillis: number;
@@ -35,8 +36,11 @@ export function useFundingPaymentsTable({
   pageSize,
   enablePagination,
 }: Params) {
+  const {
+    primaryQuoteToken: { symbol: primaryQuoteSymbol },
+  } = useVertexMetadataContext();
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
 
   const {
     data: fundingPaymentsData,
@@ -55,7 +59,7 @@ export function useFundingPaymentsTable({
       IndexerProductPayment
     >({
       pageSize,
-      queryPageCount: fundingPaymentsData?.pages.length,
+      numPagesFromQuery: fundingPaymentsData?.pages.length,
       hasNextPage,
       fetchNextPage,
       extractItems,
@@ -97,6 +101,9 @@ export function useFundingPaymentsTable({
               marketName,
               icon,
               symbol,
+              // Perps are always quoted in the primary quote token
+              quoteSymbol: primaryQuoteSymbol,
+              isPrimaryQuote: true,
               amountForSide: item.balanceAmount,
               productType,
               sizeIncrement,
@@ -117,9 +124,10 @@ export function useFundingPaymentsTable({
   }, [
     fundingPaymentsData,
     allMarketsStaticData,
-    quotePriceUsd,
     enablePagination,
     getPageData,
+    primaryQuoteSymbol,
+    quotePriceUsd,
   ]);
 
   return {

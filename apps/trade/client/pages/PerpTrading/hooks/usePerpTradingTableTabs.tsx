@@ -1,21 +1,9 @@
+import { ProductEngineType } from '@vertex-protocol/client';
 import {
   HistoricalTradesTab,
   historicalTradesTableFilters,
 } from 'client/modules/trading/components/HistoricalTradesTab';
-import { TradingTab } from 'client/modules/trading/layout/types';
-import { useSelectedPerpMarket } from 'client/pages/PerpTrading/hooks/useSelectedPerpMarket';
-import { SpotBalancesTab } from 'client/pages/SpotTrading/components/SpotBalancesTab';
-import { useMemo } from 'react';
-import { ProductEngineType } from '@vertex-protocol/client';
-import {
-  RealizedPnlEventsTab,
-  realizedPnlEventsTableFilters,
-} from 'client/modules/trading/components/RealizedPnlEventsTab';
-import { PerpOrderPlacementSection } from '../components/PerpOrderPlacementSection/PerpOrderPlacementSection';
-import {
-  PerpPositionsTab,
-  positionsTableFilters,
-} from '../components/PerpPositionsTab';
+import { MobileTradeTab } from 'client/modules/trading/components/MobileTradeTab';
 import {
   OpenEngineOrdersTab,
   openEngineOrdersTableFilters,
@@ -24,7 +12,18 @@ import {
   OpenTriggerOrdersTab,
   openTriggerOrdersTableFilters,
 } from 'client/modules/trading/components/OpenTriggerOrdersTab';
-import { MobileTradeTab } from 'client/modules/trading/components/MobileTradeTab';
+import {
+  RealizedPnlEventsTab,
+  realizedPnlEventsTableFilters,
+} from 'client/modules/trading/components/RealizedPnlEventsTab';
+import { TradingTab } from 'client/modules/trading/layout/types';
+import { SpotBalancesTab } from 'client/pages/SpotTrading/components/SpotBalancesTab';
+import { useMemo } from 'react';
+import { PerpOrderPlacementSection } from '../components/PerpOrderPlacementSection/PerpOrderPlacementSection';
+import {
+  PerpPositionsTab,
+  positionsTableFilters,
+} from '../components/PerpPositionsTab';
 
 const SHOW_ALL_FILTER = undefined;
 
@@ -32,10 +31,7 @@ const PERP_ONLY_FILTER = {
   marketType: ProductEngineType.PERP,
 };
 
-export function usePerpTradingTableTabs() {
-  const { currentMarket } = useSelectedPerpMarket();
-  const currentPerpProductId = currentMarket?.productId;
-
+export function usePerpTradingTableTabs(productId: number | undefined) {
   const mobileTradingTabs = useMemo((): TradingTab[] => {
     return [
       {
@@ -43,7 +39,7 @@ export function usePerpTradingTableTabs() {
         label: 'Trade',
         content: (
           <MobileTradeTab
-            productId={currentPerpProductId}
+            productId={productId}
             OrderPlacementSection={PerpOrderPlacementSection}
           />
         ),
@@ -56,7 +52,7 @@ export function usePerpTradingTableTabs() {
           <PerpPositionsTab
             enableUserFiltering={false}
             defaultFilter={SHOW_ALL_FILTER}
-            productId={currentPerpProductId}
+            productId={productId}
           />
         ),
       },
@@ -79,7 +75,7 @@ export function usePerpTradingTableTabs() {
           <OpenEngineOrdersTab
             enableUserFiltering={false}
             defaultFilter={SHOW_ALL_FILTER}
-            productId={currentPerpProductId}
+            productId={productId}
             isDesktop={false}
           />
         ),
@@ -92,7 +88,7 @@ export function usePerpTradingTableTabs() {
           <OpenTriggerOrdersTab
             enableUserFiltering={false}
             defaultFilter={SHOW_ALL_FILTER}
-            productId={currentPerpProductId}
+            productId={productId}
             isDesktop={false}
           />
         ),
@@ -105,7 +101,7 @@ export function usePerpTradingTableTabs() {
             enableUserFiltering={false}
             defaultFilter={SHOW_ALL_FILTER}
             isDesktop={false}
-            productId={currentPerpProductId}
+            productId={productId}
           />
         ),
       },
@@ -116,13 +112,13 @@ export function usePerpTradingTableTabs() {
           <RealizedPnlEventsTab
             enableUserFiltering={false}
             defaultFilter={PERP_ONLY_FILTER}
-            productId={currentPerpProductId}
+            productId={productId}
             isDesktop={false}
           />
         ),
       },
     ];
-  }, [currentPerpProductId]);
+  }, [productId]);
 
   const desktopTradingTabs = useMemo((): TradingTab[] => {
     return [
@@ -133,7 +129,7 @@ export function usePerpTradingTableTabs() {
         content: (
           <PerpPositionsTab
             enableUserFiltering
-            productId={currentPerpProductId}
+            productId={productId}
             defaultFilter={SHOW_ALL_FILTER}
           />
         ),
@@ -157,7 +153,7 @@ export function usePerpTradingTableTabs() {
         content: (
           <OpenEngineOrdersTab
             enableUserFiltering
-            productId={currentPerpProductId}
+            productId={productId}
             defaultFilter={SHOW_ALL_FILTER}
             isDesktop
           />
@@ -171,7 +167,7 @@ export function usePerpTradingTableTabs() {
         content: (
           <OpenTriggerOrdersTab
             enableUserFiltering
-            productId={currentPerpProductId}
+            productId={productId}
             defaultFilter={SHOW_ALL_FILTER}
             isDesktop
           />
@@ -185,7 +181,7 @@ export function usePerpTradingTableTabs() {
           <HistoricalTradesTab
             enableUserFiltering
             isDesktop
-            productId={currentPerpProductId}
+            productId={productId}
             defaultFilter={SHOW_ALL_FILTER}
           />
         ),
@@ -198,14 +194,14 @@ export function usePerpTradingTableTabs() {
           <RealizedPnlEventsTab
             enableUserFiltering
             isDesktop
-            productId={currentPerpProductId}
+            productId={productId}
             defaultFilter={PERP_ONLY_FILTER}
           />
         ),
         filters: realizedPnlEventsTableFilters,
       },
     ];
-  }, [currentPerpProductId]);
+  }, [productId]);
 
   return {
     desktopTradingTabs,

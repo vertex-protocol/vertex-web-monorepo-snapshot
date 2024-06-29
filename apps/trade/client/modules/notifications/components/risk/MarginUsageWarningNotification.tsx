@@ -20,7 +20,6 @@ export function MarginUsageWarningNotification({
         collateral or close positions to continue trading.
       </p>
       <SecondaryButton
-        size="md"
         onClick={() => {
           show({ type: 'deposit', params: {} });
           onDismiss();

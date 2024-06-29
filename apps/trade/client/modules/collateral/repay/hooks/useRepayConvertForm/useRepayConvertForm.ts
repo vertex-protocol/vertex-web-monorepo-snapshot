@@ -1,5 +1,5 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal } from '@vertex-protocol/utils';
+import { addDecimals, BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 import { safeParseForData } from '@vertex-protocol/web-common';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
 import { getMarketOrderExecutionPrice } from 'client/hooks/execute/util/getMarketOrderExecutionPrice';
@@ -18,8 +18,6 @@ import { useRepayConvertSubmitHandler } from 'client/modules/collateral/repay/ho
 import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
 import { depositProductIdAtom } from 'client/store/collateralStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { addDecimals } from 'client/utils/decimalAdjustment';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { roundToDecimalPlaces } from 'client/utils/rounding';
@@ -27,6 +25,11 @@ import { useAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+/**
+ * Contains form logic for repay convert feature. Currently, only spot products with the quote as the primary quote (ex. USDC)
+ * is supported. This is because LP's are disabled for markets with alternative quotes, which would prevent users from trading below
+ * the size increment (and therefore not being able to repay arbitrary borrowed amounts)
+ */
 export function useRepayConvertForm(): UseRepayConvertForm {
   const [depositProductIdAtomValue] = useAtom(depositProductIdAtom);
   const {

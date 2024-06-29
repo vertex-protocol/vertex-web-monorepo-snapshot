@@ -1,5 +1,5 @@
 import { useRedirectOnInvalidChain } from 'client/modules/app/hooks/useRedirectOnInvalidChain';
-import { ARB_CHAIN_IDS } from 'client/modules/chainSpecificContent/consts/chainIds';
+import { ARB_CHAIN_IDS } from 'client/modules/envSpecificContent/consts/chainIds';
 import { VertexTokenPage } from 'client/pages/VertexToken/VertexTokenPage';
 import { clientEnv } from 'common/environment/clientEnv';
 import type { NextPage } from 'next';

@@ -4,7 +4,7 @@ import { ButtonStateContent } from 'client/components/ButtonStateContent';
 import { useExecuteCancelOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrdersWithNotification';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 
 interface Props {
   order: TriggerOrderInfo;

@@ -1,5 +1,6 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { Form } from 'client/components/Form';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { AdvancedOrderSettings } from 'client/modules/trading/components/AdvancedOrderSettings/AdvancedOrderSettings';
 import { OrderFormInputs } from 'client/modules/trading/components/OrderFormInputs';
@@ -31,6 +32,10 @@ export function PerpOrderPlacementSection({ className }: WithClassnames) {
     inputIncrements,
     minAssetOrderSize,
   } = usePerpOrderFormContext();
+  const {
+    primaryQuoteToken: { symbol: primaryQuoteSymbol },
+  } = useVertexMetadataContext();
+
   const marketSymbol = currentMarket?.metadata.symbol;
   const isHighSpread = useIsHighSpread(currentMarket?.productId);
   const hasTpSlOrders = useHasTpSlOrders(currentMarket?.productId);
@@ -55,9 +60,10 @@ export function PerpOrderPlacementSection({ className }: WithClassnames) {
           <OrderFormInputs
             formError={formError}
             validators={validators}
-            marketSymbol={marketSymbol}
+            baseSymbol={marketSymbol}
             inputIncrements={inputIncrements}
             minAssetOrderSize={minAssetOrderSize}
+            quoteSymbol={primaryQuoteSymbol}
           />
           {!isStopOrder && (
             <AdvancedOrderSettings
@@ -75,7 +81,7 @@ export function PerpOrderPlacementSection({ className }: WithClassnames) {
             <PerpOrderSubmitWithSummary
               onSlippageAdjust={() => {
                 show({
-                  type: 'control_center',
+                  type: 'account_center',
                   params: { initialShowSettingsContent: true },
                 });
               }}

@@ -33,7 +33,7 @@ export function CancelAllOrdersHeaderCell<T>({
     <HeaderCell header={header} className="flex justify-end px-3">
       <SecondaryButton
         destructive
-        size="sm"
+        size="xs"
         disabled={!canCancel}
         isLoading={status === 'pending'}
         onClick={cancelAllOrders}

@@ -1,6 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { asyncResult } from '@vertex-protocol/web-common';
-import { usePrimaryChainId, useVertexClient } from '@vertex-protocol/web-data';
+import { asyncResult } from '@vertex-protocol/utils';
+import {
+  usePrimaryChainId,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import {
   SubaccountOpenEngineOrders,
@@ -10,7 +13,7 @@ import { useCallback } from 'react';
 
 export function useRefetchOpenEngineOrders() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const queryClient = useQueryClient();
   const {
     currentSubaccount: { name: subaccountName, address: subaccountOwner },

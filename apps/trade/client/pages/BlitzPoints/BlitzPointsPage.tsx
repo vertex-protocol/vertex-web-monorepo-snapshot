@@ -1,9 +1,9 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { AppPage } from 'client/modules/app/AppPage';
 import { APP_PAGE_PADDING } from 'client/modules/app/consts/padding';
-import { ReferralLink } from 'client/modules/rewards/components/ReferralLink/ReferralLink';
 import { BlastPointsCard } from 'client/pages/BlitzPoints/components/BlastPointsCard';
 import { BlitzPointsCard } from 'client/pages/BlitzPoints/components/BlitzPointsCard';
+import { BlitzReferralLinkBar } from 'client/pages/BlitzPoints/components/BlitzReferralLinkBar';
 import { ClaimInitialPointsCard } from 'client/pages/BlitzPoints/components/ClaimInitialPointsCollapsible/ClaimInitialPointsCard';
 import { GalxeCard } from 'client/pages/BlitzPoints/components/GalxeCard';
 import { useBlitzPointsPage } from 'client/pages/BlitzPoints/hooks/useBlitzPointsPage';
@@ -12,7 +12,7 @@ export function BlitzPointsPage() {
   const {
     blastGold,
     blastPoints,
-    referralLink,
+    referralCode,
     showInitialClaimCard,
     dismissInitialClaimCard,
     hasClaimedInitialPoints,
@@ -34,8 +34,8 @@ export function BlitzPointsPage() {
         APP_PAGE_PADDING.vertical,
       )}
     >
-      <AppPage.Content className="max-w-[1100px] gap-y-6 sm:gap-y-10">
-        <AppPage.Header
+      <AppPage.Content className="max-w-[1100px]">
+        <AppPage.EarnHeader
           title="Points"
           description="Earn points by trading and referring your friends."
         />
@@ -51,10 +51,7 @@ export function BlitzPointsPage() {
         )}
         <div className="flex flex-col gap-y-2 sm:gap-y-4">
           <h2 className="text-text-secondary text-left">Your referral link</h2>
-          <ReferralLink
-            referralLink={referralLink}
-            tweetText={`Trade on Blitz and earn points. Trade spot and perpetuals on a blazing-fast orderbook DEX.\nGet in here: ${referralLink}`}
-          />
+          <BlitzReferralLinkBar referralCode={referralCode} />
         </div>
         <div className="grid gap-6 lg:grid-cols-2">
           <BlitzPointsCard

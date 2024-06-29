@@ -47,7 +47,6 @@ export function SlowModeSettingsActionButton({
   return (
     <ButtonHelperInfo.Container>
       <PrimaryButton
-        size="lg"
         type="submit"
         isLoading={buttonState === 'loading'}
         disabled={buttonState === 'disabled'}

@@ -1,4 +1,3 @@
-import { WalletIcon } from 'client/components/Icons/WalletIcon';
 import {
   LIBRARY_AVATAR_SRC_BY_ID,
   LIBRARY_AVATARS,
@@ -7,8 +6,9 @@ import { EnsAvatarImage } from 'client/modules/userProfile/components/EnsAvatarI
 import { useEnsProfile } from 'client/modules/userProfile/hooks/useEnsProfile';
 import { ProfileAvatar } from 'client/modules/userProfile/types';
 import Image from 'next/image';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
+import { IdentityIcon } from 'client/components/Icons/IdentityIcon';
 
 interface Props extends WithClassnames {
   avatar: ProfileAvatar;
@@ -42,7 +42,7 @@ export function ProfileAvatarIcon({ avatar, size, className }: Props) {
         />
       );
     } else {
-      return <WalletIcon height={size} width={size} address={address} />;
+      return <IdentityIcon size={22} identifier={address} />;
     }
   })();
 

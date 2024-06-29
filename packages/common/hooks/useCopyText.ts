@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { asyncResult } from '../utils';
 
 export function useCopyText() {
   const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -13,17 +12,16 @@ export function useCopyText() {
 
     if (!val) return;
 
-    const [, error] = await asyncResult(navigator.clipboard.writeText(val));
-
-    if (error) {
+    try {
+      await navigator.clipboard.writeText(val);
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    } catch (error) {
       console.warn('Failed to copy text to clipboard', error);
       setIsCopied(false);
     }
-
-    setIsCopied(true);
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 2000);
   }, []);
 
   return { isCopied, copy: handleCopyText };

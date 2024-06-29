@@ -1,5 +1,5 @@
 import { useAddressBlitzPoints } from 'client/hooks/query/points/useAddressBlitzPoints';
-import { BLITZ_SPECIFIC_IMAGES, IMAGES } from 'client/modules/brand/images';
+import { BLITZ_SPECIFIC_IMAGES, IMAGES } from 'common/brandMetadata/images';
 import { BlitzPointsMetric } from 'client/modules/rewards/components/BlitzPointsMetrics/BlitzPointsMetric';
 
 interface Props {

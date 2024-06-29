@@ -1,6 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import {
   TableCell,
   TableCellProps,

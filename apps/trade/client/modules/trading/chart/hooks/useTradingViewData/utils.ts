@@ -1,6 +1,6 @@
 import { Candlestick } from '@vertex-protocol/client';
 import type { Bar } from 'public/charting_library';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 
 export function toTVCandlesticks(candlesticks: Candlestick[]) {
   // Candlesticks are in descending order, but TV wants them to be in ascending order

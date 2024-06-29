@@ -1,7 +1,7 @@
 // We can't use Image element from nextjs here. It won't generate images properly.
 /* eslint-disable @next/next/no-img-element */
 import { BigDecimal } from '@vertex-protocol/utils';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { SocialSharingTheme } from '../hooks/socialSharingConfig';
 import { SocialSharingMarketInfo } from './SocialSharingMarketInfo';

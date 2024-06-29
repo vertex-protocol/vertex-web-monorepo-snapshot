@@ -2,12 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 
 import { HealthGroup } from '@vertex-protocol/contracts';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 
 export function healthGroupsQueryKey(chainId?: PrimaryChainID) {
   return createQueryKey('healthGroups', chainId);
@@ -24,7 +24,7 @@ interface Data {
 
 export function useHealthGroups() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({

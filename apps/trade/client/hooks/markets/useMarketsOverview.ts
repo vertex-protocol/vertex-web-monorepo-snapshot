@@ -1,12 +1,17 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { BigDecimal, sumBigDecimalBy } from '@vertex-protocol/utils';
-import { createQueryKey } from '@vertex-protocol/web-data';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+  sumBigDecimalBy,
+} from '@vertex-protocol/utils';
+import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import {
   StaticMarketData,
@@ -38,7 +43,7 @@ export function useMarketsOverview() {
   const { data: allMarketsData } = useAllMarkets();
   const { data: allMarketsStaticData, dataUpdatedAt: marketsStaticUpdatedAt } =
     useAllMarketsStaticData();
-  const quotePriceUsd = useQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const disabled = !marketMetrics || !allMarketsStaticData;
 
@@ -47,21 +52,23 @@ export function useMarketsOverview() {
       throw new QueryDisabledError();
     }
 
-    let totalDailyVolumeQuote = BigDecimals.ZERO;
+    let totalDailyVolumeInPrimaryQuote = BigDecimals.ZERO;
     let totalDailyTrades = BigDecimals.ZERO;
     let maxDailyVolume = BigDecimals.ZERO;
     let hottestMarket: StaticMarketData | undefined;
 
     Object.values(marketMetrics.metricsByMarket).forEach(
-      ({ pastDayVolumeQuote, pastDayNumTrades, productId }) => {
-        totalDailyVolumeQuote = totalDailyVolumeQuote.plus(pastDayVolumeQuote);
+      ({ pastDayVolumeInPrimaryQuote, pastDayNumTrades, productId }) => {
+        totalDailyVolumeInPrimaryQuote = totalDailyVolumeInPrimaryQuote.plus(
+          pastDayVolumeInPrimaryQuote,
+        );
 
         // Total daily trades across all markets
         totalDailyTrades = totalDailyTrades.plus(pastDayNumTrades);
 
-        // Find hottest market based on daily quote volume
-        if (pastDayVolumeQuote?.gt(maxDailyVolume)) {
-          maxDailyVolume = pastDayVolumeQuote;
+        // Find hottest market based on daily primary quote volume
+        if (pastDayVolumeInPrimaryQuote?.gt(maxDailyVolume)) {
+          maxDailyVolume = pastDayVolumeInPrimaryQuote;
           hottestMarket = allMarketsStaticData.all[productId];
         }
       },
@@ -69,8 +76,8 @@ export function useMarketsOverview() {
 
     // Total daily volume across all markets
     const totalDailyVolumeUsd = removeDecimals(
-      totalDailyVolumeQuote,
-    ).multipliedBy(quotePriceUsd);
+      totalDailyVolumeInPrimaryQuote,
+    ).multipliedBy(primaryQuotePriceUsd);
 
     // Total open interest across all perp markets in quote currency
     const openInterestUsd = removeDecimals(
@@ -78,12 +85,12 @@ export function useMarketsOverview() {
         Object.values(allMarketsData?.perpMarkets ?? {}),
         ({ product }) => product.openInterest.multipliedBy(product.oraclePrice),
       ),
-    ).multipliedBy(quotePriceUsd);
+    ).multipliedBy(primaryQuotePriceUsd);
 
     // Total cumulative volume across all markets
     const totalCumulativeVolumeUsd = removeDecimals(
-      marketMetrics.totalCumulativeVolumeQuote,
-    ).multipliedBy(quotePriceUsd);
+      marketMetrics.totalCumulativeVolumeInPrimaryQuote,
+    ).multipliedBy(primaryQuotePriceUsd);
 
     return {
       totalCumulativeVolumeUsd,

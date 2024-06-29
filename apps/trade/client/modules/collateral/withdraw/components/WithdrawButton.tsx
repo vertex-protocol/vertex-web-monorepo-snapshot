@@ -42,7 +42,6 @@ export function WithdrawButton({
   return (
     <PrimaryButton
       className={className}
-      size="lg"
       type="submit"
       isLoading={state === 'loading'}
       disabled={state === 'disabled'}

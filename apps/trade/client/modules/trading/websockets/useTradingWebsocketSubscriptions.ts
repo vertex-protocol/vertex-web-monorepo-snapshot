@@ -1,6 +1,9 @@
 import { QueryObserverOptions, useQueryClient } from '@tanstack/react-query';
 import { ENGINE_WS_SUBSCRIPTION_CLIENT_ENDPOINTS } from '@vertex-protocol/engine-client';
-import { useEVMContext, useVertexClient } from '@vertex-protocol/web-data';
+import {
+  useEVMContext,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useDocumentVisibility } from 'ahooks';
 import { latestOrderFillsForProductQueryKey } from 'client/hooks/query/markets/useLatestOrderFillsForProduct';
 import { marketLiquidityQueryKey } from 'client/hooks/query/markets/useMarketLiquidity';
@@ -12,7 +15,7 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 export function useTradingWebsocketSubscriptions(productId?: number) {
   const { primaryChainEnv } = useEVMContext();
   const queryClient = useQueryClient();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   const wsEndpoint = useMemo(() => {
     return ENGINE_WS_SUBSCRIPTION_CLIENT_ENDPOINTS[primaryChainEnv];

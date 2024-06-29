@@ -1,13 +1,16 @@
 import { BalanceSide } from '@vertex-protocol/contracts';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
-import { Button, PrimaryButton } from '@vertex-protocol/web-ui';
+import { useEVMContext } from '@vertex-protocol/react-client';
+import {
+  Button,
+  getStateOverlayClassNames,
+  PrimaryButton,
+} from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
 import { UserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { startCase } from 'lodash';
-import { useMemo } from 'react';
 import { LiteralUnion } from 'type-fest';
 
 interface OrderSubmitButtonProps extends WithClassnames {
@@ -31,26 +34,8 @@ export function OrderSubmitButton({
   const { switchChain, primaryChain } = useEVMContext();
   const { show } = useDialog();
 
-  const message = useMemo(() => {
-    const label = {
-      long: isPerp ? 'Buy/Long' : 'Buy',
-      short: isPerp ? 'Sell/Short' : 'Sell',
-    }[side];
-
-    switch (state) {
-      case 'loading':
-        return (
-          <ButtonStateContent.Loading singleSignatureMessage="Placing Order" />
-        );
-      case 'success':
-        return <ButtonStateContent.Success message="Order Submitted" />;
-      default:
-        return `${label} ${marketSymbol ?? ''}`;
-    }
-  }, [isPerp, side, state, marketSymbol]);
-
   const sharedButtonClassNames = joinClassNames(
-    'w-full py-1.5 rounded font-medium text-sm',
+    'py-1.5 rounded font-medium text-sm',
     className,
   );
 
@@ -71,6 +56,11 @@ export function OrderSubmitButton({
           onClick: () => show({ type: 'deposit', params: {} }),
           label: 'Deposit Funds',
         };
+      case 'requires_single_signature_setup':
+        return {
+          onClick: () => show({ type: 'signature_mode_settings', params: {} }),
+          label: 'Setup 1CT',
+        };
       case 'requires_sign_once_approval':
         return {
           onClick: () =>
@@ -80,42 +70,66 @@ export function OrderSubmitButton({
     }
   })();
 
+  // Return early displaying a Primary button if `userStateError` is present
   if (userStateButtonProps) {
     const { onClick, label } = userStateButtonProps;
 
     return (
-      <PrimaryButton
-        className={sharedButtonClassNames}
-        size="lg"
-        onClick={onClick}
-      >
+      <PrimaryButton className={sharedButtonClassNames} onClick={onClick}>
         {label}
       </PrimaryButton>
     );
   }
 
+  const label = {
+    long: isPerp ? 'Buy/Long' : 'Buy',
+    short: isPerp ? 'Sell/Short' : 'Sell',
+  }[side];
+
+  const stateContent = {
+    loading: (
+      <ButtonStateContent.Loading singleSignatureMessage="Placing Order" />
+    ),
+    success: <ButtonStateContent.Success message="Order Submitted" />,
+    disabled: `${label} ${marketSymbol ?? ''}`,
+    idle: `${label} ${marketSymbol ?? ''}`,
+  }[state];
+
   const disabled = state === 'disabled';
   const isLoading = state === 'loading';
-  const sideColorClassNames = (() => {
-    if (disabled || isLoading) {
-      return 'ring-1 ring-disabled';
-    }
 
+  const stateOverlayClassNames = getStateOverlayClassNames({
+    borderRadiusVariant: 'base',
+    disabled,
+    isLoading,
+  });
+
+  const sideColorClassNames = (() => {
+    if (isLoading || disabled) {
+      return 'border-disabled';
+    }
     return [
-      'hover:brightness-110',
+      'border-transparent',
       side === 'long'
         ? 'bg-positive text-positive-muted'
         : 'bg-negative text-negative-muted',
     ];
   })();
+
+  // If there is no `userStateError`, display the normal button
   return (
     <Button
-      className={joinClassNames(sharedButtonClassNames, sideColorClassNames)}
+      className={joinClassNames(
+        'border',
+        stateOverlayClassNames,
+        sharedButtonClassNames,
+        sideColorClassNames,
+      )}
       type="submit"
       isLoading={isLoading}
       disabled={disabled}
     >
-      {message}
+      {stateContent}
     </Button>
   );
 }

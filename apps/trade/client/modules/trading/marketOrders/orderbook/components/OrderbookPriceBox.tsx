@@ -1,13 +1,16 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import {
+  formatNumber,
+  getMarketPriceFormatSpecifier,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { Icons } from '@vertex-protocol/web-ui';
 import { useShouldFlash } from 'client/hooks/ui/useShouldFlash';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { useMemo } from 'react';
+import { OrderbookViewType } from 'client/modules/trading/marketOrders/orderbook/types';
 
 interface Props {
   lastPriceChange: BigDecimal | undefined;
@@ -18,6 +21,7 @@ interface Props {
     isHighSpread: boolean | undefined;
     spreadFrac: BigDecimal | undefined;
   } | null;
+  viewType: OrderbookViewType;
 }
 
 export function OrderbookPriceBox({
@@ -26,6 +30,7 @@ export function OrderbookPriceBox({
   priceIncrement,
   setPriceInput,
   spread,
+  viewType,
   className,
 }: WithClassnames<Props>) {
   const shouldFlash = useShouldFlash({ flashKey: lastPrice?.toString() });
@@ -39,22 +44,30 @@ export function OrderbookPriceBox({
   const variableClassName = useMemo(() => {
     return signDependentValue(lastPriceChange, {
       positive: [
-        'text-positive hover:bg-positive/10',
+        'text-positive hover:bg-positive/10 border-transparent',
         shouldFlash ? 'bg-positive/50' : 'bg-positive/5',
       ],
       negative: [
-        'text-negative hover:bg-negative/10',
+        'text-negative hover:bg-negative/10 border-transparent',
         shouldFlash ? 'bg-negative/50' : 'bg-negative/5',
       ],
-      zero: ['text-text-primary hover:bg-surface-2'],
+      zero: [
+        'text-text-primary hover:bg-surface-2',
+
+        // when viewType is only_asks, price box sticks to the bottom of orderbook component
+        // to avoid double border, we stroke only top border
+        viewType === 'only_asks'
+          ? 'border-t-stroke border-b-transparent'
+          : 'border-stroke',
+      ],
     });
-  }, [lastPriceChange, shouldFlash]);
+  }, [lastPriceChange, shouldFlash, viewType]);
 
   return (
     <DefinitionTooltip definitionId="lastPrice" decoration="none">
       <div
         className={joinClassNames(
-          'flex cursor-pointer px-4 py-1.5 text-sm font-medium',
+          'flex cursor-pointer border-y px-4 py-1.5 text-sm',
           variableClassName,
           className,
         )}

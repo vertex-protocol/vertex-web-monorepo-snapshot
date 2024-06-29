@@ -1,5 +1,5 @@
 import { WithChildren } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { HIDDEN_PRODUCT_IDS_BY_CHAIN } from 'common/hiddenProductIdsByChain';
 import { NEW_PRODUCT_IDS_BY_CHAIN } from 'common/newProductIdsByChain';
 import {
@@ -8,9 +8,9 @@ import {
 } from 'common/productMetadata/metadataByChain';
 import { PRIMARY_QUOTE_TOKEN_BY_CHAIN } from 'common/productMetadata/primaryQuoteTokenByChain';
 import {
-  PROTOCOL_TOKEN_BY_CHAIN,
-  PROTOCOL_TOKEN_PRODUCT_ID_BY_CHAIN,
-} from 'common/productMetadata/protocolTokenByChain';
+  PROTOCOL_TOKEN_METADATA_BY_CHAIN,
+  ProtocolTokenMetadata,
+} from 'common/productMetadata/protocolToken';
 import {
   PerpProductMetadata,
   SpotProductMetadata,
@@ -19,15 +19,21 @@ import {
 import { createContext, useCallback, useContext, useMemo } from 'react';
 
 export interface VertexMetadataContextData {
-  protocolToken: Token;
-  protocolTokenProductId: number;
-  // The token used as the primary quote product (product ID of 0)
+  protocolTokenMetadata: ProtocolTokenMetadata;
+  /**
+   * The token used as the primary quote product (product ID of 0)
+   */
   primaryQuoteToken: Token;
-  // We often want to hide certain markets for trading. Positions will still be shown but the market won't
-  // show up in the markets dropdown
+
+  /**
+   * We often want to hide certain markets for trading. Positions will still be shown but the market won't
+   * show up in the markets dropdown
+   */
   getIsHiddenMarket(productId: number): boolean;
 
-  // We want to feature new markets on the UI, this centralizes the logic for determining whether a market is new
+  /**
+   * We want to feature new markets on the UI, this centralizes the logic for determining whether a market is new
+   */
   getIsNewMarket(productId: number): boolean;
 
   getSpotMetadata(productId: number): SpotProductMetadata | undefined;
@@ -77,9 +83,7 @@ export function VertexMetadataContextProvider({ children }: WithChildren) {
   const data: VertexMetadataContextData = useMemo(() => {
     return {
       primaryQuoteToken: PRIMARY_QUOTE_TOKEN_BY_CHAIN[primaryChainId],
-      protocolToken: PROTOCOL_TOKEN_BY_CHAIN[primaryChainId],
-      protocolTokenProductId:
-        PROTOCOL_TOKEN_PRODUCT_ID_BY_CHAIN[primaryChainId],
+      protocolTokenMetadata: PROTOCOL_TOKEN_METADATA_BY_CHAIN[primaryChainId],
       getIsHiddenMarket,
       getIsNewMarket,
       getPerpMetadata,

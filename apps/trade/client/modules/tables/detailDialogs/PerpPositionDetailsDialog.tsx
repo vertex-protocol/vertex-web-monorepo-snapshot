@@ -1,7 +1,11 @@
+import {
+  PresetNumberFormatSpecifier,
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
-import { LineItem } from 'client/components/LineItem/LineItem';
 import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
@@ -9,10 +13,6 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
 import { PerpPositionsTableItem } from 'client/modules/tables/hooks/usePerpPositionsTable';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 
 export type PerpPositionDetailsDialogParams = PerpPositionsTableItem;
 
@@ -53,64 +53,59 @@ export function PerpPositionDetailsDialog({
 
   const metricItems = (
     <div className="flex flex-col gap-y-4">
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Position Size"
-        renderValue={(val) => (
-          <AmountWithSymbol
-            symbol={symbol}
-            formattedSize={formatNumber(val, {
-              formatSpecifier: sizeFormatSpecifier,
-            })}
-          />
-        )}
         value={position}
+        numberFormatSpecifier={sizeFormatSpecifier}
+        valueEndElement={symbol}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Notional Value"
-        renderValue={PresetNumberFormatSpecifier.CURRENCY_2DP}
         value={notionalValueUsd}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Entry Price"
-        renderValue={priceFormatSpecifier}
         value={averageEntryPrice}
+        numberFormatSpecifier={priceFormatSpecifier}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Mark Price"
-        renderValue={priceFormatSpecifier}
         value={fastOraclePrice}
+        numberFormatSpecifier={priceFormatSpecifier}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Est. Liq. Price"
-        renderValue={priceFormatSpecifier}
-        value={estimatedLiquidationPrice}
+        value={estimatedLiquidationPrice ?? undefined}
+        numberFormatSpecifier={priceFormatSpecifier}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Margin"
-        renderValue={PresetNumberFormatSpecifier.CURRENCY_2DP}
         value={marginUsedUsd}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="PnL"
-        renderValue={(val?: typeof pnlInfo) => (
+        valueContent={
           <PnlValueWithPercentage
-            pnlFrac={val?.estimatedPnlFrac}
-            pnlUsd={val?.estimatedPnlUsd}
+            pnlFrac={pnlInfo?.estimatedPnlFrac}
+            pnlUsd={pnlInfo?.estimatedPnlUsd}
           />
-        )}
-        value={pnlInfo}
+        }
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Funding"
-        renderValue={(val) => (
-          <div className="flex gap-x-1">
-            {formatNumber(val, {
-              formatSpecifier: PresetNumberFormatSpecifier.SIGNED_NUMBER_2DP,
-            })}
-            <div className="text-text-tertiary">{primaryQuoteToken.symbol}</div>
-          </div>
-        )}
         value={netFunding}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.SIGNED_NUMBER_2DP}
+        valueEndElement={primaryQuoteToken.symbol}
       />
     </div>
   );
@@ -119,7 +114,6 @@ export function PerpPositionDetailsDialog({
     <div className="flex flex-col gap-y-3">
       {/* Quote product not possible here, hence why we forgo the disabled state */}
       <SecondaryButton
-        size="md"
         onClick={() => {
           hide();
           pushTradePage({
@@ -130,7 +124,6 @@ export function PerpPositionDetailsDialog({
         Trade
       </SecondaryButton>
       <SecondaryButton
-        size="md"
         onClick={() => {
           show({
             type: 'close_position',

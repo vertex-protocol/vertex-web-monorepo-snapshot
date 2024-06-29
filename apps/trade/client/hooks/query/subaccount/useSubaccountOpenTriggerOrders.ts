@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { TriggerOrderInfo } from '@vertex-protocol/trigger-client';
 import { toBigDecimal } from '@vertex-protocol/utils';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { useGetRecvTime } from 'client/hooks/util/useGetRecvTime';
 import {
   getVertexClientHasLinkedSigner,
@@ -41,7 +41,7 @@ export function subaccountOpenTriggerOrdersQueryKey(
  */
 export function useSubaccountOpenTriggerOrders(): QueryState<Data> {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const hasLinkedSigner = useVertexClientHasLinkedSigner();
   const getRecvTime = useGetRecvTime();
   const {

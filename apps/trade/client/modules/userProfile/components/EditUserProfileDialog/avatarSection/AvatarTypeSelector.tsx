@@ -1,5 +1,5 @@
 import { LabelTooltip } from '@vertex-protocol/web-ui';
-import { WalletIcon } from 'client/components/Icons/WalletIcon';
+import { IdentityIcon } from 'client/components/Icons/IdentityIcon';
 import AvatarIcon from 'client/modules/userProfile/assets/avatar_5.png';
 import {
   AvatarTypeButton,
@@ -53,9 +53,7 @@ export function AvatarTypeSelector({
       {
         type: 'default',
         title: 'Default',
-        icon: (
-          <WalletIcon width={ICON_SIZE} height={ICON_SIZE} address={address} />
-        ),
+        icon: <IdentityIcon size={ICON_SIZE} identifier={address} />,
       },
       {
         type: 'ens',
@@ -110,7 +108,12 @@ export function AvatarTypeSelector({
 
           if (tooltipLabel) {
             return (
-              <LabelTooltip key={type} label={tooltipLabel}>
+              <LabelTooltip
+                key={type}
+                label={tooltipLabel}
+                asChild
+                noHelpCursor
+              >
                 <AvatarTypeButton {...commonCardProps} />
               </LabelTooltip>
             );

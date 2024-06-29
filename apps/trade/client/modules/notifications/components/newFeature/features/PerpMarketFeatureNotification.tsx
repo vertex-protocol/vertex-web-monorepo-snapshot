@@ -51,7 +51,7 @@ export function PerpMarketFeatureNotification({
           src={icon.asset}
           alt={marketName}
         />
-        <LinkButton color="white" onClick={onLinkClick}>
+        <LinkButton colorVariant="primary" onClick={onLinkClick}>
           Trade {marketName}
         </LinkButton>
       </div>

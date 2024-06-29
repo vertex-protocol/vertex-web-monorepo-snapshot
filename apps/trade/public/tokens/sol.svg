@@ -1,34 +1,25 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="24" height="24" rx="12" fill="black" />
-    <g clip-path="url(#sol_clip0_10065_64170)">
-        <path
-            d="M6.59976 15.3011C6.69631 15.2045 6.82907 15.1482 6.96988 15.1482H19.7393C19.9727 15.1482 20.0893 15.4298 19.9244 15.5948L17.4019 18.1173C17.3053 18.2138 17.1725 18.2702 17.0317 18.2702H4.26231C4.02897 18.2702 3.9123 17.9885 4.07725 17.8236L6.59976 15.3011Z"
-            fill="url(#sol_paint0_linear_10065_64170)" />
-        <path
-            d="M6.59976 5.88286C6.70033 5.7863 6.8331 5.72998 6.96988 5.72998H19.7393C19.9727 5.72998 20.0893 6.0116 19.9244 6.17655L17.4019 8.69906C17.3053 8.79561 17.1725 8.85194 17.0317 8.85194H4.26231C4.02897 8.85194 3.9123 8.57032 4.07725 8.40537L6.59976 5.88286Z"
-            fill="url(#sol_paint1_linear_10065_64170)" />
-        <path
-            d="M17.4019 10.5618C17.3053 10.4653 17.1725 10.4089 17.0317 10.4089H4.26231C4.02897 10.4089 3.9123 10.6906 4.07725 10.8555L6.59976 13.378C6.69631 13.4746 6.82907 13.5309 6.96988 13.5309H19.7393C19.9727 13.5309 20.0893 13.2493 19.9244 13.0843L17.4019 10.5618Z"
-            fill="url(#sol_paint2_linear_10065_64170)" />
+<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="12" fill="#000"/>
+    <g clip-path="url(#a)">
+        <path d="M6.6 15.301a.523.523 0 0 1 .37-.153h12.77c.233 0 .35.282.184.447l-2.522 2.522a.524.524 0 0 1-.37.153H4.262a.262.262 0 0 1-.185-.446L6.6 15.3Z" fill="url(#b)"/>
+        <path d="M6.6 5.883a.538.538 0 0 1 .37-.153h12.77c.233 0 .35.282.184.447l-2.522 2.522a.524.524 0 0 1-.37.153H4.262a.262.262 0 0 1-.185-.447L6.6 5.883Z" fill="url(#c)"/>
+        <path d="M17.402 10.562a.524.524 0 0 0-.37-.153H4.262a.262.262 0 0 0-.185.446L6.6 13.378c.096.097.23.153.37.153h12.77c.233 0 .35-.282.184-.447l-2.522-2.522Z" fill="url(#d)"/>
     </g>
     <defs>
-        <linearGradient id="sol_paint0_linear_10065_64170" x1="18.5195" y1="4.22314" x2="9.68197"
-            y2="21.1504" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#00FFA3" />
-            <stop offset="1" stop-color="#DC1FFF" />
+        <linearGradient id="b" x1="18.52" y1="4.223" x2="9.682" y2="21.15" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00FFA3"/>
+            <stop offset="1" stop-color="#DC1FFF"/>
         </linearGradient>
-        <linearGradient id="sol_paint1_linear_10065_64170" x1="14.6552" y1="2.20565" x2="5.81775"
-            y2="19.133" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#00FFA3" />
-            <stop offset="1" stop-color="#DC1FFF" />
+        <linearGradient id="c" x1="14.655" y1="2.206" x2="5.818" y2="19.133" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00FFA3"/>
+            <stop offset="1" stop-color="#DC1FFF"/>
         </linearGradient>
-        <linearGradient id="sol_paint2_linear_10065_64170" x1="16.575" y1="3.208" x2="7.73756"
-            y2="20.1353" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#00FFA3" />
-            <stop offset="1" stop-color="#DC1FFF" />
+        <linearGradient id="d" x1="16.575" y1="3.208" x2="7.738" y2="20.135" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00FFA3"/>
+            <stop offset="1" stop-color="#DC1FFF"/>
         </linearGradient>
-        <clipPath id="sol_clip0_10065_64170">
-            <rect width="16" height="12.5401" fill="white" transform="translate(4 5.72998)" />
+        <clipPath id="a">
+            <path fill="#fff" d="M4 5.73h16v12.54H4z"/>
         </clipPath>
     </defs>
 </svg>

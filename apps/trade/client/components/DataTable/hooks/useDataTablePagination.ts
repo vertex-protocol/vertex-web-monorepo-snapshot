@@ -1,3 +1,4 @@
+import { InfiniteData } from '@tanstack/react-query';
 import { PaginationState } from '@tanstack/table-core';
 import {
   Dispatch,
@@ -6,14 +7,13 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { InfiniteData } from '@tanstack/react-query';
 
 interface Params<TResponseData, TItem> {
   pageSize: number;
   extractItems: (data: TResponseData) => TItem[];
 
   // From React Query
-  queryPageCount?: number;
+  numPagesFromQuery?: number;
   hasNextPage?: boolean;
 
   fetchNextPage(): void;
@@ -29,7 +29,7 @@ interface UseDataTablePagination<TResponseData, TItem> {
 }
 
 export function useDataTablePagination<TResponseData, TItem>({
-  queryPageCount = 1,
+  numPagesFromQuery = 1,
   pageSize,
   fetchNextPage,
   hasNextPage,
@@ -39,16 +39,28 @@ export function useDataTablePagination<TResponseData, TItem>({
     pageIndex: 0,
     pageSize,
   });
-  // Fetch the next page when needed
-  useEffect(
-    () => {
-      if (paginationState.pageIndex >= queryPageCount) {
+
+  useEffect(() => {
+    if (paginationState.pageIndex >= numPagesFromQuery) {
+      // If there's a next page, fetch it
+      if (hasNextPage) {
         fetchNextPage();
+      } else {
+        // If data updates (ex. from a chain or account switch) such that the number of pages decreases, and no next page is available, set to the last page from the query
+        setPaginationState((prev) => {
+          return {
+            ...prev,
+            pageIndex: numPagesFromQuery - 1,
+          };
+        });
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [paginationState.pageIndex],
-  );
+    }
+  }, [
+    fetchNextPage,
+    hasNextPage,
+    numPagesFromQuery,
+    paginationState.pageIndex,
+  ]);
 
   const getPageData = useCallback(
     (infiniteData?: InfiniteData<TResponseData>): TItem[] => {
@@ -66,7 +78,7 @@ export function useDataTablePagination<TResponseData, TItem>({
   );
 
   // -1 if unknown, otherwise if there isn't a next page from the query, then the page count is the current # of pages
-  const pageCount = hasNextPage ? -1 : queryPageCount;
+  const pageCount = hasNextPage ? -1 : numPagesFromQuery;
 
   return {
     paginationState,

@@ -1,4 +1,10 @@
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  removeDecimals,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
+import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
@@ -6,8 +12,6 @@ import { TriggerOrderType } from 'client/modules/trading/types';
 import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { QueryState } from 'client/types/QueryState';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
@@ -31,6 +35,7 @@ export function useOpenTriggerOrdersTable(
 ): QueryState<OpenTriggerOrderTableItem[]> {
   const { filteredMarkets, isLoading: marketsAreLoading } =
     useFilteredMarkets(filter);
+  const { data: allMarketsStaticData } = useAllMarketsStaticData();
   const {
     isLoading: ordersAreLoading,
     isError: ordersIsError,
@@ -38,13 +43,15 @@ export function useOpenTriggerOrdersTable(
   } = useSubaccountOpenTriggerOrders();
 
   const openTriggerOrders = useMemo(() => {
-    if (!filteredMarkets || !ordersData) {
+    if (!filteredMarkets || !ordersData || !allMarketsStaticData) {
       return;
     }
+
     return Object.values(filteredMarkets).flatMap((market) => {
       const ordersForProduct = ordersData?.[market.productId];
+      const quoteData = allMarketsStaticData.quotes[market.productId];
 
-      if (!ordersForProduct?.length) {
+      if (!ordersForProduct?.length || !quoteData) {
         return [];
       }
 
@@ -65,6 +72,8 @@ export function useOpenTriggerOrdersTable(
               marketName: market.metadata.marketName,
               icon,
               symbol,
+              quoteSymbol: quoteData.symbol,
+              isPrimaryQuote: quoteData.isPrimaryQuote,
               amountForSide: decimalAdjustedTotalAmount,
               productType: market.type,
               sizeIncrement: market.sizeIncrement,
@@ -84,7 +93,7 @@ export function useOpenTriggerOrdersTable(
         },
       );
     });
-  }, [filteredMarkets, ordersData]);
+  }, [allMarketsStaticData, filteredMarkets, ordersData]);
 
   return {
     data: openTriggerOrders,

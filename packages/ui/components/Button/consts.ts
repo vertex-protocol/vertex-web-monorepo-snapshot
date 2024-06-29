@@ -1,33 +1,29 @@
-import { StandardButtonSize } from './types';
+import { SizeVariant } from '../../types';
 
 export const STANDARD_BUTTON_HORIZONTAL_PADDING_CLASSNAME: Record<
-  StandardButtonSize,
+  SizeVariant,
   string
 > = {
-  sm: 'px-3',
-  md: 'px-4',
+  xs: 'px-2',
+  sm: 'px-6',
+  base: 'px-5',
   lg: 'px-5',
 };
 
 export const STANDARD_BUTTON_VERTICAL_PADDING_CLASSNAME: Record<
-  StandardButtonSize,
+  SizeVariant,
   string
 > = {
-  sm: 'py-1',
-  md: 'py-1.5',
-  lg: 'py-2',
+  xs: 'py-1',
+  sm: 'py-2',
+  base: 'py-2',
+  lg: 'py-3',
 };
 
-export const STANDARD_BUTTON_TEXT_SIZE_CLASSNAME: Record<
-  StandardButtonSize,
-  string
-> = {
-  sm: 'text-xs',
-  md: 'text-xs',
-  lg: 'text-sm',
-};
-
-// Focus & active classes are required to override the CSS to disable outline in globals.css
-export const BUTTON_RING_CLASSNAME = 'ring ring-1 ring-inset';
-
-export const BUTTON_NO_RING_OVERRIDE_CLASSNAME = 'ring-0';
+export const STANDARD_BUTTON_TEXT_SIZE_CLASSNAME: Record<SizeVariant, string> =
+  {
+    xs: 'text-xs',
+    sm: 'text-xs',
+    base: 'text-sm',
+    lg: 'text-sm',
+  };

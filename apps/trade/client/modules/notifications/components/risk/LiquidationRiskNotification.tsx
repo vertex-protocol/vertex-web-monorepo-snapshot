@@ -1,8 +1,8 @@
 import { LiquidationRiskBar } from 'client/components/LiquidationRiskBar';
 import { Toast } from 'client/components/Toast/Toast';
 import { ToastProps } from 'client/components/Toast/types';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { LiquidationRiskNotificationData } from '../../types';
 
 export interface LiquidationRiskNotificationProps extends ToastProps {

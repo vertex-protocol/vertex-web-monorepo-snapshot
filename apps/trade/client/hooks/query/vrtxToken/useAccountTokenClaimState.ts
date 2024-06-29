@@ -3,18 +3,21 @@ import { IAirdrop__factory, ILBA__factory } from '@vertex-protocol/client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  useEnableSubaccountQueries,
+  PrimaryChainID,
+  QueryDisabledError,
   useEVMContext,
   useIsChainType,
   usePrimaryChainPublicClient,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { ZeroAddress } from 'ethers';
 import { Address } from 'viem';
 
-export function accountTokenClaimStateQueryKey(address?: string) {
-  return createQueryKey('accountTokenClaimState', address);
+export function accountTokenClaimStateQueryKey(
+  chainId?: PrimaryChainID,
+  address?: string,
+) {
+  return createQueryKey('accountTokenClaimState', chainId, address);
 }
 
 export interface AccountTokenClaimStateData {
@@ -34,15 +37,14 @@ export interface AccountTokenClaimStateData {
  */
 export function useAccountTokenClaimState() {
   const { isArb } = useIsChainType();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const publicClient = usePrimaryChainPublicClient();
   const {
     connectionStatus: { address },
+    primaryChain,
   } = useEVMContext();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
 
-  const disabled =
-    !vertexClient || !publicClient || !isArb || !enableSubaccountQueries;
+  const disabled = !vertexClient || !publicClient || !isArb;
   const addressForQuery = address ?? ZeroAddress;
 
   const queryFn = async (): Promise<AccountTokenClaimStateData> => {
@@ -95,7 +97,7 @@ export function useAccountTokenClaimState() {
   };
 
   return useQuery({
-    queryKey: accountTokenClaimStateQueryKey(addressForQuery),
+    queryKey: accountTokenClaimStateQueryKey(primaryChain.id, addressForQuery),
     queryFn,
     enabled: !disabled,
     refetchInterval: 10000,

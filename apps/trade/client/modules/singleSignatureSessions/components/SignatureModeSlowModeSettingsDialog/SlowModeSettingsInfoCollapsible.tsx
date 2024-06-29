@@ -14,27 +14,23 @@ export function SlowModeSettingsInfoCollapsible() {
         To interact with the app, you must delegate a 1CT private key to sign
         transactions on your behalf. Enabling/disabling must be done on-chain
         and is subject to a fee of{' '}
-        <span className="text-text-primary font-medium">
-          1 {primaryQuoteToken.symbol}
-        </span>
-        .
+        <span className="text-text-primary">1 {primaryQuoteToken.symbol}</span>.
       </DiscList.Item>
       <DiscList.Item>
         The key is stored locally and{' '}
-        <span className="text-text-primary font-medium">never</span> leaves your
-        device. It is recommended to use an auto-generated key or a key
-        associated with an empty wallet.
+        <span className="text-text-primary">never</span> leaves your device. It
+        is recommended to use an auto-generated key or a key associated with an
+        empty wallet.
       </DiscList.Item>
       <DiscList.Item>
         The key is only used to sign trades and withdrawals to the owner,{' '}
-        <span className="text-text-primary font-medium">never</span> to a
-        separate wallet.
+        <span className="text-text-primary">never</span> to a separate wallet.
       </DiscList.Item>
       <DiscList.Item>
         Store the key in a secure place. You will need it to setup 1CT on other
         devices. If 1CT was previously configured with the same private key, no
         transaction needs to occur and the fee of 1 {primaryQuoteToken.symbol}{' '}
-        is <span className="text-text-primary font-medium">not</span> collected.
+        is <span className="text-text-primary">not</span> collected.
       </DiscList.Item>
     </DiscList.Container>
   );

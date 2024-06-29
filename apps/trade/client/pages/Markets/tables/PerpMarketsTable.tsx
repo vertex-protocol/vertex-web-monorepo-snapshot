@@ -1,6 +1,9 @@
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
+import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
+import { SeparatedRowDataTable } from 'client/components/DataTable/SeparatedRowDataTable';
 import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
@@ -9,15 +12,13 @@ import { LinkButton } from 'client/components/LinkButton';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { FavoriteToggleCell } from 'client/modules/markets/components/FavoriteToggleCell';
-import { MarketProductInfoCell } from 'client/modules/markets/components/MarketProductInfoCell';
-import { PercentageChangeCell } from 'client/modules/markets/components/PercentageChangeCell';
+import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
+import { PercentageChangeCell } from 'client/modules/tables/cells/PercentageChangeCell';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
+import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
-import { MarketsPageTable } from 'client/pages/Markets/components/MarketsPageTable';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useMemo } from 'react';
 import { FundingRateCell } from '../components/FundingRateCell';
 import { FundingRatePeriodSelect } from '../components/FundingRatePeriodSelect';
@@ -26,15 +27,18 @@ import {
   PerpMarketTableItem,
   usePerpMarketsTable,
 } from '../hooks/usePerpMarketsTable';
-import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 
 const columnHelper = createColumnHelper<PerpMarketTableItem>();
 const FUNDING_PERIOD_SORT_KEY: FundingRatePeriodID = 'hourly';
 
 export function PerpMarketsTable() {
   const { primaryQuoteToken } = useVertexMetadataContext();
-  const { perpProducts, disableFavoriteButton, toggleIsFavoritedMarket } =
-    usePerpMarketsTable();
+  const {
+    isLoading,
+    perpProducts,
+    disableFavoriteButton,
+    toggleIsFavoritedMarket,
+  } = usePerpMarketsTable();
   const pushTradePage = usePushTradePage();
   const { show } = useDialog();
 
@@ -45,6 +49,7 @@ export function PerpMarketsTable() {
           <FavoriteHeaderCell
             header={header}
             disableFavoriteButton={disableFavoriteButton}
+            favoriteButtonSize={12}
           />
         ),
         cell: (context) => {
@@ -54,22 +59,23 @@ export function PerpMarketsTable() {
               disabled={disableFavoriteButton}
               toggleIsFavorited={toggleIsFavoritedMarket}
               productId={context.row.original.productId}
+              favoriteButtonSize={15}
             />
           );
         },
         sortingFn: favoriteSortFn,
         meta: {
-          cellContainerClassName: 'w-10',
+          cellContainerClassName: 'w-14',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('metadata', {
         header: ({ header }) => <HeaderCell header={header}>Market</HeaderCell>,
         cell: (context) => {
-          const value = context.getValue();
+          const value = context.getValue<PerpMarketTableItem['metadata']>();
           return (
             <MarketProductInfoCell
               name={value.name}
-              subtitle={value.marketDetails.subtitle}
               iconSrc={value.icon.asset}
               isNewMarket={context.row.original.isNewMarket}
             />
@@ -205,7 +211,7 @@ export function PerpMarketsTable() {
           return (
             <TableCell>
               <LinkButton
-                color="white"
+                colorVariant="primary"
                 className="pointer-events-auto"
                 onClick={getTableButtonOnClickHandler(() => {
                   show({ type: 'market_details', params: { productId } });
@@ -236,7 +242,8 @@ export function PerpMarketsTable() {
   };
 
   return (
-    <MarketsPageTable
+    <SeparatedRowDataTable
+      isLoading={isLoading}
       columns={columns}
       data={perpProducts}
       onRowClicked={onRowClicked}

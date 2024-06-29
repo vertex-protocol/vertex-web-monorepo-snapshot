@@ -3,76 +3,110 @@ import {
   useCopyText,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { Button } from '@vertex-protocol/web-ui';
+import { Icons, TextButton } from '@vertex-protocol/web-ui';
+import { useSocialShareLinks } from 'client/hooks/util/useSocialShareLinks';
+import Link from 'next/link';
 
-interface LinkDisplayProps {
-  referralLink: string | undefined;
+interface Props extends WithClassnames {
   isConnected: boolean;
-  requiresFirstDeposit: boolean | undefined;
-  disabled?: boolean;
+  requiresFirstDeposit: boolean;
+  baseUrlWithQueryParam: string;
+  /**
+   * Referral code to be appended to referralLinkBaseUrl
+   * `null` means the referral code does not exist, ie when user is not connected, or in case of Blitz, when user has not made a deposit
+   */
+  referralCode: string | null | undefined;
+  /**
+   * Text to use when sharing to Twitter / Telegram
+   */
+  socialShareText: string;
 }
 
 export function ReferralLinkBar({
-  referralLink,
-  isConnected,
+  baseUrlWithQueryParam,
+  referralCode,
   requiresFirstDeposit,
-  disabled,
+  isConnected,
+  socialShareText,
   className,
-}: WithClassnames<LinkDisplayProps>) {
-  const { copy, isCopied } = useCopyText();
-  const hasReferralLink = !!referralLink;
+}: Props) {
+  const referralLink = `${baseUrlWithQueryParam}${referralCode ?? ''}`;
 
-  const displayMessage = (() => {
+  const linkContent = (() => {
+    if (!!referralCode) {
+      return (
+        // Overflow hidden here is required to allow truncate to work
+        <div className="flex w-full justify-between gap-x-2 overflow-hidden">
+          <span className="truncate">
+            {baseUrlWithQueryParam}
+            <span className="text-text-primary">{referralCode}</span>
+          </span>
+          <LinkActionButtons
+            referralLink={referralLink}
+            socialShareText={socialShareText}
+          />
+        </div>
+      );
+    }
     if (!isConnected) {
       return 'Connect your wallet to view link';
     }
+
     if (requiresFirstDeposit) {
       return 'Deposit to view link';
     }
-    return referralLink;
+
+    return null;
   })();
 
-  const copyMessage = isCopied ? 'Copied!' : 'Copy';
-
   return (
-    <Button
+    <div
       className={joinClassNames(
-        // Overflow hidden to hide the slight gradient overflow on the left that covers the border
-        'relative overflow-hidden',
-        'flex h-12 items-center gap-x-1 px-4',
-        'border-accent rounded border',
-        'bg-overlay-accent/10',
-        disabled ? 'brightness-50' : 'hover:bg-overlay-accent/15',
-        'shadow-elevation-referrals-bar',
+        'bg-surface-2 text-text-tertiary flex h-11 items-center rounded px-3',
         className,
       )}
-      disabled={disabled}
-      onClick={() => copy(referralLink)}
     >
-      {/* Mobile gradient for the overflow shadow, but only when we have a link */}
-      {hasReferralLink && (
-        <div
-          className={joinClassNames(
-            'pointer-events-none absolute inset-0 sm:hidden',
-            'from-background bg-gradient-to-r via-transparent',
-          )}
-        />
-      )}
-      <div className="text-text-primary flex items-center justify-end overflow-hidden whitespace-nowrap text-base sm:justify-start">
-        {displayMessage}
-      </div>
-      <div className="flex-1" />
-      {/* Static width to prevent a layout shift in the mobile display */}
-      {hasReferralLink && (
-        <div
-          className={joinClassNames(
-            'w-24 whitespace-nowrap text-right',
-            'text-accent text-sm',
-          )}
-        >
-          {copyMessage}
-        </div>
-      )}
-    </Button>
+      {linkContent}
+    </div>
+  );
+}
+
+function LinkActionButtons({
+  referralLink,
+  socialShareText,
+}: {
+  referralLink: string;
+  socialShareText: string;
+}) {
+  const { telegram, twitter } = useSocialShareLinks(
+    socialShareText,
+    referralLink,
+  );
+  const { isCopied, copy } = useCopyText();
+
+  const CopyIcon = isCopied ? Icons.MdCheck : Icons.MdContentCopy;
+
+  return (
+    <div className="flex items-center">
+      <TextButton
+        className="p-1"
+        startIcon={<CopyIcon />}
+        onClick={() => copy(referralLink)}
+      />
+      <TextButton
+        className="p-1"
+        as={Link}
+        external
+        href={twitter}
+        startIcon={<Icons.BsTwitterX />}
+      />
+      <TextButton
+        className="p-1"
+        as={Link}
+        external
+        href={telegram}
+        startIcon={<Icons.FaTelegramPlane />}
+      />
+    </div>
   );
 }

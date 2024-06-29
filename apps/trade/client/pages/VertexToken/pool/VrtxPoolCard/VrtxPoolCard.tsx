@@ -1,27 +1,23 @@
 import {
-  joinClassNames,
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import {
   WithChildren,
   WithClassnames,
+  joinClassNames,
 } from '@vertex-protocol/web-common';
 import {
   Divider,
   PrimaryButton,
   SecondaryButton,
 } from '@vertex-protocol/web-ui';
-import { LineItem } from 'client/components/LineItem/LineItem';
-import { LineItemMetricProps } from 'client/components/LineItem/types';
 import { TokenPairIcons } from 'client/components/TokenPairIcons';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import {
-  CustomNumberFormatSpecifier,
-  NumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { NumberFormatValue } from 'client/utils/formatNumber/types';
 import Link from 'next/link';
 import { useVrtxPoolCard } from './useVrtxPoolCard';
 
@@ -57,18 +53,20 @@ export function VrtxPoolCard({ className }: WithClassnames) {
       {/*Pool data*/}
       <Section>
         <Items>
-          <Item
+          <ValueWithLabel.Horizontal
+            sizeVariant="xs"
             label="Pool APR"
             value={pool?.apr}
-            definitionId="lpPoolAPR"
-            formatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
+            tooltip={{ id: 'lpPoolAPR' }}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
             valueClassName="text-positive"
           />
-          <Item
+          <ValueWithLabel.Horizontal
+            sizeVariant="xs"
             label="TVL"
-            definitionId="lpTVL"
+            tooltip={{ id: 'lpTVL' }}
             value={pool?.tvlUsd}
-            formatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
           />
         </Items>
       </Section>
@@ -76,34 +74,35 @@ export function VrtxPoolCard({ className }: WithClassnames) {
       {/*Spot Pool Position*/}
       <Section title="Your Position">
         <Items>
-          <Item
+          <ValueWithLabel.Horizontal
+            sizeVariant="xs"
             label="Liquidity Supplied"
             value={lpBalance?.lpValueUsd}
-            formatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
           />
-          <Item
+          <ValueWithLabel.Horizontal
+            sizeVariant="xs"
             label={protocolToken.symbol}
             value={lpBalance?.amountBase}
-            formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-            symbol={protocolToken.symbol}
+            numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+            valueEndElement={protocolToken.symbol}
           />
-          <Item
+          <ValueWithLabel.Horizontal
+            sizeVariant="xs"
             label={primaryQuoteToken.symbol}
             value={lpBalance?.amountQuote}
-            formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-            symbol={primaryQuoteToken.symbol}
+            numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+            valueEndElement={primaryQuoteToken.symbol}
           />
         </Items>
         <div className="flex flex-col gap-y-3">
           <PrimaryButton
-            size="lg"
             onClick={onProvideLiquidityClick}
             disabled={disableProvide}
           >
             Provide Liquidity
           </PrimaryButton>
           <SecondaryButton
-            size="lg"
             onClick={onWithdrawLiquidityClick}
             disabled={disableWithdraw}
           >
@@ -115,16 +114,18 @@ export function VrtxPoolCard({ className }: WithClassnames) {
       {/*LBA Position*/}
       <Section title="LBA Position" titleDefinitionId="stakingLbaPosition">
         <Items>
-          <Item
+          <ValueWithLabel.Horizontal
+            sizeVariant="xs"
             label="Liquidity Supplied"
             value={lbaPosition?.lpValueUsd}
-            formatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
           />
-          <Item
+          <ValueWithLabel.Horizontal
+            sizeVariant="xs"
             label={`${protocolToken.symbol} Rewards`}
             value={lbaPosition?.vrtxRewards}
-            formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-            symbol={protocolToken.symbol}
+            numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+            valueEndElement={protocolToken.symbol}
           />
         </Items>
         <div className="flex flex-col gap-y-3">
@@ -132,7 +133,7 @@ export function VrtxPoolCard({ className }: WithClassnames) {
             Claim LBA rewards and manage your position via the Rewards
             Dashboard.
           </p>
-          <SecondaryButton size="lg" as={Link} href={ROUTES.rewards}>
+          <SecondaryButton size="sm" as={Link} href={ROUTES.rewards}>
             Go to Rewards Dashboard
           </SecondaryButton>
         </div>
@@ -172,37 +173,5 @@ function Items({ children, className }: WithClassnames<WithChildren>) {
     <div className={joinClassNames('flex flex-col gap-y-1', className)}>
       {children}
     </div>
-  );
-}
-
-function Item<TValue extends NumberFormatValue>({
-  className,
-  valueClassName,
-  formatSpecifier,
-  definitionId,
-  symbol,
-  ...rest
-}: Omit<LineItemMetricProps<TValue>, 'renderValue'> & {
-  symbol?: string;
-  formatSpecifier: NumberFormatSpecifier;
-  definitionId?: DefinitionTooltipID;
-}) {
-  return (
-    <LineItem.Metric
-      className={joinClassNames('text-sm', className)}
-      valueClassName={joinClassNames('text-sm', valueClassName)}
-      tooltip={definitionId ? { id: definitionId } : undefined}
-      renderValue={(val) => {
-        return (
-          <div className="flex items-end gap-x-1">
-            {formatNumber(val, { formatSpecifier })}
-            {symbol && (
-              <span className="text-text-tertiary text-xs">{symbol}</span>
-            )}
-          </div>
-        );
-      }}
-      {...rest}
-    />
   );
 }

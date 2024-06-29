@@ -22,12 +22,12 @@ export function DialogInfoCollapsible({
       onOpenChange={setOpen}
     >
       <Collapsible.Trigger asChild>
-        <Button className="justify-between">
+        <Button className="group justify-between">
           <span className="text-accent">{title}</span>
           <UpDownChevronIcon
             open={open}
             size={20}
-            className="text-text-primary"
+            className="text-text-secondary group-hover:text-text-primary transition-colors"
           />
         </Button>
       </Collapsible.Trigger>

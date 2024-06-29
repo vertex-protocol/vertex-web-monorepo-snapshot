@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { ProductEngineType } from '@vertex-protocol/contracts';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 
 export function latestPerpPricesQueryKey(
   chainId?: PrimaryChainID,
@@ -18,7 +18,7 @@ export function latestPerpPricesQueryKey(
 
 export function useLatestPerpPrices() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const { filteredProductIds: allPerpProductIds } = useFilteredMarkets({
     marketType: ProductEngineType.PERP,
   });

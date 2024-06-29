@@ -1,11 +1,14 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import {
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { UserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import { TOKEN_PAGE_RIGHT_SECTION_CLASSNAMES } from 'client/pages/VertexToken/consts';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import { TOKEN_ICONS } from 'common/productMetadata/tokenIcons';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import Image from 'next/image';
@@ -32,6 +35,8 @@ export function TokenStakingTopBarItems({
   userActionState,
   usdcSymbol,
 }: Props) {
+  const iconClassNames = 'h-auto w-5';
+
   return (
     <div className="flex flex-col gap-y-6 lg:flex-row">
       <div className="flex flex-col gap-y-6 lg:flex-1">
@@ -40,14 +45,14 @@ export function TokenStakingTopBarItems({
           revenue in {usdcSymbol}
         </p>
         <RewardsCard.MetricsPane>
-          <RewardsCard.StackedItem
+          <ValueWithLabel.Vertical
             label={`Total ${VRTX_TOKEN_INFO.symbol} Staked`}
-            value={
+            valueContent={
               <div className="text-text-primary flex items-center gap-x-1.5">
                 <Image
                   src={VRTX_TOKEN_INFO.icon.asset}
                   alt="VRTX"
-                  className="h-auto w-[18px]"
+                  className={iconClassNames}
                 />
                 <div className="flex items-baseline gap-x-1">
                   <span>
@@ -64,29 +69,23 @@ export function TokenStakingTopBarItems({
               </div>
             }
           />
-          <RewardsCard.StackedItem
+          <ValueWithLabel.Vertical
             label="Multiplier"
-            definitionId="stakingMultiplier"
-            value={
-              <>
-                <span className="text-text-primary">
-                  {formatNumber(accountScoreMultiplierFraction, {
-                    formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
-                  })}
-                  x
-                </span>
-                <span className="text-text-tertiary text-xs sm:text-sm">
-                  /2.5x
-                </span>
-              </>
-            }
+            tooltip={{ id: 'stakingMultiplier' }}
+            valueEndElement="/2.5x"
+            value={accountScoreMultiplierFraction}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           />
-          <RewardsCard.StackedItem
+          <ValueWithLabel.Vertical
             label="voVRTX Score"
-            definitionId="stakingAccountScore"
-            value={
+            tooltip={{ id: 'stakingAccountScore' }}
+            valueContent={
               <div className="flex items-center gap-x-1">
-                <Image src={TOKEN_ICONS.vovrtx.asset} alt="VRTX" />
+                <Image
+                  src={TOKEN_ICONS.vovrtx.asset}
+                  alt="VRTX"
+                  className={iconClassNames}
+                />
                 <div className="text-accent flex items-baseline gap-x-1">
                   {formatNumber(accountScore, {
                     formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
@@ -109,20 +108,16 @@ export function TokenStakingTopBarItems({
           TOKEN_PAGE_RIGHT_SECTION_CLASSNAMES,
         )}
       >
-        <RewardsCard.LineItem
-          className="w-max items-center gap-x-2.5"
-          label={
-            <>
-              <Icons.BsWallet2 size={18} className="text-text-secondary" />
-              Available to stake:
-            </>
-          }
-          definitionId="stakingVrtxInWallet"
-          value={formatNumber(accountAvailableToStake, {
-            formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
-          })}
-          labelClassName="flex items-center gap-x-2 text-sm"
-          symbol={VRTX_TOKEN_INFO.symbol}
+        <ValueWithLabel.Horizontal
+          fitWidth
+          className="gap-x-2"
+          sizeVariantOverrides={{ label: 'lg' }}
+          label="Available to stake:"
+          labelStartIcon={Icons.BsWallet2}
+          tooltip={{ id: 'stakingVrtxInWallet' }}
+          value={accountAvailableToStake}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          valueEndElement={VRTX_TOKEN_INFO.symbol}
         />
         <TokenStakingActionButtons userActionState={userActionState} />
       </div>

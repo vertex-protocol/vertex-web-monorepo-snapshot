@@ -1,3 +1,4 @@
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { ButtonHelperInfo, Divider } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { Form } from 'client/components/Form';
@@ -10,7 +11,6 @@ import { SourceTokenInput } from 'client/modules/collateral/bridge/components/to
 import { useBridgeRouteSummary } from 'client/modules/collateral/bridge/hooks/useBridgeRouteSummary';
 import { MinimumInitialDepositAmount } from 'client/modules/collateral/components/MinimumInitialDepositAmount';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useBridgeAmountErrorTooltipContent } from '../hooks/useBridgeForm/useBridgeAmountErrorTooltipContent';
 import { useBridgeForm } from '../hooks/useBridgeForm/useBridgeForm';
 import { BridgeSubmitButton } from './BridgeSubmitButton';
@@ -49,6 +49,10 @@ export function BridgeFormContent() {
     formError,
   });
 
+  const sourceTokenInputDisabled = allSourceTokens.length === 0;
+
+  const destinationTokenInputDisabled = allDestinationTokens.length === 0;
+
   return (
     <Form className="flex flex-col gap-y-5" onSubmit={onSubmit}>
       {/*Bridge source chain*/}
@@ -72,6 +76,7 @@ export function BridgeFormContent() {
             allSourceTokens={allSourceTokens}
             estimatedValueUsd={estimatedSourceValueUsd}
             validateAmount={validateAmount}
+            disabled={sourceTokenInputDisabled}
           />
           <InputSummary.Container>
             <InputSummary.Item
@@ -85,6 +90,7 @@ export function BridgeFormContent() {
         <FractionAmountButtons
           onFractionSelected={onFractionSelected}
           selectedFraction={validPercentageAmount}
+          disabled={!selectedSourceToken}
         />
         <Divider />
         {/*Estimated receive amount*/}
@@ -106,6 +112,7 @@ export function BridgeFormContent() {
           estimatedReceiveValueUsd={
             bridgeRouteSummary?.estimatedReceiveValueUsd
           }
+          disabled={destinationTokenInputDisabled}
         />
       </div>
       <div className="flex flex-col gap-y-4">

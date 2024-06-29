@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { getOrderNonce } from '@vertex-protocol/contracts';
-import { asyncResult } from '@vertex-protocol/web-common';
+import { asyncResult } from '@vertex-protocol/utils';
 import {
   CancellableOrder,
   CancelOrdersParams,
@@ -68,7 +68,7 @@ export function useExecuteCancelOrders() {
             context.vertexClient.market.cancelOrders({
               subaccountOwner: context.subaccount.address,
               subaccountName: context.subaccount.name,
-              chainId: context.primaryChain.id,
+              chainId: context.subaccount.chainId,
               productIds: engineOrdersToCancel.map((order) => order.productId),
               digests: engineOrdersToCancel.map((order) => order.digest),
               nonce,
@@ -81,7 +81,7 @@ export function useExecuteCancelOrders() {
             context.vertexClient.market.cancelTriggerOrders({
               subaccountOwner: context.subaccount.address,
               subaccountName: context.subaccount.name,
-              chainId: context.primaryChain.id,
+              chainId: context.subaccount.chainId,
               productIds: triggerOrdersToCancel.map((order) => order.productId),
               digests: triggerOrdersToCancel.map((order) => order.digest),
               nonce,

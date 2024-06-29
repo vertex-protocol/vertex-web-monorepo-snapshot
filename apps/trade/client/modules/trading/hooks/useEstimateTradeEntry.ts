@@ -1,10 +1,14 @@
 import { BalanceSide } from '@vertex-protocol/contracts';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import {
+  addDecimals,
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useMarketLiquidity } from 'client/hooks/query/markets/useMarketLiquidity';
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { addDecimals, removeDecimals } from 'client/utils/decimalAdjustment';
 import { useMemo } from 'react';
 
 export interface EstimateEntryParams {

@@ -32,7 +32,7 @@ export function SignatureModeUserStateErrorCard({
     <ErrorPanel className="flex flex-col gap-y-2">
       <div className="flex items-center gap-x-1.5">
         <Icons.BsExclamationTriangle size={14} />
-        <span className="font-medium">{warningContentData.title}</span>
+        {warningContentData.title}
       </div>
       <div className="flex flex-col items-start gap-y-3 whitespace-normal text-left text-xs">
         {warningContentData.description}

@@ -7,12 +7,12 @@ import { useCallback } from 'react';
 
 export function useExecuteCancelOrdersWithNotification() {
   const { dispatchNotification } = useNotificationManagerContext();
-  const executeCancelOrders = useExecuteCancelOrders();
+  const { mutateAsync, ...rest } = useExecuteCancelOrders();
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
 
   const cancelOrdersWithNotification = useCallback(
     async (params: CancelOrdersWithNotificationParams) => {
-      const serverExecutionResult = executeCancelOrders.mutateAsync(params);
+      const serverExecutionResult = mutateAsync(params);
       params.orders.forEach((order) => {
         const marketStaticData = allMarketsStaticData?.all?.[order.productId];
 
@@ -45,11 +45,11 @@ export function useExecuteCancelOrdersWithNotification() {
 
       return serverExecutionResult;
     },
-    [allMarketsStaticData?.all, dispatchNotification, executeCancelOrders],
+    [allMarketsStaticData?.all, dispatchNotification, mutateAsync],
   );
 
   return {
     cancelOrdersWithNotification,
-    ...executeCancelOrders,
+    ...rest,
   };
 }

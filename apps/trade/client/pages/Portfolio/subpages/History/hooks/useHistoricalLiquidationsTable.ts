@@ -6,18 +6,17 @@ import {
   GetIndexerSubaccountLiquidationEventsResponse,
   IndexerLiquidationEvent,
 } from '@vertex-protocol/indexer-client';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
-import { useSubaccountPaginatedLiquidationEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedLiquidationEvents';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import {
   CustomNumberFormatSpecifier,
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
   NumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
+import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { useSubaccountPaginatedLiquidationEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedLiquidationEvents';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { BaseProductMetadata, Token } from 'common/productMetadata/types';
@@ -47,8 +46,8 @@ export interface HistoricalLiquidationDecomposedLp {
   sizeFormatSpecifier: NumberFormatSpecifier | string;
   // For position changes
   signedSizeFormatSpecifier: NumberFormatSpecifier | string;
-  // Used for rendering LPs
-  quoteToken: Token;
+  // Used for rendering LPs, which can only have primary quote as the quote ccy
+  primaryQuoteToken: Token;
   // Decimal adjusted
   amountLpDecomposed: BigDecimal;
   lpValueUsd: BigDecimal;
@@ -73,7 +72,7 @@ function extractItems(data: GetIndexerSubaccountLiquidationEventsResponse) {
 export function useHistoricalLiquidationsTable() {
   const { data: allMarketsStaticData, isLoading: marketsDataLoading } =
     useAllMarketsStaticData();
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
 
   const {
     data: subaccountPaginatedEvents,
@@ -90,7 +89,7 @@ export function useHistoricalLiquidationsTable() {
       GetIndexerSubaccountLiquidationEventsResponse,
       IndexerLiquidationEvent
     >({
-      queryPageCount: subaccountPaginatedEvents?.pages.length,
+      numPagesFromQuery: subaccountPaginatedEvents?.pages.length,
       pageSize: PAGE_SIZE,
       hasNextPage,
       fetchNextPage,
@@ -102,7 +101,7 @@ export function useHistoricalLiquidationsTable() {
       return;
     }
 
-    const quoteToken = allMarketsStaticData.quote.metadata.token;
+    const primaryQuoteToken = allMarketsStaticData.primaryQuote.metadata.token;
 
     return getPageData(subaccountPaginatedEvents)
       .map((event): HistoricalLiquidationEvent | undefined => {
@@ -140,7 +139,7 @@ export function useHistoricalLiquidationsTable() {
                 sizeFormatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
                 signedSizeFormatSpecifier:
                   CustomNumberFormatSpecifier.SIGNED_NUMBER_AUTO,
-                quoteToken,
+                primaryQuoteToken,
                 amountLpDecomposed,
                 lpValueUsd: amountLpDecomposed
                   .multipliedBy(

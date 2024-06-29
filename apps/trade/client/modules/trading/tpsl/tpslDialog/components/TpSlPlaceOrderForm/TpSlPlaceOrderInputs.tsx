@@ -4,9 +4,8 @@ import {
   joinClassNames,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { SegmentedControl } from '@vertex-protocol/web-ui';
+import { CompactInput, SegmentedControl } from '@vertex-protocol/web-ui';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { CompactInput } from 'client/components/Input/CompactInput';
 import { UseFormReturn } from 'react-hook-form';
 import {
   TpSlPlaceOrderErrorType,
@@ -60,23 +59,14 @@ export function TpSlPlaceOrderInputs({
     <div className="flex flex-col gap-y-2">
       <div className={joinClassNames('flex gap-x-1.5', className)}>
         <CompactInput
-          className="flex-1"
-          inputContainerClassName={joinClassNames(
-            'flex-1',
-            'focus:border-accent',
-            'border-stroke rounded border',
-            'placeholder:text-disabled text-text-primary text-sm',
-            'px-3 py-2',
-            triggerPriceErrorTooltipContent && 'border-negative text-negative',
-          )}
-          type="number"
-          placeholder="0.00"
-          min={0}
-          error={triggerPriceErrorTooltipContent}
-          step={priceIncrement?.toString()}
           {...form.register('triggerPrice', {
             validate: validateTriggerPrice,
           })}
+          className="flex-1"
+          type="number"
+          min={0}
+          step={priceIncrement?.toString()}
+          errorTooltipContent={triggerPriceErrorTooltipContent}
           onFocus={() => {
             form.setValue('priceSource', 'absolute');
           }}
@@ -110,7 +100,7 @@ function PriceTypeSwitch({
     <SegmentedControl.Container className="w-32 items-stretch">
       <SegmentedControl.Button
         className="flex-1"
-        size="sm"
+        size="xs"
         active={triggerCriteriaPriceType === 'oracle_price'}
         onClick={() => setTriggerCriteriaPriceType('oracle_price')}
       >
@@ -118,7 +108,7 @@ function PriceTypeSwitch({
       </SegmentedControl.Button>
       <SegmentedControl.Button
         className="flex-1"
-        size="sm"
+        size="xs"
         active={triggerCriteriaPriceType === 'last_price'}
         onClick={() => setTriggerCriteriaPriceType('last_price')}
       >

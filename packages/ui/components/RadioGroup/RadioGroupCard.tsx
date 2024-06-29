@@ -28,19 +28,13 @@ export function RadioGroupCard<TIdentifier extends string>({
         className={mergeClassNames(
           'flex flex-col items-stretch gap-y-2',
           'text-left text-sm',
-          // In this specific case there is a bit of visual lag when selecting a radio card
-          // so we remove the transition to make it feel more responsive, yet keep the hover
-          // transition so the hover effect isn't rigid
-          'transition-none hover:transition hover:duration-200',
-          active
-            ? 'bg-surface-2 hover:bg-surface-2 ring-accent'
-            : 'hover:bg-surface-2 bg-surface-1',
+          active ? 'bg-surface-2 ring-accent' : 'bg-surface-1',
           className,
         )}
         disabled={disabled}
       >
         <div className="flex items-center justify-between">
-          <div className="text-text-primary text-base font-medium">{title}</div>
+          <div className="text-text-primary text-base">{title}</div>
           <RadioGroupIndicator active={active} />
         </div>
         {children}

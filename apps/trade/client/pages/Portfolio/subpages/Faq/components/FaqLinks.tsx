@@ -1,6 +1,6 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { ExternalNavCardButton } from '@vertex-protocol/web-ui';
-import { FAQ_LINKS } from 'client/modules/faq/consts';
+import { FAQ_LINKS } from 'client/modules/app/consts/faqLinks';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
 import Link from 'next/link';
 

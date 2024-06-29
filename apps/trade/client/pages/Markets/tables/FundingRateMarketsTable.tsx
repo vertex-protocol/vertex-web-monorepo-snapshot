@@ -1,31 +1,34 @@
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
+import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
+import { SeparatedRowDataTable } from 'client/components/DataTable/SeparatedRowDataTable';
 import { getKeyedBigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
-import { FavoriteToggleCell } from 'client/modules/markets/components/FavoriteToggleCell';
-import { MarketProductInfoCell } from 'client/modules/markets/components/MarketProductInfoCell';
+import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
-import { MarketsPageTable } from 'client/pages/Markets/components/MarketsPageTable';
 import { useMemo } from 'react';
 import { FavoriteHeaderCell } from '../components/FavoriteHeaderCell';
+import { FundingRateCell } from '../components/FundingRateCell';
 import { FundingRateCountdown } from '../components/FundingRateCountdown';
+import { FundingRatePeriodSelect } from '../components/FundingRatePeriodSelect';
 import {
   FundingRateTableItem,
   useFundingRateMarketsTable,
 } from '../hooks/useFundingRateMarketsTable';
-import { favoriteSortFn } from '../utils/sortingFns';
-import { FundingRateCell } from '../components/FundingRateCell';
-import { FundingRatePeriodSelect } from '../components/FundingRatePeriodSelect';
 import { FundingRatePeriodID } from '../hooks/useFundingRatePeriodSelect';
-import { Divider } from '@vertex-protocol/web-ui';
+import { favoriteSortFn } from '../utils/sortingFns';
 
 const columnHelper = createColumnHelper<FundingRateTableItem>();
 // Always sort funding rates by hourly rate as order is equivalent regardless of display rate (e.g. daily/yearly)
 const FUNDING_PERIOD_SORT_KEY: FundingRatePeriodID = 'hourly';
 
 export function FundingRateMarketsTable() {
-  const { fundingRateData, disableFavoriteButton, toggleIsFavoritedMarket } =
-    useFundingRateMarketsTable();
+  const {
+    isLoading,
+    fundingRateData,
+    disableFavoriteButton,
+    toggleIsFavoritedMarket,
+  } = useFundingRateMarketsTable();
   const pushTradePage = usePushTradePage();
 
   const columns: ColumnDef<FundingRateTableItem, any>[] = useMemo(() => {
@@ -35,6 +38,7 @@ export function FundingRateMarketsTable() {
           <FavoriteHeaderCell
             header={header}
             disableFavoriteButton={disableFavoriteButton}
+            favoriteButtonSize={12}
           />
         ),
         cell: (context) => {
@@ -44,22 +48,23 @@ export function FundingRateMarketsTable() {
               disabled={disableFavoriteButton}
               toggleIsFavorited={toggleIsFavoritedMarket}
               productId={context.row.original.productId}
+              favoriteButtonSize={15}
             />
           );
         },
         sortingFn: favoriteSortFn,
         meta: {
-          cellContainerClassName: 'w-10',
+          cellContainerClassName: 'w-14',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('metadata', {
         header: ({ header }) => <HeaderCell header={header}>Market</HeaderCell>,
         cell: (context) => {
-          const value = context.getValue();
+          const value = context.getValue<FundingRateTableItem['metadata']>();
           return (
             <MarketProductInfoCell
               name={value.name}
-              subtitle={value.marketDetails.subtitle}
               iconSrc={value.icon.asset}
               isNewMarket={context.row.original.isNewMarket}
             />
@@ -177,7 +182,8 @@ export function FundingRateMarketsTable() {
         </div>
         <FundingRateCountdown />
       </div>
-      <MarketsPageTable
+      <SeparatedRowDataTable
+        isLoading={isLoading}
         columns={columns}
         data={fundingRateData}
         onRowClicked={onRowClicked}

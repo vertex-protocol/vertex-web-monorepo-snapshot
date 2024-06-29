@@ -31,7 +31,6 @@ export function StakeVrtxSubmitButton({ className, state }: Props) {
 
   return (
     <PrimaryButton
-      size="lg"
       type="submit"
       className={className}
       isLoading={isLoading}

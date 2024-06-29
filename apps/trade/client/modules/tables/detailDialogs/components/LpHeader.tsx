@@ -1,8 +1,10 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { NextImageSrc } from '@vertex-protocol/web-common';
+import {
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { Icons, Pill } from '@vertex-protocol/web-ui';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import Image from 'next/image';
 
 interface Props {
@@ -38,7 +40,7 @@ export function LpHeader({
         {quoteSymbol}
       </div>
       {!!takerFee && (
-        <Pill color="white" className="bg-surface-2">
+        <Pill colorVariant="tertiary" sizeVariant="sm" className="bg-surface-2">
           Fee:{' '}
           {formatNumber(takerFee, {
             formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,

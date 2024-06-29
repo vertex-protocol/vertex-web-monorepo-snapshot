@@ -1,16 +1,18 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { removeDecimals } from '@vertex-protocol/utils';
+import {
+  getMarketPriceFormatSpecifier,
+  NumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import {
   RealizedPnlEvent,
   RealizedPnlEventsResponse,
   useSubaccountPaginatedRealizedPnlEvents,
 } from 'client/hooks/query/subaccount/useSubaccountPaginatedRealizedPnlEvents';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { NumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
@@ -35,7 +37,7 @@ function extractItems(data: RealizedPnlEventsResponse) {
 }
 
 export function useHistoricalPnlAccountingTable() {
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
 
   const { data: staticMarketsData, isLoading: loadingMarkets } =
     useAllMarketsStaticData();
@@ -54,7 +56,7 @@ export function useHistoricalPnlAccountingTable() {
   const { getPageData, pageCount, paginationState, setPaginationState } =
     useDataTablePagination<RealizedPnlEventsResponse, RealizedPnlEvent>({
       pageSize: PAGE_SIZE,
-      queryPageCount: realizedPnlEvents?.pages.length,
+      numPagesFromQuery: realizedPnlEvents?.pages.length,
       hasNextPage,
       fetchNextPage,
       extractItems,
@@ -76,17 +78,14 @@ export function useHistoricalPnlAccountingTable() {
           exitPrice,
           reduceOnlyBaseFilledAmount,
         }): HistoricalPnlAccountingItem | undefined => {
-          const market = staticMarketsData.all[productId];
+          const marketData = staticMarketsData.all[productId];
+          const quoteData = staticMarketsData.quotes[productId];
 
-          if (!market) {
-            console.warn(
-              '[useHistoricalPnlAccountingTable] Could not find product',
-              productId,
-            );
+          if (!marketData || !quoteData) {
             return;
           }
 
-          const { icon, symbol } = getBaseProductMetadata(market.metadata);
+          const { icon, symbol } = getBaseProductMetadata(marketData.metadata);
           const decimalAdjustedFilledAmount = removeDecimals(
             reduceOnlyBaseFilledAmount,
           );
@@ -98,19 +97,21 @@ export function useHistoricalPnlAccountingTable() {
           const realizedPnlUsd =
             decimalAdjustedRealizedPnl.multipliedBy(quotePrice);
           const marketPriceFormatSpecifier = getMarketPriceFormatSpecifier(
-            market.priceIncrement,
+            marketData.priceIncrement,
           );
 
           return {
             timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
             marketInfo: {
-              marketName: market.metadata.marketName,
+              marketName: marketData.metadata.marketName,
+              quoteSymbol: quoteData.symbol,
+              isPrimaryQuote: quoteData.isPrimaryQuote,
               icon,
               symbol,
               amountForSide: decimalAdjustedPreEventBalanceAmount,
-              productType: market.type,
-              priceIncrement: market.priceIncrement,
-              sizeIncrement: market.sizeIncrement,
+              productType: marketData.type,
+              priceIncrement: marketData.priceIncrement,
+              sizeIncrement: marketData.sizeIncrement,
             },
             preEventBalanceAmount: decimalAdjustedPreEventBalanceAmount,
             realizedPnlUsd,

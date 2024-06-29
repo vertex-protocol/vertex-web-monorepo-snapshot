@@ -17,9 +17,7 @@ export function BaseDefinitionTooltip({
 }: BaseDefinitionTooltipProps) {
   const tooltipContent = (
     <div className="flex max-w-[270px] flex-col gap-y-1.5 overflow-hidden p-2 pt-2.5 text-left">
-      {title && (
-        <div className="text-text-primary text-sm font-medium">{title}</div>
-      )}
+      {title && <div className="text-text-primary text-sm">{title}</div>}
       <div className="text-text-secondary flex flex-col gap-y-2 whitespace-pre-wrap text-xs">
         {content}
       </div>

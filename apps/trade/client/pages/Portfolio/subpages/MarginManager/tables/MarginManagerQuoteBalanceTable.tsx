@@ -46,7 +46,8 @@ export function MarginManagerQuoteBalanceTable({ className }: WithClassnames) {
           },
           enableSorting: false,
           meta: {
-            cellContainerClassName: 'w-32',
+            cellContainerClassName: 'w-36',
+            withLeftPadding: true,
           },
         }),
         columnHelper.accessor('balanceValueUsd', {

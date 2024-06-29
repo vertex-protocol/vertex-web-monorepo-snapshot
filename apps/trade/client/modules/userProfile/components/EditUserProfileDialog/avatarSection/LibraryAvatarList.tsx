@@ -1,5 +1,5 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Button } from '@vertex-protocol/web-ui';
+import { Button, getStateOverlayClassNames } from '@vertex-protocol/web-ui';
 import { LIBRARY_AVATARS } from 'client/modules/userProfile/avatarLibraryData';
 import {
   SavedUserProfile,
@@ -14,6 +14,12 @@ interface Props {
 }
 
 export function LibraryAvatarList({ form, watchedAvatar }: Props) {
+  const disabledStateOverlayClassNames = getStateOverlayClassNames({
+    stateClassNameOverrides: 'before:rounded-full',
+    // We only want the "disabled" state to be used, so we set this to true.
+    disabled: true,
+  });
+
   return (
     <div className="flex flex-col gap-y-3">
       <p className="text-text-primary text-sm">Library Avatars</p>
@@ -31,8 +37,8 @@ export function LibraryAvatarList({ form, watchedAvatar }: Props) {
               className={joinClassNames(
                 'relative aspect-square h-12 overflow-clip rounded-full ring-2',
                 watchedAvatar.id === avatarId
-                  ? 'ring-accent brightness-100 duration-0'
-                  : 'ring-disabled brightness-50',
+                  ? 'ring-accent'
+                  : ['ring-disabled', disabledStateOverlayClassNames],
               )}
             >
               <Image src={src} alt={avatarId} fill sizes="48px" />

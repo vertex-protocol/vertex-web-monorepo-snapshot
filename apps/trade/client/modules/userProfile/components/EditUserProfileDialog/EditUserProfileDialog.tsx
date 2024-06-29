@@ -4,7 +4,7 @@ import { DIALOG_PADDING } from 'client/components/BaseDialog/consts';
 import { Form } from 'client/components/Form';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { ActionButtons } from 'client/modules/userProfile/components/EditUserProfileDialog/ActionButtons';
+import { EditUserProfileActionButtons } from 'client/modules/userProfile/components/EditUserProfileDialog/EditUserProfileActionButtons';
 import { UserProfilePreview } from 'client/modules/userProfile/components/EditUserProfileDialog/UserProfilePreview';
 import { AvatarTypeSelector } from 'client/modules/userProfile/components/EditUserProfileDialog/avatarSection/AvatarTypeSelector';
 import { LibraryAvatarList } from 'client/modules/userProfile/components/EditUserProfileDialog/avatarSection/LibraryAvatarList';
@@ -77,7 +77,7 @@ export function EditUserProfileDialog() {
               <LibraryAvatarList form={form} watchedAvatar={watchedAvatar} />
             )}
           </div>
-          <ActionButtons
+          <EditUserProfileActionButtons
             className={joinClassNames(
               'border-stroke w-full border-t',
               DIALOG_PADDING.horizontal,

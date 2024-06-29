@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import { EXTERNAL_LINKS } from 'client/consts';
 import { useLatestBlogPosts } from 'client/hooks/useLatestBlogPosts';
@@ -6,6 +5,7 @@ import Link from 'next/link';
 import { MdArrowUpward } from 'react-icons/md';
 import { CommunityGradientPill } from '../CommunityGradientPill';
 import { BlogCard } from './BlogCard';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export type BlogCardData = {
   title: string;
@@ -36,7 +36,7 @@ export function BlogLinks() {
         </HomePageButton>
       </div>
       <div
-        className={classNames(
+        className={joinClassNames(
           'relative grid w-full grid-cols-1 justify-between gap-12',
           'sm:grid-cols-2 md:gap-16',
         )}

@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { addDecimals } from '@vertex-protocol/utils';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { allDepositableTokenBalancesQueryKey } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
-import { addDecimals } from 'client/utils/decimalAdjustment';
 import { roundToString } from 'client/utils/rounding';
 import { useCallback } from 'react';
 

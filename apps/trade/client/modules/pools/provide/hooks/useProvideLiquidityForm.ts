@@ -1,4 +1,10 @@
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import {
+  addDecimals,
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
 import {
   InputValidatorFn,
   percentageValidator,
@@ -7,21 +13,19 @@ import {
 import { useExecuteMintLp } from 'client/hooks/execute/useExecuteMintLp';
 import { useLpYields } from 'client/hooks/markets/useLpYields';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useMaxMintLpAmount } from 'client/hooks/query/subaccount/useMaxMintLpAmount';
 import {
   LpBalanceItem,
   useLpBalances,
 } from 'client/hooks/subaccount/useLpBalances';
-import { useQuoteBalance } from 'client/hooks/subaccount/useQuoteBalance';
+import { usePrimaryQuoteBalance } from 'client/hooks/subaccount/usePrimaryQuoteBalance';
 import { OnFractionSelectedHandler } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { provideLiquidityProductIdAtom } from 'client/store/collateralStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { addDecimals, removeDecimals } from 'client/utils/decimalAdjustment';
 import { toSafeFormPercentage } from 'client/utils/form/toSafeFormPercentage';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
@@ -84,11 +88,11 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
   const [productIdAtomValue] = useAtom(provideLiquidityProductIdAtom);
 
   const { data: marketData } = useMarket({ productId: productIdAtomValue });
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
   const { data: lpYields } = useLpYields();
 
   const { balances } = useLpBalances();
-  const { data: quoteBalance } = useQuoteBalance();
+  const { data: primaryQuoteBalance } = usePrimaryQuoteBalance();
 
   const { data: maxMintLpAmount } = useMaxMintLpAmount({
     productId: productIdAtomValue ?? 0,
@@ -146,14 +150,14 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
 
   // Metadata for the current pair
   const pairMetadata = useMemo((): PairMetadata | undefined => {
-    if (!currentLpBalance || !quoteBalance) {
+    if (!currentLpBalance || !primaryQuoteBalance) {
       return undefined;
     }
     return {
       base: getBaseProductMetadata(currentLpBalance.product.metadata),
-      quote: quoteBalance.metadata.token,
+      quote: primaryQuoteBalance.metadata.token,
     };
-  }, [currentLpBalance, quoteBalance]);
+  }, [currentLpBalance, primaryQuoteBalance]);
 
   // Decimal adjusted max amounts that can be added to the pool
   const decimalAdjustedMaxLpAmounts = useMemo(() => {
@@ -343,7 +347,7 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
       !validQuoteAmount ||
       !currentLpBalance ||
       !marketData ||
-      !quoteBalance
+      !primaryQuoteBalance
     ) {
       return undefined;
     }
@@ -367,7 +371,7 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
     validQuoteAmount,
     currentLpBalance,
     marketData,
-    quoteBalance,
+    primaryQuoteBalance,
     quotePrice,
   ]);
 
@@ -459,7 +463,7 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
     currentLpBalance,
     currentYield,
     underlyingBaseBalance: currentLpBalance?.underlyingAmount,
-    underlyingQuoteBalance: quoteBalance?.amount,
+    underlyingQuoteBalance: primaryQuoteBalance?.amount,
     formError,
     buttonState,
     validPercentageAmount,

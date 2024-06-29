@@ -2,31 +2,31 @@ import { mergeClassNames } from '@vertex-protocol/web-common';
 import { Button, ButtonProps, Icons } from '@vertex-protocol/web-ui';
 
 export type LinkButtonProps = ButtonProps & {
-  color: 'accent' | 'white';
+  colorVariant: 'accent' | 'primary';
   withExternalIcon?: boolean;
 };
 
 export function LinkButton({
   className,
-  color,
+  colorVariant,
   disabled,
   withExternalIcon,
   ...rest
 }: LinkButtonProps) {
   const textColor = {
     accent: 'text-accent',
-    white: 'text-text-secondary',
-  }[color];
+    primary: 'text-text-secondary',
+  }[colorVariant];
 
   const hoverTextColor = {
     accent: 'hover:brightness-110',
-    white: 'hover:text-text-primary',
-  }[color];
+    primary: 'hover:text-text-primary',
+  }[colorVariant];
 
   return (
     <Button
       className={mergeClassNames(
-        'underline disabled:brightness-75',
+        'underline transition-colors disabled:brightness-75',
         textColor,
         !disabled && hoverTextColor,
         className,

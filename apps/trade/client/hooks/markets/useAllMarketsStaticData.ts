@@ -1,9 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
-import { ProductEngineType } from '@vertex-protocol/contracts';
+import {
+  ProductEngineType,
+  QUOTE_PRODUCT_ID,
+} from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { PrimaryChainID, usePrimaryChainId } from '@vertex-protocol/web-data';
+import {
+  PrimaryChainID,
+  QueryDisabledError,
+  usePrimaryChainId,
+} from '@vertex-protocol/react-client';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import {
   PerpProductMetadata,
   SpotProductMetadata,
@@ -33,13 +40,31 @@ export interface SpotStaticMarketData extends CommonStaticMarketData {
 
 export type StaticMarketData = SpotStaticMarketData | PerpStaticMarketData;
 
+/**
+ * Metadata corresponding to the quote currency for a given market. This is a more restrictive type than StaticMarketData
+ * as we anticipate that future perp quotes may not actually be markets themselves (this is a bit unknown currently)
+ */
+export interface StaticMarketQuoteData {
+  productId: number;
+  isPrimaryQuote: boolean;
+  symbol: string;
+}
+
 interface AllMarketsStaticData {
-  // Quote is extracted for special treatment
-  quote: SpotStaticMarketData;
-  // Keyed by product ID
+  /**
+   * Primary quote is extracted for special treatment
+   */
+  primaryQuote: SpotStaticMarketData;
+  /**
+   * Keyed by product ID
+   */
   all: Record<number, StaticMarketData>;
   spot: Record<number, SpotStaticMarketData>;
   perp: Record<number, PerpStaticMarketData>;
+  /**
+   * Product ID -> quote metadata for the market
+   */
+  quotes: Record<number, StaticMarketQuoteData>;
   allMarketsProductIds: number[];
   spotMarketsProductIds: number[];
   perpMarketsProductIds: number[];
@@ -60,9 +85,9 @@ export function useAllMarketsStaticData() {
       throw new QueryDisabledError();
     }
 
-    const quoteProduct = data.quoteProduct;
+    const quoteProduct = data.primaryQuoteProduct;
     const staticMarketDataByProductId: AllMarketsStaticData = {
-      quote: {
+      primaryQuote: {
         type: ProductEngineType.SPOT,
         metadata: quoteProduct.metadata,
         minSize: quoteProduct.minSize,
@@ -77,6 +102,7 @@ export function useAllMarketsStaticData() {
       all: {},
       spot: {},
       perp: {},
+      quotes: {},
       allMarketsProductIds: data.allMarketsProductIds,
       spotMarketsProductIds: data.spotMarketsProductIds,
       perpMarketsProductIds: data.perpMarketsProductIds,
@@ -117,6 +143,41 @@ export function useAllMarketsStaticData() {
 
       staticMarketDataByProductId.all[perpMarket.productId] = staticData;
       staticMarketDataByProductId.perp[perpMarket.productId] = staticData;
+    });
+
+    Object.values(staticMarketDataByProductId.all).forEach((market) => {
+      const quoteProductIdForMarket = market.metadata.quoteProductId;
+
+      const { symbol, isPrimaryQuote } = (() => {
+        if (quoteProductIdForMarket === QUOTE_PRODUCT_ID) {
+          return {
+            symbol:
+              staticMarketDataByProductId.primaryQuote.metadata.token.symbol,
+            isPrimaryQuote: true,
+          };
+        }
+
+        const quoteStaticData =
+          staticMarketDataByProductId.all[quoteProductIdForMarket];
+
+        if (!quoteStaticData) {
+          throw new Error(
+            `Quote for market ${market.productId} not found (${quoteProductIdForMarket})`,
+          );
+        }
+
+        const { symbol } = getBaseProductMetadata(quoteStaticData.metadata);
+        return {
+          symbol,
+          isPrimaryQuote: false,
+        };
+      })();
+
+      staticMarketDataByProductId.quotes[market.productId] = {
+        productId: quoteProductIdForMarket,
+        symbol,
+        isPrimaryQuote,
+      };
     });
 
     return staticMarketDataByProductId;

@@ -1,5 +1,5 @@
 import { nowInSeconds, toPrintableObject } from '@vertex-protocol/utils';
-import { useVertexClient } from '@vertex-protocol/web-data';
+import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
 import {
@@ -8,16 +8,16 @@ import {
   RESOLUTIONS_TO_INTERVALS,
   TradingViewSymbolInfo,
 } from 'client/modules/trading/chart/config/datafeedConfig';
-import { first, mapValues, last } from 'lodash';
+import { first, last, mapValues } from 'lodash';
 import type { Bar, IBasicDataFeed } from 'public/charting_library';
 import { useMemo, useRef } from 'react';
 import { BarSubscriber } from './types';
 import { useUpdateLatestBar } from './useUpdateLatestBar';
 import {
-  toTVCandlesticks,
   getLastBarMapKey,
-  toTVCandlestick,
   syncBarOpenWithValue,
+  toTVCandlestick,
+  toTVCandlesticks,
 } from './utils';
 
 interface UseTradingViewData {
@@ -36,7 +36,7 @@ export function useTradingViewData({
     'tvCharts',
     false,
   );
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const { data: staticMarketData } = useAllMarketsStaticData();
 
   const symbolInfoByProductId = useMemo(

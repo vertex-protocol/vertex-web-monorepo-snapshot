@@ -1,21 +1,23 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Divider, Icons } from '@vertex-protocol/web-ui';
 import { MarketInfoCard } from 'client/components/MarketInfoCard';
-import { ChainSpecificContent } from 'client/modules/chainSpecificContent/ChainSpecificContent';
-import { ARB_CHAIN_IDS } from 'client/modules/chainSpecificContent/consts/chainIds';
+import { ChainSpecificContent } from 'client/modules/envSpecificContent/ChainSpecificContent';
+import { ARB_CHAIN_IDS } from 'client/modules/envSpecificContent/consts/chainIds';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { ElixirEntryPoint } from 'client/modules/trading/components/ElixirEntryPoint';
 import { MarketInfoCardsContainer } from 'client/modules/trading/components/MarketInfoCardsContainer';
 import { usePerpMarketInfoCards } from 'client/pages/PerpTrading/hooks/usePerpMarketInfoCards';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import {
   formatTimestamp,
   TimeFormatSpecifier,
 } from 'client/utils/formatTimestamp';
 import { signDependentValue } from 'client/utils/signDependentValue';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 
 export const PerpMarketInfoCards = ({ className }: WithClassnames) => {
+  const { trackEvent } = useAnalyticsContext();
   const { productId, millisToNextFunding, perpMarketInfo, quoteSymbol } =
     usePerpMarketInfoCards();
 
@@ -162,7 +164,17 @@ export const PerpMarketInfoCards = ({ className }: WithClassnames) => {
           <Divider vertical className="flex h-6 sm:hidden" />
           {/* Padding and margin layout for larger/smaller screens */}
           <div className="pr-3 lg:ml-auto lg:pl-4 lg:pr-0">
-            <ElixirEntryPoint productId={productId} />
+            <ElixirEntryPoint
+              productId={productId}
+              onClick={() =>
+                trackEvent({
+                  type: 'elixir_entrypoint_clicked',
+                  data: {
+                    entrypoint: 'perps',
+                  },
+                })
+              }
+            />
           </div>
         </ChainSpecificContent>
       </div>

@@ -1,5 +1,4 @@
-import { hasClass } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { hasClass, mergeClassNames } from '@vertex-protocol/web-common';
 import { Spinner } from 'client/components/Spinner';
 import Link from 'next/link';
 import { ElementType } from 'react';
@@ -44,7 +43,6 @@ export function HomePageButton<E extends ButtonElement = 'button'>(
     onClick,
     ...rest
   } = props;
-  const hasGap = startIcon || endIcon || isLoading;
 
   // Conditional external props
   // These have no effect on `as="button"` elements
@@ -62,11 +60,11 @@ export function HomePageButton<E extends ButtonElement = 'button'>(
 
   return (
     <BaseButton
-      className={classNames(
+      className={mergeClassNames(
         'transition',
         !hasClass(className, 'flex', 'inline-flex', 'block', 'grid') &&
           'inline-flex items-center justify-center whitespace-nowrap',
-        hasGap && !hasClass(className, 'gap-x') && 'gap-x-2',
+        'gap-x-2',
         disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
         isLoading && 'cursor-wait opacity-90',
         className,

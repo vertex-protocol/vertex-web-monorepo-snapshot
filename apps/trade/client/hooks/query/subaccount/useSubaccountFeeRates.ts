@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import {
-  PrimaryChainID,
   createQueryKey,
-  useEnableSubaccountQueries,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { ZeroAddress } from 'ethers';
 
 export function subaccountFeeRatesQueryKey(
@@ -21,10 +20,9 @@ export function subaccountFeeRatesQueryKey(
 export function useSubaccountFeeRates() {
   const primaryChainId = usePrimaryChainId();
   const { currentSubaccount } = useSubaccountContext();
-  const vertexClient = useVertexClient();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
+  const vertexClient = usePrimaryChainVertexClient();
 
-  const disabled = !vertexClient || !enableSubaccountQueries;
+  const disabled = !vertexClient;
 
   return useQuery({
     queryKey: subaccountFeeRatesQueryKey(

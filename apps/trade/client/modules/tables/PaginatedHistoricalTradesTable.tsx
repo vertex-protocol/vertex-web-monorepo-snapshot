@@ -1,21 +1,20 @@
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { DataTable } from 'client/components/DataTable/DataTable';
+import {
+  CustomNumberFormatSpecifier,
+  getMarketPriceFormatSpecifier,
+  getMarketQuoteSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
+import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { useHistoricalTradesTable } from 'client/modules/tables/hooks/useHistoricalTradesTable';
 import { HistoricalTradeItem } from 'client/modules/tables/types/HistoricalTradeItem';
 import { MarketFilter } from 'client/types/MarketFilter';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
 import { useMemo } from 'react';
 import { OrderTypeCell } from './cells/OrderTypeCell';
 
@@ -34,7 +33,6 @@ export function PaginatedHistoricalTradesTable({
   hasBackground,
   marketFilter,
 }: Props) {
-  const { primaryQuoteToken } = useVertexMetadataContext();
   const {
     mappedData,
     pageCount,
@@ -56,7 +54,8 @@ export function PaginatedHistoricalTradesTable({
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('marketInfo', {
@@ -119,8 +118,10 @@ export function PaginatedHistoricalTradesTable({
         cell: (context) => (
           <AmountWithSymbolCell
             amount={context.getValue()}
-            symbol={primaryQuoteToken.symbol}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+            symbol={context.row.original.marketInfo.quoteSymbol}
+            formatSpecifier={getMarketQuoteSizeFormatSpecifier(
+              context.row.original.marketInfo.isPrimaryQuote,
+            )}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -128,36 +129,17 @@ export function PaginatedHistoricalTradesTable({
           cellContainerClassName: 'w-32',
         },
       }),
-      columnHelper.accessor('tradeFee', {
+      columnHelper.accessor('tradeFeeQuote', {
         header: ({ header }) => (
           <HeaderCell header={header}>Trade Fee</HeaderCell>
         ),
         cell: (context) => (
           <AmountWithSymbolCell
             amount={context.getValue()}
-            symbol={primaryQuoteToken.symbol}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-          />
-        ),
-        sortingFn: bigDecimalSortFn,
-        meta: {
-          cellContainerClassName: 'w-32',
-        },
-      }),
-      columnHelper.accessor('sequencerFee', {
-        header: ({ header }) => (
-          <HeaderCell
-            header={header}
-            definitionTooltipId="historicalTradesSequencerFee"
-          >
-            Sequencer Fee
-          </HeaderCell>
-        ),
-        cell: (context) => (
-          <AmountWithSymbolCell
-            amount={context.getValue()}
-            symbol={primaryQuoteToken.symbol}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+            symbol={context.row.original.marketInfo.quoteSymbol}
+            formatSpecifier={getMarketQuoteSizeFormatSpecifier(
+              context.row.original.marketInfo.isPrimaryQuote,
+            )}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -166,7 +148,7 @@ export function PaginatedHistoricalTradesTable({
         },
       }),
     ];
-  }, [primaryQuoteToken.symbol]);
+  }, []);
 
   return (
     <DataTable

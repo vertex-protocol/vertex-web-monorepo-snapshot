@@ -2,13 +2,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { GetIndexerSubaccountCollateralEventsParams } from '@vertex-protocol/client';
 import { CollateralEventType } from '@vertex-protocol/indexer-client/dist/types/collateralEventType';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 
 export function subaccountPaginatedCollateralEventsQueryKey(
   chainId?: PrimaryChainID,
@@ -40,7 +40,7 @@ export function useSubaccountPaginatedCollateralEvents({
   pageSize = 10,
 }: Params) {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
     currentSubaccount: { address: subaccountOwner, name: subaccountName },
   } = useSubaccountContext();

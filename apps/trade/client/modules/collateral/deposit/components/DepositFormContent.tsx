@@ -1,23 +1,31 @@
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { Divider, Icons, TextButton } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
 import { InputSummary } from 'client/components/InputSummary';
-import { ChainSpecificContent } from 'client/modules/chainSpecificContent/ChainSpecificContent';
-import { ARB_CHAIN_IDS } from 'client/modules/chainSpecificContent/consts/chainIds';
+import {
+  ARB_CHAIN_IDS,
+  BLAST_CHAIN_IDS,
+  MANTLE_CHAIN_IDS,
+} from 'client/modules/envSpecificContent/consts/chainIds';
+import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
 import { DepositSummaryDisclosure } from 'client/modules/collateral/components/DepositSummaryDisclosure';
 import { MinimumInitialDepositAmount } from 'client/modules/collateral/components/MinimumInitialDepositAmount';
 import { DepositApproveWarning } from 'client/modules/collateral/deposit/components/DepositApproveWarning';
 import { UsdbDepositDismissible } from 'client/modules/collateral/deposit/components/dismissibles/UsdbDepositDismissible';
+import { WmntDepositDismissible } from 'client/modules/collateral/deposit/components/dismissibles/WmntDepositDismissible';
 import { useDepositForm } from 'client/modules/collateral/deposit/hooks/useDepositForm';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { CollateralSelectInput } from '../../components/CollateralSelectInput';
 import { useDepositAmountErrorTooltipContent } from '../hooks/useDepositAmountErrorTooltipContent';
 import { DepositFooter } from './DepositFooter';
 import { DepositSubmitButton } from './DepositSubmitButton';
 import { DepositVrtxStakingCta } from './DepositVrtxStakingCta';
 import { WethDepositDismissible } from './dismissibles/WethDepositDismissible';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { useEffect } from 'react';
 
 interface Props {
   onClose: () => void;
@@ -41,12 +49,33 @@ export function DepositFormContent({ onShowHelpClick, onClose }: Props) {
     onSubmit,
     onMaxAmountSelected,
   } = useDepositForm();
+  const { trackEvent } = useAnalyticsContext();
+
+  useEffect(() => {
+    trackEvent({
+      type: 'deposit_dialog_view',
+      data: {
+        contentType: 'form',
+      },
+    });
+  }, [trackEvent]);
 
   const { register, setValue } = form;
-
   const amountErrorTooltipContent = useDepositAmountErrorTooltipContent({
     formError,
   });
+
+  // Footer logic
+  const isOnrampEnabled = useIsEnabledForChainIds([
+    ...ARB_CHAIN_IDS,
+    ...MANTLE_CHAIN_IDS,
+  ]);
+  const isBridgeEnabled = useIsEnabledForChainIds([
+    ...ARB_CHAIN_IDS,
+    ...MANTLE_CHAIN_IDS,
+    ...BLAST_CHAIN_IDS,
+  ]);
+  const showFooter = isOnrampEnabled || isBridgeEnabled;
 
   return (
     <>
@@ -55,7 +84,7 @@ export function DepositFormContent({ onShowHelpClick, onClose }: Props) {
         endElement={
           <TextButton
             startIcon={<Icons.MdAdsClick size={16} />}
-            className="gap-x-1 px-4 text-xs font-medium"
+            className="text-xs"
             onClick={onShowHelpClick}
           >
             FAQ
@@ -66,6 +95,9 @@ export function DepositFormContent({ onShowHelpClick, onClose }: Props) {
       </BaseDialog.Title>
       <BaseDialog.Body>
         <Form onSubmit={onSubmit} className="flex w-full flex-col gap-y-4">
+          <WmntDepositDismissible
+            displayedInfoCardType={displayedInfoCardType}
+          />
           <WethDepositDismissible
             displayedInfoCardType={displayedInfoCardType}
           />
@@ -137,11 +169,27 @@ export function DepositFormContent({ onShowHelpClick, onClose }: Props) {
                 update.
               </p>
             )}
+            {/*Shoutout manual 1CT flow if a user first deposits */}
+            {isInitialDeposit && (
+              <>
+                <DefinitionTooltip
+                  contentWrapperClassName="text-text-secondary text-xs w-max"
+                  definitionId="smartContractWalletSigningPrompt"
+                >
+                  Using a smart contract wallet?
+                </DefinitionTooltip>
+              </>
+            )}
           </div>
-          <ChainSpecificContent enabledChainIds={ARB_CHAIN_IDS}>
-            <Divider />
-            <DepositFooter />
-          </ChainSpecificContent>
+          {showFooter && (
+            <>
+              <Divider />
+              <DepositFooter
+                isOnrampEnabled={isOnrampEnabled}
+                isBridgeEnabled={isBridgeEnabled}
+              />
+            </>
+          )}
         </Form>
       </BaseDialog.Body>
     </>

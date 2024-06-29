@@ -1,5 +1,5 @@
-import { asyncResult } from '@vertex-protocol/web-common';
-import { LINKS } from 'client/modules/brand/links';
+import { asyncResult } from '@vertex-protocol/utils';
+import { LINKS } from 'common/brandMetadata/links/links';
 import { clientEnv } from 'common/environment/clientEnv';
 import { saveAs } from 'file-saver';
 import { toBlob } from 'html-to-image';

@@ -3,15 +3,16 @@ import {
   joinClassNames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { Button, Icons } from '@vertex-protocol/web-ui';
-import { Input } from 'client/components/Input/Input';
+import { Button, Icons, Input, SizeVariant } from '@vertex-protocol/web-ui';
+import { forwardRef } from 'react';
 
 interface Props extends WithClassnames {
-  placeholder?: string;
-  iconSize: number;
   query: string;
   setQuery: (query: string) => void;
-  inputClassName?: string;
+  sizeVariant: Extract<SizeVariant, 'xs' | 'base'>;
+  placeholder?: string;
+  textAreaClassName?: string;
+  hideSearchIcon?: boolean;
 }
 
 // Persistent bottom border
@@ -20,51 +21,61 @@ const BOTTOM_BORDER_CLASSNAME =
 
 // Colored border that animates in on focus of the text input
 const ANIMATED_BOTTOM_BORDER_CLASSNAME = joinClassNames(
-  'after:h-px after:absolute after:bottom-0 after:left-0 after:right-0',
-  'after:transform after:transition after:duration-200 after:origin-left',
-  'after:scale-x-0 after:bg-accent after:ease-in-out focus-within:after:scale-x-100',
+  'after:h-px after:absolute after:inset-0 after:top-auto',
+  'after:transform-gpu after:origin-left after:duration-300',
+  'after:bg-accent focus-within:after:scale-x-100 after:scale-x-0',
 );
 
-export function SearchBar({
-  query,
-  setQuery,
-  iconSize,
-  placeholder,
-  className,
-  inputClassName,
-}: Props) {
+export const SearchBar = forwardRef<HTMLInputElement, Props>(function SearchBar(
+  {
+    query,
+    setQuery,
+    placeholder,
+    sizeVariant,
+    className,
+    textAreaClassName,
+    hideSearchIcon,
+  },
+  ref,
+) {
   const onClear = () => {
     setQuery('');
   };
 
+  const textClassNames = {
+    xs: 'text-xs',
+    base: 'text-base',
+  }[sizeVariant];
+
+  const iconClassNames = 'text-text-tertiary h-3 w-3 shrink-0';
+
   return (
     <div
       className={mergeClassNames(
-        'text-text-tertiary flex items-center gap-x-1',
-        'text-xs',
-        // For the bottom borders
-        'relative',
+        'relative flex items-center gap-x-1 p-1',
+        sizeVariant === 'base' && 'pb-3',
         BOTTOM_BORDER_CLASSNAME,
         ANIMATED_BOTTOM_BORDER_CLASSNAME,
         className,
       )}
     >
-      <Icons.RxMagnifyingGlass size={iconSize} />
-      <Input
-        className={joinClassNames(
-          'placeholder:text-text-tertiary text-text-primary flex-1',
-          inputClassName,
-        )}
-        placeholder={placeholder ?? 'Search'}
+      {!hideSearchIcon && (
+        <Icons.RxMagnifyingGlass className={iconClassNames} />
+      )}
+      <Input.TextArea
+        className={joinClassNames(textClassNames, textAreaClassName)}
+        type="text"
         value={query}
+        placeholder={placeholder ?? 'Search'}
         onChange={(e) => setQuery(e.target.value)}
+        ref={ref}
       />
-      {query && (
+      {!!query && (
         <Button
-          startIcon={<Icons.MdClose size={iconSize} />}
+          startIcon={<Icons.MdClose className={iconClassNames} />}
           onClick={onClear}
         />
       )}
     </div>
   );
-}
+});

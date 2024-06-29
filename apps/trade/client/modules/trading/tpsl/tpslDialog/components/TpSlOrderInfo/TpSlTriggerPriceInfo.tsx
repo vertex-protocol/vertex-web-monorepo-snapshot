@@ -1,6 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { TriggerCriteriaPriceType } from '../../types';
 
 interface Props {

@@ -1,6 +1,6 @@
 import { nowInSeconds } from '@vertex-protocol/client';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import type { Bar } from 'public/charting_library';
 import { MutableRefObject, useEffect } from 'react';
 import { BarSubscriber } from './types';

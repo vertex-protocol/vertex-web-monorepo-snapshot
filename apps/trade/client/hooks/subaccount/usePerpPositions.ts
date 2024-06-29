@@ -4,14 +4,19 @@ import {
   calcPerpBalanceValue,
   isPerpBalance,
 } from '@vertex-protocol/contracts';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { createQueryKey } from '@vertex-protocol/web-data';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
+import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
 import { QueryState } from 'client/types/QueryState';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import { calcEstimatedLiquidationPrice } from 'client/utils/calcs/calcEstimatedLiquidationPrice';
 import { calcPositionMarginWithoutPnl } from 'client/utils/calcs/calcPositionMarginWithoutPnl';
 import {
@@ -23,7 +28,6 @@ import {
   calcIndexerSummaryUnrealizedPnl,
   calcPnlFrac,
 } from 'client/utils/calcs/pnlCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import { safeDiv } from 'client/utils/safeDiv';
 import {
@@ -81,7 +85,7 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
   const { data: indexerSnapshot, dataUpdatedAt: indexerSnapshotUpdatedAt } =
     useSubaccountIndexerSnapshot();
 
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
 
   const disabled = !subaccountSummary;
 

@@ -9,7 +9,7 @@ import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymb
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { StackedTokenPairCell } from 'client/modules/tables/cells/StackedTokenPairCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
 import { MarginManagerActionsCell } from './cells/MarginManagerActionsCell';
@@ -37,7 +37,8 @@ export function MarginManagerPoolsTable({ className }: WithClassnames) {
         },
         enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-32',
+          cellContainerClassName: 'w-36',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('valueUsd', {
@@ -79,7 +80,6 @@ export function MarginManagerPoolsTable({ className }: WithClassnames) {
                   amount={baseAmount}
                   symbol={metadata.base.symbol}
                   formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                  className="pl-0"
                 />
               }
               bottom={
@@ -87,7 +87,6 @@ export function MarginManagerPoolsTable({ className }: WithClassnames) {
                   amount={quoteAmount}
                   symbol={metadata.quote.symbol}
                   formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                  className="pl-0"
                 />
               }
             />

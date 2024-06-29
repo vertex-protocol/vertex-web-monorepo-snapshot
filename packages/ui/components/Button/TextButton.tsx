@@ -1,27 +1,23 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
 import { forwardRef } from 'react';
+import { Except } from 'type-fest';
 import { Button } from './Button';
 import { ButtonProps } from './types';
 
-export type TextButtonProps = ButtonProps & {
-  active?: boolean;
-};
-
+export type TextButtonProps = Except<ButtonProps, 'isLoading'>;
 export const TextButton = forwardRef(function TextButton(
-  { children, className, active, disabled, ...rest }: TextButtonProps,
+  { children, className, ...rest }: TextButtonProps,
   ref,
 ) {
   return (
     <Button
       ref={ref}
       className={mergeClassNames(
-        active
-          ? 'text-text-primary'
-          : 'text-text-tertiary hover:text-text-secondary',
-        disabled && 'text-disabled hover:text-disabled',
+        'text-text-secondary hover:text-text-primary transition-colors',
+        rest.disabled && 'text-disabled hover:text-disabled',
+        'gap-x-1.5',
         className,
       )}
-      disabled={disabled}
       {...rest}
     >
       {children}

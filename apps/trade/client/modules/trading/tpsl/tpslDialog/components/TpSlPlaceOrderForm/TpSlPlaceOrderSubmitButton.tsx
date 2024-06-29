@@ -25,7 +25,6 @@ export const TpSlPlaceOrderSubmitButton = ({ state, isTakeProfit }: Props) => {
 
   return (
     <PrimaryButton
-      size="lg"
       type="submit"
       isLoading={state === 'loading'}
       disabled={state === 'disabled'}

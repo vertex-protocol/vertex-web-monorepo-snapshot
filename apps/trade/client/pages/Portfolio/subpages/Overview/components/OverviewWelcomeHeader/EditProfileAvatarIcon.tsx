@@ -1,6 +1,5 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Button } from '@vertex-protocol/web-ui';
-import { Icons } from '@vertex-protocol/web-ui';
+import { Button, Icons } from '@vertex-protocol/web-ui';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { ProfileAvatarIcon } from 'client/modules/userProfile/components/ProfileAvatarIcon';
 import { ProfileAvatar } from 'client/modules/userProfile/types';
@@ -26,7 +25,7 @@ export function EditProfileAvatarIcon({ avatar, size }: Props) {
         // Edit icon overlay for editing user profile
         className={joinClassNames(
           'absolute inset-0 flex items-center justify-center',
-          'opacity-0 transition duration-200 group-hover:opacity-100',
+          'opacity-0 transition-opacity group-hover:opacity-100',
         )}
       >
         <Icons.MdEdit size={20} />

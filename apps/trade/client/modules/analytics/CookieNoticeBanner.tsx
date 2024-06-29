@@ -1,10 +1,10 @@
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { LinkButton } from 'client/components/LinkButton';
 import { useCookiePreference } from 'client/modules/analytics/useCookiePreference';
-import { joinClassNames } from '@vertex-protocol/web-common';
-import { LINKS } from 'client/modules/brand/links';
-import Link from 'next/link';
+import { LINKS } from 'common/brandMetadata/links/links';
 import { clientEnv } from 'common/environment/clientEnv';
+import Link from 'next/link';
 
 export function CookieNoticeBanner() {
   const {
@@ -42,7 +42,7 @@ export function CookieNoticeBanner() {
           You may withdraw your consent with respect to Cookies at any time.
           Click{' '}
           <LinkButton
-            color="white"
+            colorVariant="primary"
             href={LINKS.cookiePolicy}
             external
             as={Link}
@@ -68,10 +68,10 @@ interface ActionButtonsProps {
 function ActionButtons({ acceptCookies, declineCookies }: ActionButtonsProps) {
   return (
     <div className="flex items-center gap-x-2 text-sm">
-      <SecondaryButton size="lg" onClick={acceptCookies}>
+      <SecondaryButton size="sm" onClick={acceptCookies}>
         Accept All
       </SecondaryButton>
-      <SecondaryButton size="lg" onClick={declineCookies}>
+      <SecondaryButton size="sm" onClick={declineCookies}>
         Reject All
       </SecondaryButton>
     </div>

@@ -1,7 +1,7 @@
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { Divider, Icons } from '@vertex-protocol/web-ui';
 import { LinkButton } from 'client/components/LinkButton';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
 
 export function UpcomingMaintenance({ className }: WithClassnames) {
@@ -20,7 +20,7 @@ export function UpcomingMaintenance({ className }: WithClassnames) {
       <LinkButton
         external
         as={Link}
-        color="white"
+        colorVariant="primary"
         className="text-xs"
         href={LINKS.maintenanceWindowDocs}
       >

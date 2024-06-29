@@ -24,7 +24,6 @@ export function WithdrawLbaLiquiditySubmitButton({ className, state }: Props) {
   return (
     <ButtonHelperInfo.Container>
       <PrimaryButton
-        size="lg"
         type="submit"
         className={className}
         isLoading={state === 'loading'}

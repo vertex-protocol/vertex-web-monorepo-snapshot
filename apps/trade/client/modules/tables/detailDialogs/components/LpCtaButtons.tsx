@@ -17,7 +17,6 @@ export function LpCtaButtons({ productId, lpAmount }: Props) {
   return (
     <div className="flex flex-col gap-y-3">
       <SecondaryButton
-        size="md"
         title="Provide"
         disabled={disableProvide}
         onClick={() => {
@@ -30,7 +29,6 @@ export function LpCtaButtons({ productId, lpAmount }: Props) {
         Provide
       </SecondaryButton>
       <SecondaryButton
-        size="md"
         title="Withdraw"
         disabled={disableWithdraw}
         onClick={() => {

@@ -1,6 +1,11 @@
 import { toBigDecimal } from '@vertex-protocol/client';
 import { ProductEngineType } from '@vertex-protocol/contracts';
-import { BigDecimal } from '@vertex-protocol/utils';
+import {
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import {
@@ -10,9 +15,6 @@ import {
 import { useReduceOnlyTriggerOrders } from 'client/hooks/subaccount/useReduceOnlyTriggerOrders';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 import { useMemo } from 'react';
 
 export interface PerpPositionsTableItem extends PerpPositionItem {
@@ -44,6 +46,9 @@ interface Params {
 }
 
 export const usePerpPositionsTable = ({ marketFilter }: Params) => {
+  const {
+    primaryQuoteToken: { symbol: primaryQuoteSymbol },
+  } = useVertexMetadataContext();
   const { data: reduceOnlyOrdersData } = useReduceOnlyTriggerOrders();
   const { data: perpBalances, ...rest } = usePerpPositions();
   const { filteredProductIds } = useFilteredMarkets(marketFilter);
@@ -71,6 +76,9 @@ export const usePerpPositionsTable = ({ marketFilter }: Params) => {
         return {
           marketInfo: {
             ...position.metadata,
+            // Perps are always quoted in the primary quote token
+            quoteSymbol: primaryQuoteSymbol,
+            isPrimaryQuote: true,
             amountForSide: position.amount,
             productType: ProductEngineType.PERP,
             priceIncrement:
@@ -108,6 +116,7 @@ export const usePerpPositionsTable = ({ marketFilter }: Params) => {
   }, [
     filteredProductIds,
     perpBalances,
+    primaryQuoteSymbol,
     reduceOnlyOrdersData,
     staticMarketsData?.perp,
   ]);

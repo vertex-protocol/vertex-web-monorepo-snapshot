@@ -1,12 +1,12 @@
-import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
-import { LineItem } from 'client/components/LineItem/LineItem';
-import { LpTableItem } from 'client/modules/pools/hooks/useLpTable';
-import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+  formatNumber,
+} from '@vertex-protocol/react-client';
+import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { LpTableItem } from 'client/modules/pools/hooks/useLpTable';
+import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { LpCtaButtons } from './components/LpCtaButtons';
 import { LpHeader } from './components/LpHeader';
@@ -32,76 +32,56 @@ export function LpBalanceDetailsDialog({
 
   const metricItems = (
     <div className="flex flex-col gap-y-4">
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Liquidity Provided"
-        renderValue={(val) =>
-          formatNumber(val, {
-            formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-          })
-        }
         value={valueUsd}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Position"
-        renderValue={(val) => (
-          <AmountWithSymbol
-            formattedSize={formatNumber(val, {
-              formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
-            })}
-            symbol="LP Tokens"
-          />
-        )}
         value={amounts.lpAmount}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+        valueEndElement="LP Tokens"
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Composition"
-        // Alignment items to the top
-        labelClassName="mb-auto"
-        renderValue={(val) => (
-          <div className="flex flex-col items-end gap-y-1">
+        className="items-center"
+        valueClassName="flex-col items-end gap-y-1"
+        valueContent={
+          <>
             <AmountWithSymbol
-              formattedSize={formatNumber(val?.baseAmount, {
+              formattedSize={formatNumber(amounts.baseAmount, {
                 formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
               })}
               symbol={metadata.base.symbol}
             />
             <AmountWithSymbol
-              formattedSize={formatNumber(val?.quoteAmount, {
+              formattedSize={formatNumber(amounts.quoteAmount, {
                 formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
               })}
               symbol={metadata.quote.symbol}
             />
-          </div>
-        )}
-        value={{
-          baseAmount: amounts.baseAmount,
-          quoteAmount: amounts.quoteAmount,
-        }}
-      />
-      <LineItem.Metric
-        label="APR"
-        renderValue={(val) =>
-          formatNumber(val, {
-            formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-          })
+          </>
         }
+      />
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
+        label="APR"
+        numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         value={yieldFraction}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="PnL"
-        renderValue={(val) => (
-          <div
-            className={signDependentValue(val, {
-              positive: 'text-positive',
-              negative: 'text-negative',
-              zero: 'text-text-primary',
-            })}
-          >
-            {formatNumber(val, {
-              formatSpecifier: CustomNumberFormatSpecifier.SIGNED_CURRENCY_2DP,
-            })}
-          </div>
-        )}
+        valueClassName={signDependentValue(unrealizedPnl, {
+          positive: 'text-positive',
+          negative: 'text-negative',
+          zero: 'text-text-primary',
+        })}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.SIGNED_CURRENCY_2DP}
         value={unrealizedPnl}
       />
     </div>

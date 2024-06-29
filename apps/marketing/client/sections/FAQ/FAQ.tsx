@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_GAP,
@@ -7,11 +6,12 @@ import {
   SECTION_IDS,
 } from 'client/consts';
 import { FAQSlides } from './components/FAQSlides';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function FAQ() {
   return (
     <section
-      className={classNames(
+      className={joinClassNames(
         'isolate flex min-h-[40rem] flex-col justify-start overflow-hidden',
         DEFAULT_SECTION_PADDING,
         DEFAULT_SECTION_GAP,

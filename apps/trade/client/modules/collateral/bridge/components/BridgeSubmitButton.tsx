@@ -35,7 +35,6 @@ export function BridgeSubmitButton({
 
   return (
     <PrimaryButton
-      size="lg"
       isLoading={
         buttonState === 'loading' ||
         buttonState === 'switching_chain' ||

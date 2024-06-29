@@ -1,17 +1,17 @@
 import { calcLpTokenValue } from '@vertex-protocol/client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAccountLbaState } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useClaimLbaRewards } from 'client/modules/rewards/hooks/useClaimLbaRewards';
 import { useTokenLaunchStage } from 'client/modules/rewards/hooks/useTokenLaunchStage';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
 
 export function useLbaPositionSummaryCard() {
-  const { protocolTokenProductId, protocolToken } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const userActionState = useUserActionState();
   const {
     claim,
@@ -22,20 +22,20 @@ export function useLbaPositionSummaryCard() {
   const { data: tokenLaunchStageData } = useTokenLaunchStage();
   const { data: lbaTokenClaimState } = useAccountTokenClaimState();
   const { data: vrtxMarket } = useMarket({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
 
   const mappedData = useMemo(() => {
     const totalRewardsEarned = removeDecimals(
       lbaTokenClaimState?.claimableLbaRewards.plus(
         lbaTokenClaimState.claimedLbaRewards,
       ),
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
     const claimableLbaRewards = removeDecimals(
       lbaTokenClaimState?.claimableLbaRewards,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
 
     const positionValueUsd = (() => {
@@ -65,7 +65,7 @@ export function useLbaPositionSummaryCard() {
     quotePriceUsd,
     vrtxMarket,
     tokenLaunchStageData,
-    protocolToken,
+    protocolTokenMetadata,
     lbaTokenClaimState,
   ]);
 
@@ -82,6 +82,6 @@ export function useLbaPositionSummaryCard() {
       userActionState === 'block_all' ||
       !lbaAccountState?.withdrawableLpBalance ||
       lbaAccountState.withdrawableLpBalance.isZero(),
-    vrtxToken: protocolToken,
+    vrtxToken: protocolTokenMetadata,
   };
 }

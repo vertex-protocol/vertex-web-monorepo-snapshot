@@ -3,13 +3,13 @@ import { BalanceSide } from '@vertex-protocol/contracts';
 import { GetEngineMaxOrderSizeParams } from '@vertex-protocol/engine-client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { useMemo } from 'react';
 
 export type UseMaxOrderSizeParams = Omit<
@@ -43,7 +43,7 @@ export function maxOrderSizeQueryKey(
 export function useMaxOrderSize(params?: UseMaxOrderSizeParams) {
   const primaryChainId = usePrimaryChainId();
   const { currentSubaccount } = useSubaccountContext();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   const queryParams = useMemo((): GetEngineMaxOrderSizeParams | undefined => {
     if (!currentSubaccount.address || !params) {

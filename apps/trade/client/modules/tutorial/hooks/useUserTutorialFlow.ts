@@ -1,70 +1,67 @@
 import { useRunOnceOnCondition } from 'client/hooks/util/useRunOnceOnCondition';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { UserTutorialFlowStepID } from 'client/modules/localstorage/userState/types/userTutorialFlowTypes';
+import {
+  UserTutorialFlowStep,
+  useTutorialFlowSteps,
+} from 'client/modules/tutorial/hooks/useTutorialFlowSteps';
 import { atom, useAtom } from 'jotai';
-import { difference } from 'lodash';
+import { differenceWith } from 'lodash';
 import { useMemo, useState } from 'react';
-import { TUTORIAL_FLOW_ACCORDION_ITEMS } from '../components/TutorialFlowAccordion/tutorialFlowAccordionItems';
 import { useTutorialFlowState } from './useTutorialFlowState';
 
 export interface UseUserTutorialFlow {
-  performStep: (step: UserTutorialFlowStepID) => void;
-  skipStep: (step: UserTutorialFlowStepID) => void;
+  steps: UserTutorialFlowStep[];
+  performStep: (stepId: UserTutorialFlowStepID) => void;
+  skipStep: (stepId: UserTutorialFlowStepID) => void;
   onDismissFlow: () => void;
-  setActiveStep: (step: UserTutorialFlowStepID) => void;
+  setActiveStepId: (stepId: UserTutorialFlowStepID) => void;
   setIsExpanded: (open: boolean) => void;
   isExpanded: boolean;
   isCompleted: boolean;
-  activeStep: UserTutorialFlowStepID | undefined;
-  completedSteps: UserTutorialFlowStepID[];
+  activeStepId: UserTutorialFlowStepID | undefined;
+  completedStepIds: UserTutorialFlowStepID[];
 }
 
 // We need an atom here to persist open/close state between page nav
 const isExpandedAtom = atom(true);
 
 export function useUserTutorialFlow(): UseUserTutorialFlow {
-  const { trackEvent } = useAnalyticsContext();
   const { show } = useDialog();
 
   const [isExpanded, setIsExpanded] = useAtom(isExpandedAtom);
-  const [activeStep, setActiveStep] = useState<UserTutorialFlowStepID>();
+  const [activeStepId, setActiveStepId] = useState<UserTutorialFlowStepID>();
 
+  const tutorialFlowSteps = useTutorialFlowSteps();
   const {
-    tutorialFlowState,
+    tutorialFlowState: { completedSteps: completedStepIds },
     markStepAsComplete,
     dismissFlow,
     didLoadPersistedValue,
   } = useTutorialFlowState();
 
-  const { completedSteps } = tutorialFlowState;
-
-  // A complete array of steps in the tutorial flow
-  const tutorialFlowSteps = TUTORIAL_FLOW_ACCORDION_ITEMS.map(
-    (step) => step.stepId,
-  );
-
   // If there is no difference between the two arrays, then we know the tutorial flow has been completed
   const isCompleted = useMemo(() => {
-    return difference(tutorialFlowSteps, completedSteps).length === 0;
-  }, [tutorialFlowSteps, completedSteps]);
+    return (
+      differenceWith(
+        tutorialFlowSteps,
+        completedStepIds,
+        (step, id) => step.id === id,
+      ).length === 0
+    );
+  }, [tutorialFlowSteps, completedStepIds]);
 
   // Can also be used for 'Skip' action function
-  const completeStep = (currentStep: UserTutorialFlowStepID) => {
-    markStepAsComplete(currentStep);
+  const completeStep = (currentStepId: UserTutorialFlowStepID) => {
+    markStepAsComplete(currentStepId);
     const firstIncompleteStep = tutorialFlowSteps.find(
       // Assumes the current step is completed
-      (step) => step !== currentStep && !completedSteps.includes(step),
+      (step) =>
+        step.id !== currentStepId && !completedStepIds.includes(step.id),
     );
 
     if (firstIncompleteStep) {
-      setActiveStep(firstIncompleteStep);
-    } else {
-      // Tracks if a user completed tutorial flow
-      trackEvent({
-        type: 'tutorial_flow',
-        data: { tutorialStatus: 'completed' },
-      });
+      setActiveStepId(firstIncompleteStep.id);
     }
   };
 
@@ -86,7 +83,7 @@ export function useUserTutorialFlow(): UseUserTutorialFlow {
       case 'set_trading_preferences':
         // Show settings
         show({
-          type: 'control_center',
+          type: 'account_center',
           params: { initialShowSettingsContent: true },
         });
 
@@ -104,22 +101,23 @@ export function useUserTutorialFlow(): UseUserTutorialFlow {
   // Once the persisted value has loaded from LS, set active step to first incomplete step
   useRunOnceOnCondition(didLoadPersistedValue, () => {
     const firstIncompleteStep = tutorialFlowSteps.find(
-      (step) => !completedSteps.includes(step),
+      (step) => !completedStepIds.includes(step.id),
     );
     if (firstIncompleteStep) {
-      setActiveStep(firstIncompleteStep);
+      setActiveStepId(firstIncompleteStep.id);
     }
   });
 
   return {
+    steps: tutorialFlowSteps,
     performStep,
     skipStep: completeStep,
     onDismissFlow: dismissFlow,
-    setActiveStep,
+    setActiveStepId,
     setIsExpanded,
     isExpanded,
     isCompleted,
-    completedSteps,
-    activeStep,
+    completedStepIds,
+    activeStepId: activeStepId,
   };
 }

@@ -20,7 +20,7 @@ export function Pagination({
   return (
     <div className="text-text-tertiary flex items-center">
       <SecondaryButton
-        size="sm"
+        size="xs"
         onClick={() => previousPage()}
         disabled={!canPreviousPage}
         startIcon={<Icons.FiChevronLeft size={20} />}
@@ -31,7 +31,7 @@ export function Pagination({
         Page: {pageIndex + 1}
       </div>
       <SecondaryButton
-        size="sm"
+        size="xs"
         onClick={() => nextPage()}
         disabled={!canNextPage}
         endIcon={<Icons.FiChevronRight size={20} />}

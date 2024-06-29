@@ -12,7 +12,7 @@ function CollapsibleTrigger({ isExpanded }: { isExpanded: boolean }) {
         className={joinClassNames(
           'flex items-center justify-between',
           'px-3 py-4',
-          'text-accent text-left text-xs font-medium sm:text-sm',
+          'text-accent text-left text-xs sm:text-sm',
         )}
       >
         How to use the Margin Manager

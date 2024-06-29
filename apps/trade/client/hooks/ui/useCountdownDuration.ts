@@ -8,7 +8,7 @@ import {
 import { now } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 
-type CountdownDuration = Pick<
+export type CountdownDuration = Pick<
   Required<Duration>,
   'days' | 'seconds' | 'minutes' | 'hours'
 >;

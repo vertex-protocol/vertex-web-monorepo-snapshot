@@ -1,9 +1,10 @@
 import { Icons } from '@vertex-protocol/web-ui';
 import { ErrorPanel } from 'client/components/ErrorPanel';
+import { ReactNode } from 'react';
 
 interface Props {
   title: string;
-  content: React.ReactNode;
+  content: ReactNode;
 }
 
 export function OrderFormWarningPanel({ title, content }: Props) {

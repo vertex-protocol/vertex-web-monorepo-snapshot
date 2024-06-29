@@ -1,7 +1,7 @@
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { UserDisclosureDismissibleCard } from 'client/components/Disclosure/UserDisclosureDismissibleCard';
 import { LinkButton } from 'client/components/LinkButton';
-import { LINKS } from 'client/modules/brand/links';
-import Link from 'next/link';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DepositInfoCardType } from '../../types';
 
 export function WethDepositDismissible({
@@ -9,6 +9,9 @@ export function WethDepositDismissible({
 }: {
   displayedInfoCardType: DepositInfoCardType | undefined;
 }) {
+  const { show } = useDialog();
+  const { primaryChain } = useEVMContext();
+
   if (displayedInfoCardType !== 'weth') {
     return null;
   }
@@ -19,15 +22,22 @@ export function WethDepositDismissible({
       title="Looking to deposit ETH?"
       description={
         <div className="flex flex-col gap-y-2">
-          <p>Only wETH deposits are supported, swap using the link below.</p>
+          <p>Only wETH deposits are supported.</p>
+          <p>
+            Swap ETH to wETH via the cross-chain deposit dialog by selecting{' '}
+            {primaryChain.name} as the originating chain.
+          </p>
           <LinkButton
-            as={Link}
-            href={LINKS.wrapEth}
-            color="white"
-            external
+            colorVariant="primary"
             className="w-fit"
+            onClick={() => {
+              show({
+                type: 'bridge',
+                params: {},
+              });
+            }}
           >
-            Swap ETH for wETH
+            Swap ETH to wETH
           </LinkButton>
         </div>
       }

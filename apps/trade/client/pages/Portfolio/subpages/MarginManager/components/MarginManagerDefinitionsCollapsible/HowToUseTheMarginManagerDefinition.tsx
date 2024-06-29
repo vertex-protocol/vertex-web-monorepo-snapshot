@@ -1,5 +1,5 @@
+import { BigDecimals } from '@vertex-protocol/utils';
 import { SignOfValuePill } from '../SignOfValuePill';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import { MarginManagerDefinition } from './MarginManagerDefinition';
 
 const { ContentContainer, Description, Section, Title, InfoCard } =

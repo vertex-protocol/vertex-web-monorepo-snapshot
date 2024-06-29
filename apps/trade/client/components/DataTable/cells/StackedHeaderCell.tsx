@@ -2,8 +2,9 @@ import { Header } from '@tanstack/react-table';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 
-import { HeaderCell } from './HeaderCell';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
+import { ReactNode } from 'react';
+import { HeaderCell } from './HeaderCell';
 
 export function StackedHeaderCell<T>({
   top,
@@ -14,8 +15,8 @@ export function StackedHeaderCell<T>({
   ...rest
 }: WithClassnames<{
   header: Header<T, any>;
-  top: React.ReactNode;
-  bottom: React.ReactNode;
+  top: ReactNode;
+  bottom: ReactNode;
   topDefinitionTooltipId?: DefinitionTooltipID;
   bottomDefinitionTooltipId?: DefinitionTooltipID;
 }>) {

@@ -6,7 +6,7 @@ const {
   Description,
   Section,
   Title,
-  Pill,
+  InfoPill,
   InfoCard,
   GradientText,
 } = MarginManagerDefinition;
@@ -17,7 +17,7 @@ export function MarginUsageAndFundsAvailableDefinition() {
       <Section>
         <Title className="flex items-center gap-x-4">
           Margin Usage &amp; Funds Available
-          <Pill>Initial Margin</Pill>
+          <InfoPill>Initial Margin</InfoPill>
         </Title>
         <Description>
           In the Initial Margin card above you will find 2 terms: Margin Usage

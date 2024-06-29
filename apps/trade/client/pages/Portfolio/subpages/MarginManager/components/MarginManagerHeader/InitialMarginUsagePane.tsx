@@ -2,8 +2,8 @@ import { BigDecimal } from '@vertex-protocol/client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { RiskWarningIcon } from 'client/components/Icons/RiskWarningIcon';
 import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { MarginManagerHeaderInfo } from './MarginManagerHeaderInfo';
 
 interface Props {

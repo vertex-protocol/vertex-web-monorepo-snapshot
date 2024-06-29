@@ -6,7 +6,7 @@ import {
   calcSpreadHealthIncrease,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import {
   AnnotatedPerpBalanceWithProduct,

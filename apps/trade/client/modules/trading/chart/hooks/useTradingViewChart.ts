@@ -55,15 +55,10 @@ export function useTradingViewChart(productId?: number): UseTradingViewChart {
     selectedSymbolInfo,
   });
 
-  // Wrapper to draw all lines on the chart
-  const drawChartLines = useCallback(() => {
-    drawOrderLines();
-    drawEntryLine();
-  }, [drawOrderLines, drawEntryLine]);
-
   // Draw lines on the chart when the widget is ready
   useDrawChartLinesWhenReady({
-    drawChartLines,
+    drawOrderLines,
+    drawEntryLine,
   });
 
   return { isReady: !!tvWidget, chartContainerRef };

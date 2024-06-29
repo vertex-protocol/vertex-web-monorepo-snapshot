@@ -1,9 +1,8 @@
-import { useMemo } from 'react';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { addDecimals, BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import { DestinationBridgeToken } from 'client/modules/collateral/bridge/types';
-import { addDecimals } from 'client/utils/decimalAdjustment';
 import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
+import { useMemo } from 'react';
 
 interface Params {
   selectedDestinationToken: DestinationBridgeToken | undefined;

@@ -8,7 +8,7 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useCallback, useMemo, useState } from 'react';
 import { ClaimAndStakeRadioID } from '../components/StakingRadioGroup';
 import { BaseClaimAndStakeHookReturn } from '../types';
@@ -19,7 +19,8 @@ export function useClaimTradingRewardsDialog({
 }: ClaimTradingRewardsDialogParams): BaseClaimAndStakeHookReturn {
   const { dispatchNotification } = useNotificationManagerContext();
   const { data: accountStakingState } = useAccountStakingState();
-  const { protocolToken, primaryQuoteToken } = useVertexMetadataContext();
+  const { protocolTokenMetadata, primaryQuoteToken } =
+    useVertexMetadataContext();
   const { hide } = useDialog();
 
   const [selectedRadioId, setSelectedRadioId] =
@@ -49,7 +50,7 @@ export function useClaimTradingRewardsDialog({
   const { currentAmountStaked, estimatedAmountStaked } = useMemo(() => {
     const currentAmountStaked = removeDecimals(
       accountStakingState?.amountStaked,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
 
     if (!currentAmountStaked || !claimableRewards) {
@@ -65,7 +66,7 @@ export function useClaimTradingRewardsDialog({
     };
   }, [
     claimableRewards,
-    protocolToken.tokenDecimals,
+    protocolTokenMetadata.token.tokenDecimals,
     accountStakingState?.amountStaked,
   ]);
 
@@ -105,7 +106,7 @@ export function useClaimTradingRewardsDialog({
     currentAmountStaked,
     estimatedAmountStaked,
     actionButtonState,
-    protocolTokenSymbol: protocolToken.symbol,
+    protocolTokenSymbol: protocolTokenMetadata.token.symbol,
     usdcSymbol: primaryQuoteToken.symbol,
     disableRadioButtons:
       !hasClaimableRewards || actionButtonState === 'loading',

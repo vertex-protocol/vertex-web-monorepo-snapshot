@@ -1,11 +1,11 @@
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useResolvedConnectors } from 'client/modules/app/dialogs/wallet/states/connect/useResolvedConnectors';
 import { WalletButton } from 'client/modules/app/dialogs/wallet/states/connect/WalletButton';
+import { ChainSpecificContent } from 'client/modules/envSpecificContent/ChainSpecificContent';
+import { ARB_CHAIN_IDS } from 'client/modules/envSpecificContent/consts/chainIds';
 import { NoWalletInstructions } from './NoWalletInstructions';
-import { ChainSpecificContent } from 'client/modules/chainSpecificContent/ChainSpecificContent';
-import { ARB_CHAIN_IDS } from 'client/modules/chainSpecificContent/consts/chainIds';
 
 export function ConnectWalletDialogContent() {
   const { hide } = useDialog();
@@ -21,7 +21,7 @@ export function ConnectWalletDialogContent() {
   return (
     <>
       <BaseDialog.Title onClose={hide}>Connect Wallet</BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-9">
+      <BaseDialog.Body className="flex flex-col gap-y-6">
         <div className="flex flex-col gap-y-2">
           {connectorsWithMetadata.map(({ connector, metadata }) => {
             const isLoading =

@@ -1,4 +1,4 @@
-import { PrimaryChainID } from '@vertex-protocol/web-data';
+import { PrimaryChainID } from '@vertex-protocol/react-client';
 import { mantleSepoliaTestnet } from '@wagmi/core/chains';
 import {
   ARB_ONE_PERP_METADATA_BY_PRODUCT_ID,
@@ -18,8 +18,14 @@ import {
 } from 'common/productMetadata/blast/spotMetadataByProductId';
 import { HARDHAT_PERP_METADATA_BY_PRODUCT_ID } from 'common/productMetadata/local/perpMetadataByProductId';
 import { HARDHAT_SPOT_METADATA_BY_PRODUCT_ID } from 'common/productMetadata/local/spotMetadataByProductId';
-import { MANTLE_SEPOLIA_PERP_METADATA_BY_PRODUCT_ID } from 'common/productMetadata/mantle/perpMetadataByProductId';
-import { MANTLE_SEPOLIA_SPOT_METADATA_BY_PRODUCT_ID } from 'common/productMetadata/mantle/spotMetadataByProductId';
+import {
+  MANTLE_PERP_METADATA_BY_PRODUCT_ID,
+  MANTLE_SEPOLIA_PERP_METADATA_BY_PRODUCT_ID,
+} from 'common/productMetadata/mantle/perpMetadataByProductId';
+import {
+  MANTLE_SEPOLIA_SPOT_METADATA_BY_PRODUCT_ID,
+  MANTLE_SPOT_METADATA_BY_PRODUCT_ID,
+} from 'common/productMetadata/mantle/spotMetadataByProductId';
 import {
   PerpProductMetadata,
   SpotProductMetadata,
@@ -31,6 +37,7 @@ import {
   blastSepolia,
   hardhat,
   localhost,
+  mantle,
 } from 'wagmi/chains';
 
 export const SPOT_METADATA_BY_CHAIN: Record<
@@ -39,8 +46,9 @@ export const SPOT_METADATA_BY_CHAIN: Record<
 > = {
   [arbitrum.id]: ARB_ONE_SPOT_METADATA_BY_PRODUCT_ID,
   [arbitrumSepolia.id]: ARB_SEPOLIA_SPOT_METADATA_BY_PRODUCT_ID,
-  [blastSepolia.id]: BLAST_SEPOLIA_SPOT_METADATA_BY_PRODUCT_ID,
   [blast.id]: BLAST_SPOT_METADATA_BY_PRODUCT_ID,
+  [blastSepolia.id]: BLAST_SEPOLIA_SPOT_METADATA_BY_PRODUCT_ID,
+  [mantle.id]: MANTLE_SPOT_METADATA_BY_PRODUCT_ID,
   [mantleSepoliaTestnet.id]: MANTLE_SEPOLIA_SPOT_METADATA_BY_PRODUCT_ID,
   [hardhat.id]: HARDHAT_SPOT_METADATA_BY_PRODUCT_ID,
   [localhost.id]: HARDHAT_SPOT_METADATA_BY_PRODUCT_ID,
@@ -52,8 +60,9 @@ export const PERP_METADATA_BY_CHAIN: Record<
 > = {
   [arbitrum.id]: ARB_ONE_PERP_METADATA_BY_PRODUCT_ID,
   [arbitrumSepolia.id]: ARB_SEPOLIA_PERP_METADATA_BY_PRODUCT_ID,
-  [blastSepolia.id]: BLAST_SEPOLIA_PERP_METADATA_BY_PRODUCT_ID,
   [blast.id]: BLAST_PERP_METADATA_BY_PRODUCT_ID,
+  [blastSepolia.id]: BLAST_SEPOLIA_PERP_METADATA_BY_PRODUCT_ID,
+  [mantle.id]: MANTLE_PERP_METADATA_BY_PRODUCT_ID,
   [mantleSepoliaTestnet.id]: MANTLE_SEPOLIA_PERP_METADATA_BY_PRODUCT_ID,
   [hardhat.id]: HARDHAT_PERP_METADATA_BY_PRODUCT_ID,
   [localhost.id]: HARDHAT_PERP_METADATA_BY_PRODUCT_ID,

@@ -1,16 +1,21 @@
+import { NumberFormatValue } from '@vertex-protocol/react-client';
 import {
   mergeClassNames,
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
+import { ReactNode } from 'react';
+import { ValueWithLabelProps } from './ValueWithLabel/types';
+import { ValueWithLabel } from './ValueWithLabel/ValueWithLabel';
 
-interface Params {
-  label: React.ReactNode;
-  value: React.ReactNode;
+interface Params extends Omit<ValueWithLabelProps, 'tooltip'> {
+  label: ReactNode;
+  value: NumberFormatValue | undefined;
   labelClassName?: string;
   valueClassName?: string;
+  defaultValue?: string | number;
+  numberFormatSpecifier: string;
   definitionTooltipId?: DefinitionTooltipID;
 }
 
@@ -30,25 +35,14 @@ function SummaryContainer({
   );
 }
 
-function SummaryItem({
-  label,
-  value,
-  definitionTooltipId,
-  valueClassName,
-  labelClassName,
-}: Params) {
+function SummaryItem({ definitionTooltipId, ...rest }: Params) {
   return (
-    <span className="text-text-tertiary flex gap-x-1.5 text-xs">
-      <DefinitionTooltip
-        definitionId={definitionTooltipId}
-        contentWrapperClassName={labelClassName}
-      >
-        {label}
-      </DefinitionTooltip>
-      <span className={mergeClassNames('text-text-primary', valueClassName)}>
-        {value}
-      </span>
-    </span>
+    <ValueWithLabel.Horizontal
+      fitWidth
+      sizeVariant="xs"
+      tooltip={definitionTooltipId ? { id: definitionTooltipId } : undefined}
+      {...rest}
+    />
   );
 }
 

@@ -3,14 +3,15 @@ import {
   IndexerMatchEvent,
 } from '@vertex-protocol/indexer-client';
 import { toBigDecimal } from '@vertex-protocol/utils';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
+import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useSubaccountPaginatedHistoricalTrades } from 'client/hooks/query/subaccount/useSubaccountPaginatedHistoricalTrades';
 import { HistoricalTradeItem } from 'client/modules/tables/types/HistoricalTradeItem';
 import { getOrderType } from 'client/modules/trading/utils/getOrderType';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { calcOrderFillPrice } from 'client/utils/calcs/calcOrderFillPrice';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
@@ -46,6 +47,7 @@ export function useHistoricalTradesTable({
     pageSize,
     productIds: filteredProductIds,
   });
+  const { data: allMarketsStaticData } = useAllMarketsStaticData();
 
   const { getPageData, pageCount, paginationState, setPaginationState } =
     useDataTablePagination<
@@ -53,14 +55,14 @@ export function useHistoricalTradesTable({
       IndexerMatchEvent
     >({
       pageSize,
-      queryPageCount: historicalTrades?.pages.length,
+      numPagesFromQuery: historicalTrades?.pages.length,
       hasNextPage,
       fetchNextPage,
       extractItems,
     });
 
   const mappedData: HistoricalTradeItem[] | undefined = useMemo(() => {
-    if (!historicalTrades || !filteredMarkets) {
+    if (!historicalTrades || !filteredMarkets || !allMarketsStaticData) {
       return undefined;
     }
 
@@ -80,21 +82,17 @@ export function useHistoricalTradesTable({
           productId,
         } = item;
 
-        const market = filteredMarkets[productId];
+        const marketData = filteredMarkets[productId];
+        const quoteData = allMarketsStaticData.quotes[productId];
 
-        if (!market) {
-          console.warn(
-            '[usePaginatedHistoricalTradesTable] Could not find product',
-            productId,
-          );
+        if (!marketData || !quoteData) {
           return;
         }
 
-        const { icon, symbol } = getBaseProductMetadata(market.metadata);
+        const { icon, symbol } = getBaseProductMetadata(marketData.metadata);
         const orderType = getOrderType(item);
 
         const decimalAdjustedTotalFee = removeDecimals(totalFee);
-        const decimalAdjustedSequencerFee = removeDecimals(sequencerFee);
 
         // Inclusive of fee
         const quoteAmount = removeDecimals(toBigDecimal(quoteFilled));
@@ -102,18 +100,19 @@ export function useHistoricalTradesTable({
 
         return {
           marketInfo: {
-            marketName: market.metadata.marketName,
+            marketName: marketData.metadata.marketName,
             icon,
             symbol,
+            quoteSymbol: quoteData.symbol,
+            isPrimaryQuote: quoteData.isPrimaryQuote,
             amountForSide: filledAmount,
-            productType: market.type,
-            sizeIncrement: market.sizeIncrement,
-            priceIncrement: market.priceIncrement,
+            productType: marketData.type,
+            sizeIncrement: marketData.sizeIncrement,
+            priceIncrement: marketData.priceIncrement,
           },
           orderType,
           timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
-          tradeFee: decimalAdjustedTotalFee.minus(decimalAdjustedSequencerFee),
-          sequencerFee: decimalAdjustedSequencerFee,
+          tradeFeeQuote: decimalAdjustedTotalFee,
           filledPrice: calcOrderFillPrice(
             quoteAmount,
             decimalAdjustedTotalFee,
@@ -125,7 +124,13 @@ export function useHistoricalTradesTable({
         };
       })
       .filter(nonNullFilter);
-  }, [historicalTrades, filteredMarkets, enablePagination, getPageData]);
+  }, [
+    historicalTrades,
+    filteredMarkets,
+    allMarketsStaticData,
+    enablePagination,
+    getPageData,
+  ]);
 
   return {
     isLoading:

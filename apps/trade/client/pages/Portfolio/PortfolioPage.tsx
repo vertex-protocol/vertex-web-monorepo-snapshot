@@ -8,7 +8,7 @@ export function PortfolioPage() {
   const { Component, title } = usePortfolioPage();
 
   return (
-    <AppPage.Root routeName={title} hideHighlights>
+    <AppPage.Root routeName={title} hasNavBorder hideHighlights>
       <div className="flex h-full w-full">
         <DesktopPortfolioSubNavMenu />
         {/*Overflow hidden to contain tables, otherwise the tables will force page content to expand beyond 100vw */}

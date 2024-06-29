@@ -2,7 +2,7 @@ import { WithClassnames } from '@vertex-protocol/web-common';
 import { SubaccountCountIndicatorKey } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { TabIdentifiable } from 'client/hooks/ui/tabs/types';
 import { PrimitiveAtom } from 'jotai';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 export interface TradingSectionProps extends WithClassnames {
   productId?: number;
@@ -24,7 +24,7 @@ export interface TradingTab<
   TFilterOptionID extends string = any,
 > extends TabIdentifiable<TTabID> {
   label: string;
-  content: React.ReactNode;
+  content: ReactNode;
   countIndicatorKey?: SubaccountCountIndicatorKey;
   filters?: TradingTabFilters<TFilterOptionID>;
 }

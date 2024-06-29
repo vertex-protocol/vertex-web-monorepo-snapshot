@@ -1,3 +1,4 @@
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import {
   ARB_ARB_ONE,
   ARB_ARB_SEPOLIA,
@@ -20,8 +21,8 @@ import {
   WETH_SPOT_MARKET_DETAILS,
 } from 'common/productMetadata/marketDetailsMetadata';
 import { NOOP_MARKET_DETAILS } from 'common/productMetadata/noopMetadata';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import { SpotProductMetadata } from 'common/productMetadata/types';
+import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 
 /**
  * Arb Sepolia
@@ -35,31 +36,43 @@ export const ARB_SEPOLIA_SPOT_METADATA_BY_PRODUCT_ID: Record<
     token: USDC_ARB_SEPOLIA,
     marketName: '',
     marketDetails: NOOP_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   1: {
     token: WBTC_ARB_SEPOLIA,
-    marketName: `wBTC-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `wBTC-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: WBTC_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   3: {
     token: WETH_ARB_SEPOLIA,
-    marketName: `wETH-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `wETH-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: WETH_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   5: {
     token: ARB_ARB_SEPOLIA,
-    marketName: `ARB-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `ARB-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: ARB_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   31: {
     token: USDT_ARB_SEPOLIA,
-    marketName: `USDT-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `USDT-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: USDT_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   41: {
     token: VRTX_ARB_SEPOLIA,
-    marketName: `VRTX-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `VRTX-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: VRTX_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
 };
 
@@ -74,35 +87,43 @@ export const ARB_ONE_SPOT_METADATA_BY_PRODUCT_ID: Record<
   0: {
     token: USDC_ARB_ONE,
     marketName: '',
-    marketDetails: {
-      description: '',
-      subtitle: '',
-      cmcLink: '',
-    },
+    marketDetails: NOOP_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   1: {
     token: WBTC_ARB_ONE,
-    marketName: `wBTC-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `wBTC-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: WBTC_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   3: {
     token: WETH_ARB_ONE,
-    marketName: `wETH-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `wETH-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: WETH_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   5: {
     token: ARB_ARB_ONE,
-    marketName: `ARB-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `ARB-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: ARB_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   31: {
     token: USDT_ARB_ONE,
-    marketName: `USDT-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `USDT-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: USDT_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
   41: {
     token: VRTX_ARB_ONE,
-    marketName: `VRTX-${PRIMARY_QUOTE_SYMBOL}`,
+    marketName: `VRTX-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     marketDetails: VRTX_SPOT_MARKET_DETAILS,
+    hasLpPool: true,
+    quoteProductId: QUOTE_PRODUCT_ID,
   },
 };

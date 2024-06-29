@@ -1,15 +1,14 @@
 import { DiscList } from '@vertex-protocol/web-ui';
 import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 
 /**
  * Tooltips used across the app that aren't specific to a page, dialog, or table
  */
 export const commonTooltips = {
-  assetBalance: {
+  assetBalance: ({ primaryQuoteToken }) => ({
     title: `Asset Balance`,
-    content: `Your net balance for this asset. Positive indicates a deposit and negative indicates a borrow. Unsettled ${PRIMARY_QUOTE_SYMBOL} is not included.`,
-  },
+    content: `Your net balance for this asset. Positive indicates a deposit and negative indicates a borrow. Unsettled ${primaryQuoteToken.symbol} is not included.`,
+  }),
   borrowAPR: {
     title: `Borrow APR`,
     content: `The current estimated APR for borrowing the asset. Interest is paid automatically on all borrows. Payments are made on average every 15 minutes.`,

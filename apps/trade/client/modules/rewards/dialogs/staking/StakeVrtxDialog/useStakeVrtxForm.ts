@@ -1,17 +1,18 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
+import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import {
   InputValidatorFn,
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useExecuteApproveStakingVrtxAllowance } from 'client/hooks/execute/vrtxToken/useExecuteApproveStakingVrtxAllowance';
 import { useExecuteStakeVrtx } from 'client/hooks/execute/vrtxToken/useExecuteStakeVrtx';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 import { useLbaTokenWalletBalances } from 'client/hooks/query/vrtxToken/useLbaTokenWalletBalances';
-import { useStakingVrtxAllowance } from 'client/hooks/query/vrtxToken/useStakingVrtxAllowance';
+import { useFormTokenAllowance } from 'client/hooks/ui/form/useFormTokenAllowance';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
 import {
   OnFractionSelectedHandler,
@@ -22,7 +23,6 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
 import { OnChainActionButtonStateWithApproval } from 'client/types/OnChainActionButtonStateWithApproval';
-import { addDecimals, removeDecimals } from 'client/utils/decimalAdjustment';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
@@ -52,21 +52,21 @@ interface UseStakeVrtxForm {
 }
 
 export function useStakeVrtxForm(): UseStakeVrtxForm {
-  const { protocolTokenProductId, protocolToken } = useVertexMetadataContext();
+  const {
+    protocolTokenMetadata: {
+      token: protocolToken,
+      productId: protocolTokenProductId,
+    },
+  } = useVertexMetadataContext();
   const { data: lbaTokenWalletBalances } = useLbaTokenWalletBalances();
-  const { data: stakingVrtxAllowance } = useStakingVrtxAllowance();
   const { data: vrtxSpotMarket } = useMarket({
     productId: protocolTokenProductId,
   });
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
   const { hide } = useDialog();
 
   const vrtxWalletBalance = removeDecimals(
     lbaTokenWalletBalances?.vrtx.balanceAmount,
-    protocolToken.tokenDecimals,
-  );
-  const vrtxAllowance = removeDecimals(
-    stakingVrtxAllowance,
     protocolToken.tokenDecimals,
   );
 
@@ -82,39 +82,26 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
     mode: 'onTouched',
   });
 
-  // Mutations
-  const approveMutation = useExecuteApproveStakingVrtxAllowance();
-
-  const { isLoading: isApprovalTxLoading, isSuccess: isApprovalTxSuccess } =
-    useOnChainMutationStatus({
-      mutationStatus: approveMutation.status,
-      txResponse: approveMutation.data,
-    });
-
-  useRunWithDelayOnCondition({
-    condition: isApprovalTxSuccess,
-    fn: approveMutation.reset,
-    delay: 3000,
-  });
-
-  const stakeVrtxMutation = useExecuteStakeVrtx();
-
-  const { isLoading: isStakeTxLoading, isSuccess: isStakeTxSuccess } =
-    useOnChainMutationStatus({
-      mutationStatus: stakeVrtxMutation.status,
-      txResponse: stakeVrtxMutation.data,
-    });
-
-  useRunWithDelayOnCondition({
-    condition: isStakeTxSuccess,
-    fn: hide,
-  });
-
   // Watched state
   const amountInput = useStakeVrtxForm.watch('amount');
-  const validAmount = useMemo(() => {
-    return safeParseForData(positiveBigDecimalValidator, amountInput);
-  }, [amountInput]);
+  const { validAmount, validAmountWithDecimals } = useMemo(() => {
+    const parsedAmount = safeParseForData(
+      positiveBigDecimalValidator,
+      amountInput,
+    );
+
+    if (!parsedAmount) {
+      return {};
+    }
+
+    return {
+      validAmount: parsedAmount,
+      validAmountWithDecimals: addDecimals(
+        parsedAmount,
+        protocolToken.tokenDecimals,
+      ),
+    };
+  }, [amountInput, protocolToken.tokenDecimals]);
 
   const amountInputError: StakeVrtxFormErrorType | undefined = watchFormError(
     useStakeVrtxForm,
@@ -135,8 +122,27 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
       .multipliedBy(quotePriceUsd);
   }, [validAmount, vrtxSpotMarket, quotePriceUsd]);
 
-  // Derive approval state
-  const isApprove = Boolean(validAmount && vrtxAllowance?.lt(validAmount));
+  // Token allowance
+  const primaryChainVertexClient = usePrimaryChainVertexClient();
+  const { requiresApproval, approve, approvalButtonState } =
+    useFormTokenAllowance({
+      amountWithDecimals: validAmountWithDecimals,
+      spenderAddress:
+        primaryChainVertexClient?.context.contractAddresses.vrtxStaking,
+      tokenAddress: protocolToken.address,
+    });
+
+  // Stake mutation state
+  const stakeVrtxMutation = useExecuteStakeVrtx();
+  const { isLoading: isStakeTxLoading, isSuccess: isStakeTxSuccess } =
+    useOnChainMutationStatus({
+      mutationStatus: stakeVrtxMutation.status,
+      txResponse: stakeVrtxMutation.data,
+    });
+  useRunWithDelayOnCondition({
+    condition: isStakeTxSuccess,
+    fn: hide,
+  });
 
   // Linked inputs
   useLinkedPercentageAmountInputEffects({
@@ -169,29 +175,25 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
 
   // Action button state
   const buttonState = useMemo((): StakeVrtxActionButtonState => {
+    if (formError || !amountInput) {
+      return 'disabled';
+    }
+    if (approvalButtonState) {
+      return approvalButtonState;
+    }
     if (isStakeTxSuccess) {
       return 'success';
-    } else if (isApprovalTxSuccess) {
-      return 'approve_success';
-    } else if (isStakeTxLoading) {
-      return 'loading';
-    } else if (isApprovalTxLoading) {
-      return 'approve_loading';
-    } else if (formError || !amountInput) {
-      return 'disabled';
-    } else if (isApprove) {
-      return 'approve_idle';
-    } else {
-      return 'idle';
     }
+    if (isStakeTxLoading) {
+      return 'loading';
+    }
+    return 'idle';
   }, [
-    isStakeTxSuccess,
-    isApprovalTxSuccess,
-    isStakeTxLoading,
-    isApprovalTxLoading,
     formError,
     amountInput,
-    isApprove,
+    approvalButtonState,
+    isStakeTxSuccess,
+    isStakeTxLoading,
   ]);
 
   // Handlers
@@ -216,17 +218,9 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
         protocolToken.tokenDecimals,
       ).toFixed();
 
-      if (isApprove) {
-        const serverExecutionResult = approveMutation.mutateAsync({
-          amount: MaxUint256,
-        });
-        dispatchNotification({
-          type: 'action_error_handler',
-          data: {
-            errorNotificationTitle: 'Approve VRTX Failed',
-            executionData: { serverExecutionResult },
-          },
-        });
+      if (requiresApproval) {
+        approve(MaxUint256);
+        return;
       } else {
         const serverExecutionResult = stakeVrtxMutation.mutateAsync(
           {
@@ -251,10 +245,10 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
     [
       vrtxWalletBalance,
       protocolToken.tokenDecimals,
-      isApprove,
-      approveMutation,
-      dispatchNotification,
+      requiresApproval,
+      approve,
       stakeVrtxMutation,
+      dispatchNotification,
       useStakeVrtxForm,
     ],
   );

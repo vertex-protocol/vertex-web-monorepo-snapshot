@@ -1,21 +1,23 @@
 import {
   BigDecimal,
-  Product,
+  IndexerProductSnapshot,
   ProductEngineType,
   TimeInSeconds,
 } from '@vertex-protocol/client';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import {
+  getMarketPriceFormatSpecifier,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
 import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
-import { useAllProductsHistoricalSnapshot } from 'client/hooks/query/markets/useAllProductsHistoricalSnapshot';
+import { useAllProductsHistoricalSnapshots } from 'client/hooks/query/markets/useAllProductsHistoricalSnapshots';
 import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
-import { useFavoritedMarkets } from 'client/modules/markets/hooks/useFavoritedMarkets';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
 import { safeDiv } from 'client/utils/safeDiv';
 import { PerpProductMetadata } from 'common/productMetadata/types';
 import { useMemo } from 'react';
-import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
 
 export interface FundingRateTableItem {
   isFavorited: boolean;
@@ -43,22 +45,17 @@ export function useFundingRateMarketsTable() {
   const { getIsHiddenMarket, getIsNewMarket } = useVertexMetadataContext();
   const { connectionStatus } = useEVMContext();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
-  const { data: allMarketData } = useAllMarkets();
+  const { data: allMarketData, isLoading: isAllMarketDataLoading } =
+    useAllMarkets();
   const { data: latestPerpPricesData } = useLatestPerpPrices();
   const { data: marketsFundingRateData } = useAllMarkets24HrFundingRates();
-
-  const { data: latestProductSnapshotData } =
-    useAllProductsHistoricalSnapshot(0);
-  const { data: oneDayProductSnapshotData } = useAllProductsHistoricalSnapshot(
+  const { data: productSnapshotsData } = useAllProductsHistoricalSnapshots([
+    0,
     FundingPeriod.ONE_DAY,
-  );
-  const { data: threeDaysProductSnapshotData } =
-    useAllProductsHistoricalSnapshot(FundingPeriod.THREE_DAYS);
-  const { data: oneWeekProductSnapshotData } = useAllProductsHistoricalSnapshot(
+    FundingPeriod.THREE_DAYS,
     FundingPeriod.ONE_WEEK,
-  );
-  const { data: oneMonthProductSnapshotData } =
-    useAllProductsHistoricalSnapshot(FundingPeriod.ONE_MONTH);
+    FundingPeriod.ONE_MONTH,
+  ]);
 
   const perpMarkets = allMarketData?.perpMarkets;
 
@@ -78,7 +75,7 @@ export function useFundingRateMarketsTable() {
 
         const latestCumulativeFunding = (() => {
           const latestProductSnapshot =
-            latestProductSnapshotData?.[productId]?.product;
+            productSnapshotsData?.[0]?.[productId]?.product;
 
           if (latestProductSnapshot?.type === ProductEngineType.PERP) {
             return latestProductSnapshot.cumulativeFundingLong;
@@ -86,27 +83,31 @@ export function useFundingRateMarketsTable() {
         })();
 
         const dailyAvg = getHistoricalAvgFundingRates(
-          oneDayProductSnapshotData?.[productId]?.product,
+          productSnapshotsData?.[1],
           latestCumulativeFunding,
           oraclePrice,
+          productId,
           FundingPeriod.ONE_DAY,
         );
         const threeDayAvg = getHistoricalAvgFundingRates(
-          threeDaysProductSnapshotData?.[productId]?.product,
+          productSnapshotsData?.[2],
           latestCumulativeFunding,
           oraclePrice,
+          productId,
           FundingPeriod.THREE_DAYS,
         );
         const weeklyAvg = getHistoricalAvgFundingRates(
-          oneWeekProductSnapshotData?.[productId]?.product,
+          productSnapshotsData?.[3],
           latestCumulativeFunding,
           oraclePrice,
+          productId,
           FundingPeriod.ONE_WEEK,
         );
         const monthlyAvg = getHistoricalAvgFundingRates(
-          oneMonthProductSnapshotData?.[productId]?.product,
+          productSnapshotsData?.[4],
           latestCumulativeFunding,
           oraclePrice,
+          productId,
           FundingPeriod.ONE_MONTH,
         );
 
@@ -136,14 +137,11 @@ export function useFundingRateMarketsTable() {
     getIsHiddenMarket,
     getIsNewMarket,
     favoritedMarketIds,
-    latestProductSnapshotData,
-    oneDayProductSnapshotData,
-    threeDaysProductSnapshotData,
-    oneWeekProductSnapshotData,
-    oneMonthProductSnapshotData,
+    productSnapshotsData,
   ]);
 
   return {
+    isLoading: isAllMarketDataLoading,
     fundingRateData,
     toggleIsFavoritedMarket,
     disableFavoriteButton: connectionStatus.type !== 'connected',
@@ -151,11 +149,14 @@ export function useFundingRateMarketsTable() {
 }
 
 function getHistoricalAvgFundingRates(
-  product: Product | undefined,
+  productSnapshotData: Record<number, IndexerProductSnapshot> | undefined,
   latestCumulativeFunding: BigDecimal | undefined,
   oraclePrice: BigDecimal,
+  productId: number,
   period: FundingPeriod,
 ): FundingRates | undefined {
+  const product = productSnapshotData?.[productId]?.product;
+
   if (product?.type !== ProductEngineType.PERP || !latestCumulativeFunding) {
     return;
   }
@@ -167,6 +168,6 @@ function getHistoricalAvgFundingRates(
   const fundingRateOverPeriod = safeDiv(fundingDiff, oraclePrice);
 
   return getFundingRates(
-    fundingRateOverPeriod.multipliedBy(TimeInSeconds.HOUR / period),
+    fundingRateOverPeriod.multipliedBy(TimeInSeconds.DAY / period),
   );
 }

@@ -8,15 +8,16 @@ import { TutorialFlowSuccessContent } from './TutorialFlowSuccessContent';
 
 export function TutorialFlowPopover() {
   const {
+    steps,
     performStep,
     skipStep,
     onDismissFlow,
     setIsExpanded,
-    setActiveStep,
+    setActiveStepId,
     isExpanded,
     isCompleted,
-    completedSteps,
-    activeStep,
+    completedStepIds,
+    activeStepId,
   } = useUserTutorialFlow();
 
   // Omitting onOpenChange to avoid closing the Popover on an outside interaction or page navigation
@@ -51,7 +52,8 @@ export function TutorialFlowPopover() {
         )}
       >
         <TutorialFlowHeader
-          numberOfCompletedSteps={completedSteps.length}
+          numTotalSteps={steps.length}
+          numCompletedSteps={completedStepIds.length}
           setIsExpanded={setIsExpanded}
         />
         {isCompleted ? (
@@ -59,11 +61,12 @@ export function TutorialFlowPopover() {
         ) : (
           <>
             <TutorialFlowAccordion
+              steps={steps}
               performStep={performStep}
               skipStep={skipStep}
-              setActiveStep={setActiveStep}
-              activeStep={activeStep}
-              completedSteps={completedSteps}
+              setActiveStepId={setActiveStepId}
+              activeStepId={activeStepId}
+              completedStepIds={completedStepIds}
             />
             <Button
               className={joinClassNames(

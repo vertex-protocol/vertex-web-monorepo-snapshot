@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { TriggerCriteriaPriceType } from '../../types';
 import { TpSlPlaceOrderErrorType } from '../../hooks/useTpSlPlaceOrderForm/types';
 import { useMemo } from 'react';

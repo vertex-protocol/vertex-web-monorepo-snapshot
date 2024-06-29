@@ -3,12 +3,14 @@ import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
 import { TutorialFlowProgressBar } from './TutorialFlowProgressBar';
 
 interface Props {
-  numberOfCompletedSteps: number;
+  numTotalSteps: number;
+  numCompletedSteps: number;
   setIsExpanded: (expanded: boolean) => void;
 }
 
 export function TutorialFlowHeader({
-  numberOfCompletedSteps,
+  numTotalSteps,
+  numCompletedSteps,
   setIsExpanded,
 }: Props) {
   return (
@@ -21,7 +23,8 @@ export function TutorialFlowHeader({
         <UpDownChevronIcon open={false} />
       </Button>
       <TutorialFlowProgressBar
-        numberOfCompletedSteps={numberOfCompletedSteps}
+        numCompletedSteps={numCompletedSteps}
+        numTotalSteps={numTotalSteps}
       />
     </div>
   );

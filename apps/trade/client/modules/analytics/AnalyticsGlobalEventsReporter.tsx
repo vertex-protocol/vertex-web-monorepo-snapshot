@@ -1,7 +1,8 @@
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useEffect } from 'react';
-import { useEVMContext } from '@vertex-protocol/web-data';
-import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 
 /**
  * Reports wallet connection and saved user settings to analytics:
@@ -10,8 +11,11 @@ export function AnalyticsGlobalEventsReporter() {
   const {
     connectionStatus: { address },
   } = useEVMContext();
+  const {
+    signingPreference: { current },
+  } = useSubaccountContext();
   const { updateUserAddress, trackEvent } = useAnalyticsContext();
-  const { savedUserSettings, didLoadPersistedValue } = useSavedUserSettings();
+  const { currentDialog } = useDialog();
 
   // Update user address
   useEffect(() => {
@@ -20,12 +24,29 @@ export function AnalyticsGlobalEventsReporter() {
     }
   }, [address, updateUserAddress]);
 
-  // Track saved user settings on initial load
+  // Track dialog opens
   useEffect(() => {
-    if (didLoadPersistedValue && address) {
-      trackEvent({ type: 'saved_user_settings', data: savedUserSettings });
+    if (currentDialog?.type) {
+      trackEvent({
+        type: 'dialog_opened',
+        data: {
+          dialogType: currentDialog.type,
+        },
+      });
     }
-  }, [trackEvent, savedUserSettings, didLoadPersistedValue, address]);
+  }, [currentDialog?.type, trackEvent]);
+
+  // Track 1CT status
+  useEffect(() => {
+    if (current?.type) {
+      trackEvent({
+        type: 'one_click_trading_status',
+        data: {
+          status: current.type,
+        },
+      });
+    }
+  }, [trackEvent, current?.type]);
 
   return null;
 }

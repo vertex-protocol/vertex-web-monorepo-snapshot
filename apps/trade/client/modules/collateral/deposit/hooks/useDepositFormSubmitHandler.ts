@@ -1,24 +1,24 @@
-import { addDecimals } from 'client/utils/decimalAdjustment';
-import { MaxUint256 } from 'ethers';
-import { roundToString } from 'client/utils/rounding';
+import { addDecimals } from '@vertex-protocol/utils';
+import { useExecuteApproveAllowanceForProduct } from 'client/hooks/execute/useExecuteApproveAllowanceForProduct';
+import { useExecuteDepositCollateral } from 'client/hooks/execute/useExecuteDepositCollateral';
 import {
   DepositFormValues,
   DepositProduct,
 } from 'client/modules/collateral/deposit/types';
-import { UseFormReturn } from 'react-hook-form';
-import { useExecuteApproveAllowance } from 'client/hooks/execute/useExecuteApproveAllowance';
-import { useExecuteDepositCollateral } from 'client/hooks/execute/useExecuteDepositCollateral';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { useAtom } from 'jotai';
-import { referralCodeAtom } from 'client/store/rewardsStore';
+import { blitzReferralCodeAtom } from 'client/store/referralsStore';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
+import { roundToString } from 'client/utils/rounding';
+import { MaxUint256 } from 'ethers';
+import { useAtom } from 'jotai';
+import { UseFormReturn } from 'react-hook-form';
 
 interface Params {
   useDepositForm: UseFormReturn<DepositFormValues>;
   selectedProduct: DepositProduct | undefined;
   isApprove: boolean;
   mutateApproveAllowanceAsync: ReturnType<
-    typeof useExecuteApproveAllowance
+    typeof useExecuteApproveAllowanceForProduct
   >['mutateAsync'];
   mutateDepositCollateralAsync: ReturnType<
     typeof useExecuteDepositCollateral
@@ -33,7 +33,8 @@ export function useDepositFormSubmitHandler({
   mutateDepositCollateralAsync,
 }: Params) {
   const { dispatchNotification } = useNotificationManagerContext();
-  const [referralCodeAtomValue] = useAtom(referralCodeAtom);
+  // Only blitz uses our backend referral system
+  const [referralCodeAtomValue] = useAtom(blitzReferralCodeAtom);
 
   return (values: DepositFormValues) => {
     if (selectedProduct == null) {

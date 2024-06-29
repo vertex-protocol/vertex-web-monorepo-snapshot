@@ -1,6 +1,9 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { TablePlaceholder } from 'client/components/DataTable/TablePlaceholder';
+import { LinkButton } from 'client/components/LinkButton';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { ROUTES } from 'client/modules/app/consts/routes';
+import Link from 'next/link';
 import { TriggerOrderEnableOneClickTradingInfo } from '../trading/components/TriggerOrderEnableOneClickTradingInfo';
 
 type TableType =
@@ -24,7 +27,8 @@ type TableType =
   | 'spreads'
   | 'quote_balance'
   | 'deposits_and_borrows'
-  | 'lba_positions';
+  | 'lba_positions'
+  | 'trading_competition';
 
 export function EmptyTablePlaceholder({
   type,
@@ -77,7 +81,14 @@ export function EmptyTablePlaceholder({
           </div>
         );
       case 'pool_positions':
-        return 'Your pool positions will appear here.';
+        return (
+          <div className="flex flex-col items-start gap-y-1.5">
+            <p>Your pool positions will appear here.</p>
+            <LinkButton colorVariant="primary" as={Link} href={ROUTES.pools}>
+              Provide liquidity
+            </LinkButton>
+          </div>
+        );
       case 'lba_positions':
         return 'Your LBA position will appear here.';
       case 'spreads':
@@ -86,6 +97,10 @@ export function EmptyTablePlaceholder({
         return `Your ${primaryQuoteToken.symbol} balance will appear here.`;
       case 'deposits_and_borrows':
         return 'Your deposits & borrows will appear here.';
+
+      // Trading comp
+      case 'trading_competition':
+        return 'No rankings for this competition';
     }
   })();
 

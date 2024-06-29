@@ -1,6 +1,6 @@
-import React, { ComponentPropsWithRef } from 'react';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import Link from 'next/link';
+import { ComponentPropsWithRef } from 'react';
 
 interface EdgeLinkProps extends Omit<ComponentPropsWithRef<typeof Link>, 'as'> {
   href: string;
@@ -26,7 +26,7 @@ export function EdgeLink({
     'after:inset-x-0 after:absolute after:bg-black after:bottom-0',
     'after:h-0.5 max-w-auto lg:after:max-w-0',
     'hover:after:max-w-full',
-    'after:transition-all after:duration-200 after:ease-in-out',
+    'after:transition-all after:duration-200',
   );
 
   const linkClassName = joinClassNames(

@@ -1,8 +1,8 @@
-import { ButtonHelperInfo, TextButton } from '@vertex-protocol/web-ui';
+import { ButtonHelperInfo, Icons, TextButton } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
+import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { Icons } from '@vertex-protocol/web-ui';
 import { LinkButton } from 'client/components/LinkButton';
 import { usePushHistoryPage } from 'client/hooks/ui/navigation/usePushHistoryPage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -10,12 +10,13 @@ import { CollateralSelectInput } from 'client/modules/collateral/components/Coll
 import { DelayedWithdrawalWarning } from 'client/modules/collateral/components/DelayedWithdrawalWarning';
 import { WithdrawSummaryDisclosure } from 'client/modules/collateral/withdraw/components/WithdrawSummaryDisclosure';
 import { useWithdrawForm } from 'client/modules/collateral/withdraw/hooks/useWithdrawForm';
+import { useWithdrawAmountErrorTooltipContent } from '../hooks/useWithdrawAmountErrorTooltipContent';
 import { BorrowingFundsDismissible } from './BorrowingFundsDismissible';
 import { EnableBorrowsSwitch } from './EnableBorrowsSwitch';
 import { WithdrawButton } from './WithdrawButton';
 import { WithdrawInputSummary } from './WithdrawInputSummary';
-import { useWithdrawAmountErrorTooltipContent } from '../hooks/useWithdrawAmountErrorTooltipContent';
-import { Form } from 'client/components/Form';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { useEffect } from 'react';
 
 interface Props {
   defaultEnableBorrows: boolean;
@@ -50,6 +51,16 @@ export function WithdrawFormContent({
     onMaxAmountSelected,
     onSubmit,
   } = useWithdrawForm({ defaultEnableBorrows });
+  const { trackEvent } = useAnalyticsContext();
+
+  useEffect(() => {
+    trackEvent({
+      type: 'withdraw_dialog_view',
+      data: {
+        contentType: 'form',
+      },
+    });
+  }, [trackEvent]);
 
   const amountErrorTooltipContent = useWithdrawAmountErrorTooltipContent({
     formError,
@@ -65,7 +76,7 @@ export function WithdrawFormContent({
         endElement={
           <TextButton
             startIcon={<Icons.MdAdsClick size={16} />}
-            className="gap-x-1 px-4 text-xs font-medium"
+            className="text-xs"
             onClick={onShowHelpClick}
           >
             FAQ
@@ -135,7 +146,7 @@ export function WithdrawFormContent({
                 Withdrawals will be submitted on-chain once the gas threshold is{' '}
                 reached.
                 <LinkButton
-                  color="white"
+                  colorVariant="primary"
                   className="w-max self-start"
                   onClick={() => {
                     pushHistoryPage('withdrawals');

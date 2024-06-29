@@ -1,7 +1,8 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
@@ -25,36 +26,42 @@ export function useMarginManagerPerpPositionsTable() {
     usePerpPositions();
   const { data: marketsStaticData, isLoading: marketsStaticDataLoading } =
     useAllMarketsStaticData();
-
-  const quotePrice = useQuotePriceUsd();
+  const {
+    primaryQuoteToken: { symbol: primaryQuoteSymbol },
+  } = useVertexMetadataContext();
+  const quotePrice = usePrimaryQuotePriceUsd();
 
   const mappedData: MarginManagerPerpPositionsTableItem[] | undefined =
     useMemo(() => {
       if (!perpBalances || !marketsStaticData) {
         return;
       }
+
       return perpBalances
         .map((position): MarginManagerPerpPositionsTableItem | undefined => {
-          const marketStaticData = marketsStaticData?.perp[position.productId];
+          const perpMarketData = marketsStaticData.perp[position.productId];
 
-          // return if no market static data or position amount is zero
-          if (!marketStaticData || position.amount.isZero()) {
+          // return if no market data or position amount is zero
+          if (!perpMarketData || position.amount.isZero()) {
             return;
           }
 
           const healthWeights = getHealthWeights(
             position.amount,
-            marketStaticData,
+            perpMarketData,
           );
 
           return {
             productId: position.productId,
             marketInfo: {
               ...position.metadata,
+              // Perps are always quoted in the primary quote token
+              quoteSymbol: primaryQuoteSymbol,
+              isPrimaryQuote: true,
               amountForSide: position.amount,
               productType: ProductEngineType.PERP,
-              priceIncrement: marketStaticData.priceIncrement,
-              sizeIncrement: marketStaticData.sizeIncrement,
+              priceIncrement: perpMarketData.priceIncrement,
+              sizeIncrement: perpMarketData.sizeIncrement,
             },
             positionAmount: position.amount,
             estimatedPnlUsd: position.estimatedPnlUsd,
@@ -73,7 +80,7 @@ export function useMarginManagerPerpPositionsTable() {
           };
         })
         .filter(nonNullFilter);
-    }, [marketsStaticData, perpBalances, quotePrice]);
+    }, [marketsStaticData, perpBalances, primaryQuoteSymbol, quotePrice]);
 
   return {
     positions: mappedData,

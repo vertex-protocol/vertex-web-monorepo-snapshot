@@ -22,7 +22,11 @@ export function TokenStakingDismissibleBanner({
           </IconDiscList.Item>
           <IconDiscList.Item icon={Icons.HiArrowsRightLeft}>
             You can purchase {protocolToken.symbol}{' '}
-            <LinkButton color="accent" as={Link} href={ROUTES.spotTrading}>
+            <LinkButton
+              colorVariant="accent"
+              as={Link}
+              href={ROUTES.spotTrading}
+            >
               here
             </LinkButton>
             .

@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_GAP,
@@ -15,11 +14,12 @@ import customize from 'client/sections/Interface/assets/interface-customize.svg'
 import mobile from 'client/sections/Interface/assets/interface-mobile.svg';
 import oneClick from 'client/sections/Interface/assets/interface-one-click.svg';
 import portfolio from 'client/sections/Interface/assets/interface-portfolio.svg';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function DesktopInterface() {
   return (
     <section
-      className={classNames(
+      className={joinClassNames(
         'flex flex-col',
         DEFAULT_SECTION_PADDING,
         DEFAULT_SECTION_GAP,

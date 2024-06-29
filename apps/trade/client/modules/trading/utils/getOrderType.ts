@@ -21,6 +21,7 @@ export function getOrderType(event: IndexerMatchEvent): OrderType {
 
   // This must be checked before isMarket because all trigger orders are market orders
   if (isTriggerOrder) {
+    // Filled TP/SL reflect as "Stop Market" orders because we don't have access to triggerCriteria type
     return 'stop';
   }
   if (isMarket) {

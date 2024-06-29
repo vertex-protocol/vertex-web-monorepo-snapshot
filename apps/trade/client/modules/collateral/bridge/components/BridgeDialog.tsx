@@ -2,7 +2,7 @@ import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { LinkButton } from 'client/components/LinkButton';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
 import { BridgeDismissible } from './BridgeDismissible';
 import { BridgeFormContent } from './BridgeFormContent';
@@ -18,7 +18,7 @@ export function BridgeDialog() {
         endElement={
           <LinkButton
             as={Link}
-            color="white"
+            colorVariant="primary"
             className="text-xs"
             href={LINKS.crossChainDocs}
             external

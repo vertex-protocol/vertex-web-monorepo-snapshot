@@ -1,9 +1,9 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
+import { Pill } from '@vertex-protocol/web-ui';
 import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { Pill } from '@vertex-protocol/web-ui';
 import { HistoricalLiquidationEvent } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 
 interface LiquidationTypeCellProps extends TableCellProps {
@@ -30,7 +30,7 @@ export function LiquidationTypeCell({
       {...rest}
     >
       {liquidatedBalanceTypes.map((type) => (
-        <Pill color="white" key={type}>
+        <Pill colorVariant="tertiary" sizeVariant="sm" key={type}>
           {liquidationTypeToLabel[type]}
         </Pill>
       ))}

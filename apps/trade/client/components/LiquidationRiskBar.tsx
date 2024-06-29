@@ -4,8 +4,8 @@ import {
   joinClassNames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { getLiquidationRiskLevelClassNames } from 'client/utils/getLiquidationRiskLevelClassNames';
 import { useMemo } from 'react';
 
@@ -44,7 +44,7 @@ export function LiquidationRiskBar({
       />
       <div
         className={joinClassNames(
-          'shadow-elevation-risk-bar absolute inset-0 origin-left rounded-sm duration-200',
+          'shadow-elevation-risk-bar absolute inset-0 origin-left rounded-sm',
           colorClassNames.bg,
           colorClassNames.shadow,
         )}

@@ -1,20 +1,24 @@
-import { BalanceSide, QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { BalanceSide } from '@vertex-protocol/contracts';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { SpotStaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
+import {
+  SpotStaticMarketData,
+  StaticMarketQuoteData,
+} from 'client/hooks/markets/useAllMarketsStaticData';
 import {
   AdditionalSubaccountInfoFactory,
   EstimatedSubaccountInfo,
   useEstimateSubaccountInfoChange,
 } from 'client/hooks/subaccount/useEstimateSubaccountInfoChange';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import {
   AnnotatedBalanceWithProduct,
   AnnotatedSpotBalanceWithProduct,
 } from 'common/productMetadata/types';
 import { useCallback, useMemo } from 'react';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 
 interface AdditionalSubaccountInfo {
   assetBalance: BigDecimal;
@@ -23,7 +27,7 @@ interface AdditionalSubaccountInfo {
 
 interface TradeMetrics {
   amountToBorrow: BigDecimal | undefined;
-  borrowAssetSymbol: string;
+  borrowAssetSymbol: string | undefined;
 }
 
 export interface SpotOrderFormTradingAccountMetrics {
@@ -35,15 +39,16 @@ export interface SpotOrderFormTradingAccountMetrics {
 interface Params {
   estimateStateTxs: SubaccountTx[];
   currentMarket: SpotStaticMarketData | undefined;
+  quoteMetadata: StaticMarketQuoteData | undefined;
   orderSide: BalanceSide;
 }
 
 export function useSpotOrderFormAccountMetrics({
   estimateStateTxs,
   currentMarket,
+  quoteMetadata,
   orderSide,
 }: Params): SpotOrderFormTradingAccountMetrics {
-  const { primaryQuoteToken } = useVertexMetadataContext();
   const additionalInfoFactory = useCallback<
     AdditionalSubaccountInfoFactory<AdditionalSubaccountInfo>
   >(
@@ -53,7 +58,8 @@ export function useSpotOrderFormAccountMetrics({
           b.productId === currentMarket?.productId,
       ) as AnnotatedSpotBalanceWithProduct;
       const quoteBalance = summary.balances.find(
-        (b: AnnotatedBalanceWithProduct) => b.productId === QUOTE_PRODUCT_ID,
+        (b: AnnotatedBalanceWithProduct) =>
+          b.productId === quoteMetadata?.productId,
       ) as AnnotatedSpotBalanceWithProduct;
 
       if (!currentMarket || !balance || !quoteBalance) {
@@ -72,7 +78,7 @@ export function useSpotOrderFormAccountMetrics({
           : BigDecimals.ZERO,
       };
     },
-    [currentMarket],
+    [currentMarket, quoteMetadata?.productId],
   );
 
   // State change
@@ -114,15 +120,15 @@ export function useSpotOrderFormAccountMetrics({
       amountToBorrow: infoChangeMetrics?.amountToBorrow,
       borrowAssetSymbol:
         orderSide === 'long'
-          ? primaryQuoteToken.symbol
-          : currentMarket?.metadata.token.symbol ?? '',
+          ? quoteMetadata?.symbol
+          : currentMarket?.metadata.token.symbol,
     };
   }, [
     currentMarket,
     currentState,
     estimatedState,
     orderSide,
-    primaryQuoteToken.symbol,
+    quoteMetadata?.symbol,
   ]);
 
   return useMemo(

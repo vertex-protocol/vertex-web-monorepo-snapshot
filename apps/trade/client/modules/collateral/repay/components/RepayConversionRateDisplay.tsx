@@ -2,8 +2,8 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { AnnotatedSpotMarket } from 'common/productMetadata/types';
 
 interface Props {

@@ -6,8 +6,8 @@ import {
 } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
 import { MarketInfoWithSide } from 'client/components/MarketInfoWithSide';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { ReactNode } from 'react';
 

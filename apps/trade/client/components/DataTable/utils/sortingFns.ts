@@ -18,14 +18,11 @@ export function getKeyedBigDecimalSortFn<T>(
   keyOfColumnValue: string,
 ): SortingFn<T> {
   const sortFn: SortingFn<T> = (a, b, columnId) => {
+    // Column values can be nullable, so we need to handle that case with the "?." accessor.
     const valueA =
-      a.getValue<Record<string, BigDecimal | undefined>>(columnId)[
-        keyOfColumnValue
-      ];
+      a.getValue<Record<string, BigDecimal>>(columnId)?.[keyOfColumnValue];
     const valueB =
-      b.getValue<Record<string, BigDecimal | undefined>>(columnId)[
-        keyOfColumnValue
-      ];
+      b.getValue<Record<string, BigDecimal>>(columnId)?.[keyOfColumnValue];
 
     return bigDecimalComparator(valueA, valueB);
   };

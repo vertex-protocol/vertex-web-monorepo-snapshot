@@ -5,9 +5,12 @@ import {
   WithClassnames,
 } from '@vertex-protocol/web-common';
 import { BlitzPointsBanner } from 'client/modules/app/components/BlitzPointsBanner';
-import { AppNavBar } from 'client/modules/navigation/AppNavBar';
+import { AppNavBar } from 'client/modules/app/navBar/AppNavBar';
 import { clientEnv } from 'common/environment/clientEnv';
 import Head from 'next/head';
+import Image from 'next/image';
+import { ReactNode } from 'react';
+import { IMAGES } from 'common/brandMetadata/images';
 import { AppBottomSheet } from './AppBottomSheet';
 import { AppFooter } from './AppFooter';
 import { AppBackgroundHighlights } from './components/AppBackgroundHighlights';
@@ -15,6 +18,7 @@ import { AppBackgroundHighlights } from './components/AppBackgroundHighlights';
 interface RootProps extends WithChildren<WithClassnames> {
   // To be rendered with ` | Vertex` in the browser tab title
   routeName?: string;
+  hasNavBorder?: boolean;
   hideHighlights?: boolean;
   contentWrapperClassName?: string;
 }
@@ -23,6 +27,7 @@ function Root({
   routeName,
   children,
   className,
+  hasNavBorder,
   hideHighlights,
   contentWrapperClassName,
 }: RootProps) {
@@ -40,7 +45,7 @@ function Root({
       <Head>
         <title>{title}</title>
       </Head>
-      <AppNavBar className="z-40" />
+      <AppNavBar className="z-40" hasNavBorder={hasNavBorder} />
       <BlitzPointsBanner className="z-30" />
       <div
         // Hide horizontal overflow to ensure that tables never expand fully, but allow vertical scrolling
@@ -59,7 +64,7 @@ function Root({
 
 interface HeaderProps {
   title: string;
-  description?: string;
+  description?: ReactNode;
 }
 
 function Header({
@@ -73,8 +78,37 @@ function Header({
         {title}
       </h1>
       {description && (
-        <p className="text-text-secondary text-xs lg:text-sm">{description}</p>
+        <p className="text-text-tertiary text-xs lg:text-sm">{description}</p>
       )}
+    </div>
+  );
+}
+
+interface EarnHeaderProps {
+  title: string;
+  description?: ReactNode;
+}
+
+function EarnHeader({ title, description }: EarnHeaderProps) {
+  return (
+    <div className="flex flex-col gap-y-1 lg:gap-y-2">
+      <div className="flex items-center gap-x-2">
+        <div className="bg-surface-1 rounded p-1 lg:p-1.5">
+          <Image
+            src={IMAGES.brandMonochromeIcon}
+            className="h-3 w-auto lg:h-4"
+            alt=""
+            quality={100}
+            priority
+          />
+        </div>
+        <span className="text-text-primary text-sm lg:text-base">Earn</span>
+      </div>
+      <AppPage.Header
+        title={title}
+        description={description}
+        className="max-w-[525px]"
+      />
     </div>
   );
 }
@@ -82,9 +116,8 @@ function Header({
 function Content({ className, children }: WithClassnames<WithChildren>) {
   return (
     <div
-      // Max page width from Figma
       className={mergeClassNames(
-        'mx-auto flex max-w-[1770px] flex-col',
+        'mx-auto flex max-w-[1770px] flex-col gap-y-4 lg:gap-y-6',
         className,
       )}
     >
@@ -96,5 +129,6 @@ function Content({ className, children }: WithClassnames<WithChildren>) {
 export const AppPage = {
   Root,
   Header,
+  EarnHeader,
   Content,
 };

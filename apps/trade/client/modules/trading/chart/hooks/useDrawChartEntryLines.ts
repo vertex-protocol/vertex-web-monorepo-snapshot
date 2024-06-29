@@ -6,7 +6,10 @@ import {
 } from 'client/hooks/subaccount/usePerpPositions';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { TradingViewSymbolInfo } from 'client/modules/trading/chart/config/datafeedConfig';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import {
+  formatNumber,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { COLORS } from 'common/theme/colors';
 import { FONTS } from 'common/theme/fonts';
 import {
@@ -90,14 +93,9 @@ export function useDrawChartEntryLines({
       return;
     }
 
-    // No further action needed if there's an existing line with the same price, need to do a roughly equals check
-    // here given different levels of precision
+    // No further action needed if position amount for entry line has not changed
     if (existingLine) {
-      const priceDiff = selectedPosition.price.averageEntryPrice
-        .minus(existingLine.getPrice())
-        .abs();
-      // No-op if the price difference is less than 0.001% of the average entry price, which is guaranteed to be non-zero given the above check
-      if (priceDiff.div(selectedPosition.price.averageEntryPrice).lt(0.00001)) {
+      if (selectedPosition.amount.eq(existingLine.getQuantity())) {
         return;
       }
     }
@@ -109,8 +107,8 @@ export function useDrawChartEntryLines({
       selectedPosition.price.averageEntryPrice.toString(),
     );
 
-    const priceFormatSpecifier = getMarketPriceFormatSpecifier(
-      marketData.priceIncrement,
+    const sizeFormatSpecifier = getMarketSizeFormatSpecifier(
+      marketData.sizeIncrement,
     );
     const onClosePositionClick = () => {
       show({
@@ -126,7 +124,7 @@ export function useDrawChartEntryLines({
       createOrUpdateEntryLine(
         activeChart,
         selectedPosition,
-        priceFormatSpecifier,
+        sizeFormatSpecifier,
         onClosePositionClick,
         existingLine,
       ),
@@ -143,7 +141,7 @@ export function useDrawChartEntryLines({
 function createOrUpdateEntryLine(
   activeChart: IChartWidgetApi,
   selectedPosition: PerpPositionItem,
-  priceFormatSpecifier: string,
+  sizeFormatSpecifier: string,
   onClosePositionClick: () => void,
   existingLine?: IPositionLineAdapter,
 ): IPositionLineAdapter {
@@ -155,7 +153,10 @@ function createOrUpdateEntryLine(
     : COLORS.negative.muted;
 
   const averageEntryPrice = selectedPosition.price.averageEntryPrice.toNumber();
-  const contentText = `Entry`;
+  const contentText = selectedPosition.amount.gt(0) ? `Long` : `Short`;
+  const amountText = formatNumber(selectedPosition.amount.abs(), {
+    formatSpecifier: sizeFormatSpecifier,
+  });
 
   const entryLine = existingLine ?? activeChart.createPositionLine();
   return entryLine
@@ -168,7 +169,11 @@ function createOrUpdateEntryLine(
     .setLineLength(64) // Distance from orderbox to right-most side of chart
     .setLineStyle(0) // we use 0 (solid) for entry lines, 2 (dashed) for order lines
     .setLineColor(sideColor)
-    .setQuantity('')
+    .setQuantity(amountText)
+    .setQuantityFont(`11px var(${FONTS.default.variable})`)
+    .setQuantityTextColor(sideTextColor)
+    .setQuantityBackgroundColor(sideColor)
+    .setQuantityBorderColor('')
     .onClose(onClosePositionClick)
     .setCloseButtonBackgroundColor(sideColor)
     .setCloseButtonBorderColor('')

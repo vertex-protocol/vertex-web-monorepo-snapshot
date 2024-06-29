@@ -10,9 +10,9 @@ import { tokenAllowanceQueryKey } from 'client/hooks/query/useTokenAllowance';
 import { accountStakingStateQueryKey } from 'client/hooks/query/vrtxToken/useAccountStakingState';
 import { lbaTokenWalletBalancesQueryKey } from 'client/hooks/query/vrtxToken/useLbaTokenWalletBalances';
 import { stakingStateQueryKey } from 'client/hooks/query/vrtxToken/useStakingState';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
-const REFETCH_QUERY_KEYS: string[][] = [
+const REFETCH_QUERY_KEYS_WITHOUT_ALLOWANCE: string[][] = [
   tokenAllowanceQueryKey(),
   lbaTokenWalletBalancesQueryKey(),
   accountStakingStateQueryKey(),
@@ -23,10 +23,25 @@ const REFETCH_QUERY_KEYS: string[][] = [
  * Stakes VRTX for rewards
  */
 export function useExecuteStakeVrtx() {
+  const refetchQueryKeysRef = useRef<string[][]>([
+    ...REFETCH_QUERY_KEYS_WITHOUT_ALLOWANCE,
+    // Generic token allowance query key, this should be updated during the mutation
+    tokenAllowanceQueryKey(),
+  ]);
+
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (params: VrtxTokenAmountParams, context: ValidExecuteContext) => {
         console.log('Staking VRTX', params);
+        refetchQueryKeysRef.current = [
+          ...REFETCH_QUERY_KEYS_WITHOUT_ALLOWANCE,
+          tokenAllowanceQueryKey(
+            context.subaccount.chainId,
+            context.subaccount.address,
+            context.vertexClient.context.contractAddresses.vrtxStaking,
+            context.vertexClient.context.contractAddresses.vrtxToken,
+          ),
+        ];
         return context.vertexClient.rewards.stake(params);
       },
       [],
@@ -40,7 +55,10 @@ export function useExecuteStakeVrtx() {
     },
   });
 
-  useRefetchQueriesOnContractTransaction(REFETCH_QUERY_KEYS, mutation.data);
+  useRefetchQueriesOnContractTransaction(
+    refetchQueryKeysRef.current,
+    mutation.data,
+  );
 
   return mutation;
 }

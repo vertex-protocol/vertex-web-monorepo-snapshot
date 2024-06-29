@@ -1,10 +1,10 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { TokenPairIcons } from 'client/components/TokenPairIcons';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
-import { useVrtxMarketCard } from './hooks/useVrtxMarketCard';
 import { VrtxMarketMetrics } from './VrtxMarketMetrics';
 import { VrtxPriceChart } from './VrtxPriceChart';
 import { VrtxPriceHeaderMetric } from './VrtxPriceHeaderMetric';
+import { useVrtxMarketCard } from './hooks/useVrtxMarketCard';
 
 export function VrtxMarketCard({ className }: WithClassnames) {
   const {
@@ -24,7 +24,7 @@ export function VrtxMarketCard({ className }: WithClassnames) {
       <RewardsCard.Header
         endElement={
           <RewardsCard.HeaderLinkButton
-            color="white"
+            colorVariant="primary"
             onClick={onTradeClick}
             withExternalIcon
           >

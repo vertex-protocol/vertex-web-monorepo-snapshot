@@ -2,13 +2,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { IndexerLiquidationEvent } from '@vertex-protocol/client';
 import { GetIndexerSubaccountLiquidationEventsParams } from '@vertex-protocol/indexer-client';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { isLiquidationFinalizationTx } from 'client/utils/isLiquidationFinalizationTx';
 import { get } from 'lodash';
 
@@ -39,7 +39,7 @@ export function useSubaccountPaginatedLiquidationEvents({
   pageSize = 10,
 }: Params) {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
     currentSubaccount: { address: subaccountOwner, name: subaccountName },
   } = useSubaccountContext();

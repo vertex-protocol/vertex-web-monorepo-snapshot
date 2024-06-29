@@ -10,7 +10,7 @@ import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymb
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { StackedTokenPairCell } from 'client/modules/tables/cells/StackedTokenPairCell';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import {
   HistoricalLpEvent,
@@ -38,7 +38,8 @@ export function HistoricalLpEventsTable({ className }: WithClassnames) {
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('metadata', {
@@ -110,7 +111,6 @@ export function HistoricalLpEventsTable({ className }: WithClassnames) {
                   formatSpecifier={
                     CustomNumberFormatSpecifier.SIGNED_NUMBER_AUTO
                   }
-                  className="pl-0"
                 />
               }
               bottom={
@@ -120,7 +120,6 @@ export function HistoricalLpEventsTable({ className }: WithClassnames) {
                   formatSpecifier={
                     CustomNumberFormatSpecifier.SIGNED_NUMBER_AUTO
                   }
-                  className="pl-0"
                 />
               }
             />

@@ -1,20 +1,25 @@
-import { ValidExecuteContext } from 'client/hooks/execute/util/useExecuteInValidContext';
-import { useGetRecvTime } from 'client/hooks/util/useGetRecvTime';
-import { getOrderNonce } from '@vertex-protocol/contracts';
-import { useCallback } from 'react';
-import { ModifyOrderParams, ModifyOrderResult } from './types';
 import {
   BigDecimal,
-  EngineServerPlaceOrderResponse,
   getOrderDigest,
   getTriggerOrderNonce,
 } from '@vertex-protocol/client';
-import { useVertexClientHasLinkedSigner } from 'client/hooks/util/useVertexClientHasLinkedSigner';
-import { useOrderbookAddresses } from 'client/hooks/query/markets/useOrderbookAddresses';
-import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
-import { OrderSlippageSettings } from 'client/modules/localstorage/userSettings/types/tradingSettings';
+import { getOrderNonce } from '@vertex-protocol/contracts';
+import {
+  validateModifiedLimitOrderPrice,
+  validateModifiedTriggerOrderPrice,
+} from 'client/hooks/execute/modifyOrder/validateModifiedOrderPrice';
+import { ValidExecuteContext } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
+import { useOrderbookAddresses } from 'client/hooks/query/markets/useOrderbookAddresses';
+import { useGetRecvTime } from 'client/hooks/util/useGetRecvTime';
+import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
+import { useVertexClientHasLinkedSigner } from 'client/hooks/util/useVertexClientHasLinkedSigner';
+import { OrderSlippageSettings } from 'client/modules/localstorage/userSettings/types/tradingSettings';
+import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
 import { roundToIncrement } from 'client/utils/rounding';
+import { useCallback } from 'react';
+import { ModifyOrderParams, ModifyOrderResult } from './types';
 
 export function useModifyOrderMutationFn() {
   const getRecvTime = useGetRecvTime();
@@ -22,12 +27,17 @@ export function useModifyOrderMutationFn() {
   const { data: orderbookAddresses } = useOrderbookAddresses();
   const { savedSettings: slippageSettings } = useOrderSlippageSettings();
   const { data: marketDataByProductId } = useAllMarketsStaticData();
+  const { data: latestMarketPrices } = useAllMarketsLatestPrices();
+  const latestMarketPricesRef = useSyncedRef(latestMarketPrices);
 
   return useCallback(
     async (
       params: ModifyOrderParams,
       context: ValidExecuteContext,
     ): Promise<ModifyOrderResult> => {
+      const marketPrice =
+        latestMarketPricesRef.current?.[params.productId].safeAverage;
+
       if (params.isTrigger) {
         if (!hasLinkedSigner) {
           throw new Error('Cannot modify trigger order without linked signer');
@@ -44,6 +54,7 @@ export function useModifyOrderMutationFn() {
           slippageSettings,
           priceIncrement:
             marketDataByProductId?.all[params.productId]?.priceIncrement,
+          marketPrice,
         });
       }
 
@@ -51,6 +62,7 @@ export function useModifyOrderMutationFn() {
         modifyOrderParams: params,
         getRecvTime,
         context,
+        marketPrice,
       });
     },
     [
@@ -59,6 +71,7 @@ export function useModifyOrderMutationFn() {
       orderbookAddresses,
       slippageSettings,
       marketDataByProductId,
+      latestMarketPricesRef,
     ],
   );
 }
@@ -67,12 +80,14 @@ interface CancelAndPlaceOrderParams {
   modifyOrderParams: ModifyOrderParams;
   getRecvTime: () => Promise<number>;
   context: ValidExecuteContext;
+  marketPrice: BigDecimal | undefined;
 }
 
 async function cancelAndPlaceOrder({
   modifyOrderParams,
   getRecvTime,
   context,
+  marketPrice,
 }: CancelAndPlaceOrderParams) {
   const [currentOrder, recvTime] = await Promise.all([
     context.vertexClient.context.engineClient.getOrder({
@@ -86,32 +101,37 @@ async function cancelAndPlaceOrder({
     throw new Error('Could not fetch current order');
   }
 
+  // Validate the new order price.
+  // The function throws an error if the price is invalid.
+  validateModifiedLimitOrderPrice({
+    marketPrice,
+    newPrice: modifyOrderParams.newPrice,
+    isLongOrder: currentOrder.totalAmount.isPositive(),
+  });
+
   const nonce = getOrderNonce(recvTime);
   const result = await context.vertexClient.market.cancelAndPlace({
     cancelOrders: {
       subaccountOwner: context.subaccount.address,
       subaccountName: context.subaccount.name,
-      chainId: context.primaryChain.id,
+      chainId: context.subaccount.chainId,
       productIds: [modifyOrderParams.productId],
       digests: [modifyOrderParams.digest],
     },
     placeOrder: {
-      chainId: context.primaryChain.id,
+      chainId: context.subaccount.chainId,
       productId: modifyOrderParams.productId,
       order: {
         subaccountOwner: context.subaccount.address,
         subaccountName: context.subaccount.name,
         expiration: currentOrder.expiration.toString(),
         price: modifyOrderParams.newPrice.toString(),
-        amount: currentOrder.unfilledAmount.toString(),
+        amount: currentOrder.unfilledAmount.toFixed(),
       },
       nonce,
     },
   });
-  if (result.status !== 'success') {
-    throw new Error('Could not cancel and place order');
-  }
-  return { digest: (result.data as EngineServerPlaceOrderResponse).digest };
+  return { digest: result.data.digest };
 }
 
 interface CancelAndPlaceTriggerOrderParams {
@@ -121,6 +141,7 @@ interface CancelAndPlaceTriggerOrderParams {
   verifyingAddr: string;
   slippageSettings: OrderSlippageSettings;
   priceIncrement: BigDecimal | undefined;
+  marketPrice: BigDecimal | undefined;
 }
 
 async function cancelThenPlaceTriggerOrder({
@@ -130,6 +151,7 @@ async function cancelThenPlaceTriggerOrder({
   verifyingAddr,
   slippageSettings,
   priceIncrement,
+  marketPrice,
 }: CancelAndPlaceTriggerOrderParams) {
   const getTriggerOrder = async () => {
     // there is currently no 1:1 getTriggerOrder(digest) lookup API so we get pending
@@ -137,14 +159,12 @@ async function cancelThenPlaceTriggerOrder({
     const productOrders = await context.vertexClient.market.getTriggerOrders({
       subaccountOwner: context.subaccount.address,
       subaccountName: context.subaccount.name,
-      chainId: context.primaryChain.id,
+      chainId: context.subaccount.chainId,
       pending: true,
       productId: modifyOrderParams.productId,
-      limit: 50,
+      digests: [modifyOrderParams.digest],
     });
-    return productOrders.orders.find(
-      (orderInfo) => orderInfo.order.digest === modifyOrderParams.digest,
-    );
+    return productOrders.orders[0];
   };
 
   const [currentOrder, recvTime] = await Promise.all([
@@ -168,18 +188,24 @@ async function cancelThenPlaceTriggerOrder({
     throw new Error(`Unsupported order type ${modifyOrderParams.orderType}`);
   })();
 
+  // Validate the new trigger price.
+  // The function throws an error if the price is invalid.
+  validateModifiedTriggerOrderPrice({
+    marketPrice,
+    newPrice: modifyOrderParams.newPrice,
+    orderType: modifyOrderParams.orderType,
+    triggerCriteriaType: currentOrder.order.triggerCriteria.type,
+  });
+
   // there is currently no atomic cancelAndPlace for trigger orders
   // so we have to cancel _then_ place the same order with the modified trigger
-  const cancelResult = await context.vertexClient.market.cancelTriggerOrders({
+  await context.vertexClient.market.cancelTriggerOrders({
     subaccountOwner: context.subaccount.address,
     subaccountName: context.subaccount.name,
-    chainId: context.primaryChain.id,
+    chainId: context.subaccount.chainId,
     productIds: [modifyOrderParams.productId],
     digests: [modifyOrderParams.digest],
   });
-  if (cancelResult.status !== 'success') {
-    throw new Error('Could not cancel current trigger order');
-  }
 
   const isBuy = currentOrder.order.amount.isPositive();
   const newOrderPrice = roundToIncrement(
@@ -193,13 +219,13 @@ async function cancelThenPlaceTriggerOrder({
     subaccountOwner: context.subaccount.address,
     subaccountName: context.subaccount.name,
     price: newOrderPrice.toString(),
-    amount: currentOrder.order.amount.toString(),
+    amount: currentOrder.order.amount.toFixed(),
     expiration: currentOrder.order.expiration.toString(),
   };
 
   const nonce = getTriggerOrderNonce(recvTime);
-  const placeResult = await context.vertexClient.market.placeTriggerOrder({
-    chainId: context.primaryChain.id,
+  await context.vertexClient.market.placeTriggerOrder({
+    chainId: context.subaccount.chainId,
     productId: modifyOrderParams.productId,
     triggerCriteria: {
       type: currentOrder.order.triggerCriteria.type,
@@ -208,9 +234,6 @@ async function cancelThenPlaceTriggerOrder({
     order,
     nonce,
   });
-  if (placeResult.status !== 'success') {
-    throw new Error('Could not place new trigger order');
-  }
 
   // placeTriggerOrder does not currently return the digest so we compute it locally
   const digest = getOrderDigest({
@@ -219,7 +242,7 @@ async function cancelThenPlaceTriggerOrder({
       nonce,
     },
     verifyingAddr,
-    chainId: context.primaryChain.id,
+    chainId: context.subaccount.chainId,
   });
   return { digest };
 }

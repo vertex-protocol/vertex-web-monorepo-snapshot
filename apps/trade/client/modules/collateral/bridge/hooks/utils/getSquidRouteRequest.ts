@@ -1,21 +1,15 @@
-import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
-import { addDecimals } from 'client/utils/decimalAdjustment';
-import { toBigDecimal } from '@vertex-protocol/utils';
-import { Subaccount } from 'client/context/subaccount/types';
+import { ChainType, RouteRequest, SquidCallType } from '@0xsquid/squid-types';
 import {
-  ChainType,
-  RouteRequest,
-  SlippageMode,
-  SquidCallType,
-} from '@0xsquid/squid-types';
-import {
-  IERC20__factory,
   IEndpoint__factory,
+  IERC20__factory,
   subaccountToBytes32,
 } from '@vertex-protocol/client';
+import { addDecimals, toBigDecimal } from '@vertex-protocol/utils';
+import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
 
 interface Params extends BridgeRequestParams {
-  subaccount: Required<Subaccount>;
+  subaccountAddress: string;
+  subaccountName: string;
   endpointAddress: string;
 }
 
@@ -32,8 +26,8 @@ export function getSquidRouteRequest(params: Params): RouteRequest {
       [
         // Subaccount
         subaccountToBytes32({
-          subaccountOwner: params.subaccount.address,
-          subaccountName: params.subaccount.name,
+          subaccountOwner: params.subaccountAddress,
+          subaccountName: params.subaccountName,
         }),
         // Product ID
         params.destinationToken.vertexProduct.productId,
@@ -46,7 +40,7 @@ export function getSquidRouteRequest(params: Params): RouteRequest {
 
   const destinationTokenAddress = params.destinationToken.address;
   return {
-    fromAddress: params.subaccount.address,
+    fromAddress: params.subaccountAddress,
     fromToken: params.sourceToken.address,
     fromAmount: addDecimals(
       toBigDecimal(params.amount),
@@ -55,18 +49,15 @@ export function getSquidRouteRequest(params: Params): RouteRequest {
     fromChain: params.sourceToken.chainId.toFixed(),
     toChain: params.destinationToken.chainId.toFixed(),
     toToken: destinationTokenAddress,
-    toAddress: params.subaccount.address,
-    slippageConfig: {
-      slippage: 5, // 5% slippage
-      autoMode: SlippageMode.NORMAL,
-    },
+    toAddress: params.subaccountAddress,
+    // 5% slippage
+    slippage: 5,
     enableBoost: true, // Always enable boost
     postHook: {
       description: 'Deposit collateral',
+      logoURI: 'https://app.vertexprotocol.com/vertex-icon.svg',
+      provider: 'Vertex',
       chainType: ChainType.EVM,
-      // fundAmount/Token are unused
-      fundAmount: '1',
-      fundToken: destinationTokenAddress,
       calls: [
         // Approve before depositing into Vertex.
         {

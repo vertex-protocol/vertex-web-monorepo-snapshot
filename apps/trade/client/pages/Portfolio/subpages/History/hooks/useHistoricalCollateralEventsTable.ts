@@ -5,12 +5,12 @@ import {
 } from '@vertex-protocol/indexer-client';
 import { CollateralEventType } from '@vertex-protocol/indexer-client/dist/types/collateralEventType';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedCollateralEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedCollateralEvents';
 import { useNSubmissions } from 'client/hooks/query/useNSubmissions';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { Token } from 'common/productMetadata/types';
 import { secondsToMilliseconds } from 'date-fns';
@@ -39,7 +39,7 @@ export function useHistoricalCollateralEventsTable({
 }) {
   const { data: allMarketsStaticData, isLoading: allMarketsLoading } =
     useAllMarketsStaticData();
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
   const { data: nSubmissions, isLoading: nSubmissionsLoading } =
     useNSubmissions();
 
@@ -59,7 +59,7 @@ export function useHistoricalCollateralEventsTable({
       GetIndexerSubaccountCollateralEventsResponse,
       IndexerCollateralEvent
     >({
-      queryPageCount: subaccountPaginatedEvents?.pages.length,
+      numPagesFromQuery: subaccountPaginatedEvents?.pages.length,
       pageSize: PAGE_SIZE,
       hasNextPage,
       fetchNextPage,
@@ -76,7 +76,7 @@ export function useHistoricalCollateralEventsTable({
         const productId = event.snapshot.market.productId;
         const productData =
           productId === QUOTE_PRODUCT_ID
-            ? allMarketsStaticData.quote
+            ? allMarketsStaticData.primaryQuote
             : allMarketsStaticData.spot[productId];
 
         if (!productData) {

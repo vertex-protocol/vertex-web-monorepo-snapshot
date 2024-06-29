@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { GoogleAnalytics } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { GoogleAnalytics, joinClassNames } from '@vertex-protocol/web-common';
 import { GatedAccessWrapper } from 'client/components/GatedAccessWrapper';
 import { useVertexCookiePreference } from 'client/hooks/useVertexCookiePreference';
 import { SEO_INFO } from 'client/seoInfo';
@@ -39,7 +38,7 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <main
-      className={classNames(
+      className={joinClassNames(
         ppObjectSans.variable,
         dmSans.variable,
         'antialiased',

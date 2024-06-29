@@ -1,5 +1,8 @@
-import { WithChildren, WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import {
+  WithChildren,
+  WithClassnames,
+  joinClassNames,
+} from '@vertex-protocol/web-common';
 import Image, { ImageProps } from 'next/image';
 
 interface Props extends WithChildren, WithClassnames, Omit<ImageProps, 'alt'> {
@@ -17,13 +20,13 @@ export function BgWrapper({
 }: Props) {
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'relative isolate flex h-max w-full flex-col items-center',
         className,
       )}
     >
       <Image
-        className={classNames(
+        className={joinClassNames(
           'absolute inset-0 -z-10 h-auto w-full',
           imgClassName,
         )}

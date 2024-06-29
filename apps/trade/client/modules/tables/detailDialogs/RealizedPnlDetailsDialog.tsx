@@ -1,14 +1,11 @@
 import { ProductEngineType } from '@vertex-protocol/client';
-import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
-import { Icons } from '@vertex-protocol/web-ui';
-import { LineItem } from 'client/components/LineItem/LineItem';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
+import { Icons, SecondaryButton } from '@vertex-protocol/web-ui';
 import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 import { RealizedPnlEventItem } from '../types/RealizedPnlEventItem';
 
 export type RealizedPnlDetailsDialogParams = RealizedPnlEventItem;
@@ -38,44 +35,40 @@ export function RealizedPnlDetailsDialog({
 
   const metricItems = (
     <div className="flex flex-col gap-y-4">
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Entry Price"
-        renderValue={marketPriceFormatSpecifier}
+        numberFormatSpecifier={marketPriceFormatSpecifier}
         value={entryPrice}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Exit Price"
-        renderValue={marketPriceFormatSpecifier}
+        numberFormatSpecifier={marketPriceFormatSpecifier}
         value={exitPrice}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Size"
-        renderValue={(val) => (
-          <AmountWithSymbol
-            symbol={symbol}
-            formattedSize={formatNumber(val, {
-              formatSpecifier: getMarketSizeFormatSpecifier(sizeIncrement),
-            })}
-          />
-        )}
+        numberFormatSpecifier={getMarketSizeFormatSpecifier(sizeIncrement)}
         value={filledAmountAbs}
+        valueEndElement={symbol}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="PnL"
-        renderValue={(val?: typeof pnlInfo) => (
+        valueContent={
           <PnlValueWithPercentage
-            pnlFrac={val?.realizedPnlFrac}
-            pnlUsd={val?.realizedPnlUsd}
+            pnlFrac={pnlInfo.realizedPnlFrac}
+            pnlUsd={pnlInfo.realizedPnlUsd}
           />
-        )}
-        value={pnlInfo}
+        }
       />
     </div>
   );
 
   const actions = (
     <SecondaryButton
-      size="md"
       className="w-full"
       startIcon={<Icons.RiShareForwardFill size={12} />}
       onClick={() => {

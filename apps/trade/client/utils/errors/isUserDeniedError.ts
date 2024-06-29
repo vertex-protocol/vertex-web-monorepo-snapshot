@@ -1,8 +1,16 @@
+import { UserRejectedRequestError } from 'viem';
+
 /**
- * Not sure if this is bulletproof, but it's a start
+ * Checks if the error is the result of user rejecting the transaction
  */
 export function isUserDeniedError(err?: any): boolean {
-  // Provider errors usually have a `code` property
+  // Viem wraps RPC errors under a `cause` property, check that first
+  // This condition is hit if we call `useWriteContract`
+  if (err?.['cause'] instanceof UserRejectedRequestError) {
+    return true;
+  }
+  
+  // Provider errors usually have a `code` property, this is hit if we use contract methods through the SDK
   if (!err?.code) {
     return false;
   }

@@ -1,14 +1,10 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   RadioGroup,
   RadioGroupCardProps,
   RadioGroupRootProps,
 } from '@vertex-protocol/web-ui';
-import {
-  RewardsCard,
-  RewardsCardLineItemProps,
-  RewardsCardMetricStackedItemProps,
-} from 'client/modules/rewards/components/RewardsCard';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { ReactNode } from 'react';
 
 export type ClaimAndStakeRadioID = 'claim' | 'claim_and_stake';
@@ -43,34 +39,12 @@ function LineItem({
   valueClassName,
   labelClassName,
   ...itemProps
-}: RewardsCardLineItemProps) {
-  return (
-    <RewardsCard.LineItem
-      labelClassName={joinClassNames(
-        'text-text-secondary sm:text-xs',
-        labelClassName,
-      )}
-      valueClassName={joinClassNames(
-        'text-text-primary sm:text-xs',
-        valueClassName,
-      )}
-      {...itemProps}
-    />
-  );
+}: ValueWithLabelProps) {
+  return <ValueWithLabel.Horizontal sizeVariant="xs" {...itemProps} />;
 }
 
-function MetricStackedItem({
-  valueClassName,
-  labelClassName,
-  ...itemProps
-}: RewardsCardMetricStackedItemProps) {
-  return (
-    <RewardsCard.MetricStackedItem
-      labelClassName={joinClassNames('text-text-secondary', labelClassName)}
-      valueClassName={joinClassNames('sm:text-lg', valueClassName)}
-      {...itemProps}
-    />
-  );
+function MetricStackedItem(itemProps: ValueWithLabelProps) {
+  return <ValueWithLabel.Vertical {...itemProps} />;
 }
 
 export const StakingRadioGroup = {

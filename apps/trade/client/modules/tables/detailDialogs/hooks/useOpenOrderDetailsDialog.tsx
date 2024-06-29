@@ -1,7 +1,7 @@
 import { BigDecimal, ProductEngineType } from '@vertex-protocol/client';
 import { useExecuteCancelOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrdersWithNotification';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { MarketInfoCellData } from '../../types/MarketInfoCellData';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';

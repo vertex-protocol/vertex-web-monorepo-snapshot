@@ -5,14 +5,12 @@ import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useMemo } from 'react';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 
 export function CloseAllPositionsHeaderCell<T>({
   header,
 }: {
   header: Header<T, any>;
 }) {
-  const { trackEvent } = useAnalyticsContext();
   const { show } = useDialog();
   const userActionState = useUserActionState();
   const { data: perpBalances } = usePerpPositions();
@@ -27,20 +25,13 @@ export function CloseAllPositionsHeaderCell<T>({
     <HeaderCell header={header} className="flex justify-end px-4">
       <SecondaryButton
         destructive
-        size="sm"
+        size="xs"
         disabled={!hasPositions || userActionState === 'block_all'}
         onClick={() => {
           show({
             type: 'close_all_positions',
             params: {},
           });
-
-          if (perpPositions) {
-            trackEvent({
-              type: 'close_all_positions_placed',
-              data: { numOpenPositions: perpPositions.length },
-            });
-          }
         }}
       >
         Close all positions

@@ -1,10 +1,10 @@
+import { BigDecimal } from '@vertex-protocol/client';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
-import BigNumber from 'bignumber.js';
 import { signDependentValue } from 'client/utils/signDependentValue';
 
 interface Props {
-  value: BigNumber;
+  value: BigDecimal;
 }
 
 export function SignOfValuePill({ value, className }: WithClassnames<Props>) {

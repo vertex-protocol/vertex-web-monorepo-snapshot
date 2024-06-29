@@ -1,4 +1,4 @@
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { PORTFOLIO_SUBROUTES } from 'client/modules/app/consts/routes';
 import { useRouter } from 'next/router';
 import { ElementType, useMemo } from 'react';

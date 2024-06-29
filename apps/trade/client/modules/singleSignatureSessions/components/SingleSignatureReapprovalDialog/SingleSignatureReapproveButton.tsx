@@ -26,7 +26,6 @@ export function SingleSignatureReapproveButton({
   })();
   return (
     <PrimaryButton
-      size="lg"
       onClick={onSubmit}
       disabled={buttonState !== 'enabled' && buttonState !== 'success'}
       isLoading={buttonState === 'loading'}

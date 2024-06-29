@@ -62,14 +62,14 @@ export function SpotMarketFeatureNotification({
           alt={symbol}
         />
         <LinkButton
-          color="white"
+          colorVariant="primary"
           onClick={onDepositClick}
           className="text-text-primary"
         >
           Deposit {symbol}
         </LinkButton>
         <LinkButton
-          color="white"
+          colorVariant="primary"
           onClick={onTradeClick}
           className="text-text-primary"
         >

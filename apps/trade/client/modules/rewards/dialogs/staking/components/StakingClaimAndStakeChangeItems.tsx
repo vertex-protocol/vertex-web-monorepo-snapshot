@@ -1,6 +1,6 @@
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { Icons } from '@vertex-protocol/web-ui';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { StakingRadioGroup } from './StakingRadioGroup';
 
 interface Props {
@@ -19,15 +19,15 @@ export function StakingClaimAndStakeChangeItems({
       <StakingRadioGroup.MetricStackedItem
         label="Current Position"
         value={currentAmountStaked}
-        formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-        symbol={protocolTokenSymbol}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+        valueEndElement={protocolTokenSymbol}
       />
       <Icons.BsArrowRightShort size={24} className="text-positive" />
       <StakingRadioGroup.MetricStackedItem
         label="New Position"
         value={estimatedAmountStaked}
-        formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-        symbol={protocolTokenSymbol}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+        valueEndElement={protocolTokenSymbol}
       />
     </div>
   );

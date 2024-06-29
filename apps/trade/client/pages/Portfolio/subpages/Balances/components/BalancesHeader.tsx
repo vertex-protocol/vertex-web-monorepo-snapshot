@@ -17,14 +17,14 @@ function HistoryPageActionButtons() {
   return (
     <div className="flex items-center gap-x-4">
       <LinkButton
-        color="white"
+        colorVariant="primary"
         className="text-sm"
         onClick={() => pushHistoryPage('deposits')}
       >
         Deposit History
       </LinkButton>
       <LinkButton
-        color="white"
+        colorVariant="primary"
         className="text-sm"
         onClick={() => pushHistoryPage('withdrawals')}
       >

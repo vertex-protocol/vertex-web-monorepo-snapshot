@@ -3,24 +3,26 @@ import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RangeSlider } from 'client/modules/trading/components/RangeSlider';
-import { usePerpLeverage } from 'client/pages/PerpTrading/hooks/usePerpLeverage';
+import { usePerpLeverageDialog } from 'client/pages/PerpTrading/hooks/usePerpLeverageDialog';
 import { useSelectedPerpLeverage } from 'client/pages/PerpTrading/hooks/useSelectedPerpLeverage';
 import Image from 'next/image';
 import { PerpLeverageInfoCollapsible } from './PerpLeverageInfoCollapsible';
 
 export interface PerpLeverageDialogParams {
   initialLeverage: number;
+  productId: number;
 }
 
 export function PerpLeverageDialog({
   initialLeverage,
+  productId,
 }: PerpLeverageDialogParams) {
   const { hide } = useDialog();
-  const { currentMarket, leverage, maxLeverage, setLeverage } = usePerpLeverage(
-    {
+  const { currentMarket, leverage, maxLeverage, setLeverage } =
+    usePerpLeverageDialog({
       initialLeverage,
-    },
-  );
+      productId,
+    });
   const { setSelectedLeverage: setLeverageAtomValue } = useSelectedPerpLeverage(
     currentMarket?.productId,
   );
@@ -58,7 +60,6 @@ export function PerpLeverageDialog({
           )}
         </div>
         <PrimaryButton
-          size="lg"
           onClick={() => {
             setLeverageAtomValue(leverage);
             hide();

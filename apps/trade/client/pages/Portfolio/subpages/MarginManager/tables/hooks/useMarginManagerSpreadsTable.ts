@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useMemo } from 'react';
 import { useSpreadBalances } from './useSpreadBalances';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
@@ -25,7 +25,7 @@ export function useMarginManagerSpreadsTable() {
   const { data: marketsStaticData, isLoading: marketStaticDataLoading } =
     useAllMarketsStaticData();
 
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
 
   const mappedData: MarginManagerSpreadTableItem[] | undefined = useMemo(() => {
     if (!spreadBalances || !marketsStaticData) {

@@ -1,11 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { UserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 
 interface Props extends WithClassnames {
   accountUsdcRewardsEarned: BigDecimal | undefined;
@@ -24,9 +25,6 @@ export function TokenStakingRewardsCard({
   usdcSymbol,
 }: Props) {
   const { show } = useDialog();
-
-  // Design wants these values to have a smaller font as they are used in a nested card
-  const valueClassName = 'text-sm sm:text-base';
 
   const actionDisabled =
     !accountUsdcRewardsClaimable ||
@@ -47,30 +45,30 @@ export function TokenStakingRewardsCard({
         Staking Rewards
       </DefinitionTooltip>
       <RewardsCard.LineItems>
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
+          sizeVariant="sm"
           label="Total"
           value={accountUsdcRewardsEarned}
-          formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-          symbol={usdcSymbol}
-          valueClassName={valueClassName}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          valueEndElement={usdcSymbol}
         />
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
+          sizeVariant="sm"
           label="Claimed"
           value={accountRewardsClaimed}
-          formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-          symbol={usdcSymbol}
-          valueClassName={valueClassName}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          valueEndElement={usdcSymbol}
         />
-        <RewardsCard.MetricStackedItem
+        <ValueWithLabel.Vertical
+          sizeVariant="sm"
           label="Available to Claim"
           value={accountUsdcRewardsClaimable}
-          formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-          symbol={usdcSymbol}
-          valueClassName={valueClassName}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          valueEndElement={usdcSymbol}
         />
         <SecondaryButton
-          size="lg"
           disabled={actionDisabled}
+          size="sm"
           onClick={() =>
             show({ type: 'claim_vrtx_staking_rewards', params: {} })
           }

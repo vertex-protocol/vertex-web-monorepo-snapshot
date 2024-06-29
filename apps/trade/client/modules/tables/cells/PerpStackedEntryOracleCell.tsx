@@ -1,8 +1,8 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 
 interface Props extends TableCellProps {
   averageEntryPrice: BigDecimal;

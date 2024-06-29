@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   createQueryKey,
-  useEnableSubaccountQueries,
+  QueryDisabledError,
   useIsChainType,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 
 export function addressBlitzPointsQueryKey(sender?: string) {
   return createQueryKey('addressBlitzPoints', sender);
@@ -16,10 +15,9 @@ export function addressBlitzPointsQueryKey(sender?: string) {
 export function useAddressBlitzPoints() {
   const { isBlast } = useIsChainType();
   const { currentSubaccount } = useSubaccountContext();
-  const vertexClient = useVertexClient();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
+  const vertexClient = usePrimaryChainVertexClient();
 
-  const disabled = !vertexClient || !enableSubaccountQueries || !isBlast;
+  const disabled = !vertexClient || !isBlast;
   const addressForQuery =
     currentSubaccount.address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
 

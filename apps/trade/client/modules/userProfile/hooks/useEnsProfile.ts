@@ -1,5 +1,5 @@
 import { useEnsAvatar, useEnsName } from 'wagmi';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { mainnet } from 'wagmi/chains';
 import { Address } from 'viem';
 import { normalize } from 'viem/ens';

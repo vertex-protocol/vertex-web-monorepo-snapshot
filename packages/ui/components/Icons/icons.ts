@@ -47,6 +47,7 @@ import {
   FaSort,
   FaSortDown,
   FaSortUp,
+  FaTelegramPlane,
 } from 'react-icons/fa';
 import { FaCircleHalfStroke } from 'react-icons/fa6';
 import {
@@ -64,8 +65,10 @@ import {
   FiTrendingUp,
 } from 'react-icons/fi';
 import { GoDesktopDownload } from 'react-icons/go';
+import { HiLightningBolt } from 'react-icons/hi';
 import { HiArrowsRightLeft, HiOutlineCreditCard } from 'react-icons/hi2';
 import { ImShare } from 'react-icons/im';
+import { IoPeopleSharp } from 'react-icons/io5';
 import {
   MdAccessTime,
   MdAdsClick,
@@ -81,6 +84,7 @@ import {
   MdClose,
   MdContentCopy,
   MdCreditScore,
+  MdDiamond,
   MdEdit,
   MdFlag,
   MdFlashOn,
@@ -108,12 +112,19 @@ import {
 import {
   PiArrowDownLeft,
   PiArrowUpRight,
+  PiArrowsClockwise,
+  PiArrowsLeftRight,
   PiArrowsMergeBold,
   PiCheckBold,
+  PiCoins,
+  PiClockClockwise,
+  PiCurrencyCircleDollar,
   PiCurrencyCircleDollarBold,
   PiFileText,
+  PiIntersectLight,
   PiMathOperationsBold,
   PiNavigationArrowFill,
+  PiPulse,
   PiPushPin,
   PiPushPinFill,
   PiShuffleSimple,
@@ -130,6 +141,7 @@ import {
   TbCurrencyDollarOff,
   TbFileDescription,
   TbGenderNeutrois,
+  TbListSearch,
   TbTrophy,
 } from 'react-icons/tb';
 
@@ -161,6 +173,7 @@ export const Icons = {
   BsFillLightningChargeFill,
   BsGear,
   BsLightningChargeFill,
+  HiLightningBolt,
   BsLink45Deg,
   PiPushPin,
   PiPushPinFill,
@@ -179,6 +192,7 @@ export const Icons = {
   FaSort,
   FaSortDown,
   FaSortUp,
+  FaTelegramPlane,
   FiCalendar,
   FiChevronDown,
   FiChevronLeft,
@@ -195,6 +209,7 @@ export const Icons = {
   HiArrowsRightLeft,
   HiOutlineCreditCard,
   ImShare,
+  IoPeopleSharp,
   MdAccessTime,
   MdAdsClick,
   MdArrowDownward,
@@ -209,6 +224,7 @@ export const Icons = {
   MdClose,
   MdContentCopy,
   MdCreditScore,
+  MdDiamond,
   MdEdit,
   MdFlag,
   MdFlashOn,
@@ -234,12 +250,19 @@ export const Icons = {
   MdUpdate,
   PiArrowDownLeft,
   PiArrowUpRight,
+  PiArrowsClockwise,
+  PiArrowsLeftRight,
   PiArrowsMergeBold,
   PiCheckBold,
+  PiClockClockwise,
+  PiCoins,
+  PiCurrencyCircleDollar,
   PiCurrencyCircleDollarBold,
   PiMathOperationsBold,
   PiFileText,
+  PiIntersectLight,
   PiNavigationArrowFill,
+  PiPulse,
   PiShuffleSimple,
   PiWalletFill,
   PiXBold,
@@ -252,5 +275,6 @@ export const Icons = {
   TbCurrencyDollarOff,
   TbFileDescription,
   TbGenderNeutrois,
+  TbListSearch,
   TbTrophy,
 } as const;

@@ -4,7 +4,7 @@ import { Form } from 'client/components/Form';
 import { InputSummary } from 'client/components/InputSummary';
 import { CollateralSelectInput } from 'client/modules/collateral/components/CollateralSelectInput';
 import { useRepayDepositForm } from 'client/modules/collateral/repay/hooks/useRepayDepositForm';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { DepositSummaryDisclosure } from '../../components/DepositSummaryDisclosure';
 import { useDepositAmountErrorTooltipContent } from '../../deposit/hooks/useDepositAmountErrorTooltipContent';
 import { RepayDepositButton } from './RepayDepositButton';

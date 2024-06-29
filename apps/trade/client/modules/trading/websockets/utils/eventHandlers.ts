@@ -1,7 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 import { EnginePriceTickLiquidity } from '@vertex-protocol/engine-client';
 import { fromX18, toBigDecimal } from '@vertex-protocol/utils';
-import { PrimaryChainID } from '@vertex-protocol/web-data';
+import { PrimaryChainID } from '@vertex-protocol/react-client';
 import {
   LatestOrderFill,
   latestOrderFillsForProductQueryKey,

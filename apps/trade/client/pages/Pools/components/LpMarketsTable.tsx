@@ -1,7 +1,11 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
 import { Divider } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
@@ -17,10 +21,6 @@ import { PercentageCell } from 'client/modules/tables/cells/PercentageCell';
 import { PnlCell } from 'client/modules/tables/cells/PnlCell';
 import { StackedTokenPairCell } from 'client/modules/tables/cells/StackedTokenPairCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<LpTableItem>();
@@ -46,7 +46,8 @@ export function LpMarketsTable({ className }: WithClassnames) {
         },
         enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-32',
+          cellContainerClassName: 'w-36',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('yieldFraction', {
@@ -118,7 +119,7 @@ export function LpMarketsTable({ className }: WithClassnames) {
         },
         sortingFn: bigDecimalSortFn,
         meta: {
-          cellContainerClassName: 'w-44',
+          cellContainerClassName: 'w-36',
         },
       }),
       columnHelper.accessor('amounts', {
@@ -136,7 +137,7 @@ export function LpMarketsTable({ className }: WithClassnames) {
           );
         },
         meta: {
-          cellContainerClassName: 'w-44',
+          cellContainerClassName: 'w-40',
         },
       }),
       columnHelper.accessor('unrealizedPnl', {

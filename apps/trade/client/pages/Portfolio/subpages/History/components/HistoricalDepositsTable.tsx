@@ -7,7 +7,7 @@ import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymb
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { ProductInfoCell } from 'client/modules/tables/cells/ProductInfoCell';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import {
   HistoricalCollateralItem,
@@ -36,7 +36,8 @@ export function HistoricalDepositsTable() {
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('metadata', {

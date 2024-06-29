@@ -27,7 +27,6 @@ export const ClosePositionButton = ({
 
   return (
     <PrimaryButton
-      size="lg"
       type="submit"
       isLoading={state === 'loading'}
       disabled={state === 'disabled'}

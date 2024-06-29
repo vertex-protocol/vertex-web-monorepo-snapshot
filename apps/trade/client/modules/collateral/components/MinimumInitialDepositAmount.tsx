@@ -1,8 +1,10 @@
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { Icons } from '@vertex-protocol/web-ui';
-import { LineItem } from 'client/components/LineItem/LineItem';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 
 interface Props {
   amount: BigDecimal | undefined;
@@ -19,16 +21,12 @@ export function MinimumInitialDepositAmount({ amount, symbol }: Props) {
   });
 
   return (
-    <LineItem.Base
-      className="justify-start gap-x-1 px-0.5"
-      label={
-        <>
-          <Icons.AiOutlineDollarCircle size={16} className="shrink-0" />
-          <span>Minimum initial deposit:</span>
-        </>
-      }
-      labelClassName="flex items-center gap-x-1"
-      value={`${formattedAmount} ${symbol}`}
+    <ValueWithLabel.Horizontal
+      fitWidth
+      sizeVariant="xs"
+      labelStartIcon={Icons.AiOutlineDollarCircle}
+      label="Minimum initial deposit:"
+      valueContent={`${formattedAmount} ${symbol}`}
     />
   );
 }

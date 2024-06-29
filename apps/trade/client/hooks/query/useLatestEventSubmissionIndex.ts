@@ -2,11 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { toBigDecimal } from '@vertex-protocol/client';
 import {
   PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { first } from 'lodash';
 
 function latestEventSubmissionIndexQueryKey(chainId: PrimaryChainID) {
@@ -15,7 +14,7 @@ function latestEventSubmissionIndexQueryKey(chainId: PrimaryChainID) {
 
 export function useLatestEventSubmissionIndex() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({

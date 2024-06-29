@@ -1,13 +1,13 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { addDecimals, BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import { ExecutePlaceEngineOrderParams } from 'client/hooks/execute/placeOrder/types';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import {
   RepayConvertFormValues,
   RepayConvertProduct,
 } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { addDecimals } from 'client/utils/decimalAdjustment';
 import { AnnotatedSpotMarket } from 'common/productMetadata/types';
 import { useCallback } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -30,6 +30,7 @@ export function useRepayConvertSubmitHandler({
   isSellOrder,
 }: Params) {
   const { dispatchNotification } = useNotificationManagerContext();
+  const { trackEvent } = useAnalyticsContext();
 
   return useCallback(
     (data: RepayConvertFormValues) => {
@@ -58,6 +59,10 @@ export function useRepayConvertSubmitHandler({
           form.setValue('sourceProductId', undefined);
         },
       });
+      trackEvent({
+        type: 'repay_convert_placed',
+        data: {},
+      });
 
       dispatchNotification({
         type: 'place_order',
@@ -80,6 +85,7 @@ export function useRepayConvertSubmitHandler({
       executionConversionPrice,
       isSellOrder,
       executePlaceOrder,
+      trackEvent,
       dispatchNotification,
       market?.priceIncrement,
       form,

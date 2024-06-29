@@ -1,13 +1,16 @@
+import {
+  formatNumber,
+  NumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
-  joinClassNames,
+  mergeClassNames,
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
+import { TextButton } from '@vertex-protocol/web-ui';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { NumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { ValueWithLabel } from './ValueWithLabel/ValueWithLabel';
 
 export interface InputSummaryItemProps extends WithClassnames {
   label: string;
@@ -31,32 +34,23 @@ function Item({
   });
 
   return (
-    <div
-      className={joinClassNames(
-        'text-text-tertiary flex items-center gap-x-1 text-xs',
-        className,
-      )}
-    >
-      <DefinitionTooltip definitionId={definitionTooltipId}>
-        {label}
-      </DefinitionTooltip>
-      <div
-        className={joinClassNames(
-          'text-text-secondary',
-          onValueClick && 'hover:text-text-primary cursor-pointer',
-        )}
-        onClick={onValueClick}
-      >
-        {currentValueContent}
-      </div>
-    </div>
+    <ValueWithLabel.Horizontal
+      fitWidth
+      sizeVariant="xs"
+      className={className}
+      valueContent={
+        <TextButton onClick={onValueClick}>{currentValueContent}</TextButton>
+      }
+      label={label}
+      tooltip={definitionTooltipId ? { id: definitionTooltipId } : undefined}
+    />
   );
 }
 
 function Container({ className, children }: WithClassnames<WithChildren>) {
   return (
     <div
-      className={joinClassNames(
+      className={mergeClassNames(
         'text-text-tertiary flex flex-col',
         'gap-y-2 py-1.5',
         className,

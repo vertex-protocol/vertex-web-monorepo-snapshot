@@ -1,4 +1,4 @@
-import { VERTEX_SPECIFIC_LINKS } from '@vertex-protocol/web-common';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { ButtonHelperInfo } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
@@ -10,7 +10,7 @@ import { LinkButton } from 'client/components/LinkButton';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import {
   VOVRTX_INFO,
   VRTX_TOKEN_INFO,
@@ -52,7 +52,7 @@ export function StakeVrtxDialog() {
         endElement={
           <LinkButton
             as={Link}
-            color="white"
+            colorVariant="primary"
             className="text-xs"
             href={VERTEX_SPECIFIC_LINKS.stakeVrtxDocs}
             external
@@ -75,7 +75,7 @@ export function StakeVrtxDialog() {
                 {VRTX_TOKEN_INFO.symbol} in your Vertex account, you&apos;ll
                 need to{' '}
                 <LinkButton
-                  color="accent"
+                  colorVariant="accent"
                   onClick={() =>
                     showDialogForProduct({
                       dialogType: 'withdraw',

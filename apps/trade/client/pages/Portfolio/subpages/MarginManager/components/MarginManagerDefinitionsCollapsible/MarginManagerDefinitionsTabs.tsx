@@ -84,7 +84,7 @@ export function MarginManagerDefinitionsTabs() {
               <CardButton
                 className={joinClassNames(
                   'flex min-w-max justify-start',
-                  'flex-1 font-medium ring-inset',
+                  'flex-1 ring-inset',
                   'p-3 lg:py-4',
                   'text-xs lg:text-sm',
                   stateClassNames,

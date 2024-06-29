@@ -4,7 +4,7 @@ import {
   EngineServerPriceTickLiquidity,
   EngineServerSubscriptionTradeEvent,
 } from '@vertex-protocol/engine-client';
-import { usePrimaryChainId } from '@vertex-protocol/web-data';
+import { usePrimaryChainId } from '@vertex-protocol/react-client';
 import {
   BatchBookDepthUpdateData,
   BatchMarketTradeUpdateData,

@@ -1,7 +1,7 @@
 import {
+  joinClassNames,
   WithChildren,
   WithClassnames,
-  joinClassNames,
 } from '@vertex-protocol/web-common';
 import { ReactNode } from 'react';
 
@@ -9,7 +9,7 @@ function Container({ className, children }: WithClassnames<WithChildren>) {
   return (
     <div
       className={joinClassNames(
-        'bg-surface-1 flex flex-col gap-y-5 rounded p-3',
+        'bg-surface-1 flex flex-col gap-y-2 rounded p-3',
         className,
       )}
     >

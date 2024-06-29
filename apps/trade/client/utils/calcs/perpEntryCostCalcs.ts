@@ -4,7 +4,7 @@ import {
   PerpMarket,
   SpotMarket,
 } from '@vertex-protocol/client';
-import { BigDecimals } from '../BigDecimals';
+import { BigDecimals } from '@vertex-protocol/utils';
 
 export function calcPerpEntryCostBeforeLeverage(
   market: SpotMarket | PerpMarket,

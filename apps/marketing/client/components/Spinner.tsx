@@ -1,10 +1,9 @@
-import { WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 
 export function Spinner({ className }: WithClassnames) {
   return (
     <svg
-      className={classNames('aspect-square animate-spin', className)}
+      className={joinClassNames('aspect-square animate-spin', className)}
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

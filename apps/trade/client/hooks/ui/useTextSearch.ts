@@ -13,6 +13,7 @@ interface Params<TItem> {
 
 interface UseTextSearch<TItem> {
   results: TItem[];
+  normalizedQuery: string;
 }
 
 /**
@@ -38,7 +39,7 @@ export function useTextSearch<TItem>({
 
   const debouncedQuery = useDebounce(query, { wait: 200 });
 
-  const results = useMemo(() => {
+  const { results, normalizedQuery } = useMemo(() => {
     const normalizedQuery = debouncedQuery.toLowerCase().trim();
 
     const filteredResults = (() => {
@@ -51,10 +52,14 @@ export function useTextSearch<TItem>({
       );
     })();
 
-    return filteredResults.map(({ item }) => item);
+    return {
+      results: filteredResults.map(({ item }) => item),
+      normalizedQuery,
+    };
   }, [debouncedQuery, itemsToSearch]);
 
   return {
     results,
+    normalizedQuery,
   };
 }

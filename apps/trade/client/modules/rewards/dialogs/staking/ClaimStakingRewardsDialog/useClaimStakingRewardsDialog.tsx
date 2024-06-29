@@ -9,7 +9,7 @@ import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnC
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { safeDiv } from 'client/utils/safeDiv';
 import { useCallback, useMemo, useState } from 'react';
 import { ClaimAndStakeRadioID } from '../components/StakingRadioGroup';
@@ -26,7 +26,8 @@ export function useClaimStakingRewardsDialog(): UseClaimStakingRewardsDialog {
   const { data: accountStakingState } = useAccountStakingState();
   const { data: estimatedVrtxSwapAmountWithDecimals } =
     useEstimatedSwapAmountFromStakingRewards();
-  const { primaryQuoteToken, protocolToken } = useVertexMetadataContext();
+  const { primaryQuoteToken, protocolTokenMetadata } =
+    useVertexMetadataContext();
   const { hide } = useDialog();
 
   const [selectedRadioId, setSelectedRadioId] =
@@ -54,9 +55,12 @@ export function useClaimStakingRewardsDialog(): UseClaimStakingRewardsDialog {
   const estimatedVrtxSwapAmount = useMemo(() => {
     return removeDecimals(
       estimatedVrtxSwapAmountWithDecimals,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
-  }, [estimatedVrtxSwapAmountWithDecimals, protocolToken.tokenDecimals]);
+  }, [
+    estimatedVrtxSwapAmountWithDecimals,
+    protocolTokenMetadata.token.tokenDecimals,
+  ]);
 
   // Current amount of claimable USDC rewards
   const claimableStakingRewards = useMemo(() => {
@@ -75,7 +79,7 @@ export function useClaimStakingRewardsDialog(): UseClaimStakingRewardsDialog {
   const { currentAmountStaked, estimatedAmountStaked } = useMemo(() => {
     const currentAmountStaked = removeDecimals(
       accountStakingState?.amountStaked,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
 
     if (!estimatedVrtxSwapAmount) {
@@ -91,7 +95,7 @@ export function useClaimStakingRewardsDialog(): UseClaimStakingRewardsDialog {
     };
   }, [
     estimatedVrtxSwapAmount,
-    protocolToken.tokenDecimals,
+    protocolTokenMetadata.token.tokenDecimals,
     accountStakingState?.amountStaked,
   ]);
 
@@ -148,7 +152,7 @@ export function useClaimStakingRewardsDialog(): UseClaimStakingRewardsDialog {
     disableRadioButtons:
       !hasClaimableStakingRewards || actionButtonState === 'loading',
     usdcSymbol: primaryQuoteToken.symbol,
-    protocolTokenSymbol: protocolToken.symbol,
+    protocolTokenSymbol: protocolTokenMetadata.token.symbol,
     setSelectedRadioId,
     onSubmit,
     onClose: hide,

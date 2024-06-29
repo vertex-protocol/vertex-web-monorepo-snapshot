@@ -30,7 +30,7 @@ export function DesktopPortfolioSubNavMenu() {
         className={joinClassNames(
           'flex h-full flex-col overflow-hidden',
           'bg-background',
-          'border-stroke border-r duration-200',
+          'border-stroke border-r',
           sidebarHidden ? 'w-4' : 'w-subnav-menu',
         )}
       >

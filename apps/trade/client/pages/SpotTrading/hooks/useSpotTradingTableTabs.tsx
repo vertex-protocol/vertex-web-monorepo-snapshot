@@ -20,7 +20,6 @@ import {
   SpotBalancesTab,
 } from 'client/pages/SpotTrading/components/SpotBalancesTab';
 import { SpotOrderPlacementSection } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/SpotOrderPlacementSection';
-import { useSelectedSpotMarket } from 'client/pages/SpotTrading/hooks/useSelectedSpotMarket';
 import { useMemo } from 'react';
 
 const SHOW_ALL_FILTER = undefined;
@@ -29,10 +28,7 @@ const PERP_ONLY_FILTER = {
   marketType: ProductEngineType.PERP,
 };
 
-export function useSpotTradingTableTabs() {
-  const { currentMarket } = useSelectedSpotMarket();
-  const currentSpotProductId = currentMarket?.productId;
-
+export function useSpotTradingTableTabs(productId: number | undefined) {
   const mobileTradingTabs = useMemo((): TradingTab[] => {
     return [
       {
@@ -40,7 +36,7 @@ export function useSpotTradingTableTabs() {
         label: 'Trade',
         content: (
           <MobileTradeTab
-            productId={currentSpotProductId}
+            productId={productId}
             OrderPlacementSection={SpotOrderPlacementSection}
           />
         ),
@@ -52,7 +48,7 @@ export function useSpotTradingTableTabs() {
           <SpotBalancesTab
             enableUserFiltering={false}
             defaultFilter={SHOW_ALL_FILTER}
-            productId={currentSpotProductId}
+            productId={productId}
           />
         ),
       },
@@ -78,7 +74,7 @@ export function useSpotTradingTableTabs() {
             isDesktop={false}
             enableUserFiltering={false}
             defaultFilter={SHOW_ALL_FILTER}
-            productId={currentSpotProductId}
+            productId={productId}
           />
         ),
       },
@@ -91,7 +87,7 @@ export function useSpotTradingTableTabs() {
             isDesktop={false}
             enableUserFiltering={false}
             defaultFilter={SHOW_ALL_FILTER}
-            productId={currentSpotProductId}
+            productId={productId}
           />
         ),
       },
@@ -103,7 +99,7 @@ export function useSpotTradingTableTabs() {
             isDesktop={false}
             defaultFilter={SHOW_ALL_FILTER}
             enableUserFiltering={false}
-            productId={currentSpotProductId}
+            productId={productId}
           />
         ),
       },
@@ -120,7 +116,7 @@ export function useSpotTradingTableTabs() {
         ),
       },
     ];
-  }, [currentSpotProductId]);
+  }, [productId]);
 
   const desktopTradingTabs = useMemo((): TradingTab[] => {
     return [
@@ -131,7 +127,7 @@ export function useSpotTradingTableTabs() {
           <SpotBalancesTab
             defaultFilter={SHOW_ALL_FILTER}
             enableUserFiltering
-            productId={currentSpotProductId}
+            productId={productId}
           />
         ),
         filters: balancesTableFilters,
@@ -157,7 +153,7 @@ export function useSpotTradingTableTabs() {
             defaultFilter={SHOW_ALL_FILTER}
             isDesktop
             enableUserFiltering
-            productId={currentSpotProductId}
+            productId={productId}
           />
         ),
         filters: openEngineOrdersTableFilters,
@@ -171,7 +167,7 @@ export function useSpotTradingTableTabs() {
             defaultFilter={SHOW_ALL_FILTER}
             isDesktop
             enableUserFiltering
-            productId={currentSpotProductId}
+            productId={productId}
           />
         ),
         filters: openTriggerOrdersTableFilters,
@@ -184,7 +180,7 @@ export function useSpotTradingTableTabs() {
             defaultFilter={SHOW_ALL_FILTER}
             enableUserFiltering
             isDesktop
-            productId={currentSpotProductId}
+            productId={productId}
           />
         ),
         filters: historicalTradesTableFilters,
@@ -203,7 +199,7 @@ export function useSpotTradingTableTabs() {
         ),
       },
     ];
-  }, [currentSpotProductId]);
+  }, [productId]);
 
   return {
     desktopTradingTabs,

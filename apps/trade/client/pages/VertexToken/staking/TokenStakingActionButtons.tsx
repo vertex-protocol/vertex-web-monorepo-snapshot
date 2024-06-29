@@ -14,7 +14,6 @@ export function TokenStakingActionButtons({
   return (
     <div className={mergeClassNames('flex items-center gap-x-4', className)}>
       <PrimaryButton
-        size="lg"
         className="flex-1"
         disabled={userActionState === 'block_all'}
         onClick={() => show({ type: 'stake_vrtx', params: {} })}
@@ -22,7 +21,6 @@ export function TokenStakingActionButtons({
         Stake
       </PrimaryButton>
       <SecondaryButton
-        size="lg"
         className="flex-1"
         disabled={userActionState === 'block_all'}
         onClick={() => show({ type: 'unstake_vrtx', params: {} })}

@@ -1,15 +1,14 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
-import { DataTable } from 'client/components/DataTable/DataTable';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 import {
   CustomNumberFormatSpecifier,
+  getMarketSizeFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
+import { DataTable } from 'client/components/DataTable/DataTable';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { useMemo } from 'react';
 import { AmountWithSymbolCell } from './cells/AmountWithSymbolCell';
 import { CurrencyCell } from './cells/CurrencyCell';
@@ -26,7 +25,6 @@ const columnHelper = createColumnHelper<FundingPaymentsTableItem>();
 export const PaginatedFundingPaymentsTable = ({
   className,
 }: WithClassnames) => {
-  const { primaryQuoteToken } = useVertexMetadataContext();
   const {
     mappedData,
     pageCount,
@@ -47,7 +45,8 @@ export const PaginatedFundingPaymentsTable = ({
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('marketInfo', {
@@ -136,7 +135,7 @@ export const PaginatedFundingPaymentsTable = ({
           return (
             <AmountWithSymbolCell
               amount={fundingPaymentQuote}
-              symbol={primaryQuoteToken.symbol}
+              symbol={context.row.original.marketInfo.quoteSymbol}
               formatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
             />
           );
@@ -147,7 +146,7 @@ export const PaginatedFundingPaymentsTable = ({
         },
       }),
     ];
-  }, [primaryQuoteToken.symbol]);
+  }, []);
 
   return (
     <DataTable

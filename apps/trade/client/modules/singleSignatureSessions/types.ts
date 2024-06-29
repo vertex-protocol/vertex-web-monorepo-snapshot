@@ -1,4 +1,3 @@
-import { PrimaryChainID } from '@vertex-protocol/web-data';
 import { Wallet } from 'ethers';
 
 export interface SubaccountSignOncePreference {

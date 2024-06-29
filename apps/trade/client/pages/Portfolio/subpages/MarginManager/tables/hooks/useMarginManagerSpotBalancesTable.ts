@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
@@ -23,7 +23,7 @@ export function useMarginManagerSpotBalancesTable() {
     useSpotBalances();
   const { data: marketsStaticData, isLoading: marketStaticDataLoading } =
     useAllMarketsStaticData();
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
 
   const mappedData: MarginManagerSpotBalanceTableItem[] | undefined =
     useMemo(() => {

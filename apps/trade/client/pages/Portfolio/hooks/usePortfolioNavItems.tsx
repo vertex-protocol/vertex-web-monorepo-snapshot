@@ -1,4 +1,4 @@
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { PORTFOLIO_SUBROUTES } from 'client/modules/app/consts/routes';
 import { PortfolioNavItem } from 'client/pages/Portfolio/components/navigation/types';

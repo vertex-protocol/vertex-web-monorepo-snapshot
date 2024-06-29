@@ -10,7 +10,7 @@ import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlacehold
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { useMemo } from 'react';
 import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
@@ -50,7 +50,8 @@ export function MarginManagerSpotBalancesTable({ className }: WithClassnames) {
           },
           enableSorting: false,
           meta: {
-            cellContainerClassName: 'w-32',
+            cellContainerClassName: 'w-36',
+            withLeftPadding: true,
           },
         }),
         columnHelper.accessor('balanceAmount', {

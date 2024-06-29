@@ -31,10 +31,14 @@ export function DataTableRowGroup<TData extends RowData>({
       }}
     >
       {row.getVisibleCells().map((cell) => {
+        const withLeftPadding = cell.column.columnDef.meta?.withLeftPadding;
         return (
           <div
             key={cell.id}
-            className={cell.column.columnDef.meta?.cellContainerClassName}
+            className={mergeClassNames(
+              cell.column.columnDef.meta?.cellContainerClassName,
+              withLeftPadding && 'pl-4',
+            )}
           >
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </div>

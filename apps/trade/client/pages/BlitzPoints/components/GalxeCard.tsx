@@ -1,9 +1,7 @@
-import {
-  BLITZ_SPECIFIC_LINKS,
-  joinClassNames,
-} from '@vertex-protocol/web-common';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { Card, Icons, SecondaryButton } from '@vertex-protocol/web-ui';
-import { IMAGES } from 'client/modules/brand/images';
+import { IMAGES } from 'common/brandMetadata/images';
+import { BLITZ_SPECIFIC_LINKS } from 'common/brandMetadata/links/blitzLinks';
 
 import galxeLogo from 'client/pages/BlitzPoints/assets/galxe-logo.svg';
 import Image from 'next/image';
@@ -26,12 +24,7 @@ export function GalxeCard() {
         <p className="text-text-secondary text-sm">
           Complete missions on Galxe to earn community points.
         </p>
-        <SecondaryButton
-          size="lg"
-          as={Link}
-          href={BLITZ_SPECIFIC_LINKS.galxe}
-          external
-        >
+        <SecondaryButton as={Link} href={BLITZ_SPECIFIC_LINKS.galxe} external>
           Explore Missions
         </SecondaryButton>
       </div>

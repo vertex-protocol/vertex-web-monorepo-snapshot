@@ -1,7 +1,7 @@
+import { BigDecimals } from '@vertex-protocol/utils';
 import { WithClassnames } from '@vertex-protocol/web-common';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { useOrderbook } from 'client/modules/trading/marketOrders/orderbook/hooks/useOrderbook';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import { safeDiv } from 'client/utils/safeDiv';
 import { useCallback } from 'react';
 import { MarketOrderRow } from '../components/MarketOrderRow';
@@ -23,7 +23,7 @@ export function MobileOrderbookPreview({ className, productId, depth }: Props) {
     lastPrice,
     lastPriceChange,
     setNewPriceInput,
-    symbol,
+    amountSymbol,
     cumulativeAmountSpecifier,
     priceFormatSpecifier,
   } = useOrderbook({
@@ -70,7 +70,7 @@ export function MobileOrderbookPreview({ className, productId, depth }: Props) {
     <div className={className}>
       <MarketOrdersHeaderRow.Container className="border-stroke border-b">
         <MarketOrdersHeaderRow.Item label="Price" />
-        <MarketOrdersHeaderRow.Item label="Tot." symbol={symbol} />
+        <MarketOrdersHeaderRow.Item label={`Total ${amountSymbol}`} />
       </MarketOrdersHeaderRow.Container>
       <div className="flex h-full w-full flex-col gap-y-1">
         <MarketOrderRows
@@ -87,6 +87,7 @@ export function MobileOrderbookPreview({ className, productId, depth }: Props) {
           priceIncrement={orderbookData?.priceIncrement}
           setPriceInput={setNewPriceInput}
           spread={null}
+          viewType="bids_and_asks"
         />
         <MarketOrderRows
           numRows={depth}

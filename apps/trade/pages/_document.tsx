@@ -1,4 +1,4 @@
-import { BRAND_SEO_METADATA } from 'client/modules/brand/consts/seoInfo';
+import { BRAND_SEO_METADATA } from 'common/brandMetadata/seoInfo';
 import { Head, Html, Main, NextScript } from 'next/document';
 
 export default function AppDocument() {

@@ -5,8 +5,8 @@ import { ClosePositionNotificationData } from 'client/modules/notifications/type
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+} from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { OrderSuccessIcon } from '../OrderSuccessIcon';
 

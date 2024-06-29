@@ -1,19 +1,17 @@
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { LineItem } from 'client/components/LineItem/LineItem';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
 import {
-  formatTimestamp,
   TimeFormatSpecifier,
+  formatTimestamp,
 } from 'client/utils/formatTimestamp';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { OpenTriggerOrderTableItem } from '../hooks/useOpenTriggerOrdersTable';
 import { ProductHeader } from './components/ProductHeader';
 import { useOpenOrderDetailsDialog } from './hooks/useOpenOrderDetailsDialog';
-import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 
 export type OpenTriggerOrderDetailsDialogParams = OpenTriggerOrderTableItem;
 
@@ -47,69 +45,59 @@ export function OpenTriggerOrderDetailsDialog({
 
   const metricItems = (
     <div className="flex flex-col gap-y-4">
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Time"
-        renderValue={(val) => (
-          <div className="flex gap-x-1.5">
-            {formatTimestamp(val, {
-              formatSpecifier: TimeFormatSpecifier.MONTH_D_YYYY,
-            })}
-            <div className="text-text-tertiary">
-              {formatTimestamp(val, {
-                formatSpecifier: TimeFormatSpecifier.HH_MM_SS_12H,
-              })}
-            </div>
-          </div>
-        )}
-        value={timePlacedMillis}
+        valueContent={formatTimestamp(timePlacedMillis, {
+          formatSpecifier: TimeFormatSpecifier.MONTH_D_YYYY,
+        })}
+        valueEndElement={formatTimestamp(timePlacedMillis, {
+          formatSpecifier: TimeFormatSpecifier.HH_MM_SS_12H,
+        })}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Type"
         valueClassName="text-text-tertiary uppercase"
-        renderValue={(val) => (val ? getOrderTypeLabel(val) : undefined)}
-        value={orderType}
+        valueContent={getOrderTypeLabel(orderType)}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Action"
-        renderValue={(val) => (
-          <div
-            className={signDependentValue(val, {
-              positive: 'text-positive',
-              negative: 'text-negative',
-              zero: 'text-text-secondary',
-            })}
-          >
-            {getOrderSideLabel({
-              isPerp,
-              alwaysShowOrderDirection: true,
-              amountForSide,
-            })}
-          </div>
-        )}
-        value={amountForSide}
+        valueClassName={signDependentValue(amountForSide, {
+          positive: 'text-positive',
+          negative: 'text-negative',
+          zero: 'text-text-secondary',
+        })}
+        valueContent={getOrderSideLabel({
+          isPerp,
+          alwaysShowOrderDirection: true,
+          amountForSide,
+        })}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Trigger Price"
-        renderValue={getMarketPriceFormatSpecifier(marketInfo.priceIncrement)}
         value={price}
-      />
-      <LineItem.Metric
-        label="Amount"
-        renderValue={(val) => (
-          <div className="flex gap-x-1">
-            {formatNumber(val, {
-              formatSpecifier: sizeFormatSpecifier,
-            })}
-            <div className="text-text-tertiary">{symbol}</div>
-          </div>
+        numberFormatSpecifier={getMarketPriceFormatSpecifier(
+          marketInfo.priceIncrement,
         )}
-        value={totalSize}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
+        label="Amount"
+        numberFormatSpecifier={sizeFormatSpecifier}
+        value={totalSize}
+        valueEndElement={symbol}
+      />
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Limit Price"
         tooltip={{ id: 'triggerOrderLimitPrice' }}
-        renderValue={getMarketPriceFormatSpecifier(marketInfo.priceIncrement)}
         value={orderPrice}
+        numberFormatSpecifier={getMarketPriceFormatSpecifier(
+          marketInfo.priceIncrement,
+        )}
       />
     </div>
   );

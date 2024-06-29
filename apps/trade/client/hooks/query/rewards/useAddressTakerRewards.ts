@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   createQueryKey,
-  useEnableSubaccountQueries,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  QueryDisabledError,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 
 export function addressTakerRewardsQueryKey(sender?: string) {
   return createQueryKey('addressTakerRewards', sender);
@@ -14,10 +13,9 @@ export function addressTakerRewardsQueryKey(sender?: string) {
 
 export function useAddressTakerRewards() {
   const { currentSubaccount } = useSubaccountContext();
-  const vertexClient = useVertexClient();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
+  const vertexClient = usePrimaryChainVertexClient();
 
-  const disabled = !vertexClient || !enableSubaccountQueries;
+  const disabled = !vertexClient;
   const addressForQuery =
     currentSubaccount.address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
 

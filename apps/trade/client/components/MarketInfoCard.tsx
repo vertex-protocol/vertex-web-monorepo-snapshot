@@ -1,10 +1,11 @@
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
+import { ReactNode } from 'react';
 import { Config } from 'react-popper-tooltip';
 
 interface MarketInfoCardProps {
-  value: React.ReactNode;
+  value: ReactNode;
   label?: string;
   labelPostfix?: string;
   valueClassName?: string;

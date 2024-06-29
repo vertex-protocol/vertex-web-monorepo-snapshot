@@ -1,5 +1,4 @@
-import { hasClass } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { mergeClassNames } from '@vertex-protocol/web-common';
 
 import { HomePageButton } from './HomePageButton';
 import { ButtonElement, ButtonProps } from './types';
@@ -16,10 +15,10 @@ export function ColorBorderButton<E extends ButtonElement = 'button'>(
 
   return (
     <HomePageButton
-      className={classNames(
+      className={mergeClassNames(
         'relative gap-x-2 overflow-hidden font-bold text-white',
         'bg-black-700 hover:bg-black-800 backdrop-blur-lg hover:brightness-150',
-        !hasClass(className, 'mask-') ? 'mask' : undefined,
+        'mask',
         borderRadiusFull ? 'rounded-full' : 'rounded-lg',
         className,
       )}

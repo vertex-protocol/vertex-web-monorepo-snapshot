@@ -1,6 +1,6 @@
-import { PrimaryChainID } from '@vertex-protocol/web-data';
+import { PrimaryChainID } from '@vertex-protocol/react-client';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { useIsEnabledForChainIds } from 'client/modules/chainSpecificContent/hooks/useIsEnabledForChainIds';
+import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 

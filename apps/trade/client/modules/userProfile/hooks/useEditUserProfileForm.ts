@@ -1,5 +1,4 @@
-import { useEVMContext } from '@vertex-protocol/web-data';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useSavedUserProfile } from 'client/modules/userProfile/hooks/useSavedUserProfile';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { isEqual } from 'lodash';
@@ -39,7 +38,6 @@ const usernameSchema = z
   .regex(/^[\w ]*?$/);
 
 export function useEditUserProfileForm(): UseEditUserProfileForm {
-  const { trackEvent } = useAnalyticsContext();
   const { savedUsername, savedAvatar, saveUserProfile, didLoadPersistedValue } =
     useSavedUserProfile();
   const {
@@ -75,7 +73,6 @@ export function useEditUserProfileForm(): UseEditUserProfileForm {
 
   const onSubmitForm = (values: SavedUserProfile) => {
     saveUserProfile(values);
-    trackEvent({ type: 'user_profile_edited', data: {} });
   };
 
   // Username validation

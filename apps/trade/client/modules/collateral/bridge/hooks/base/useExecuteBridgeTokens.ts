@@ -1,17 +1,20 @@
-import { useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
-import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
 import { toPrintableObject } from '@vertex-protocol/utils';
-import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/base/useSquidSDK';
-import { useEVMContext, useVertexClient } from '@vertex-protocol/web-data';
-import { getSquidRouteRequest } from 'client/modules/collateral/bridge/hooks/utils/getSquidRouteRequest';
+import {
+  useEVMContext,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
+import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import { useExecuteInValidContext } from 'client/hooks/execute/util/useExecuteInValidContext';
+import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/base/useSquidSDK';
+import { getSquidRouteRequest } from 'client/modules/collateral/bridge/hooks/utils/getSquidRouteRequest';
+import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
 import { ContractTransactionResponse } from 'ethers';
+import { useCallback } from 'react';
 
 export function useExecuteBridgeTokens() {
   const squidSDK = useSquidSDK();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   const {
     connectionStatus: { signer },
@@ -33,7 +36,8 @@ export function useExecuteBridgeTokens() {
 
         const transferParams = getSquidRouteRequest({
           ...params,
-          subaccount: context.subaccount,
+          subaccountAddress: context.subaccount.address,
+          subaccountName: context.subaccount.name,
           endpointAddress,
         });
         console.log(

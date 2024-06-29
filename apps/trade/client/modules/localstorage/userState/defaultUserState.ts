@@ -1,5 +1,5 @@
-import { cloneDeep } from 'lodash';
 import { SavedUserState } from 'client/modules/localstorage/userState/types/SavedUserState';
+import { cloneDeep } from 'lodash';
 
 const DEFAULT_USER_STATE: SavedUserState = Object.freeze<SavedUserState>({
   onboardingComplete: false,
@@ -7,6 +7,10 @@ const DEFAULT_USER_STATE: SavedUserState = Object.freeze<SavedUserState>({
   tutorial: {
     isDismissed: false,
     completedSteps: [],
+  },
+  marketWatchlist: {
+    isOpen: false,
+    selectedTabId: 'watchlist',
   },
 });
 
@@ -27,6 +31,14 @@ export function getUserStateWithDefaults(
       completedSteps:
         currentSaved?.tutorial?.completedSteps ??
         DEFAULT_USER_STATE.tutorial.completedSteps,
+    },
+    marketWatchlist: {
+      isOpen:
+        currentSaved?.marketWatchlist?.isOpen ??
+        DEFAULT_USER_STATE.marketWatchlist.isOpen,
+      selectedTabId:
+        currentSaved?.marketWatchlist?.selectedTabId ??
+        DEFAULT_USER_STATE.marketWatchlist.selectedTabId,
     },
   };
 

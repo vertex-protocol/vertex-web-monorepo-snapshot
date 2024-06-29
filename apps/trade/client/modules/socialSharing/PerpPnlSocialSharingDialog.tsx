@@ -6,14 +6,15 @@ import { joinClassNames } from '@vertex-protocol/web-common';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { DIALOG_PADDING } from 'client/components/BaseDialog/consts';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
+import Image from 'next/image';
 import { useDialog } from '../app/dialogs/hooks/useDialog';
+import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
+import { MarketInfoCellData } from '../tables/types/MarketInfoCellData';
 import { SocialSharingButtons } from './components/SocialSharingButtons';
 import { SocialSharingInstructionsCard } from './components/SocialSharingInstructionsCard';
 import { SocialSharingPreview } from './components/SocialSharingPreview';
 import { SocialSharingThemeSelector } from './components/SocialSharingThemeSelector';
 import { useSocialSharingImageGeneration } from './hooks/useSocialSharingImageGeneration';
-import { MarketInfoCellData } from '../tables/types/MarketInfoCellData';
-import { BrandSpecificContent } from '../brand/components/BrandSpecificContent';
 
 export interface PerpPnlSocialSharingDialogParams {
   isRealized: boolean;
@@ -56,7 +57,11 @@ export function PerpPnlSocialSharingDialog({
       <BaseDialog.Body className="flex w-full flex-col gap-y-3 px-0 text-sm">
         {/*Hiding theme selector on Blitz until we get different themes */}
         <BrandSpecificContent enabledBrands={['vertex']}>
-          <SocialSharingThemeSelector setTheme={setTheme} themes={themes} />
+          <SocialSharingThemeSelector
+            setTheme={setTheme}
+            themes={themes}
+            selectedTheme={theme}
+          />
         </BrandSpecificContent>
 
         <div
@@ -65,16 +70,7 @@ export function PerpPnlSocialSharingDialog({
             DIALOG_PADDING.horizontal,
           )}
         >
-          <div className="relative aspect-video w-full">
-            {/* Render preview image so it can be copied directly from browser.
-              Overlay it to prevent flicker */}
-            {previewImage && (
-              <img
-                className="absolute inset-0 z-10 h-full w-full"
-                src={previewImage.url}
-                alt="Position Preview"
-              />
-            )}
+          <div className="relative aspect-video">
             <div className="h-full w-full" ref={imageGenerationNodeRef}>
               <SocialSharingPreview
                 isRealized={isRealized}
@@ -90,6 +86,11 @@ export function PerpPnlSocialSharingDialog({
                 onTokenIconLoad={onTokenIconLoad}
               />
             </div>
+            {/* Render preview image so it can be copied directly from browser.
+                  Overlay it to prevent flicker */}
+            {previewImage && (
+              <Image fill src={previewImage.url} alt="Position Preview" />
+            )}
           </div>
           <SocialSharingButtons
             isCopied={isCopied}

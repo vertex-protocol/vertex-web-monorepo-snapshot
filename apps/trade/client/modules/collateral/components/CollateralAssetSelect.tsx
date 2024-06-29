@@ -3,13 +3,13 @@ import {
   mergeClassNames,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { Select, useSelect } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import {
   CustomNumberFormatSpecifier,
+  formatNumber,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { Select, useSelect } from '@vertex-protocol/web-ui';
+import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { CollateralSpotProduct } from '../types';
@@ -69,10 +69,11 @@ export function CollateralAssetSelect({
     >
       <Select.Trigger
         className={joinClassNames(
-          'flex justify-between bg-transparent font-medium hover:bg-transparent',
+          'flex justify-between rounded-r-none',
           className,
         )}
         disabled={disableSelect}
+        stateClassNameOverrides="before:rounded-r-none"
         endIcon={
           <UpDownChevronIcon
             open={open}
@@ -88,21 +89,18 @@ export function CollateralAssetSelect({
           // Non-standard width set to match the width of entire input container when possible,
           // custom breakpoint used for smaller mobile devices as sm: is too big
           'w-[350px] [@media(max-width:400px)]:w-[315px]',
-          'bg-surface-1 flex flex-col px-2 pb-0.5',
+          'flex flex-col px-2 pb-0.5',
           optionsClassName,
         )}
         header={<AssetSelectHeader assetAmountTitle={assetAmountTitle} />}
         viewportClassName="flex max-h-44 flex-col gap-y-1 py-1.5"
       >
         {selectOptions.map(({ value: optionValue, original: product }) => {
-          const isSelected = value === optionValue;
-
           return (
             <AssetSelectOption
               key={optionValue}
               value={optionValue}
               product={product}
-              isSelected={isSelected}
             />
           );
         })}
@@ -127,32 +125,27 @@ function AssetSelectHeader({
 function AssetSelectOption({
   product,
   value,
-  isSelected,
 }: {
   value: string;
-  product?: CollateralSpotProduct;
-  isSelected: boolean;
+  product: CollateralSpotProduct;
 }) {
   return (
     <Select.Option
       value={value}
-      className={joinClassNames(
-        'flex w-full items-center justify-between px-3 py-1',
-        isSelected && 'bg-surface-3 hover:bg-surface-3',
-      )}
+      className="flex items-center justify-between px-3 py-1"
     >
       <div className="flex w-full items-center gap-x-2">
         <Image
-          src={product?.icon.asset ?? ''}
+          src={product.icon.asset}
           alt="Asset Icon"
           height={20}
           width={20}
           className="inline"
         />
-        <p>{product?.symbol}</p>
+        <span>{product.symbol}</span>
       </div>
       <div className="flex flex-col items-end">
-        <span className="w-max font-medium">
+        <span className="w-max">
           {formatNumber(product?.displayedAssetAmount, {
             formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
           })}
@@ -184,7 +177,7 @@ function SelectedAsset({
         height={18}
         width={18}
       />
-      <p className="text-text-primary">{selectedProduct?.symbol}</p>
+      <span className="text-text-primary">{selectedProduct?.symbol}</span>
     </div>
   );
 }

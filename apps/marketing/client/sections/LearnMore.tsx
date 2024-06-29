@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { GradientButton } from 'client/components/Button/GradientButton';
 import { EXTERNAL_LINKS, SECTION_IDS } from 'client/consts';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ export function LearnMore() {
       id={SECTION_IDS.learnMore}
     >
       <div
-        className={classNames(
+        className={joinClassNames(
           'flex w-full flex-col items-center justify-center',
           'overflow-hidden rounded-lg py-6 text-white',
           'bg-mobileLearnMore bg-cover bg-center bg-no-repeat',

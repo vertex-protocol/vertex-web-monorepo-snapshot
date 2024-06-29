@@ -1,14 +1,13 @@
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { Divider } from '@vertex-protocol/web-ui';
-import { LineItem } from 'client/components/LineItem/LineItem';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
 import { LpTableItem } from 'client/modules/pools/hooks/useLpTable';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { LpCtaButtons } from './components/LpCtaButtons';
 import { LpHeader } from './components/LpHeader';
@@ -43,92 +42,66 @@ export function LpMarketDetailsDialog({
 
   const metricItems = (
     <div className="flex flex-col gap-y-4">
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="APR"
-        renderValue={(val) =>
-          formatNumber(val, {
-            formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-          })
-        }
         value={yieldFraction}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="TVL"
-        renderValue={(val) =>
-          formatNumber(val, {
-            formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-          })
-        }
         value={tvlUsd}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="24h Volume"
-        renderValue={(val) =>
-          `${formatNumber(val, {
-            formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
-          })} ${metadata.quote.symbol}`
-        }
         value={volume}
+        valueEndElement={metadata.quote.symbol}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
       />
       <Divider />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Position"
-        renderValue={(val) =>
-          formatNumber(val, {
-            formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-          })
-        }
         value={valueUsd}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
       />
       <div className="flex flex-col gap-y-1">
-        <LineItem.Metric
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
           label={`${metadata.base.symbol}:`}
-          valueClassName="text-text-tertiary"
-          renderValue={(val) =>
-            formatNumber(val, {
-              formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
-            })
-          }
           value={baseAmount}
+          valueClassName="text-text-tertiary"
+          numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
         />
-        <LineItem.Metric
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
           label={`${primaryQuoteToken.symbol}:`}
-          valueClassName="text-text-tertiary"
-          renderValue={(val) =>
-            formatNumber(val, {
-              formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
-            })
-          }
           value={quoteAmount}
-        />
-        <LineItem.Metric
-          label="LP Tokens:"
           valueClassName="text-text-tertiary"
-          renderValue={(val) =>
-            formatNumber(val, {
-              formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
-            })
-          }
+          numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+        />
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
+          label="LP Tokens:"
           value={amounts.lpAmount}
+          valueClassName="text-text-tertiary"
+          numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
         />
       </div>
       <Divider />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="PnL"
-        renderValue={(val) => (
-          <div
-            className={signDependentValue(val, {
-              positive: 'text-positive',
-              negative: 'text-negative',
-              zero: 'text-text-primary',
-            })}
-          >
-            {formatNumber(val, {
-              formatSpecifier: CustomNumberFormatSpecifier.SIGNED_CURRENCY_2DP,
-            })}
-          </div>
-        )}
         value={unrealizedPnl}
+        valueClassName={signDependentValue(unrealizedPnl, {
+          positive: 'text-positive',
+          negative: 'text-negative',
+          zero: 'text-text-primary',
+        })}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.SIGNED_CURRENCY_2DP}
       />
     </div>
   );

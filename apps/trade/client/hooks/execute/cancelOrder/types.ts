@@ -1,7 +1,7 @@
+import { AsyncResult } from '@vertex-protocol/client';
 import { EngineServerExecuteResult } from '@vertex-protocol/engine-client';
 import { TriggerServerExecuteResult } from '@vertex-protocol/trigger-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { AsyncResult } from '@vertex-protocol/web-common';
 import { OrderType } from 'client/modules/trading/types';
 
 export interface CancellableOrder {

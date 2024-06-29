@@ -1,26 +1,28 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { CardButton, Icons } from '@vertex-protocol/web-ui';
+import { Icons } from '../../Icons';
+import { CardButton } from './CardButton';
 import { NavCardButtonContent } from './NavCardButtonContent';
-import { NavCardButtonStartIcon } from './NavCardButtonStartIcon';
 import { NavCardBaseProps } from './types';
 
 export function ExternalNavCardButton({
-  icon,
+  icon: Icon,
   className,
   title,
-  disabled,
   description,
   contentClassName,
-  ...buttonProps
+  ...rest
 }: NavCardBaseProps) {
   return (
     <CardButton
-      className={joinClassNames('p-4', className)}
-      startIcon={<NavCardButtonStartIcon icon={icon} />}
+      className={joinClassNames('rounded p-4', className)}
+      startIcon={
+        Icon ? <Icon className="text-text-primary" size={24} /> : undefined
+      }
+      stateOverlayBorderRadiusVariant="base"
       endIcon={
         <Icons.PiArrowUpRight size={20} className="text-text-tertiary" />
       }
-      {...buttonProps}
+      {...rest}
     >
       <NavCardButtonContent
         className={joinClassNames('flex-1', contentClassName)}

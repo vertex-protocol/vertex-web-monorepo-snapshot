@@ -5,7 +5,7 @@ import {
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { UnderlinedTabs } from '@vertex-protocol/web-ui';
+import { SegmentedControl } from '@vertex-protocol/web-ui';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
 import { useMemo } from 'react';
 import { TradingViewChart } from '../chart/TradingViewChart';
@@ -14,39 +14,37 @@ import { Orderbook } from '../marketOrders/orderbook/Orderbook';
 
 interface Props extends WithClassnames {
   productId?: number;
-  isTablet: boolean;
+  withChartTab?: boolean;
 }
 
-export function MarketDataTabs({ className, productId, isTablet }: Props) {
-  const marketDataTabs = useMemo(
-    () =>
-      [
-        {
-          id: 'chart',
-          content: (
-            <TradingViewChart productId={productId} className="h-full" />
-          ),
-        },
-        {
-          id: 'book',
-          content: (
-            <Orderbook
-              className="h-full"
-              productId={productId}
-              dualSidedDepth={isTablet ? 10 : 5}
-              oneSidedDepth={50}
-            />
-          ),
-        },
-        {
-          id: 'trades',
-          content: (
-            <LatestMarketTrades productId={productId} className="h-full" />
-          ),
-        },
-      ] as const,
-    [isTablet, productId],
-  );
+export function MarketDataTabs({ className, productId, withChartTab }: Props) {
+  const marketDataTabs = useMemo(() => {
+    const defaultTabs = [
+      {
+        id: 'book',
+        content: <Orderbook className="h-full" productId={productId} />,
+      },
+      {
+        id: 'trades',
+        content: (
+          <LatestMarketTrades productId={productId} className="h-full" />
+        ),
+      },
+    ];
+
+    return withChartTab
+      ? [
+          {
+            id: 'chart',
+            content: (
+              <TradingViewChart productId={productId} className="h-full" />
+            ),
+          },
+          ...defaultTabs,
+        ]
+      : defaultTabs;
+  }, [productId, withChartTab]);
+
   const { selectedTabId, setSelectedUntypedTabId, tabs } =
     useTabs(marketDataTabs);
 
@@ -56,22 +54,22 @@ export function MarketDataTabs({ className, productId, isTablet }: Props) {
       onValueChange={setSelectedUntypedTabId}
       value={selectedTabId}
     >
-      <TabsList asChild>
-        <UnderlinedTabs.Container className="flex w-full items-end gap-x-2 px-3.5">
+      <TabsList className="px-3 py-2">
+        <SegmentedControl.Container className="flex items-center justify-between">
           {tabs.map(({ id }) => {
             return (
               <TabsTrigger asChild value={id} key={id}>
-                <UnderlinedTabs.Button
-                  size="lg"
+                <SegmentedControl.Button
+                  size="xs"
                   active={selectedTabId === id}
-                  className="capitalize"
+                  className="flex-1 capitalize"
                 >
                   {id}
-                </UnderlinedTabs.Button>
+                </SegmentedControl.Button>
               </TabsTrigger>
             );
           })}
-        </UnderlinedTabs.Container>
+        </SegmentedControl.Container>
       </TabsList>
       {tabs.map(({ id, content }) => (
         // "overflow-hidden" allows the scrolling of content to be handled internally

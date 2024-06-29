@@ -1,8 +1,8 @@
 import { arbitrum, arbitrumSepolia } from '@wagmi/core/chains';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import { TOKEN_ICONS } from 'common/productMetadata/tokenIcons';
 import { Token } from 'common/productMetadata/types';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
+import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 
 const arbSepoliaChainId = arbitrumSepolia.id;
 const arbOneChainId = arbitrum.id;
@@ -16,7 +16,7 @@ export const USDC_ARB_SEPOLIA: Token = {
   chainId: arbSepoliaChainId,
   tokenDecimals: 6,
   name: 'USD Coin',
-  symbol: PRIMARY_QUOTE_SYMBOL,
+  symbol: PRIMARY_QUOTE_SYMBOLS.usdc,
   icon: TOKEN_ICONS.usdc,
 };
 
@@ -72,7 +72,7 @@ export const USDC_ARB_ONE: Token = {
   chainId: arbOneChainId,
   tokenDecimals: 6,
   name: 'USD Coin',
-  symbol: PRIMARY_QUOTE_SYMBOL,
+  symbol: PRIMARY_QUOTE_SYMBOLS.usdc,
   icon: TOKEN_ICONS.usdc,
 };
 

@@ -1,5 +1,4 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { BigDecimals } from 'client/utils/BigDecimals';
+import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 
 /**
  * Calculate change frac as defined by (new - old) / old, but defaults to using the new value if the old value is 0

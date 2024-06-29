@@ -2,28 +2,30 @@ import * as Accordion from '@radix-ui/react-accordion';
 import { UserTutorialFlowStepID } from 'client/modules/localstorage/userState/types/userTutorialFlowTypes';
 import { TutorialAccordionContent } from 'client/modules/tutorial/components/TutorialFlowAccordion/TutorialAccordionContent';
 import { TutorialAccordionTrigger } from 'client/modules/tutorial/components/TutorialFlowAccordion/TutorialAccordionTrigger';
-import { TUTORIAL_FLOW_ACCORDION_ITEMS } from './tutorialFlowAccordionItems';
+import { UserTutorialFlowStep } from 'client/modules/tutorial/hooks/useTutorialFlowSteps';
 
 interface Props {
-  performStep: (step: UserTutorialFlowStepID) => void;
-  skipStep: (step: UserTutorialFlowStepID) => void;
-  setActiveStep: (step: UserTutorialFlowStepID) => void;
-  activeStep: UserTutorialFlowStepID | undefined;
-  completedSteps: UserTutorialFlowStepID[];
+  steps: UserTutorialFlowStep[];
+  performStep: (stepId: UserTutorialFlowStepID) => void;
+  skipStep: (stepId: UserTutorialFlowStepID) => void;
+  setActiveStepId: (stepId: UserTutorialFlowStepID) => void;
+  activeStepId: UserTutorialFlowStepID | undefined;
+  completedStepIds: UserTutorialFlowStepID[];
 }
 
 export function TutorialFlowAccordion({
+  steps,
   performStep,
   skipStep,
-  setActiveStep,
-  activeStep,
-  completedSteps,
+  setActiveStepId,
+  activeStepId,
+  completedStepIds,
 }: Props) {
   return (
     <div className="bg-background rounded-lg px-3 py-2">
       <Accordion.Root
-        value={activeStep}
-        onValueChange={setActiveStep}
+        value={activeStepId}
+        onValueChange={setActiveStepId}
         className="flex flex-col gap-y-1"
         type="single"
         collapsible
@@ -36,24 +38,24 @@ export function TutorialFlowAccordion({
             isCompleted
           />
         </Accordion.Item>
-        {TUTORIAL_FLOW_ACCORDION_ITEMS.map((item) => {
-          const isCompleted = completedSteps.includes(item.stepId);
+        {steps.map((step) => {
+          const isCompleted = completedStepIds.includes(step.id);
           return (
             <Accordion.Item
-              key={item.stepId}
-              value={item.stepId}
+              key={step.id}
+              value={step.id}
               disabled={isCompleted}
             >
               <TutorialAccordionTrigger
-                open={activeStep === item.stepId}
-                triggerLabel={item.triggerLabel}
+                open={activeStepId === step.id}
+                triggerLabel={step.triggerLabel}
                 isCompleted={isCompleted}
               />
               <TutorialAccordionContent
-                description={item.description}
-                actionLabel={item.actionLabel}
-                onActionClick={() => performStep(item.stepId)}
-                onSkipClick={() => skipStep(item.stepId)}
+                description={step.description}
+                actionLabel={step.actionLabel}
+                onActionClick={() => performStep(step.id)}
+                onSkipClick={() => skipStep(step.id)}
               />
             </Accordion.Item>
           );

@@ -16,9 +16,7 @@ export function TutorialFlowSuccessContent({
             Enjoy the seamless trading experience.
           </p>
         </div>
-        <SecondaryButton size="lg" onClick={onClose}>
-          Close
-        </SecondaryButton>
+        <SecondaryButton onClick={onClose}>Close</SecondaryButton>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
+import { TabsList, Root as TabsRoot, TabsTrigger } from '@radix-ui/react-tabs';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { TextButton } from '@vertex-protocol/web-ui';
+import { TabTextButton } from '@vertex-protocol/web-ui';
 import { PORTFOLIO_CHART_TIMESPAN_METADATA } from '../../consts';
 import { ChartTimespan } from '../../types';
-import { Root as TabsRoot, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 export interface Props extends WithClassnames {
   timespan: ChartTimespan;
   disabled?: boolean;
@@ -27,13 +27,13 @@ export function PortfolioChartTimespanTabs({
           const option = key as ChartTimespan;
           return (
             <TabsTrigger key={key} value={key} asChild>
-              <TextButton
+              <TabTextButton
                 className="p-1 text-xs"
                 active={key === timespan}
                 disabled={disabled}
               >
                 {PORTFOLIO_CHART_TIMESPAN_METADATA[option].shortLabel}
-              </TextButton>
+              </TabTextButton>
             </TabsTrigger>
           );
         })}

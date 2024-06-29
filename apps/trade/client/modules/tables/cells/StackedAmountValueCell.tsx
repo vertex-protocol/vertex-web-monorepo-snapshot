@@ -1,26 +1,29 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
-import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import {
   CustomNumberFormatSpecifier,
+  formatNumber,
   NumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
+} from '@vertex-protocol/react-client';
+import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
+import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
 
 interface Props extends TableCellProps {
   symbol: string;
-  size: BigDecimal;
+  size: BigDecimal | undefined;
   // Defaults to NUMBER_AUTO
   sizeFormatSpecifier?: string | NumberFormatSpecifier;
-  value: BigDecimal;
+  // Defaults to CURRENCY_2DP
+  valueFormatSpecifier?: string | NumberFormatSpecifier;
+  valueUsd: BigDecimal | undefined;
 }
 
 export function StackedAmountValueCell({
   symbol,
   size,
   sizeFormatSpecifier,
-  value,
+  valueFormatSpecifier,
+  valueUsd,
   className,
   ...rest
 }: Props) {
@@ -28,8 +31,9 @@ export function StackedAmountValueCell({
     formatSpecifier:
       sizeFormatSpecifier ?? CustomNumberFormatSpecifier.NUMBER_AUTO,
   });
-  const formattedValue = formatNumber(value, {
-    formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+  const formattedValue = formatNumber(valueUsd, {
+    formatSpecifier:
+      valueFormatSpecifier ?? PresetNumberFormatSpecifier.CURRENCY_2DP,
   });
 
   return (

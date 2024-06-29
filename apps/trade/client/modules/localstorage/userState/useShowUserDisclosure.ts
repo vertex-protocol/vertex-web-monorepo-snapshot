@@ -4,7 +4,7 @@ import {
 } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
 import { useCallback } from 'react';
 import { useSavedUserState } from 'client/modules/localstorage/userState/useSavedUserState';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useIsClient } from '@vertex-protocol/web-common';
 
 /**

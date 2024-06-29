@@ -1,5 +1,11 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import {
+  addDecimals,
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
 import {
   InputValidatorFn,
   percentageValidator,
@@ -20,8 +26,6 @@ import { useWithdrawFormData } from 'client/modules/collateral/withdraw/hooks/us
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { withdrawProductIdAtom } from 'client/store/collateralStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { addDecimals, removeDecimals } from 'client/utils/decimalAdjustment';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
@@ -66,7 +70,7 @@ export function useWithdrawForm({
 }: {
   defaultEnableBorrows: boolean;
 }): UseWithdrawForm {
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { dispatchNotification } = useNotificationManagerContext();
   const [withdrawProductIdAtomValue] = useAtom(withdrawProductIdAtom);
   const withdrawalsDelayed = useWithdrawalsAreDelayed();
@@ -203,7 +207,7 @@ export function useWithdrawForm({
   );
 
   const isProtocolTokenSelected =
-    selectedProduct?.productId === protocolTokenProductId;
+    selectedProduct?.productId === protocolTokenMetadata.productId;
 
   // Global form error state
   const formError: WithdrawErrorType | undefined = useMemo(() => {

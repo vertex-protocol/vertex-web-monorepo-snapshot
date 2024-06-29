@@ -16,7 +16,7 @@
     "eslint": "^8.54.0",
     "eslint-config-custom": "*",
     "ts-config": "*",
-    "typescript": "^5.3.2",
+    "typescript": "^5.4.5",
     "typescript-plugin-css-modules": "^5.0.2"
   }
 }

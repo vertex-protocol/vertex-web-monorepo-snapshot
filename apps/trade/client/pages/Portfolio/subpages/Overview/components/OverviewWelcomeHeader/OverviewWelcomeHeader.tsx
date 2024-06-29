@@ -1,11 +1,11 @@
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { ProfileAvatarIcon } from 'client/modules/userProfile/components/ProfileAvatarIcon';
 import { useSavedUserProfile } from 'client/modules/userProfile/hooks/useSavedUserProfile';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
 import { EditProfileAvatarIcon } from 'client/pages/Portfolio/subpages/Overview/components/OverviewWelcomeHeader/EditProfileAvatarIcon';
 import { OverviewCollateralButtons } from './OverviewCollateralButtons';
 
-import { useIsEnabledForBrand } from 'client/modules/brand/hooks/useIsEnabledForBrand';
+import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
 
 export function OverviewWelcomeHeader() {
   const {

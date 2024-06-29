@@ -1,11 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { UserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import { useWithdrawUnstakedVrtx } from 'client/modules/rewards/hooks/useWithdrawUnstakedVrtx';
 import { useStakingHistoryUrl } from 'client/pages/VertexToken/staking/hooks/useStakingHistoryUrl';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import {
   formatTimestamp,
   TimeFormatSpecifier,
@@ -59,7 +60,7 @@ export function TokenStakingMoreDetailsCard({
           <RewardsCard.HeaderLinkButton
             as={Link}
             className="text-xs"
-            color="white"
+            colorVariant="primary"
             href={stakingHistoryUrl}
             disabled={!stakingHistoryUrl}
             external
@@ -74,65 +75,48 @@ export function TokenStakingMoreDetailsCard({
       </RewardsCard.Header>
       <div className="flex flex-col gap-y-6 lg:flex-row lg:items-end lg:justify-between">
         <RewardsCard.MetricsPane>
-          <RewardsCard.StackedItem
+          <ValueWithLabel.Vertical
             label="Last Stake Date"
-            definitionId="stakingLastStakeDate"
-            value={
-              <>
-                {formatTimestamp(lastStakeTimeMillis, {
-                  formatSpecifier: TimeFormatSpecifier.MONTH_D,
-                })}
-              </>
-            }
+            tooltip={{ id: 'stakingLastStakeDate' }}
+            valueContent={formatTimestamp(lastStakeTimeMillis, {
+              formatSpecifier: TimeFormatSpecifier.MONTH_D,
+            })}
           />
-          <RewardsCard.StackedItem
+          <ValueWithLabel.Vertical
             label="Max Score Date"
-            definitionId="stakingMaxScoreDate"
-            value={
-              <>
-                {formatTimestamp(maxScoreTimeMillis, {
-                  formatSpecifier: TimeFormatSpecifier.MONTH_D,
-                })}
-              </>
-            }
+            tooltip={{ id: 'stakingMaxScoreDate' }}
+            valueContent={formatTimestamp(maxScoreTimeMillis, {
+              formatSpecifier: TimeFormatSpecifier.MONTH_D,
+            })}
           />
-          <RewardsCard.StackedItem
+          <ValueWithLabel.Vertical
             label="Last Unstake Date"
-            definitionId="stakingLastUnstakeDate"
-            value={
+            tooltip={{ id: 'stakingLastUnstakeDate' }}
+            valueContent={formatTimestamp(lastUnstakeTimeMillis, {
+              formatSpecifier: TimeFormatSpecifier.MONTH_D,
+            })}
+          />
+          <ValueWithLabel.Vertical
+            label={
               <>
-                {formatTimestamp(lastUnstakeTimeMillis, {
-                  formatSpecifier: TimeFormatSpecifier.MONTH_D,
-                })}
+                Unstaked <span className="text-2xs uppercase">Pending</span>
               </>
             }
-          />
-          <RewardsCard.MetricStackedItem
-            label={
-              <div className="flex items-baseline gap-x-1">
-                Unstaked
-                <span className="text-2xs text-text-tertiary uppercase">
-                  Pending
-                </span>
-              </div>
-            }
-            definitionId="stakingUnstakePending"
+            tooltip={{ id: 'stakingUnstakePending' }}
             value={accountUnstakedLocked}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-            symbol={VRTX_TOKEN_INFO.symbol}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+            valueEndElement={VRTX_TOKEN_INFO.symbol}
           />
-          <RewardsCard.MetricStackedItem
+          <ValueWithLabel.Vertical
             label={
-              <div className="flex items-baseline gap-x-1">
-                Unstaked
-                <span className="text-2xs text-text-tertiary uppercase">
-                  Claimable
-                </span>
-              </div>
+              <>
+                Unstaked&nbsp;
+                <span className="text-2xs uppercase">Claimable</span>
+              </>
             }
             value={accountUnstakedClaimable}
-            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-            symbol={VRTX_TOKEN_INFO.symbol}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+            valueEndElement={VRTX_TOKEN_INFO.symbol}
           />
         </RewardsCard.MetricsPane>
         <SecondaryButton

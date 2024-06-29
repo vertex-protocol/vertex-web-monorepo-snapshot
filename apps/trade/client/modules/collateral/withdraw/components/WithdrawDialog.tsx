@@ -1,9 +1,8 @@
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { useState } from 'react';
-import { WithdrawHelpContent } from 'client/modules/collateral/withdraw/components/WithdrawHelpContent';
 import { WithdrawFormContent } from 'client/modules/collateral/withdraw/components/WithdrawFormContent';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { WithdrawHelpContent } from 'client/modules/collateral/withdraw/components/WithdrawHelpContent';
+import { useState } from 'react';
 
 interface Props {
   defaultEnableBorrows: boolean;
@@ -12,7 +11,6 @@ interface Props {
 export function WithdrawDialog({ defaultEnableBorrows }: Props) {
   const { hide } = useDialog();
   const [showHelpContent, setShowHelpContent] = useState(false);
-  const { trackEvent } = useAnalyticsContext();
 
   const content = showHelpContent ? (
     <WithdrawHelpContent
@@ -24,10 +22,6 @@ export function WithdrawDialog({ defaultEnableBorrows }: Props) {
       defaultEnableBorrows={defaultEnableBorrows}
       onShowHelpClick={() => {
         setShowHelpContent(true);
-        trackEvent({
-          type: 'collateral_faq_clicked',
-          data: { collateralFaq: 'withdraw' },
-        });
       }}
       onClose={hide}
     />

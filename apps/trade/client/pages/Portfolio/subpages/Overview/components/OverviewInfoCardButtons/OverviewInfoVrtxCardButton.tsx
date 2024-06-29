@@ -2,23 +2,19 @@ import { Pill } from '@vertex-protocol/web-ui';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { useTokenStaking } from 'client/modules/rewards/hooks/useTokenStaking';
 import { OverviewInfoCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoCardButton';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import Image from 'next/image';
 
 interface Props {
   isPrivate: boolean;
-  pillClassName: string;
 }
 
 /**
  * This is extracted from OverviewInfoCardButtons so that VRTX specific logic only runs when this is rendered (i.e. within Vertex and not Blitz)
  */
-export function OverviewInfoVrtxCardButton({
-  isPrivate,
-  pillClassName,
-}: Props) {
+export function OverviewInfoVrtxCardButton({ isPrivate }: Props) {
   const { accountStaked, accountStakedValueUsd, accountCurrentApr } =
     useTokenStaking();
 
@@ -49,9 +45,9 @@ export function OverviewInfoVrtxCardButton({
       }
       valueClassName="gap-x-2 items-end"
       pill={
-        <Pill color="accent" className={pillClassName}>
+        <Pill colorVariant="accent" sizeVariant="sm">
           APR:
-          <span className="font-medium">
+          <span>
             {formatNumber(accountCurrentApr, {
               formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
             })}

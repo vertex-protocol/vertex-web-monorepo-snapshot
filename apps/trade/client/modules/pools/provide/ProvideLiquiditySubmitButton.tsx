@@ -25,7 +25,6 @@ export function ProvideLiquiditySubmitButton({ className, state }: Props) {
 
   return (
     <PrimaryButton
-      size="lg"
       type="submit"
       className={className}
       isLoading={state === 'loading'}

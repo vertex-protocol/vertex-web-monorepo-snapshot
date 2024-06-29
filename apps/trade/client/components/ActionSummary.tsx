@@ -19,7 +19,7 @@ function Header({
 }: WithClassnames<{
   open: boolean;
   toggleOpen: () => void;
-  labelContent: React.ReactNode;
+  labelContent: ReactNode;
   isHighlighted?: boolean;
 }>) {
   return (

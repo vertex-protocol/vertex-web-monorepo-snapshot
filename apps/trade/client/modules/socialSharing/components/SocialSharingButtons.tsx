@@ -1,5 +1,5 @@
-import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { Icons } from '@vertex-protocol/web-ui';
+import { Icons, SecondaryButton } from '@vertex-protocol/web-ui';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 
 interface Props {
   onTwitterClick: () => void;
@@ -16,32 +16,56 @@ export function SocialSharingButtons({
   isCopied,
   disabled,
 }: Props) {
-  const buttonClasses = 'w-full py-3';
-
+  const { trackEvent } = useAnalyticsContext();
+  const buttonClassNames = 'flex-1 py-3';
   return (
-    <div className="flex gap-2.5">
+    <div className="flex gap-2">
       <SecondaryButton
-        className={buttonClasses}
-        size="md"
-        onClick={onTwitterClick}
+        className={buttonClassNames}
+        size="xs"
+        onClick={() => {
+          onTwitterClick();
+          trackEvent({
+            type: 'pnl_shared_clicked',
+            data: {
+              sharedMethod: 'tweet',
+            },
+          });
+        }}
         startIcon={<Icons.BsTwitterX />}
         disabled={disabled}
       >
         Tweet
       </SecondaryButton>
       <SecondaryButton
-        className={buttonClasses}
-        size="md"
-        onClick={onDownloadClick}
+        className={buttonClassNames}
+        size="xs"
+        onClick={() => {
+          onDownloadClick();
+          trackEvent({
+            type: 'pnl_shared_clicked',
+            data: {
+              sharedMethod: 'download',
+            },
+          });
+        }}
         startIcon={<Icons.FiDownload />}
         disabled={disabled}
       >
         Download
       </SecondaryButton>
       <SecondaryButton
-        className={buttonClasses}
-        size="md"
-        onClick={onCopyToClipboardClick}
+        className={buttonClassNames}
+        size="xs"
+        onClick={() => {
+          onCopyToClipboardClick();
+          trackEvent({
+            type: 'pnl_shared_clicked',
+            data: {
+              sharedMethod: 'copy',
+            },
+          });
+        }}
         startIcon={<Icons.MdContentCopy />}
         disabled={disabled}
       >

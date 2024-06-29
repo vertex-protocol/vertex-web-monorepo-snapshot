@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { useVertexClient } from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { CandlestickPeriod } from '@vertex-protocol/indexer-client';
+import {
+  QueryDisabledError,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { secondsToMilliseconds } from 'date-fns';
 
@@ -11,8 +13,8 @@ export interface VrtxPriceChartDataItem {
 }
 
 export function useVrtxPriceChartData() {
-  const { protocolTokenProductId } = useVertexMetadataContext();
-  const vertexClient = useVertexClient();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
+  const vertexClient = usePrimaryChainVertexClient();
 
   const disabled = !vertexClient;
 
@@ -24,7 +26,7 @@ export function useVrtxPriceChartData() {
       }
 
       const baseResponse = await vertexClient.market.getCandlesticks({
-        productId: protocolTokenProductId,
+        productId: protocolTokenMetadata.productId,
         // 24 hr
         period: CandlestickPeriod.HOUR,
         limit: 24,

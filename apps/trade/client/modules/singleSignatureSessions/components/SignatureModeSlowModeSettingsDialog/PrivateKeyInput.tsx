@@ -1,17 +1,12 @@
+import { WithClassnames, useCopyText } from '@vertex-protocol/web-common';
 import {
-  WithClassnames,
-  joinClassNames,
-  useCopyText,
-} from '@vertex-protocol/web-common';
-import {
-  Button,
-  ErrorTooltip,
-  IconType,
+  CompactInput,
+  IconButton,
   Icons,
+  Input,
   SecondaryButton,
 } from '@vertex-protocol/web-ui';
 import { useToggle } from 'ahooks';
-import { Input } from 'client/components/Input/Input';
 import {
   SignatureModeSlowModeSettingsFormErrorType,
   SignatureModeSlowModeSettingsFormValues,
@@ -47,13 +42,20 @@ export function PrivateKeyInput({
   // Show/Hide button
   const [isPrivateKeyHidden, { toggle: toggleIsPrivateKeyHidden }] =
     useToggle(true);
+
   const ShowHideButton = isPrivateKeyHidden ? Icons.BsEyeSlash : Icons.BsEye;
+
+  const register = form.register('privateKey', {
+    validate: validatePrivateKey,
+  });
 
   return (
     <div className="flex flex-col gap-y-2">
       {/*Label*/}
       <div className="flex items-center justify-between">
-        <div className="text-text-primary">1CT Private Key</div>
+        <Input.Label htmlFor={register.name} className="text-text-primary">
+          1CT Private Key
+        </Input.Label>
         <SecondaryButton
           size="sm"
           onClick={setRandomPrivateKey}
@@ -65,55 +67,28 @@ export function PrivateKeyInput({
       </div>
       {/*Input*/}
       <div className="flex gap-x-1">
-        <ErrorTooltip contentWrapperClassName="flex-1" errorContent={error}>
-          <Input
-            className={joinClassNames(
-              'bg-surface-card h-10 flex-1 transition',
-              'rounded border',
-              'px-3',
-              'placeholder:text-disabled text-text-primary text-sm',
-              form.formState.errors.privateKey
-                ? 'border-negative'
-                : 'focus:border-accent border-stroke',
-            )}
-            {...form.register('privateKey', {
-              validate: validatePrivateKey,
-            })}
-            type={isPrivateKeyHidden ? 'password' : 'text'}
-            disabled={disabled}
-          />
-        </ErrorTooltip>
+        <CompactInput
+          {...register}
+          className="flex-1"
+          id={register.name}
+          placeholder="0x..."
+          type={isPrivateKeyHidden ? 'password' : 'text'}
+          errorTooltipContent={error}
+          disabled={disabled}
+        />
         <IconButton
+          size="sm"
           icon={ShowHideButton}
           onClick={toggleIsPrivateKeyHidden}
           disabled={disabled}
         />
         <IconButton
+          size="sm"
           icon={CopyButton}
           onClick={onCopyClick}
           disabled={disabled}
         />
       </div>
     </div>
-  );
-}
-
-function IconButton({
-  icon: Icon,
-  onClick,
-  disabled,
-}: {
-  onClick(): void;
-  icon: IconType;
-  disabled: boolean;
-}) {
-  return (
-    <Button
-      className="hover:text-text-primary px-1 text-lg"
-      onClick={onClick}
-      disabled={disabled}
-    >
-      <Icon />
-    </Button>
   );
 }

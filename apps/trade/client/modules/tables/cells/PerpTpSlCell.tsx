@@ -8,7 +8,7 @@ import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useUserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { PerpPositionsTableItem } from '../hooks/usePerpPositionsTable';
 import { getTableButtonOnClickHandler } from '../utils/getTableButtonOnClickHandler';
 

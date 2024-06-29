@@ -2,8 +2,14 @@ import { DiscList } from '@vertex-protocol/web-ui';
 import { LiquidationRiskBars } from 'client/pages/Portfolio/components/LiquidationRiskBars';
 import { MarginManagerDefinition } from './MarginManagerDefinition';
 
-const { ContentContainer, Description, Section, Title, Pill, GradientText } =
-  MarginManagerDefinition;
+const {
+  ContentContainer,
+  Description,
+  Section,
+  Title,
+  InfoPill,
+  GradientText,
+} = MarginManagerDefinition;
 
 export function LiquidationRiskAndFundsAvailableDefinition() {
   return (
@@ -11,7 +17,7 @@ export function LiquidationRiskAndFundsAvailableDefinition() {
       <Section>
         <Title className="flex items-center gap-x-4">
           Funds Until Liq &amp; Liq Risk.
-          <Pill>Maintenance Margin</Pill>
+          <InfoPill>Maintenance Margin</InfoPill>
         </Title>
         <Description>
           In the Maintenance Margin card above you will find 2 terms: Funds

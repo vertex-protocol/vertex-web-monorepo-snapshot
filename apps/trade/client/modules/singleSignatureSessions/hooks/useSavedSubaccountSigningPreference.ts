@@ -1,19 +1,19 @@
+import {
+  PrimaryChainID,
+  usePrimaryChainId,
+} from '@vertex-protocol/react-client';
 import { Subaccount } from 'client/context/subaccount/types';
-import { useIsClient } from '@vertex-protocol/web-common';
+import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 import { Wallet } from 'ethers';
 import { omit } from 'lodash';
 import { useCallback, useMemo } from 'react';
-import { usePrimaryChainId } from '@vertex-protocol/web-data/context/evm/hooks/usePrimaryChainId';
-import { PrimaryChainID } from '@vertex-protocol/web-data';
-import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 import {
   SavedSubaccountSigningPreference,
   SubaccountSigningPreference,
 } from '../types';
 
 interface UseSubaccountSigningPreference {
-  // Loading = not yet mounted
-  isLoading: boolean;
+  didLoadPersistedValue: boolean;
   // Undefined if none is saved
   signingPreference?: SubaccountSigningPreference;
   saveSigningPreference: (
@@ -32,8 +32,8 @@ export function useSavedSubaccountSigningPreference(
   subaccount: Subaccount,
 ): UseSubaccountSigningPreference {
   const primaryChainId = usePrimaryChainId();
-  const isClient = useIsClient();
-  const { savedUserSettings, setSavedUserSettings } = useSavedUserSettings();
+  const { savedUserSettings, setSavedUserSettings, didLoadPersistedValue } =
+    useSavedUserSettings();
 
   const subaccountKey = useMemo(() => {
     return createSubaccountKey(primaryChainId, subaccount.name);
@@ -129,7 +129,7 @@ export function useSavedSubaccountSigningPreference(
   }, [setSavedUserSettings, subaccountKey]);
 
   return {
-    isLoading: !isClient,
+    didLoadPersistedValue,
     signingPreference: signingPreference,
     saveSigningPreference,
     clearSigningPreference,

@@ -1,21 +1,23 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { TradeInput } from 'client/modules/trading/components/TradeInput';
 import {
   OrderFormError,
   OrderFormValidators,
 } from 'client/modules/trading/types';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useOrderFormInputs } from '../hooks/useOrderFormInputs';
 import { RangeSlider } from './RangeSlider';
 
 interface Props extends WithClassnames {
   formError: OrderFormError | undefined;
   validators: OrderFormValidators;
-  marketSymbol: string | undefined;
+  baseSymbol: string | undefined;
+  quoteSymbol: string | undefined;
   inputIncrements: {
     price: BigDecimal | undefined;
     size: BigDecimal | undefined;
@@ -25,13 +27,13 @@ interface Props extends WithClassnames {
 
 export function OrderFormInputs({
   formError,
-  marketSymbol,
+  baseSymbol,
+  quoteSymbol,
   validators,
   inputIncrements,
   minAssetOrderSize,
   className,
 }: Props) {
-  const { primaryQuoteToken } = useVertexMetadataContext();
   const {
     assetAmountInputRegister,
     quoteAmountInputRegister,
@@ -71,7 +73,7 @@ export function OrderFormInputs({
           {...assetAmountInputRegister}
           id={assetAmountInputRegister.name}
           label="Amount"
-          symbol={marketSymbol}
+          symbol={baseSymbol}
           step={inputIncrements.size?.toString()}
           error={errorTooltips.assetAmount}
           onFocus={() => onFocusAmountSource('asset')}
@@ -81,12 +83,13 @@ export function OrderFormInputs({
         {...quoteAmountInputRegister}
         id={quoteAmountInputRegister.name}
         label="Total"
-        symbol={primaryQuoteToken.symbol}
+        symbol={quoteSymbol}
         step={0.01}
         error={errorTooltips.quoteAmount}
         onFocus={() => onFocusAmountSource('quote')}
       />
       <RangeSlider
+        className="pr-5"
         min={0}
         max={1}
         step={0.05}

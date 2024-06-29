@@ -35,6 +35,7 @@ export function HeaderCell<T>({
       />
     );
   })();
+
   return (
     <TableCell
       className={mergeClassNames(

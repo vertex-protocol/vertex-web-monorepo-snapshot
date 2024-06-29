@@ -1,11 +1,10 @@
+import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
-import { useDepositTokenAllowance } from 'client/hooks/query/useDepositTokenAllowance';
+import { useTokenAllowanceForProduct } from 'client/hooks/query/useTokenAllowanceForProduct';
 import { useMinimumDepositAmounts } from 'client/hooks/subaccount/useMinimumDepositAmounts';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { DepositProduct } from 'client/modules/collateral/deposit/types';
 import { sortByDisplayedAssetValue } from 'client/modules/collateral/utils/sortByDisplayedAssetValue';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { useMemo } from 'react';
 
 interface Params {
@@ -15,7 +14,7 @@ interface Params {
 export function useDepositFormData({ productIdInput }: Params) {
   const { balances } = useSpotBalances();
   const { data: depositableTokenBalances } = useAllDepositableTokenBalances();
-  const { data: tokenAllowance } = useDepositTokenAllowance({
+  const { data: tokenAllowance } = useTokenAllowanceForProduct({
     productId: productIdInput,
   });
   const { data: minDepositAmounts } = useMinimumDepositAmounts();

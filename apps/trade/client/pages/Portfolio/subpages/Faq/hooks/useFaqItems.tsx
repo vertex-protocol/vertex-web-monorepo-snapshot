@@ -1,6 +1,6 @@
 import { DiscList } from '@vertex-protocol/web-ui';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import { LiquidationRiskBars } from 'client/pages/Portfolio/components/LiquidationRiskBars';
 import { ReactNode } from 'react';
 import { FaqDefinition } from '../components/FaqDefinition';

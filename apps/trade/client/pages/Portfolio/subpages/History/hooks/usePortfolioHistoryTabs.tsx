@@ -8,7 +8,7 @@ import { HistoricalLiquidationsTable } from 'client/pages/Portfolio/subpages/His
 import { HistoricalTriggerOrdersTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalTriggerOrdersTable';
 import { portfolioHistoryTabIdAtom } from 'client/store/portfolioStore';
 import { xor } from 'lodash';
-import { useCallback, useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import { HistoricalDepositsTable } from '../components/HistoricalDepositsTable';
 import { HistoricalLpEventsTable } from '../components/HistoricalLpEventsTable';
 import { HistoricalPnlAccountingTable } from '../components/HistoricalPnlAccountingTable';
@@ -29,7 +29,7 @@ export type PortfolioHistoryTabID =
 export interface PortfolioHistoryTab
   extends TabIdentifiable<PortfolioHistoryTabID> {
   label: string;
-  content: React.ReactNode;
+  content: ReactNode;
 }
 
 interface UsePortfolioHistoryTabs {

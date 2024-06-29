@@ -3,10 +3,15 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { TooltipPortalRoot } from '@vertex-protocol/web-ui';
 import { AppDataProviders } from 'client/context/appData/AppDataProviders';
+import { GatedAppAccessContextProvider } from 'client/context/gatedAppAccess/GatedAppAccessContext';
 import { AnalyticsContextProvider } from 'client/modules/analytics/AnalyticsContext';
+import { CookieNoticeBanner } from 'client/modules/analytics/CookieNoticeBanner';
+import { GoogleAnalytics } from 'client/modules/analytics/GoogleAnalytics';
+
 import { AppDialogs } from 'client/modules/app/AppDialogs';
-import { GatedAppAccessContextProvider } from 'client/modules/gatedAppAccess/GatedAppAccessContext';
+import { OpenCommandCenterOnKeyPressListener } from 'client/modules/commandCenter/components/OpenCommandCenterOnKeyPressListener';
 import { NotificationManagerContextProvider } from 'client/modules/notifications/NotificationManagerContext';
+import { FuulReferralsProvider } from 'client/modules/referrals/context/FuulReferralsContext';
 import { ReferralCodeListener } from 'client/modules/rewards/components/ReferralCodeListener';
 import { SentryConfigManager } from 'client/modules/sentry/SentryConfigManager';
 import { OrderFillQueryRefetchListener } from 'client/modules/trading/OrderFillQueryRefetchListener';
@@ -16,8 +21,6 @@ import { Provider as JotaiProvider } from 'jotai';
 import { ThemeProvider } from 'next-themes';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { CookieNoticeBanner } from 'client/modules/analytics/CookieNoticeBanner';
-import { GoogleAnalytics } from 'client/modules/analytics/GoogleAnalytics';
 
 // Style imports
 import '../styles/globals.css';
@@ -50,26 +53,29 @@ function App({ Component, pageProps }: AppProps) {
             <ReactQueryDevtools initialIsOpen={false} />
             <AppDataProviders>
               <GatedAppAccessContextProvider>
-                <NotificationManagerContextProvider>
-                  <AnalyticsContextProvider>
-                    <Head>
-                      <title>{clientEnv.brandMetadata.displayName}</title>
-                      {/*This prevents mobile from auto-zooming on input focus*/}
-                      <meta
-                        name="viewport"
-                        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-                      />
-                    </Head>
-                    <GoogleAnalytics />
-                    <Component {...pageProps} />
-                    <AppDialogs />
-                    <OrderFillQueryRefetchListener />
-                    <SentryConfigManager />
-                    <ReferralCodeListener />
-                    <TooltipPortalRoot />
-                    <CookieNoticeBanner />
-                  </AnalyticsContextProvider>
-                </NotificationManagerContextProvider>
+                <FuulReferralsProvider>
+                  <NotificationManagerContextProvider>
+                    <AnalyticsContextProvider>
+                      <Head>
+                        <title>{clientEnv.brandMetadata.displayName}</title>
+                        {/*This prevents mobile from auto-zooming on input focus*/}
+                        <meta
+                          name="viewport"
+                          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+                        />
+                      </Head>
+                      <GoogleAnalytics />
+                      <Component {...pageProps} />
+                      <AppDialogs />
+                      <OrderFillQueryRefetchListener />
+                      <SentryConfigManager />
+                      <ReferralCodeListener />
+                      <TooltipPortalRoot />
+                      <CookieNoticeBanner />
+                      <OpenCommandCenterOnKeyPressListener />
+                    </AnalyticsContextProvider>
+                  </NotificationManagerContextProvider>
+                </FuulReferralsProvider>
               </GatedAppAccessContextProvider>
             </AppDataProviders>
           </JotaiProvider>

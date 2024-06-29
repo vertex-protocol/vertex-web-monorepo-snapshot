@@ -2,9 +2,9 @@ import { BigDecimal } from '@vertex-protocol/client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { formatNumber } from '@vertex-protocol/react-client';
 
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import Image from 'next/image';
 import aprCircleBg from './assets/staking-apr-circle-bg.svg';
 

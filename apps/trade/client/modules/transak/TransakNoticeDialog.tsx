@@ -26,9 +26,7 @@ export function TransakNoticeDialog() {
           </p>
         </div>
         <div className="flex flex-col gap-y-3">
-          <PrimaryButton size="lg" onClick={showTransakDialog}>
-            Buy Crypto
-          </PrimaryButton>
+          <PrimaryButton onClick={showTransakDialog}>Buy Crypto</PrimaryButton>
           <div className="text-2xs flex justify-center gap-x-1">
             <span className="text-text-tertiary">Powered by</span>
             <Image src={transakLogo} alt="transak" />

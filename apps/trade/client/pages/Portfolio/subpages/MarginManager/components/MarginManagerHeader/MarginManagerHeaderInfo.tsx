@@ -4,6 +4,7 @@ import {
   joinClassNames,
 } from '@vertex-protocol/web-common';
 import { Card } from '@vertex-protocol/web-ui';
+import { ReactNode } from 'react';
 
 function HeaderInfoCard({ className, children }: WithChildren<WithClassnames>) {
   return (
@@ -23,7 +24,7 @@ function HeaderInfoMetric({
   label,
   content,
 }: {
-  content: React.ReactNode;
+  content: ReactNode;
   label: string;
 }) {
   return (

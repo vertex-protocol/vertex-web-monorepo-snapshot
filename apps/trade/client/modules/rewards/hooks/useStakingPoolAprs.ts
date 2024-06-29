@@ -7,7 +7,7 @@ import {
   calcStakingApr,
   calcStakingAprRange,
 } from 'client/utils/calcs/stakingCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
 
 interface Data {
@@ -19,14 +19,13 @@ interface Data {
 }
 
 export function useStakingPoolAprs() {
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data: stakingState } = useStakingState();
   const lastRewardsDistributionAmount =
     useLastStakingRewardsDistributionAmount();
   const { data: vrtxSpotMarket } = useMarket({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
-  const { protocolToken } = useVertexMetadataContext();
 
   return useMemo((): Data | undefined => {
     if (!vrtxSpotMarket || !stakingState || !lastRewardsDistributionAmount) {
@@ -35,7 +34,7 @@ export function useStakingPoolAprs() {
 
     const totalStakingScore = removeDecimals(
       stakingState.totalScore,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
     const vrtxOraclePrice = vrtxSpotMarket.product.oraclePrice;
 
@@ -53,18 +52,18 @@ export function useStakingPoolAprs() {
         vrtxOraclePrice,
         amountStaked: removeDecimals(
           stakingState.totalStaked,
-          protocolToken.tokenDecimals,
+          protocolTokenMetadata.token.tokenDecimals,
         ),
         stakingScore: removeDecimals(
           stakingState.totalScore,
-          protocolToken.tokenDecimals,
+          protocolTokenMetadata.token.tokenDecimals,
         ),
       }),
     };
   }, [
     lastRewardsDistributionAmount,
     stakingState,
-    protocolToken.tokenDecimals,
+    protocolTokenMetadata.token.tokenDecimals,
     vrtxSpotMarket,
   ]);
 }

@@ -1,6 +1,5 @@
 import { DiscList } from '@vertex-protocol/web-ui';
 import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 
 const lpMarketsTooltips = {
@@ -8,24 +7,24 @@ const lpMarketsTooltips = {
     title: `24h Volume`,
     content: `The past 24h volume for the trading pair.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const lbaPositionTooltips = {
-  lbaPositionSuppliedToLba: {
+  lbaPositionSuppliedToLba: ({ primaryQuoteToken }) => ({
     title: `Supplied to LBA`,
-    content: `Your contribution of ${PRIMARY_QUOTE_SYMBOL} and ${VRTX_TOKEN_INFO.symbol} to the LBA.`,
-  },
+    content: `Your contribution of ${primaryQuoteToken.symbol} and ${VRTX_TOKEN_INFO.symbol} to the LBA.`,
+  }),
   lbaPositionLiquidityStatus: {
     title: `Locked / UnLocked Liq.`,
     content: `LBA liquidity unlocks according to the vesting schedule. Unlocked liquidity can be withdrawn.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const perpPositionsTooltips = {
-  perpPositionsFundingPayments: {
+  perpPositionsFundingPayments: ({ primaryQuoteToken }) => ({
     title: `Funding`,
-    content: `The total funding payments you have received (+) or paid (-). Payments are made hourly in ${PRIMARY_QUOTE_SYMBOL}. The funding rate for payments is calculated based on the difference between the the market's TWAP orderbook price and the spot index price.`,
-  },
+    content: `The total funding payments you have received (+) or paid (-). Payments are made hourly in ${primaryQuoteToken.symbol}. The funding rate for payments is calculated based on the difference between the the market's TWAP orderbook price and the spot index price.`,
+  }),
   perpPositionsMargin: {
     title: `Position Margin`,
     content: `The initial margin required to maintain this position.`,
@@ -67,14 +66,14 @@ const perpPositionsTooltips = {
       </DiscList.Container>
     ),
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const openEngineOrdersTooltips = {
   openEngineOrdersLimitPrice: {
     title: 'Price',
     content: `The price at which the limit order will be executed.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const openTriggerOrdersTooltips = {
   triggerOrderLimitPrice: {
@@ -89,34 +88,36 @@ const openTriggerOrdersTooltips = {
       </>
     ),
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const marginManagerPerpPositionsTooltips = {
-  marginManagerPerpPositionsUnsettledQuoteInfo: {
-    title: `Unsettled ${PRIMARY_QUOTE_SYMBOL}`,
+  marginManagerPerpPositionsUnsettledQuoteInfo: ({ primaryQuoteToken }) => ({
+    title: `Unsettled ${primaryQuoteToken.symbol}`,
     content: (
       <>
         <p>
-          Unsettled {PRIMARY_QUOTE_SYMBOL} is the portion of open Perp PnL yet
-          to be settled into the underlying {PRIMARY_QUOTE_SYMBOL} balance. Perp
-          positions are periodically “settled” between traders, transferring{' '}
-          {PRIMARY_QUOTE_SYMBOL} between winning and losing positions.
+          Unsettled {primaryQuoteToken.symbol} is the portion of open Perp PnL
+          yet to be settled into the underlying {primaryQuoteToken.symbol}{' '}
+          balance. Perp positions are periodically “settled” between traders,
+          transferring {primaryQuoteToken.symbol} between winning and losing
+          positions.
         </p>
         <DiscList.Container>
           <DiscList.Item>
             <span className="text-text-primary">Positive</span> = once settled,
-            this amount of {PRIMARY_QUOTE_SYMBOL} will be added to your balance.
+            this amount of {primaryQuoteToken.symbol} will be added to your
+            balance.
           </DiscList.Item>
           <DiscList.Item>
             <span className="text-text-primary">Negative</span> = once settled,
-            this amount of {PRIMARY_QUOTE_SYMBOL} will be subtracted from your
-            balance.
+            this amount of {primaryQuoteToken.symbol} will be subtracted from
+            your balance.
           </DiscList.Item>
         </DiscList.Container>
       </>
     ),
-  },
-};
+  }),
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const fundingRateMarketsTooltips = {
   fundingRateMarketsPredictedHourlyFunding: {
@@ -124,7 +125,7 @@ const fundingRateMarketsTooltips = {
     content:
       'The estimated hourly funding rate based on the current spot index price and TWAP of orderbook (mark price). The funding rate is realized when the payment is made, which is every hour (see countdown).',
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const perpMarketsTooltips = {
   fundingRatePerpsPredictedHourlyFunding: {
@@ -132,7 +133,7 @@ const perpMarketsTooltips = {
     content:
       'The estimated funding based on the current spot index price and mark price. Funding payments are made every hour.',
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const interestPaymentsTooltips = {
   interestPayment: {
@@ -160,60 +161,53 @@ const interestPaymentsTooltips = {
       </div>
     ),
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const realizedPnlEventsTooltips = {
   realizedPnlPositionSize: {
     title: `Size`,
     content: `The amount of your order that was filled at this price. An order can fill across different prices until fully filled or cancelled.`,
   },
-};
-
-const historicalTradesTooltips = {
-  historicalTradesSequencerFee: {
-    title: 'Sequencer Fee',
-    content: 'Fee collected per trade for sequencer gas costs',
-  },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const historicalWithdrawalsTooltips = {
   historicalWithdrawalsStatus: {
     title: `Status`,
     content: `We minimize user fees by sending withdrawal transactions on-chain when gas fees are low. All actions still happen instantaneously, but withdrawals can take longer during high gas periods. If your withdrawal appears here, it was successfully placed and will settle on-chain once the target gas threshold is reached.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const historicalLpEventsTooltips = {
   historicalLpChangeInBalances: {
     title: `Change in Balances`,
     content: `The change in asset balances for this transaction. The transaction fee is included in the amounts shown.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const historicalSettlementsTooltips = {
-  historicalSettlement: {
+  historicalSettlement: ({ primaryQuoteToken }) => ({
     title: `Settlement`,
     content: (
       <>
         <p>
           Perp PnL is periodically settled between traders, transferring{' '}
-          {PRIMARY_QUOTE_SYMBOL} between winning and losing positions.
+          {primaryQuoteToken.symbol} between winning and losing positions.
           Settlements include any gains or losses from funding payments.
         </p>
         <DiscList.Container>
           <DiscList.Item>
             <span className="text-text-primary">(+)</span> = the position had
-            positive PnL and you were paid {PRIMARY_QUOTE_SYMBOL}
+            positive PnL and you were paid {primaryQuoteToken.symbol}
           </DiscList.Item>
           <DiscList.Item>
             <span className="text-text-primary">(-)</span> = the position had
-            negative PnL and you paid {PRIMARY_QUOTE_SYMBOL}
+            negative PnL and you paid {primaryQuoteToken.symbol}
           </DiscList.Item>
         </DiscList.Container>
       </>
     ),
-  },
-};
+  }),
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const historicalLiquidationTooltips = {
   historicalLiquidationAffectedPositions: {
@@ -228,10 +222,10 @@ const historicalLiquidationTooltips = {
     title: `Position Changes`,
     content: `The associated changes in position size from the liquidation. Affected LP positions from a liquidation are decomposed into the underlying asset.`,
   },
-  historicalLiquidationUsdcChanges: {
-    title: `Liquidation ${PRIMARY_QUOTE_SYMBOL} Transfer`,
-    content: `To liquidate a position, there must be a ${PRIMARY_QUOTE_SYMBOL} transfer between you and the liquidator. This is the net change in ${PRIMARY_QUOTE_SYMBOL} for your account as a result of the liquidation.`,
-  },
+  historicalLiquidationUsdcChanges: ({ primaryQuoteToken }) => ({
+    title: `Liquidation ${primaryQuoteToken.symbol} Transfer`,
+    content: `To liquidate a position, there must be a ${primaryQuoteToken.symbol} transfer between you and the liquidator. This is the net change in ${primaryQuoteToken.symbol} for your account as a result of the liquidation.`,
+  }),
   historicalLiquidationType: {
     title: `Type of Liquidation`,
     content: (
@@ -256,7 +250,7 @@ const historicalLiquidationTooltips = {
       </>
     ),
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 export const tableTooltips = {
   ...lpMarketsTooltips,
@@ -266,7 +260,6 @@ export const tableTooltips = {
   ...marginManagerPerpPositionsTooltips,
   ...interestPaymentsTooltips,
   ...realizedPnlEventsTooltips,
-  ...historicalTradesTooltips,
   ...historicalLpEventsTooltips,
   ...historicalLiquidationTooltips,
   ...historicalSettlementsTooltips,

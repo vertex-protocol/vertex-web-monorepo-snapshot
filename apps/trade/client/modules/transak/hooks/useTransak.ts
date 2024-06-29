@@ -1,8 +1,13 @@
 import { Transak, TransakConfig } from '@transak/transak-sdk';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { SENSITIVE_DATA } from 'common/environment/sensitiveData';
 import { useCallback, useMemo } from 'react';
-import { arbitrum, arbitrumSepolia } from 'viem/chains';
+import {
+  arbitrum,
+  arbitrumSepolia,
+  mantle,
+  mantleSepoliaTestnet,
+} from 'viem/chains';
 
 export function useTransak() {
   const { connectionStatus, primaryChain } = useEVMContext();
@@ -23,6 +28,22 @@ export function useTransak() {
           environment: Transak.ENVIRONMENTS.STAGING,
           defaultNetwork: 'arbitrum',
           defaultCryptoCurrency: 'usdc',
+          walletAddress: connectionStatus.address,
+        };
+      case mantle.id:
+        return {
+          apiKey: SENSITIVE_DATA.transakApiKey.prod,
+          environment: Transak.ENVIRONMENTS.PRODUCTION,
+          defaultNetwork: 'mantle',
+          defaultCryptoCurrency: 'usdt',
+          walletAddress: connectionStatus.address,
+        };
+      case mantleSepoliaTestnet.id:
+        return {
+          apiKey: SENSITIVE_DATA.transakApiKey.staging,
+          environment: Transak.ENVIRONMENTS.STAGING,
+          defaultNetwork: 'mantle',
+          defaultCryptoCurrency: 'usdt',
           walletAddress: connectionStatus.address,
         };
       default:

@@ -18,15 +18,12 @@ export function NavCardButtonContent({
   return (
     <div
       className={mergeClassNames(
-        'flex flex-col gap-y-1.5 text-left',
+        'flex flex-col gap-y-0.5 text-left',
         className,
       )}
     >
       <div
-        className={mergeClassNames(
-          'text-text-primary text-sm font-medium',
-          titleClassName,
-        )}
+        className={mergeClassNames('text-text-primary text-sm', titleClassName)}
       >
         {title}
       </div>

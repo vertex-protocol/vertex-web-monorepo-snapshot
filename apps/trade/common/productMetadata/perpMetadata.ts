@@ -1,3 +1,4 @@
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import {
   ADA_PERP_MARKET_DETAILS,
   APE_PERP_MARKET_DETAILS,
@@ -14,9 +15,13 @@ import {
   DOGE_PERP_MARKET_DETAILS,
   DOT_PERP_MARKET_DETAILS,
   DYDX_PERP_MARKET_DETAILS,
+  ENA_PERP_MARKET_DETAILS,
   ETH_PERP_MARKET_DETAILS,
   FIL_PERP_MARKET_DETAILS,
+  FTM_PERP_MARKET_DETAILS,
   GALA_PERP_MARKET_DETAILS,
+  GM30_PERP_MARKET_DETAILS,
+  GMMEME_PERP_MARKET_DETAILS,
   ICP_PERP_MARKET_DETAILS,
   IMX_PERP_MARKET_DETAILS,
   INJ_PERP_MARKET_DETAILS,
@@ -28,8 +33,10 @@ import {
   MATIC_PERP_MARKET_DETAILS,
   MEME_PERP_MARKET_DETAILS,
   MKR_PERP_MARKET_DETAILS,
+  MNT_PERP_MARKET_DETAILS,
   MPEPE_PERP_MARKET_DETAILS,
   NEAR_PERP_MARKET_DETAILS,
+  ONDO_PERP_MARKET_DETAILS,
   OP_PERP_MARKET_DETAILS,
   PYTH_PERP_MARKET_DETAILS,
   SEI_PERP_MARKET_DETAILS,
@@ -38,7 +45,9 @@ import {
   STX_PERP_MARKET_DETAILS,
   SUI_PERP_MARKET_DETAILS,
   TIA_PERP_MARKET_DETAILS,
+  TON_PERP_MARKET_DETAILS,
   TRX_PERP_MARKET_DETAILS,
+  WIF_PERP_MARKET_DETAILS,
   WLD_PERP_MARKET_DETAILS,
   XRP_PERP_MARKET_DETAILS,
 } from 'common/productMetadata/marketDetailsMetadata';
@@ -51,6 +60,8 @@ export const BTC_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.btc,
   marketName: 'BTC-PERP',
   marketDetails: BTC_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const ETH_PERP_METADATA: PerpProductMetadata = {
@@ -59,6 +70,8 @@ export const ETH_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.eth,
   marketName: 'ETH-PERP',
   marketDetails: ETH_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const ARB_PERP_METADATA: PerpProductMetadata = {
@@ -67,6 +80,8 @@ export const ARB_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.arb,
   marketName: 'ARB-PERP',
   marketDetails: ARB_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const BNB_PERP_METADATA: PerpProductMetadata = {
@@ -75,6 +90,8 @@ export const BNB_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.bnb,
   marketName: 'BNB-PERP',
   marketDetails: BNB_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const MATIC_PERP_METADATA: PerpProductMetadata = {
@@ -83,6 +100,8 @@ export const MATIC_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.matic,
   marketName: 'MATIC-PERP',
   marketDetails: MATIC_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const SOL_PERP_METADATA: PerpProductMetadata = {
@@ -91,6 +110,8 @@ export const SOL_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.sol,
   marketName: 'SOL-PERP',
   marketDetails: SOL_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const XRP_PERP_METADATA: PerpProductMetadata = {
@@ -99,6 +120,8 @@ export const XRP_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.xrp,
   marketName: 'XRP-PERP',
   marketDetails: XRP_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const SUI_PERP_METADATA: PerpProductMetadata = {
@@ -107,6 +130,8 @@ export const SUI_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.sui,
   marketName: 'SUI-PERP',
   marketDetails: SUI_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const OP_PERP_METADATA: PerpProductMetadata = {
@@ -115,6 +140,8 @@ export const OP_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.op,
   marketName: 'OP-PERP',
   marketDetails: OP_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const LTC_PERP_METADATA: PerpProductMetadata = {
@@ -123,6 +150,8 @@ export const LTC_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.ltc,
   marketName: 'LTC-PERP',
   marketDetails: LTC_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const BCH_PERP_METADATA: PerpProductMetadata = {
@@ -131,6 +160,8 @@ export const BCH_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.bch,
   marketName: 'BCH-PERP',
   marketDetails: BCH_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const COMP_PERP_METADATA: PerpProductMetadata = {
@@ -139,6 +170,8 @@ export const COMP_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.comp,
   marketName: 'COMP-PERP',
   marketDetails: COMP_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const APT_PERP_METADATA: PerpProductMetadata = {
@@ -147,6 +180,8 @@ export const APT_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.apt,
   marketName: 'APT-PERP',
   marketDetails: APT_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const MKR_PERP_METADATA: PerpProductMetadata = {
@@ -155,6 +190,8 @@ export const MKR_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.mkr,
   marketName: 'MKR-PERP',
   marketDetails: MKR_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const MPEPE_PERP_METADATA: PerpProductMetadata = {
@@ -163,6 +200,8 @@ export const MPEPE_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.pepe,
   marketName: 'mPEPE-PERP',
   marketDetails: MPEPE_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const DOGE_PERP_METADATA: PerpProductMetadata = {
@@ -171,6 +210,8 @@ export const DOGE_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.doge,
   marketName: 'DOGE-PERP',
   marketDetails: DOGE_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const LINK_PERP_METADATA: PerpProductMetadata = {
@@ -179,6 +220,8 @@ export const LINK_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.link,
   marketName: 'LINK-PERP',
   marketDetails: LINK_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const DYDX_PERP_METADATA: PerpProductMetadata = {
@@ -187,6 +230,8 @@ export const DYDX_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.dydx,
   marketName: 'DYDX-PERP',
   marketDetails: DYDX_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const CRV_PERP_METADATA: PerpProductMetadata = {
@@ -195,6 +240,8 @@ export const CRV_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.crv,
   marketName: 'CRV-PERP',
   marketDetails: CRV_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const TIA_PERP_METADATA: PerpProductMetadata = {
@@ -203,6 +250,8 @@ export const TIA_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.tia,
   marketName: 'TIA-PERP',
   marketDetails: TIA_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const PYTH_PERP_METADATA: PerpProductMetadata = {
@@ -211,6 +260,8 @@ export const PYTH_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.pyth,
   marketName: 'PYTH-PERP',
   marketDetails: PYTH_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const JTO_PERP_METADATA: PerpProductMetadata = {
@@ -219,6 +270,8 @@ export const JTO_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.jto,
   marketName: 'JTO-PERP',
   marketDetails: JTO_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const AVAX_PERP_METADATA: PerpProductMetadata = {
@@ -227,6 +280,8 @@ export const AVAX_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.avax,
   marketName: 'AVAX-PERP',
   marketDetails: AVAX_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const INJ_PERP_METADATA: PerpProductMetadata = {
@@ -235,6 +290,8 @@ export const INJ_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.inj,
   marketName: 'INJ-PERP',
   marketDetails: INJ_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const SNX_PERP_METADATA: PerpProductMetadata = {
@@ -243,6 +300,8 @@ export const SNX_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.snx,
   marketName: 'SNX-PERP',
   marketDetails: SNX_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const ADA_PERP_METADATA: PerpProductMetadata = {
@@ -251,6 +310,8 @@ export const ADA_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.ada,
   marketName: 'ADA-PERP',
   marketDetails: ADA_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const IMX_PERP_METADATA: PerpProductMetadata = {
@@ -259,6 +320,8 @@ export const IMX_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.imx,
   marketName: 'IMX-PERP',
   marketDetails: IMX_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const MEME_PERP_METADATA: PerpProductMetadata = {
@@ -267,6 +330,8 @@ export const MEME_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.meme,
   marketName: 'MEME-PERP',
   marketDetails: MEME_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const SEI_PERP_METADATA: PerpProductMetadata = {
@@ -275,6 +340,8 @@ export const SEI_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.sei,
   marketName: 'SEI-PERP',
   marketDetails: SEI_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const STX_PERP_METADATA: PerpProductMetadata = {
@@ -283,6 +350,8 @@ export const STX_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.stx,
   marketName: 'STX-PERP',
   marketDetails: STX_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const NEAR_PERP_METADATA: PerpProductMetadata = {
@@ -291,6 +360,8 @@ export const NEAR_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.near,
   marketName: 'NEAR-PERP',
   marketDetails: NEAR_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const BLUR_PERP_METADATA: PerpProductMetadata = {
@@ -299,6 +370,8 @@ export const BLUR_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.blur,
   marketName: 'BLUR-PERP',
   marketDetails: BLUR_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const LDO_PERP_METADATA: PerpProductMetadata = {
@@ -307,6 +380,8 @@ export const LDO_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.ldo,
   marketName: 'LDO-PERP',
   marketDetails: LDO_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const FIL_PERP_METADATA: PerpProductMetadata = {
@@ -315,6 +390,8 @@ export const FIL_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.fil,
   marketName: 'FIL-PERP',
   marketDetails: FIL_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const WLD_PERP_METADATA: PerpProductMetadata = {
@@ -323,6 +400,8 @@ export const WLD_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.wld,
   marketName: 'WLD-PERP',
   marketDetails: WLD_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const ICP_PERP_METADATA: PerpProductMetadata = {
@@ -331,6 +410,8 @@ export const ICP_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.icp,
   marketName: 'ICP-PERP',
   marketDetails: ICP_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const DOT_PERP_METADATA: PerpProductMetadata = {
@@ -339,6 +420,8 @@ export const DOT_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.dot,
   marketName: 'DOT-PERP',
   marketDetails: DOT_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const TRX_PERP_METADATA: PerpProductMetadata = {
@@ -347,6 +430,8 @@ export const TRX_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.trx,
   marketName: 'TRX-PERP',
   marketDetails: TRX_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const GALA_PERP_METADATA: PerpProductMetadata = {
@@ -355,6 +440,8 @@ export const GALA_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.gala,
   marketName: 'GALA-PERP',
   marketDetails: GALA_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const ATOM_PERP_METADATA: PerpProductMetadata = {
@@ -363,6 +450,8 @@ export const ATOM_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.atom,
   marketName: 'ATOM-PERP',
   marketDetails: ATOM_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const APE_PERP_METADATA: PerpProductMetadata = {
@@ -371,6 +460,8 @@ export const APE_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.ape,
   marketName: 'APE-PERP',
   marketDetails: APE_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };
 
 export const JUP_PERP_METADATA: PerpProductMetadata = {
@@ -379,4 +470,86 @@ export const JUP_PERP_METADATA: PerpProductMetadata = {
   icon: TOKEN_ICONS.jup,
   marketName: 'JUP-PERP',
   marketDetails: JUP_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
+};
+
+export const GMCI30_PERP_METADATA: PerpProductMetadata = {
+  name: 'GMCI30-PERP',
+  symbol: 'GMCI30',
+  icon: TOKEN_ICONS.gmci30,
+  marketName: 'GMCI30-PERP',
+  marketDetails: GM30_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
+};
+
+export const GMMEME_PERP_METADATA: PerpProductMetadata = {
+  name: 'GMMEME-PERP',
+  symbol: 'GMMEME',
+  icon: TOKEN_ICONS.gmMeme,
+  marketName: 'GMMEME-PERP',
+  marketDetails: GMMEME_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
+};
+
+export const WIF_PERP_METADATA: PerpProductMetadata = {
+  name: 'WIF-PERP',
+  symbol: 'WIF',
+  icon: TOKEN_ICONS.wif,
+  marketName: 'WIF-PERP',
+  marketDetails: WIF_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
+};
+
+export const MNT_PERP_METADATA: PerpProductMetadata = {
+  name: 'MNT-PERP',
+  symbol: 'MNT',
+  icon: TOKEN_ICONS.mnt,
+  marketName: 'MNT-PERP',
+  marketDetails: MNT_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
+};
+
+export const ENA_PERP_METADATA: PerpProductMetadata = {
+  name: 'ENA-PERP',
+  symbol: 'ENA',
+  icon: TOKEN_ICONS.ena,
+  marketName: 'ENA-PERP',
+  marketDetails: ENA_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
+};
+
+export const FTM_PERP_METADATA: PerpProductMetadata = {
+  name: 'FTM-PERP',
+  symbol: 'FTM',
+  icon: TOKEN_ICONS.ftm,
+  marketName: 'FTM-PERP',
+  marketDetails: FTM_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
+};
+
+export const TON_PERP_METADATA: PerpProductMetadata = {
+  name: 'TON-PERP',
+  symbol: 'TON',
+  icon: TOKEN_ICONS.ton,
+  marketName: 'TON-PERP',
+  marketDetails: TON_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
+};
+
+export const ONDO_PERP_METADATA: PerpProductMetadata = {
+  name: 'ONDO-PERP',
+  symbol: 'ONDO',
+  icon: TOKEN_ICONS.ondo,
+  marketName: 'ONDO-PERP',
+  marketDetails: ONDO_PERP_MARKET_DETAILS,
+  hasLpPool: false,
+  quoteProductId: QUOTE_PRODUCT_ID,
 };

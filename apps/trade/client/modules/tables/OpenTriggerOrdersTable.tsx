@@ -1,7 +1,7 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
@@ -14,7 +14,7 @@ import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWi
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import { CancelAllOrdersHeaderCell } from './cells/CancelAllOrdersHeaderCell';
 import { CancelOrderCell } from './cells/CancelOrderCell';
@@ -56,7 +56,8 @@ export function OpenTriggerOrdersTable({
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('orderType', {

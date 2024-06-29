@@ -1,7 +1,7 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
-import { Spinner } from '@vertex-protocol/web-ui';
 import Link from 'next/link';
 import { forwardRef, Ref } from 'react';
+import { Spinner } from '../Spinner';
 import {
   ButtonAsDivProps,
   ButtonAsHTMLButtonProps,
@@ -17,30 +17,36 @@ export const Button = forwardRef(function Button(
     as: Component,
     className: baseClassName,
     iconClassName,
-    startIcon = null,
+    startIcon: baseStartIcon = null,
     endIcon = null,
     disabled = false,
     isLoading = false,
     children: baseChildren,
+    loadingIconSize = '1.15em',
     ...rest
   } = props;
-  const hasGap = startIcon || endIcon || isLoading;
+  const startIcon = isLoading ? (
+    <Spinner size={loadingIconSize} className="text-inherit" />
+  ) : (
+    baseStartIcon
+  );
+
+  const hasGap = startIcon || endIcon;
   const disableInteraction = disabled || isLoading;
 
   const children = (
     <>
-      {isLoading ? <Spinner className="w-4 text-inherit" /> : startIcon}
+      {startIcon}
       {baseChildren}
       {endIcon}
     </>
   );
 
   const className = mergeClassNames(
-    'transition-all duration-200',
     'inline-flex items-center justify-center whitespace-nowrap',
     hasGap && 'gap-x-2',
-    disabled ? 'cursor-not-allowed opacity-90' : 'cursor-pointer',
-    isLoading && 'cursor-wait opacity-90',
+    disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+    isLoading && 'cursor-wait',
     baseClassName,
   );
 

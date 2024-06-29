@@ -32,20 +32,29 @@ export function EpochRewardsLiquidClaimActionCell({
 
   const hasClaimedRewards = rewardsEarned?.gt(0) && rewardsUnclaimed?.isZero();
 
+  const isProcessing = !isPastClaimDeadline && !rewardsUnclaimed;
+
   const canClaim =
     !isCurrent && !isPastClaimDeadline && rewardsUnclaimed?.gt(0);
 
   const isDisabled = !canClaim || userActionState === 'block_all';
 
   const buttonLabel = (() => {
+    // Current Epoch
     if (isCurrent) {
       return 'Pending';
     }
-    if (isPastClaimDeadline) {
-      return 'Claim Ended';
+    // Recently completed epoch, but we don't have merkle proofs/rewards data yet
+    if (isProcessing) {
+      return 'Processing';
     }
+    // User has claimed rewards
     if (hasClaimedRewards) {
       return 'Claimed';
+    }
+    // Claim deadline has passed (with or without) unclaimed rewards
+    if (isPastClaimDeadline) {
+      return 'Claim Ended';
     }
     return 'Claim';
   })();
@@ -56,8 +65,8 @@ export function EpochRewardsLiquidClaimActionCell({
       {...rest}
     >
       <PrimaryButton
-        size="sm"
-        title="Claim"
+        size="xs"
+        title={buttonLabel}
         disabled={isDisabled}
         onClick={() => {
           if (!rewardsUnclaimed) {

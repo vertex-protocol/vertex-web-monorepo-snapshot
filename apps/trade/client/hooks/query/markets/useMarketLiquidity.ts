@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { GetEngineMarketLiquidityResponse } from '@vertex-protocol/engine-client';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { QueryState } from 'client/types/QueryState';
 
 interface Params {
@@ -41,7 +41,7 @@ export function useMarketLiquidity({
   includeWebsocketUpdates,
 }: Params): QueryState<MarketLiquidityData> {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient || !productId;
   return useQuery({
     queryKey: marketLiquidityQueryKey(

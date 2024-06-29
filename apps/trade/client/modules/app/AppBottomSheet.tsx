@@ -1,5 +1,5 @@
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { PrimaryButton } from '@vertex-protocol/web-ui';
 import { useUserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -26,6 +26,10 @@ export function AppBottomSheet({ className }: WithClassnames) {
       message: 'Deposit Funds',
       onClick: () => show({ type: 'deposit', params: {} }),
     },
+    requires_single_signature_setup: {
+      message: 'Setup 1CT',
+      onClick: () => show({ type: 'signature_mode_settings', params: {} }),
+    },
     requires_sign_once_approval: {
       message: 'Approve Trading',
       onClick: () => show({ type: 'single_signature_reapproval', params: {} }),
@@ -41,7 +45,7 @@ export function AppBottomSheet({ className }: WithClassnames) {
       )}
     >
       <div className="bg-background/50 rounded p-1 backdrop-blur-sm">
-        <PrimaryButton className="w-full" size="lg" onClick={onClick}>
+        <PrimaryButton className="w-full" onClick={onClick}>
           {message}
         </PrimaryButton>
       </div>

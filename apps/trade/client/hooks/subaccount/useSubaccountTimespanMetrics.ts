@@ -1,4 +1,5 @@
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { removeDecimals } from '@vertex-protocol/utils';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshots } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshots';
 import { calcChangeFrac } from 'client/utils/calcs/calcChangeFrac';
 import {
@@ -6,7 +7,6 @@ import {
   IndexerSubaccountMetrics,
 } from 'client/utils/calcs/getSubaccountMetricsFromIndexerSnapshot';
 import { calcPnlFracForNonZeroDenom } from 'client/utils/calcs/pnlCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { isFinite } from 'lodash';
 import { useMemo } from 'react';
 
@@ -40,7 +40,7 @@ export function useSubaccountTimespanMetrics(secondsBeforeNow?: number) {
     secondsBeforeNow: multiQuerySecondsBeforeNow,
   });
 
-  const quotePrice = useQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const mappedData = useMemo((): SubaccountTimespanMetrics | undefined => {
     if (!indexerSummaries?.length) {
@@ -64,14 +64,16 @@ export function useSubaccountTimespanMetrics(secondsBeforeNow?: number) {
     );
 
     const currentMetrics: Metrics = {
-      cumulativeAccountPnlUsd: currentAccountPnl.multipliedBy(quotePrice),
+      cumulativeAccountPnlUsd:
+        currentAccountPnl.multipliedBy(primaryQuotePriceUsd),
       cumulativeAccountPnlFrac: currentSummaryMetrics.cumulativeAccountPnlFrac,
-      cumulativeTotalPerpPnlUsd: currentTotalPerpPnl.multipliedBy(quotePrice),
+      cumulativeTotalPerpPnlUsd:
+        currentTotalPerpPnl.multipliedBy(primaryQuotePriceUsd),
       cumulativeTotalPerpPnlFrac:
         currentSummaryMetrics.cumulativeTotalPerpPnlFrac,
       portfolioValueUsd: removeDecimals(
         currentSummaryMetrics.portfolioValue,
-      ).multipliedBy(quotePrice),
+      ).multipliedBy(primaryQuotePriceUsd),
     };
 
     // Don't calculate difference if all time. Return from current one.
@@ -95,16 +97,17 @@ export function useSubaccountTimespanMetrics(secondsBeforeNow?: number) {
     );
 
     const historicalMetrics: Metrics = {
-      cumulativeAccountPnlUsd: historicalAccountPnl.multipliedBy(quotePrice),
+      cumulativeAccountPnlUsd:
+        historicalAccountPnl.multipliedBy(primaryQuotePriceUsd),
       cumulativeAccountPnlFrac:
         historicalSummaryMetrics.cumulativeAccountPnlFrac,
       cumulativeTotalPerpPnlUsd:
-        historicalTotalPerpPnl.multipliedBy(quotePrice),
+        historicalTotalPerpPnl.multipliedBy(primaryQuotePriceUsd),
       cumulativeTotalPerpPnlFrac:
         historicalSummaryMetrics.cumulativeTotalPerpPnlFrac,
       portfolioValueUsd: removeDecimals(
         historicalSummaryMetrics.portfolioValue,
-      ).multipliedBy(quotePrice),
+      ).multipliedBy(primaryQuotePriceUsd),
     };
 
     const cumulativeAccountPnlDeltaUsd =
@@ -137,7 +140,7 @@ export function useSubaccountTimespanMetrics(secondsBeforeNow?: number) {
       historical: historicalMetrics,
       deltas: deltaMetrics,
     };
-  }, [indexerSummaries, quotePrice]);
+  }, [indexerSummaries, primaryQuotePriceUsd]);
 
   return {
     data: mappedData,

@@ -23,7 +23,7 @@ export function SpotLeverageSegmentedControl({ className }: WithClassnames) {
       </DefinitionTooltip>
       <SegmentedControl.Container className="w-24">
         <SegmentedControl.Button
-          size="sm"
+          size="xs"
           active={!spotLeverageEnabled}
           onClick={() => {
             setSpotLeverageEnabled(false);
@@ -33,7 +33,7 @@ export function SpotLeverageSegmentedControl({ className }: WithClassnames) {
           Off
         </SegmentedControl.Button>
         <SegmentedControl.Button
-          size="sm"
+          size="xs"
           active={spotLeverageEnabled}
           onClick={() => setSpotLeverageEnabled(true)}
           className={joinClassNames(

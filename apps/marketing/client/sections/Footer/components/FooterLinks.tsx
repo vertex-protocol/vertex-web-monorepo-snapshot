@@ -1,14 +1,14 @@
-import classNames from 'classnames';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import Link from 'next/link';
 import { FOOTER_LINKS, FooterLinkProps } from '../data';
 import { EmailSignUp } from './EmailSignup';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function FooterLinks() {
   return (
     <div className="flex flex-col gap-y-6 sm:gap-y-8">
       <div
-        className={classNames(
+        className={joinClassNames(
           'flex flex-wrap items-center gap-3',
           'font-dmSans text-lg text-white',
           'sm:flex-nowrap sm:gap-x-8',
@@ -29,7 +29,7 @@ function FooterLink({ label, href, ...rest }: FooterLinkProps) {
   return (
     <HomePageButton
       as={Link}
-      className={classNames(
+      className={joinClassNames(
         'flex basis-1/3 justify-start whitespace-nowrap',
         'font-dmSans text-left text-xs text-white',
         'hover:gradient-text hover:bg-buttonGradient hover:text-transparent hover:brightness-125',

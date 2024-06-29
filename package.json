@@ -14,7 +14,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "link-local-sdk": "./update-yarn-links.sh",
-    "unlink-local-sdk": "UNLINK=true ./update-yarn-links.sh"
+    "unlink-local-sdk": "UNLINK=true ./update-yarn-links.sh",
+    "link-react-package-dependencies": "./setup-react-client-yarn-links.sh",
+    "unlink-react-package-dependencies": "UNLINK=true ./setup-react-client-yarn-links.sh"
   },
   "devDependencies": {
     "eslint-config-custom": "*",
@@ -30,8 +32,11 @@
   "dependencies": {},
   "resolutions": {
     "**/bignumber.js": "9.1.2",
-    "**/ethers": "6.8.1",
-    "@vertex-protocol/client": "0.28.1"
+    "**/ethers": "6.12.1",
+    "**/next": "14.2.3",
+    "@next/third-parties": "^14.2.3",
+    "@vertex-protocol/client": "0.39.2",
+    "@vertex-protocol/react-client": "0.39.2"
   },
   "packageManager": "yarn@1.22.19"
 }

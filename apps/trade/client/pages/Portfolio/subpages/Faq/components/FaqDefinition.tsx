@@ -19,7 +19,7 @@ function PurpleLinkButton({
   ...rest
 }: WithChildren<WithClassnames<{ href: string }>>) {
   return (
-    <LinkButton external as={Link} color="accent" {...rest}>
+    <LinkButton external as={Link} colorVariant="accent" {...rest}>
       {children}
     </LinkButton>
   );

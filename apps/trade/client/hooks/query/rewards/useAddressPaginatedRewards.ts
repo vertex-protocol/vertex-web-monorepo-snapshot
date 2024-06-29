@@ -2,12 +2,11 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { GetIndexerPaginatedRewardsParams } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  useEnableSubaccountQueries,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  QueryDisabledError,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 
 export function addressPaginatedRewardsQueryKey(
   address?: string,
@@ -21,13 +20,12 @@ interface Params {
 }
 
 export function useAddressPaginatedRewards({ pageSize = 10 }: Params) {
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
     currentSubaccount: { address },
   } = useSubaccountContext();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
 
-  const disabled = !vertexClient || !enableSubaccountQueries;
+  const disabled = !vertexClient;
 
   const addressForQuery = address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
 

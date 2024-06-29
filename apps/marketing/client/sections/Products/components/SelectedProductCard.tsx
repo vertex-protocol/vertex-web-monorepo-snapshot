@@ -4,8 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
-import { WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
 import { useState } from 'react';
 import { ProductData } from '../data';
@@ -26,7 +25,7 @@ export function SelectedProductCard({
 
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'flex h-full w-full flex-col justify-start',
         'gap-y-4 overflow-hidden rounded-xl backdrop-blur-xl',
         'px-8 py-6 text-2xl font-bold text-white',
@@ -46,7 +45,7 @@ export function SelectedProductCard({
             <TabsTrigger value={id} key={id}>
               <ColorBorderButton
                 as="div"
-                className={classNames(
+                className={joinClassNames(
                   'mask-round overflow-hidden rounded-full px-4 py-1.5 capitalize',
                   'font-dmSans text-base font-normal text-white duration-100',
                   id === subTabId ? 'opacity-100' : 'opacity-50',
@@ -64,7 +63,7 @@ export function SelectedProductCard({
             <TabsContent
               key={id}
               value={id}
-              className={classNames(
+              className={joinClassNames(
                 'font-dmSans text-white-700 text-base font-normal',
                 'md:text-lg',
                 'lg:text-xl',

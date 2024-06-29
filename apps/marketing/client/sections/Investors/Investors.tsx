@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_PADDING,
@@ -7,11 +6,12 @@ import {
 } from 'client/consts';
 import { InvestorCards } from 'client/sections/Investors/components/InvestorCards';
 import { INVESTOR_CARD_DATA } from './data';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function Investors() {
   return (
     <section
-      className={classNames(
+      className={joinClassNames(
         'flex flex-col items-center gap-y-20',
         DEFAULT_SECTION_PADDING,
         DEFAULT_SECTION_WIDTH,

@@ -3,8 +3,7 @@ import {
   calcIndexerLpBalanceValue,
   IndexerSnapshotBalance,
 } from '@vertex-protocol/indexer-client';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { BigDecimals } from 'client/utils/BigDecimals';
+import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 
 export function calcIndexerSummaryUnrealizedPnl(
   indexerBalance: IndexerSnapshotBalance,

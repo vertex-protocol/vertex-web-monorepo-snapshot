@@ -30,7 +30,6 @@ export const RepayConvertButton = ({
   return (
     <PrimaryButton
       className={className}
-      size="lg"
       type="submit"
       isLoading={state === 'loading'}
       disabled={state === 'disabled'}

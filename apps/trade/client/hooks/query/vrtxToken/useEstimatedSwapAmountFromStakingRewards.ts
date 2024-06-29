@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/client';
 import {
   createQueryKey,
+  QueryDisabledError,
   useEVMContext,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 
 export function estimatedSwapAmountFromStakingRewardsQueryKey(
   address?: string,
@@ -17,7 +17,7 @@ export function estimatedSwapAmountFromStakingRewardsQueryKey(
  * Retrieves the output amount of the USDC -> VRTX swap when executing claim + stake
  */
 export function useEstimatedSwapAmountFromStakingRewards() {
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
     connectionStatus: { address },
   } = useEVMContext();

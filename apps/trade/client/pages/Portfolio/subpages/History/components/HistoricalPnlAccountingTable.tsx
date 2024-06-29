@@ -11,7 +11,7 @@ import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWi
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { PnlCell } from 'client/modules/tables/cells/PnlCell';
 import { ProductInfoCell } from 'client/modules/tables/cells/ProductInfoCell';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import {
   HistoricalPnlAccountingItem,
@@ -38,7 +38,8 @@ export function HistoricalPnlAccountingTable() {
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('marketInfo', {

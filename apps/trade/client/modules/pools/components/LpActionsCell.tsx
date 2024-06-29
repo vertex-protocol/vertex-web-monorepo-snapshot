@@ -15,9 +15,9 @@ export function LpActionsCell(context: CellContext<LpTableItem, any>) {
   return (
     <TableCell className="pointer-events-auto grid w-full grid-cols-2 gap-x-2 pr-4">
       <SecondaryButton
-        size="md"
+        size="sm"
         title="Provide"
-        className="w-full font-medium"
+        className="w-full"
         disabled={disableProvide}
         onClick={getTableButtonOnClickHandler(() => {
           show({
@@ -29,9 +29,9 @@ export function LpActionsCell(context: CellContext<LpTableItem, any>) {
         Provide
       </SecondaryButton>
       <SecondaryButton
-        size="md"
+        size="sm"
         title="Withdraw"
-        className="w-full font-medium"
+        className="w-full"
         disabled={disableWithdraw}
         onClick={getTableButtonOnClickHandler(() => {
           show({

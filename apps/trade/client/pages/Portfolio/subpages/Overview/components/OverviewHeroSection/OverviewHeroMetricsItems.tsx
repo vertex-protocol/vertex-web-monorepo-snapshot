@@ -1,14 +1,16 @@
+import {
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
 import { RiskWarningIcon } from 'client/components/Icons/RiskWarningIcon';
-import { LineItemMetricProps } from 'client/components/LineItem/types';
 import { LinkButton } from 'client/components/LinkButton';
+import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { OverviewLiquidationRiskBar } from './OverviewLiquidationRiskBar';
@@ -33,57 +35,58 @@ export function OverviewHeroMetricsItems({
 
   const lineItemContainerClassNames = 'flex flex-col gap-y-0.5';
 
-  const healthInfoItems: LineItemMetricProps[] = useMemo(
-    () => [
-      {
-        tooltip: {
-          id: 'marginUsage',
+  const healthInfoItems = useMemo(
+    () =>
+      [
+        {
+          tooltip: {
+            id: 'marginUsage',
+          },
+          label: 'Margin Usage',
+          value: marginUsageFraction,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         },
-        label: 'Margin Usage',
-        value: marginUsageFraction,
-        renderValue: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-      },
-      {
-        tooltip: {
-          id: 'fundsAvailable',
+        {
+          tooltip: {
+            id: 'fundsAvailable',
+          },
+          label: 'Funds Available',
+          value: fundsAvailable,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        label: 'Funds Available',
-        value: fundsAvailable,
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-      {
-        tooltip: {
-          id: 'accountLeverage',
-        },
-        label: 'Account Leverage',
-        value: accountLeverage,
-        renderValue: (val) =>
-          `${formatNumber(val, {
+        {
+          tooltip: {
+            id: 'accountLeverage',
+          },
+          label: 'Account Leverage',
+          valueContent: `${formatNumber(accountLeverage, {
             formatSpecifier: PresetNumberFormatSpecifier.NUMBER_1DP,
           })}x`,
-      },
-    ],
+        },
+      ] satisfies ValueWithLabelProps[],
     [fundsAvailable, marginUsageFraction, accountLeverage],
   );
 
-  const riskInfoItems: LineItemMetricProps[] = useMemo(
-    () => [
-      {
-        label: 'Liquidation Risk',
-        value: liquidationRiskFraction,
-        renderValue: (val) => (
-          <OverviewLiquidationRiskBar liquidationRiskFraction={val} />
-        ),
-      },
-      {
-        tooltip: {
-          id: 'overviewFundsUntilLiquidation',
+  const riskInfoItems = useMemo(
+    () =>
+      [
+        {
+          label: 'Liquidation Risk',
+          valueContent: (
+            <OverviewLiquidationRiskBar
+              liquidationRiskFraction={liquidationRiskFraction}
+            />
+          ),
         },
-        label: 'Funds until Liq.',
-        value: fundsUntilLiquidation,
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-    ],
+        {
+          tooltip: {
+            id: 'overviewFundsUntilLiquidation',
+          },
+          label: 'Funds until Liq.',
+          value: fundsUntilLiquidation,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+        },
+      ] satisfies ValueWithLabelProps[],
     [liquidationRiskFraction, fundsUntilLiquidation],
   );
 
@@ -99,8 +102,8 @@ export function OverviewHeroMetricsItems({
       <LinkButton
         as={Link}
         href={ROUTES.portfolio.marginManager}
-        color="accent"
-        className="text-xs font-normal no-underline"
+        colorVariant="accent"
+        className="text-xs no-underline"
       >
         View More
       </LinkButton>
@@ -114,27 +117,19 @@ export function OverviewHeroMetricsItems({
       childContainerClassNames="flex flex-col gap-y-2"
     >
       <div className={lineItemContainerClassNames}>
-        {healthInfoItems.map(
-          ({ tooltip, label, value, renderValue }, index) => (
-            <PortfolioHeroMetricsPane.LineItem
-              key={`health_info_${index}`}
-              label={label}
-              value={value}
-              tooltip={tooltip}
-              renderValue={renderValue}
-            />
-          ),
-        )}
+        {healthInfoItems.map((props, index) => (
+          <PortfolioHeroMetricsPane.ValueWithLabel
+            key={`health_info_${index}`}
+            {...props}
+          />
+        ))}
       </div>
       <Divider />
       <div className={lineItemContainerClassNames}>
-        {riskInfoItems.map(({ tooltip, label, value, renderValue }, index) => (
-          <PortfolioHeroMetricsPane.LineItem
+        {riskInfoItems.map((props, index) => (
+          <PortfolioHeroMetricsPane.ValueWithLabel
             key={`risk_info_${index}`}
-            label={label}
-            value={value}
-            tooltip={tooltip}
-            renderValue={renderValue}
+            {...props}
           />
         ))}
       </div>

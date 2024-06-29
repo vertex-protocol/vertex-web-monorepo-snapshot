@@ -1,14 +1,16 @@
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { BigDecimal } from '@vertex-protocol/client';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { useMemo } from 'react';
-import { SpotProductMetadata } from 'common/productMetadata/types';
-import { useFavoritedMarkets } from 'client/modules/markets/hooks/useFavoritedMarkets';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import {
+  getMarketPriceFormatSpecifier,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
+import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
+import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
+import { SpotProductMetadata } from 'common/productMetadata/types';
+import { useMemo } from 'react';
 
 export interface SpotMarketTableItem {
   metadata: SpotProductMetadata;
@@ -23,7 +25,8 @@ export interface SpotMarketTableItem {
 }
 
 export function useSpotMarketsTable() {
-  const { data: allMarketData } = useAllMarkets();
+  const { data: allMarketData, isLoading: isAllMarketDataLoading } =
+    useAllMarkets();
   const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
   const { data: latestMarketPricesData } = useAllMarketsLatestPrices();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
@@ -50,7 +53,7 @@ export function useSpotMarketsTable() {
           currentPrice: latestMarketPrices?.safeAverage,
           priceChange24hr: marketMetrics?.pastDayPriceChange,
           priceChangeFrac24hr: marketMetrics?.pastDayPriceChangeFrac,
-          volume24h: removeDecimals(marketMetrics?.pastDayVolumeQuote),
+          volume24h: removeDecimals(marketMetrics?.pastDayVolumeInPrimaryQuote),
           isNewMarket: getIsNewMarket(productId),
           isFavorited: favoritedMarketIds.has(productId),
           marketPriceFormatSpecifier: getMarketPriceFormatSpecifier(
@@ -68,6 +71,7 @@ export function useSpotMarketsTable() {
   ]);
 
   return {
+    isLoading: isAllMarketDataLoading,
     spotProducts: mappedData,
     toggleIsFavoritedMarket,
     disableFavoriteButton: connectionStatus.type !== 'connected',

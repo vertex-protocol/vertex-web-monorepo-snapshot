@@ -1,9 +1,7 @@
-import {
-  joinClassNames,
-  VERTEX_SPECIFIC_LINKS,
-} from '@vertex-protocol/web-common';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import { useTokenStaking } from 'client/modules/rewards/hooks/useTokenStaking';
 import { TOKEN_ICONS } from 'common/productMetadata/tokenIcons';
@@ -16,7 +14,8 @@ import { TokenStakingPoolStats } from './TokenStakingPoolStats';
 import { TokenStakingTopBarItems } from './TokenStakingTopBarItems';
 
 export function TokenStakingTabContent() {
-  const { primaryQuoteToken, protocolToken } = useVertexMetadataContext();
+  const { primaryQuoteToken, protocolTokenMetadata } =
+    useVertexMetadataContext();
   const userActionState = useUserActionState();
   const {
     accountStaked,
@@ -47,14 +46,16 @@ export function TokenStakingTabContent() {
   return (
     <div className="relative flex flex-col gap-y-6">
       <GradientEllipseBackground />
-      <TokenStakingDismissibleBanner protocolToken={protocolToken} />
+      <TokenStakingDismissibleBanner
+        protocolToken={protocolTokenMetadata.token}
+      />
       <RewardsCard.Container>
         <div className="flex flex-col gap-y-3">
           <RewardsCard.Header
             contentWrapperClassName="flex items-center gap-x-2"
             endElement={
               <RewardsCard.HeaderLinkButton
-                color="white"
+                colorVariant="primary"
                 as={Link}
                 href={VERTEX_SPECIFIC_LINKS.stakeVrtxDocs}
                 external

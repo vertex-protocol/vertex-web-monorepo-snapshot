@@ -1,6 +1,8 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { GEOBLOCKED_COUNTRY_NAMES } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import {
+  GEOBLOCKED_COUNTRY_NAMES,
+  joinClassNames,
+} from '@vertex-protocol/web-common';
 import { EXTERNAL_LINKS } from 'client/consts';
 import Link from 'next/link';
 
@@ -11,7 +13,7 @@ export function LocationRestrictedDialog() {
     <Dialog.Root open>
       <Dialog.Overlay className="bg-black-900/50 backdrop-blur-nav fixed inset-0 z-30 flex items-center justify-center duration-500">
         <Dialog.Content
-          className={classNames(
+          className={joinClassNames(
             'flex w-full max-w-[min(95vw,420px)] flex-col items-center justify-center',
             'bg-black-600 overflow-hidden rounded-xl text-white',
             // outline-none is required to prevent unwarranted outline on mount

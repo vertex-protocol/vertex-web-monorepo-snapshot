@@ -1,4 +1,4 @@
-import { BigDecimal } from '@vertex-protocol/utils';
+import { addDecimals, BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 import {
   InputValidatorFn,
   percentageValidator,
@@ -8,7 +8,7 @@ import { useExecuteBurnLp } from 'client/hooks/execute/useExecuteBurnLp';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useLpYields } from 'client/hooks/markets/useLpYields';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import {
   LpBalanceItem,
   useLpBalances,
@@ -24,8 +24,6 @@ import { useNotificationManagerContext } from 'client/modules/notifications/Noti
 import { withdrawLiquidityProductIdAtom } from 'client/store/collateralStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { addDecimals } from 'client/utils/decimalAdjustment';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
@@ -72,8 +70,8 @@ export function useWithdrawLiquidityForm(): UseWithdrawLiquidityForm {
   const { dispatchNotification } = useNotificationManagerContext();
   const { hide } = useDialog();
 
-  const quoteMetadata = staticMarketData?.quote;
-  const quotePrice = useQuotePriceUsd();
+  const quoteMetadata = staticMarketData?.primaryQuote;
+  const quotePrice = usePrimaryQuotePriceUsd();
 
   // Mutation to burn LP tokens
   const executeBurnLp = useExecuteBurnLp();

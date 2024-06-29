@@ -2,12 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { GetIndexerMatchEventsParams } from '@vertex-protocol/indexer-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { QueryState } from 'client/types/QueryState';
 import { calcOrderFillPrice } from 'client/utils/calcs/calcOrderFillPrice';
 
@@ -40,7 +40,7 @@ export function useLatestOrderFillsForProduct<
   select,
 }: LatestOrderFillsForProductParams<TSelectedData>): QueryState<TSelectedData> {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient || !productId;
 
   const queryFn = async () => {

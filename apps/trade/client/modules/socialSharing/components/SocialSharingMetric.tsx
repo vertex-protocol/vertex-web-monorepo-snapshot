@@ -1,6 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { NumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { NumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 
 interface Props {
   label: string;

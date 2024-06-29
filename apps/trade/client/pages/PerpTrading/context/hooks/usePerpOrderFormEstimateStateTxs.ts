@@ -1,7 +1,6 @@
 import { BalanceSide } from '@vertex-protocol/contracts';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { addDecimals } from 'client/utils/decimalAdjustment';
+import { addDecimals, BigDecimal } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
 
 interface Params {

@@ -1,17 +1,16 @@
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/client';
+import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { useAccountStakingState } from 'client/hooks/query/vrtxToken/useAccountStakingState';
 import { useStakingState } from 'client/hooks/query/vrtxToken/useStakingState';
 import { useLastStakingRewardsDistributionAmount } from 'client/modules/rewards/hooks/useLastStakingRewardsDistributionAmount';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import {
   calcStakingApr,
   calcStakingAprRange,
   calcStakingScoreRange,
   calcTimeOfMaxStakingScore,
 } from 'client/utils/calcs/stakingCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
 import { AnnotatedSpotMarket } from 'common/productMetadata/types';
 import { now } from 'lodash';
 import { useMemo } from 'react';
@@ -31,13 +30,12 @@ export function useStakingSummary({
   validAmount: BigDecimal | undefined;
   isUnstake: boolean;
 }) {
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data: accountStakingState } = useAccountStakingState();
   const { data: stakingState } = useStakingState();
   const { data: vrtxSpotMarket } = useMarket<AnnotatedSpotMarket>({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
-  const { protocolToken } = useVertexMetadataContext();
 
   const lastRewardsDistributionAmount =
     useLastStakingRewardsDistributionAmount();
@@ -68,17 +66,17 @@ export function useStakingSummary({
 
     const accountAmountStaked = removeDecimals(
       accountStakingState?.amountStaked,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
 
     const accountStakingScore = removeDecimals(
       accountStakingState?.stakingScore,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
 
     const poolTotalScore = removeDecimals(
       stakingState?.totalScore,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
 
     const accountScoreRange = (() => {
@@ -133,7 +131,7 @@ export function useStakingSummary({
     stakingState?.totalScore,
     accountStakingState?.amountStaked,
     accountStakingState?.stakingScore,
-    protocolToken.tokenDecimals,
+    protocolTokenMetadata.token.tokenDecimals,
     lastRewardsDistributionAmount,
     vrtxSpotMarket,
   ]);

@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import {
   PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 
 function engineStatusQueryKey(chainId?: PrimaryChainID) {
   return ['engineStatus', chainId];
@@ -12,7 +12,7 @@ function engineStatusQueryKey(chainId?: PrimaryChainID) {
 
 export function useEngineStatus() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({

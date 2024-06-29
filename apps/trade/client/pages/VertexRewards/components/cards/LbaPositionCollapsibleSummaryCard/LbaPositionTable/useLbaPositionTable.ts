@@ -1,11 +1,11 @@
 import { BigDecimal, calcLpTokenValue } from '@vertex-protocol/client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAccountLbaState } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import { useTokenLaunchStage } from 'client/modules/rewards/hooks/useTokenLaunchStage';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { isBefore } from 'date-fns';
 import { now } from 'lodash';
 import { useMemo } from 'react';
@@ -26,7 +26,7 @@ export interface LbaPositionTableItem {
 }
 
 export function useLbaPositionTable() {
-  const { primaryQuoteToken, protocolToken, protocolTokenProductId } =
+  const { primaryQuoteToken, protocolTokenMetadata } =
     useVertexMetadataContext();
   const { data: accountState, isLoading: isLoadingAccountState } =
     useAccountLbaState();
@@ -37,9 +37,9 @@ export function useLbaPositionTable() {
     isLoading: isLoadingTokenLaunchStageData,
   } = useTokenLaunchStage();
   const { data: vrtxMarket } = useMarket({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
 
   const data = useMemo((): LbaPositionTableItem[] | undefined => {
     if (
@@ -56,15 +56,15 @@ export function useLbaPositionTable() {
     );
     const depositedVrtx = removeDecimals(
       accountState.depositedVrtx,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
     const lockedLpBalance = removeDecimals(
       accountState.lockedLpBalance,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
     const unlockedLpBalance = removeDecimals(
       accountState.withdrawableLpBalance,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
     const totalLpBalance = lockedLpBalance.plus(unlockedLpBalance);
 
@@ -82,11 +82,11 @@ export function useLbaPositionTable() {
       tokenClaimState.claimableLbaRewards.plus(
         tokenClaimState.claimedLbaRewards,
       ),
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
     const lbaRewardsClaimed = removeDecimals(
       tokenClaimState.claimedLbaRewards,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     );
 
     // If the current time is before the LP vesting start time, use the LP vesting start time.
@@ -118,7 +118,7 @@ export function useLbaPositionTable() {
     quotePriceUsd,
     tokenClaimState,
     primaryQuoteToken,
-    protocolToken,
+    protocolTokenMetadata,
   ]);
 
   return {

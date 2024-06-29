@@ -1,15 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import {
-  BLITZ_SPECIFIC_LINKS,
-  joinClassNames,
-  WithClassnames,
-} from '@vertex-protocol/web-common';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
 import { LinkButton } from 'client/components/LinkButton';
-import { BLITZ_SPECIFIC_IMAGES } from 'client/modules/brand/images';
-import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { PointsPageCard } from 'client/pages/BlitzPoints/components/PointsPageCard';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { BLITZ_SPECIFIC_IMAGES } from 'common/brandMetadata/images';
+import { BLITZ_SPECIFIC_LINKS } from 'common/brandMetadata/links/blitzLinks';
 import Image from 'next/image';
 import Link from 'next/link';
 import blastLogo from '../assets/blast-logo.png';
@@ -34,32 +31,32 @@ export function BlastPointsCard({ gold, points, className }: Props) {
       )}
     >
       <div className="flex gap-x-12">
-        <RewardsCard.MetricStackedItem
-          value={points}
-          formatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+        <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label={
-            <div className="flex items-center gap-x-1">
+            <>
               {blastLogoImg}
               Points
-            </div>
+            </>
           }
-          valueClassName="text-2xl sm:text-5xl"
+          value={points}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
         />
-        <RewardsCard.MetricStackedItem
-          value={gold}
-          formatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+        <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label={
-            <div className="flex items-center gap-x-1">
+            <>
               {blastLogoImg}
               <Image
                 src={BLITZ_SPECIFIC_IMAGES.blastGoldIcon}
                 alt="blast gold icon"
-                className="h-3 w-auto"
+                className="size-3"
               />
               Gold
-            </div>
+            </>
           }
-          valueClassName="text-2xl sm:text-5xl"
+          value={gold}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
         />
       </div>
       <Divider />
@@ -81,10 +78,10 @@ export function BlastPointsCard({ gold, points, className }: Props) {
             'sm:flex-row sm:items-center sm:justify-between',
           )}
         >
-          <span>
+          <span className="whitespace-normal">
             Finalized Blast points and Gold can be viewed on{' '}
             <LinkButton
-              color="accent"
+              colorVariant="accent"
               external
               as={Link}
               href={BLITZ_SPECIFIC_LINKS.blastAirdropPoints}
@@ -94,7 +91,7 @@ export function BlastPointsCard({ gold, points, className }: Props) {
             .
           </span>
           <LinkButton
-            color="white"
+            colorVariant="primary"
             external
             withExternalIcon
             as={Link}

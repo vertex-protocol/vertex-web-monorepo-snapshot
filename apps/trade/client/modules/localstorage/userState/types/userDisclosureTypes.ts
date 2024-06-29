@@ -1,5 +1,9 @@
 // Used for "hardcoded" feature notifications
-export const NEW_FEATURE_DISCLOSURE_KEYS = [] as const;
+export const NEW_FEATURE_DISCLOSURE_KEYS = [
+  'one_click_trading',
+  'arb_new_incentives',
+  'mantle_new_incentives',
+] as const;
 
 export type NewFeatureDisclosureKey =
   (typeof NEW_FEATURE_DISCLOSURE_KEYS)[number];
@@ -15,10 +19,12 @@ const USER_INFO_DISCLOSURE_KEYS = [
   'withdraw_lba_liquidity',
   'stake_vrtx',
   'swap_weth',
+  'swap_wmnt',
   'usdb_rebase_yield',
   'how_to_stake',
   'blitz_points_banner',
   'blitz_points_claim_complete',
+  'edit_order_via_chart_dialog',
 ] as const;
 
 export const USER_DISCLOSURE_KEYS = [

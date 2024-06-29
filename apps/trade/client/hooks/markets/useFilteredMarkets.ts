@@ -1,9 +1,10 @@
+import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
 import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { AnnotatedMarket } from 'common/productMetadata/types';
-import { useCallback, useMemo } from 'react';
 import { pickBy } from 'lodash';
+import { useCallback, useMemo } from 'react';
 
 interface UseFilteredMarkets {
   filteredMarkets: Record<number, AnnotatedMarket>;
@@ -15,6 +16,7 @@ export function useFilteredMarkets(filters?: MarketFilter): UseFilteredMarkets {
   const { data: allMarketsData, isLoading: loadingMarkets } = useAllMarkets();
   const { data: subaccountSummary, isLoading: loadingSubaccountSummary } =
     useCurrentSubaccountSummary();
+  const { favoritedMarketIds } = useFavoritedMarkets();
 
   // Destructure for a nice dependency array
   const amountFilter = filters?.amount;
@@ -23,15 +25,22 @@ export function useFilteredMarkets(filters?: MarketFilter): UseFilteredMarkets {
 
   const filterFn = useCallback(
     (market: AnnotatedMarket): boolean => {
+      // Check favorited
+      if (filters?.isFavorited && !favoritedMarketIds.has(market.productId)) {
+        return false;
+      }
+      // Check market type
       if (marketTypeFilter != null && marketTypeFilter !== market.type) {
         return false;
       }
+      // Check product IDs
       if (
         productIdFilters?.length &&
         !productIdFilters.includes(market.productId)
       ) {
         return false;
       }
+      // Check amount
       if (amountFilter && subaccountSummary) {
         const balance = subaccountSummary.balances.find(
           (bal) => bal.productId === market.productId,
@@ -53,9 +62,17 @@ export function useFilteredMarkets(filters?: MarketFilter): UseFilteredMarkets {
             return balance.amount.isNegative();
         }
       }
+
       return true;
     },
-    [amountFilter, marketTypeFilter, productIdFilters, subaccountSummary],
+    [
+      amountFilter,
+      favoritedMarketIds,
+      filters?.isFavorited,
+      marketTypeFilter,
+      productIdFilters,
+      subaccountSummary,
+    ],
   );
 
   const filteredMarkets = useMemo((): Record<number, AnnotatedMarket> => {

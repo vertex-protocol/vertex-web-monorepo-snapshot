@@ -1,9 +1,8 @@
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
+import { useSpotLeverageEnabled } from 'client/modules/trading/hooks/useSpotLeverageEnabled';
 import { useMemo } from 'react';
 import { useSpotOrderFormContext } from '../context/SpotOrderFormContext';
-import { useSpotLeverageEnabled } from 'client/modules/trading/hooks/useSpotLeverageEnabled';
 
 interface UseSpotTradingFormAccountInfo {
   showQuote: boolean | undefined;
@@ -21,7 +20,7 @@ export function useSpotTradingFormAccountInfo(): UseSpotTradingFormAccountInfo {
 
   return useMemo((): UseSpotTradingFormAccountInfo => {
     const quoteBalance = balances?.find((balance) => {
-      return balance.productId === QUOTE_PRODUCT_ID;
+      return balance.productId === currentMarket?.metadata.quoteProductId;
     });
     const marketBalance = balances?.find((balance) => {
       return balance.productId === currentMarket?.productId;
@@ -49,10 +48,11 @@ export function useSpotTradingFormAccountInfo(): UseSpotTradingFormAccountInfo {
     };
   }, [
     balances,
-    spotLeverageEnabled,
-    currentMarket?.productId,
-    maxOrderSizes?.asset,
-    maxOrderSizes?.quote,
     side,
+    maxOrderSizes?.quote,
+    maxOrderSizes?.asset,
+    spotLeverageEnabled,
+    currentMarket?.metadata.quoteProductId,
+    currentMarket?.productId,
   ]);
 }

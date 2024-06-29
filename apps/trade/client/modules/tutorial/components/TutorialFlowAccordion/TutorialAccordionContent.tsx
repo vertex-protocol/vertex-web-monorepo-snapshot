@@ -21,7 +21,7 @@ export function TutorialAccordionContent({
     >
       <p className="text-text-tertiary text-xs">{description}</p>
       <div className="flex gap-x-2">
-        <SecondaryButton size="md" onClick={onActionClick}>
+        <SecondaryButton onClick={onActionClick} size="sm">
           {actionLabel}
         </SecondaryButton>
         <Button

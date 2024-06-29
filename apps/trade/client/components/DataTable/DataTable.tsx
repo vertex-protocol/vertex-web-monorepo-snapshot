@@ -15,18 +15,18 @@ import {
 } from '@tanstack/table-core';
 import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
 import { CARD_CLASSNAMES, Spinner } from '@vertex-protocol/web-ui';
-import React, { useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { DataTableHeaderGroup } from './components/DataTableHeaderGroup';
 import { DataTableRowGroup } from './components/DataTableRowGroup';
 import { Pagination } from './Pagination';
 
 // General
-type DataTableProps<TData> = {
+export type DataTableProps<TData> = {
   // Base props
   columns: ColumnDef<TData, any>[];
   isLoading?: boolean;
   hasBackground?: boolean;
-  emptyState?: React.ReactNode;
+  emptyState?: ReactNode;
   data?: TData[];
   columnVisibility?: VisibilityState;
   onRowClicked?: (row: Row<TData>) => void;

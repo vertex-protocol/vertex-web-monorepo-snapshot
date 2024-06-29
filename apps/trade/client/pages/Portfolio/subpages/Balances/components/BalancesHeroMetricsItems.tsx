@@ -1,57 +1,58 @@
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { LineItemMetricProps } from 'client/components/LineItem/types';
+import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { DerivedSubaccountOverviewData } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useMemo } from 'react';
 
 export function BalancesHeroMetricsItems({
   className,
   overview,
 }: WithClassnames<{ overview?: DerivedSubaccountOverviewData }>) {
-  const balancesMetricsItems: LineItemMetricProps[] = useMemo(
-    () => [
-      {
-        tooltip: {
-          id: 'balancesTotalDeposits',
+  const balancesMetricsItems = useMemo(
+    () =>
+      [
+        {
+          tooltip: {
+            id: 'balancesTotalDeposits',
+          },
+          label: 'Deposits',
+          value: overview?.spot.totalDepositsValueUsd,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        label: 'Deposits',
-        value: overview?.spot.totalDepositsValueUsd,
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-      {
-        tooltip: {
-          id: 'balancesTotalBorrows',
+        {
+          tooltip: {
+            id: 'balancesTotalBorrows',
+          },
+          label: 'Borrows',
+          value: overview?.spot.totalBorrowsValueUsd.abs(),
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        label: 'Borrows',
-        value: overview?.spot.totalBorrowsValueUsd.abs(),
-        renderValue: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      },
-      {
-        tooltip: {
-          id: 'balancesTotalDepositAPR',
+        {
+          tooltip: {
+            id: 'balancesTotalDepositAPR',
+          },
+          label: 'Deposit APR',
+          value: overview?.spot.averageDepositAPRFraction,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         },
-        label: 'Deposit APR',
-        value: overview?.spot.averageDepositAPRFraction,
-        renderValue: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-      },
-      {
-        tooltip: {
-          id: 'balancesTotalBorrowAPR',
+        {
+          tooltip: {
+            id: 'balancesTotalBorrowAPR',
+          },
+          label: 'Borrow APR',
+          value: overview?.spot.averageBorrowAPRFraction,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         },
-        label: 'Borrow APR',
-        value: overview?.spot.averageBorrowAPRFraction,
-        renderValue: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-      },
-      {
-        tooltip: {
-          id: 'balancesNetAPR',
+        {
+          tooltip: {
+            id: 'balancesNetAPR',
+          },
+          label: 'Net APR',
+          value: overview?.spot.averageAPRFraction,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         },
-        label: 'Net APR',
-        value: overview?.spot.averageAPRFraction,
-        renderValue: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-      },
-    ],
+      ] satisfies ValueWithLabelProps[],
     [overview],
   );
 
@@ -62,13 +63,13 @@ export function BalancesHeroMetricsItems({
       childContainerClassNames="flex flex-col gap-y-0.5"
     >
       {balancesMetricsItems.map(
-        ({ tooltip, label, value, renderValue }, index) => (
-          <PortfolioHeroMetricsPane.LineItem
+        ({ tooltip, label, value, numberFormatSpecifier }, index) => (
+          <PortfolioHeroMetricsPane.ValueWithLabel
             key={index}
             label={label}
             value={value}
             tooltip={tooltip}
-            renderValue={renderValue}
+            numberFormatSpecifier={numberFormatSpecifier}
           />
         ),
       )}

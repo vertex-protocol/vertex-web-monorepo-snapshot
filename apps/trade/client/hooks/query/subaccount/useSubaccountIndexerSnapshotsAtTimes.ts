@@ -1,17 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { GetIndexerMultiSubaccountSnapshotsParams } from '@vertex-protocol/client';
 import {
-  PrimaryChainID,
   createQueryKey,
-  useEnableSubaccountQueries,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { ZeroAddress } from 'ethers';
 import { get } from 'lodash';
-import { QueryDisabledError } from '../QueryDisabledError';
 
 export function subaccountIndexerSnapshotsAtTimesQueryKey(
   chainId?: PrimaryChainID,
@@ -39,14 +38,12 @@ export function useSubaccountIndexerSnapshotsAtTimes(
   const {
     currentSubaccount: { name: subaccountName, address: subaccountOwner },
   } = useSubaccountContext();
-  const vertexClient = useVertexClient();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
+  const vertexClient = usePrimaryChainVertexClient();
 
   // If no current subaccount, query for a subaccount that does not exist to ensure that we have data
   const subaccountOwnerForQuery = subaccountOwner ?? ZeroAddress;
 
-  const disabled =
-    !vertexClient || !enableSubaccountQueries || !timestampsInSeconds?.length;
+  const disabled = !vertexClient || !timestampsInSeconds?.length;
 
   const queryFn = async () => {
     if (disabled) {

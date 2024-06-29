@@ -1,19 +1,21 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { InputValidatorFn } from '@vertex-protocol/web-common';
-import { SearchBar } from 'client/components/SearchBar';
 import {
+  CompactInput,
   Select,
-  useSelect,
-  SelectOption,
   SelectComponentOption,
+  SelectOption,
+  useSelect,
 } from '@vertex-protocol/web-ui';
+import { SearchBar } from 'client/components/SearchBar';
 import { useTextSearch } from 'client/hooks/ui/useTextSearch';
-import { BridgeTokenInput } from 'client/modules/collateral/bridge/components/tokenInputs/BridgeTokenInput';
+import { BridgeTokenSelect } from 'client/modules/collateral/bridge/components/tokenInputs/BridgeTokenSelect';
 import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/useBridgeForm/types';
 import {
   BridgeChain,
   BridgeToken,
 } from 'client/modules/collateral/bridge/types';
+import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
 import { ReactNode, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -25,6 +27,7 @@ interface Props {
   estimatedValueUsd: BigDecimal | undefined;
   allSourceTokens: BridgeToken[];
   validateAmount: InputValidatorFn<string>;
+  disabled?: boolean;
 }
 
 function getSearchString(option: SelectComponentOption<BridgeToken>) {
@@ -36,12 +39,10 @@ export function SourceTokenInput({
   error,
   selectedSourceToken,
   allSourceTokens,
-  selectedSourceChain,
+  disabled,
   estimatedValueUsd,
   validateAmount,
 }: Props) {
-  const disabled = !selectedSourceChain || allSourceTokens.length === 0;
-
   const options = useMemo((): SelectOption<string, BridgeToken>[] => {
     return allSourceTokens.map((token) => {
       return {
@@ -79,62 +80,62 @@ export function SourceTokenInput({
     getSearchString,
   });
 
-  return (
-    <BridgeTokenInput.Container error={error}>
-      <Select.Root
-        value={value}
-        onValueChange={onValueChange}
+  const selectComponent = (
+    <Select.Root
+      value={value}
+      onValueChange={onValueChange}
+      open={open}
+      onOpenChange={onOpenChange}
+      disabled={disabled}
+    >
+      <BridgeTokenSelect.Trigger
         open={open}
-        onOpenChange={onOpenChange}
+        selectedToken={
+          selectedSourceToken
+            ? {
+                iconUrl: selectedSourceToken.externalIconUrl,
+                symbol: selectedSourceToken.symbol,
+              }
+            : undefined
+        }
         disabled={disabled}
-      >
-        <BridgeTokenInput.SelectTrigger
-          open={open}
-          selectedToken={
-            selectedSourceToken
-              ? {
-                  iconUrl: selectedSourceToken.externalIconUrl,
-                  symbol: selectedSourceToken.symbol,
-                }
-              : undefined
-          }
-          disabled={disabled}
-        />
-        <BridgeTokenInput.SelectOptions
-          header={
-            <SearchBar
-              iconSize={16}
-              query={query}
-              setQuery={setQuery}
-              className="py-1"
-            />
-          }
-        >
-          {results.map((option) => {
-            const token = option.original;
-            return (
-              <BridgeTokenInput.SelectOption
-                isSelected={option.value === value}
-                key={token.address}
-                symbol={token.symbol}
-                iconUrl={token.externalIconUrl}
-                optionValue={option.value}
-              />
-            );
-          })}
-        </BridgeTokenInput.SelectOptions>
-      </Select.Root>
-      <BridgeTokenInput.Input
-        isError={!!error}
-        disabled={disabled}
-        {...form.register('amount', {
-          validate: validateAmount,
-        })}
-        onFocus={() => {
-          form.setValue('amountSource', 'absolute');
-        }}
-        estimatedValueUsd={estimatedValueUsd}
       />
-    </BridgeTokenInput.Container>
+      <BridgeTokenSelect.Options
+        header={
+          <SearchBar query={query} sizeVariant="xs" setQuery={setQuery} />
+        }
+      >
+        {results.map((option) => {
+          const token = option.original;
+          return (
+            <BridgeTokenSelect.Option
+              isSelected={option.value === value}
+              key={token.address}
+              symbol={token.symbol}
+              iconUrl={token.externalIconUrl}
+              optionValue={option.value}
+            />
+          );
+        })}
+      </BridgeTokenSelect.Options>
+    </Select.Root>
+  );
+
+  return (
+    <CompactInput
+      {...form.register('amount', {
+        validate: validateAmount,
+      })}
+      inputContainerClassName="pl-0"
+      errorTooltipContent={error}
+      disabled={disabled}
+      startElement={selectComponent}
+      endElement={
+        <EstimatedCurrencyValueItem estimatedValueUsd={estimatedValueUsd} />
+      }
+      onFocus={() => {
+        form.setValue('amountSource', 'absolute');
+      }}
+    />
   );
 }

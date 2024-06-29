@@ -1,6 +1,6 @@
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { Button } from '@vertex-protocol/web-ui';
-import { ReactNode } from 'react';
+import { ReactNode, forwardRef } from 'react';
 
 export interface AvatarTypeButtonProps extends WithClassnames {
   icon: ReactNode;
@@ -10,14 +10,13 @@ export interface AvatarTypeButtonProps extends WithClassnames {
   onClick: () => void;
 }
 
-export function AvatarTypeButton({
-  icon,
-  label,
-  disabled,
-  isSelected,
-  onClick,
-  className,
-}: AvatarTypeButtonProps) {
+export const AvatarTypeButton = forwardRef<
+  HTMLButtonElement,
+  AvatarTypeButtonProps
+>(function AvatarTypeButton(
+  { icon, label, disabled, isSelected, onClick, className },
+  ref,
+) {
   const bgColorByState = (() => {
     if (disabled) return 'bg-surface-card';
     if (isSelected) return 'bg-surface-card';
@@ -58,9 +57,10 @@ export function AvatarTypeButton({
       className={joinClassNames(cardClasses, className)}
       onClick={onClick}
       disabled={disabled}
+      ref={ref}
     >
       <div className={iconClasses}>{icon}</div>
       <p className="text-xs">{label}</p>
     </Button>
   );
-}
+});

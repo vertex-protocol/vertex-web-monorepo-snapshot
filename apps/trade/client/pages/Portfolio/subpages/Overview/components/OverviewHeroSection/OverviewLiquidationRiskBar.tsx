@@ -1,9 +1,11 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { WithChildren, WithClassnames } from '@vertex-protocol/web-common';
 import { BaseDefinitionTooltip } from '@vertex-protocol/web-ui';
 import { LiquidationRiskBar } from 'client/components/LiquidationRiskBar';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import { getLiquidationRiskLevelClassNames } from 'client/utils/getLiquidationRiskLevelClassNames';
 
 export function OverviewLiquidationRiskBar({
@@ -43,7 +45,7 @@ function LiquidationRiskTooltip({
             })}
           </span>
         </div>
-        <span className="text-text-secondary">Maintenance Margin Usage</span>
+        <span className="text-text-secondary">(Maintenance Margin Usage)</span>
       </>
     ),
     content: (

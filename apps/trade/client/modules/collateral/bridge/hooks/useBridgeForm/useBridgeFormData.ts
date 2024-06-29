@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useBridgeData } from 'client/modules/collateral/bridge/hooks/base/useBridgeData';
 import { useBridgeTokenBalances } from 'client/modules/collateral/bridge/hooks/base/useBridgeTokenBalances';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useMinimumDepositAmounts } from 'client/hooks/subaccount/useMinimumDepositAmounts';
 
 interface Params {

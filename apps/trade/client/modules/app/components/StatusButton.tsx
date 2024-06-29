@@ -1,6 +1,6 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Button, Icons } from '@vertex-protocol/web-ui';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
 import { useIsEngineHealthy } from '../hooks/useIsEngineHealthy';
 
@@ -16,7 +16,7 @@ export function StatusButton() {
       as={Link}
       href={LINKS.appStatus}
       className={joinClassNames(
-        'rounded border px-2 py-[1px] text-xs no-underline',
+        'rounded border px-2 py-px text-xs no-underline',
         statusButtonClasses,
       )}
     >

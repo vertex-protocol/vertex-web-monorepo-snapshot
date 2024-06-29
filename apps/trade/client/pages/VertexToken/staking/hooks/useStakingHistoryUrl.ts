@@ -1,13 +1,14 @@
-import { useVertexClient } from '@vertex-protocol/web-data';
-
-import { useEVMContext } from '@vertex-protocol/web-data';
+import {
+  useEVMContext,
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 
 export function useStakingHistoryUrl() {
   const {
     primaryChain: { blockExplorers },
     connectionStatus: { address: userAddress },
   } = useEVMContext();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   if (!blockExplorers || !userAddress || !vertexClient) {
     return '';

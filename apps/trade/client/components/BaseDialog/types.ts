@@ -1,4 +1,5 @@
 import { WithChildren, WithClassnames } from '@vertex-protocol/web-common';
+import { ReactNode } from 'react';
 
 export interface BaseDialogProps extends WithChildren, WithClassnames {
   open: boolean;
@@ -7,7 +8,7 @@ export interface BaseDialogProps extends WithChildren, WithClassnames {
 }
 
 export interface BaseDialogTitleProps extends WithChildren, WithClassnames {
-  endElement?: React.ReactNode;
+  endElement?: ReactNode;
 
   // If not defined, no close button will be rendered
   onClose?: () => void;

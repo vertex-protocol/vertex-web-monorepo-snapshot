@@ -1,19 +1,19 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { joinClassNames } from '@vertex-protocol/web-common';
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { Icons, Pill } from '@vertex-protocol/web-ui';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import {
   ARB_CHAIN_IDS,
   BLAST_CHAIN_IDS,
-} from 'client/modules/chainSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/chainSpecificContent/hooks/useIsEnabledForChainIds';
+} from 'client/modules/envSpecificContent/consts/chainIds';
+import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
 import { OverviewInfoPointsCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoPointsCardButton';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { OverviewInfoCardButton } from './OverviewInfoCardButton';
 import { OverviewInfoVrtxCardButton } from './OverviewInfoVrtxCardButton';
@@ -41,8 +41,6 @@ export function OverviewInfoCardButtons({
     'areAccountValuesPrivate',
   );
 
-  const pillClassName = 'flex items-center gap-x-1';
-
   return (
     <div
       className={joinClassNames(
@@ -57,9 +55,9 @@ export function OverviewInfoCardButtons({
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         })}
         pill={
-          <Pill color="white" className={pillClassName}>
+          <Pill colorVariant="tertiary" sizeVariant="sm">
             APR:
-            <span className="text-text-primary font-medium">
+            <span className="text-text-primary">
               {formatNumber(averageSpotAPRFraction, {
                 formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
               })}
@@ -82,12 +80,12 @@ export function OverviewInfoCardButtons({
         })}
         pill={
           <Pill
-            color={signDependentValue(totalEstimatedPerpPnlFrac, {
-              positive: 'green',
-              negative: 'red',
-              zero: 'white',
+            colorVariant={signDependentValue(totalEstimatedPerpPnlFrac, {
+              positive: 'positive',
+              negative: 'negative',
+              zero: 'tertiary',
             })}
-            className={pillClassName}
+            sizeVariant="sm"
           >
             {signDependentValue(totalEstimatedPerpPnlFrac, {
               positive: <Icons.MdArrowUpward size={12} />,
@@ -108,9 +106,9 @@ export function OverviewInfoCardButtons({
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         })}
         pill={
-          <Pill color="white" className={pillClassName}>
+          <Pill colorVariant="tertiary" sizeVariant="sm">
             APR:
-            <span className="text-text-primary font-medium">
+            <span className="text-text-primary">
               {formatNumber(lpAverageYieldFraction, {
                 formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
               })}
@@ -120,10 +118,7 @@ export function OverviewInfoCardButtons({
         isPrivate={areAccountValuesPrivate}
       />
       {showVrtxCard && (
-        <OverviewInfoVrtxCardButton
-          pillClassName={pillClassName}
-          isPrivate={areAccountValuesPrivate}
-        />
+        <OverviewInfoVrtxCardButton isPrivate={areAccountValuesPrivate} />
       )}
       {showBlitzCard && (
         <OverviewInfoPointsCardButton isPrivate={areAccountValuesPrivate} />

@@ -1,20 +1,20 @@
-import { VERTEX_SPECIFIC_LINKS } from '@vertex-protocol/web-common';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
+import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
 import { InputSummary } from 'client/components/InputSummary';
 import { LinkButton } from 'client/components/LinkButton';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import { UnstakeVrtxDisclosure } from 'client/modules/rewards/dialogs/staking/UnstakeVrtxDialog/UnstakeVrtxDisclosure';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import Link from 'next/link';
 import { StakingDialogInput } from '../components/StakingDialogInput';
 import { UnstakeVrtxSubmitButton } from './UnstakeVrtxSubmitButton';
 import { UnstakeVrtxSummary } from './UnstakeVrtxSummary';
-import { useUnstakeVrtxForm } from './useUnstakeVrtxForm';
 import { useUnstakeVrtxAmountErrorTooltipContent } from './useUnstakeVrtxAmountErrorTooltipContent';
-import { Form } from 'client/components/Form';
+import { useUnstakeVrtxForm } from './useUnstakeVrtxForm';
 
 export function UnstakeVrtxDialog() {
   const { hide } = useDialog();
@@ -42,7 +42,7 @@ export function UnstakeVrtxDialog() {
         endElement={
           <LinkButton
             as={Link}
-            color="white"
+            colorVariant="primary"
             className="text-xs"
             href={VERTEX_SPECIFIC_LINKS.stakeVrtxDocs}
             external

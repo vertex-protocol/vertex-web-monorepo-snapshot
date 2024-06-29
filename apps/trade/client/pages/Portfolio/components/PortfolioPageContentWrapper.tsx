@@ -1,9 +1,10 @@
 import {
-  joinClassNames,
+  mergeClassNames,
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
 import { AppPage } from 'client/modules/app/AppPage';
+import { APP_PAGE_PADDING } from 'client/modules/app/consts/padding';
 
 export function PortfolioPageContentWrapper({
   children,
@@ -11,13 +12,11 @@ export function PortfolioPageContentWrapper({
 }: WithChildren<WithClassnames>) {
   return (
     <AppPage.Content
-      className={joinClassNames(
-        'gap-y-6 lg:gap-y-5',
-        // Smaller vertical padding for mobile subnav, which has built-in y padding
-        // Extra bottom padding to avoid bottom sheet covering page content
-        'pb-mobile-bottom-sheet px-4 py-2',
-        'sm:px-12 sm:pt-6',
-        'lg:px-20 lg:py-12',
+      className={mergeClassNames(
+        APP_PAGE_PADDING.vertical,
+        APP_PAGE_PADDING.horizontal,
+        // Smaller top padding for mobile subnav, which has built-in y padding, desktop case is handled by APP_PAGE_PADDING.vertical
+        'pt-2',
         className,
       )}
     >

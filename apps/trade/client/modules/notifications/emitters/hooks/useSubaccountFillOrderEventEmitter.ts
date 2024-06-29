@@ -1,6 +1,6 @@
 import { isTriggerOrderNonce } from '@vertex-protocol/client';
 import { toBigDecimal } from '@vertex-protocol/utils';
-import { usePrimaryChainId } from '@vertex-protocol/web-data';
+import { usePrimaryChainId } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useSubaccountLatestFillOrderEvents } from 'client/hooks/query/subaccount/useSubaccountLatestFillOrderEvents';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';

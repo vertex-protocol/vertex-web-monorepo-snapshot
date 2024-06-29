@@ -1,6 +1,10 @@
 import * as Accordion from '@radix-ui/react-accordion';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { Card } from '@vertex-protocol/web-ui';
+import {
+  Card,
+  CARD_BORDER_RADIUS_VARIANT,
+  getStateOverlayClassNames,
+} from '@vertex-protocol/web-ui';
 import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
 import { FaqItem } from '../hooks/useFaqItems';
 
@@ -15,19 +19,23 @@ export function FaqAccordionItem({
   item,
 }: WithClassnames<Props>) {
   const { title, content } = item;
+  const hoverStateOverlayClassNames = getStateOverlayClassNames({
+    borderRadiusVariant: CARD_BORDER_RADIUS_VARIANT,
+  });
 
   return (
     <Accordion.Item value={title} asChild>
       <Card
         className={joinClassNames(
-          'hover:bg-overlay-hover/5 flex flex-col',
+          'flex flex-col',
+          hoverStateOverlayClassNames,
           className,
         )}
       >
         <Accordion.Trigger>
           <Accordion.Header
             className={joinClassNames(
-              'flex w-full items-center justify-between gap-x-2.5 p-4 text-left',
+              'flex items-center justify-between gap-x-2.5 p-4 text-left',
               open
                 ? 'text-text-primary'
                 : 'text-text-secondary hover:text-text-primary',

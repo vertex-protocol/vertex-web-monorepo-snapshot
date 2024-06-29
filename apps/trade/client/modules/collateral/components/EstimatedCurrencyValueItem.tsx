@@ -1,18 +1,14 @@
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 
-interface Props extends WithClassnames {
-  isError?: boolean;
+interface Props {
   estimatedValueUsd: BigDecimal | undefined;
 }
 
-export function EstimatedCurrencyValueItem({
-  estimatedValueUsd,
-  isError,
-  className,
-}: Props) {
+export function EstimatedCurrencyValueItem({ estimatedValueUsd }: Props) {
   if (!estimatedValueUsd) {
     return null;
   }
@@ -21,14 +17,5 @@ export function EstimatedCurrencyValueItem({
     formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
   });
 
-  return (
-    <div
-      className={joinClassNames(
-        isError ? 'text-disabled' : 'text-text-tertiary',
-        className,
-      )}
-    >
-      {`~ ${formattedValue}`}
-    </div>
-  );
+  return `~ ${formattedValue}`;
 }

@@ -1,6 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import { TriggerCriteriaPriceType } from '../types';
 
 interface Props {
@@ -49,7 +49,7 @@ export function TpSlOrderEstimate({
     <div className="text-xs">
       If the {priceTypeLabel} {isTriggerPriceAbove ? 'climbs' : 'falls'} to{' '}
       {formattedTriggerPrice}, a{' '}
-      <span className="text-text-primary font-medium">
+      <span className="text-text-primary">
         {formattedAmountCloseSize}
         &nbsp;{marketName}&nbsp;
       </span>

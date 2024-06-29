@@ -2,7 +2,7 @@ import { DiscList, PrimaryButton } from '@vertex-protocol/web-ui';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { LinkButton } from 'client/components/LinkButton';
 import { UseConnectWalletStateMachine } from 'client/modules/app/dialogs/wallet/hooks/useConnectWalletStateMachine';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import { clientEnv } from 'common/environment/clientEnv';
 import Link from 'next/link';
 
@@ -31,14 +31,19 @@ export function TermsOfUseDialogContent({ stateMachine }: Props) {
       <BaseDialog.Body className="flex flex-col gap-y-6 text-sm">
         <p>
           By clicking this button, you agree to our{' '}
-          <LinkButton external as={Link} color="accent" href={LINKS.termsOfUse}>
+          <LinkButton
+            external
+            as={Link}
+            colorVariant="accent"
+            href={LINKS.termsOfUse}
+          >
             Terms of Use
           </LinkButton>{' '}
           and{' '}
           <LinkButton
             external
             as={Link}
-            color="accent"
+            colorVariant="accent"
             href={LINKS.privacyPolicy}
           >
             Privacy Policy
@@ -55,7 +60,7 @@ export function TermsOfUseDialogContent({ stateMachine }: Props) {
             </DiscList.Container>
           </div>
         </div>
-        <PrimaryButton size="lg" onClick={stateMachine.termsOfUseAgreeClicked}>
+        <PrimaryButton onClick={stateMachine.termsOfUseAgreeClicked}>
           Agree to Terms
         </PrimaryButton>
       </BaseDialog.Body>

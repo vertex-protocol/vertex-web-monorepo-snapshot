@@ -1,15 +1,20 @@
 import { MutationStatus } from '@tanstack/react-query';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { useIsChainType } from '@vertex-protocol/react-client';
+import {
+  addDecimals,
+  BigDecimal,
+  BigDecimals,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
 import {
   InputValidatorFn,
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
-import { useIsChainType } from '@vertex-protocol/web-data';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useExecuteApproveAllowance } from 'client/hooks/execute/useExecuteApproveAllowance';
+import { useExecuteApproveAllowanceForProduct } from 'client/hooks/execute/useExecuteApproveAllowanceForProduct';
 import { useExecuteDepositCollateral } from 'client/hooks/execute/useExecuteDepositCollateral';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 import { useRequiresInitialDeposit } from 'client/hooks/subaccount/useRequiresInitialDeposit';
@@ -29,8 +34,6 @@ import {
   DepositInfoCardType,
   DepositProduct,
 } from 'client/modules/collateral/deposit/types';
-import { BigDecimals } from 'client/utils/BigDecimals';
-import { addDecimals } from 'client/utils/decimalAdjustment';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { isRoughlyZero } from 'client/utils/isRoughlyZero';
@@ -62,10 +65,12 @@ export interface UseDepositForm {
 }
 
 export function useDepositForm(): UseDepositForm {
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const {
+    protocolTokenMetadata: { productId: protocolTokenProductId },
+  } = useVertexMetadataContext();
   const { hide } = useDialog();
   const isInitialDeposit = useRequiresInitialDeposit();
-  const { isArb, isBlast } = useIsChainType();
+  const { isArb, isBlast, isMantle } = useIsChainType();
 
   const useDepositForm = useForm<DepositFormValues>({
     defaultValues: {
@@ -141,7 +146,7 @@ export function useDepositForm(): UseDepositForm {
   });
 
   // Mutations
-  const executeApproveAllowance = useExecuteApproveAllowance();
+  const executeApproveAllowance = useExecuteApproveAllowanceForProduct();
   const executeDepositCollateral = useExecuteDepositCollateral();
 
   const { isLoading: isApprovalTxLoading, isSuccess: isApprovalTxSuccess } =
@@ -277,6 +282,10 @@ export function useDepositForm(): UseDepositForm {
       return 'weth';
     }
 
+    if (isMantle && selectedProduct?.productId === 109) {
+      return 'wmnt';
+    }
+
     if (isArb && selectedProduct?.productId === protocolTokenProductId) {
       return 'vrtx';
     }
@@ -288,8 +297,9 @@ export function useDepositForm(): UseDepositForm {
     isArb,
     selectedProduct?.productId,
     isNegligibleWalletBalance,
-    protocolTokenProductId,
     isBlast,
+    isMantle,
+    protocolTokenProductId,
   ]);
 
   return {

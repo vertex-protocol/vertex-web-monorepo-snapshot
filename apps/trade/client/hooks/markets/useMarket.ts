@@ -20,7 +20,7 @@ export function useMarket<TMarket extends AnnotatedMarket = AnnotatedMarket>({
       }
 
       if (productId === QUOTE_PRODUCT_ID) {
-        return data.quoteProduct as TMarket;
+        return data.primaryQuoteProduct as TMarket;
       }
       const spotMarket = data.spotMarkets[productId];
       if (spotMarket) {

@@ -10,15 +10,13 @@ export function GradientText({
   className,
 }: WithClassnames<WithChildren>) {
   return (
-    <span className={joinClassNames('text-accent font-medium', className)}>
-      {children}
-    </span>
+    <span className={joinClassNames('text-accent', className)}>{children}</span>
   );
 }
 
 function Title({ children, className }: WithClassnames<WithChildren>) {
   return (
-    <div className={joinClassNames('text-text-primary font-medium', className)}>
+    <div className={joinClassNames('text-text-primary', className)}>
       {children}
     </div>
   );
@@ -41,7 +39,7 @@ function InfoCard({ children, className }: WithChildren<WithClassnames>) {
   );
 }
 
-function Pill({ children, className }: WithChildren<WithClassnames>) {
+function InfoPill({ children, className }: WithChildren<WithClassnames>) {
   return (
     <div
       className={joinClassNames(
@@ -97,7 +95,7 @@ export const MarginManagerDefinition = {
   Title,
   Description,
   InfoCard,
-  Pill,
+  InfoPill,
   Image,
   GradientText,
 };

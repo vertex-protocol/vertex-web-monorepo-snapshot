@@ -13,9 +13,7 @@ export function LiquidationRiskBars() {
     <>
       {LIQUIDATION_RISKS.map(({ liquidationRiskFraction, label }) => (
         <div key={label} className="flex flex-col gap-y-2.5">
-          <div className="text-text-primary whitespace-nowrap font-medium">
-            {label}
-          </div>
+          <div className="text-text-primary whitespace-nowrap">{label}</div>
           <LiquidationRiskBar
             liquidationRiskFraction={liquidationRiskFraction}
             className="h-5 w-full"

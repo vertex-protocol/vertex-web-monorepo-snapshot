@@ -4,8 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
-import { WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { useState } from 'react';
 
 import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
@@ -32,7 +31,7 @@ export function ExpandableProductCard({
 
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'flex w-full overflow-hidden rounded-xl backdrop-blur-xl',
         'border-white-600 border text-3xl font-bold text-white',
         isSelectedCard ? backgroundColorMapping : 'bg-grayGradient',
@@ -41,7 +40,7 @@ export function ExpandableProductCard({
       onClick={onClick}
     >
       <div
-        className={classNames(
+        className={joinClassNames(
           'h-full w-full flex-col justify-start gap-y-4 overflow-hidden',
           'bg-black-700 rounded-xl font-bold text-white backdrop-blur-xl',
         )}
@@ -62,7 +61,7 @@ export function ExpandableProductCard({
               <TabsTrigger key={id} value={id}>
                 <ColorBorderButton
                   as="div"
-                  className={classNames(
+                  className={joinClassNames(
                     'mask-round overflow-hidden rounded-full px-4 py-1 text-sm capitalize text-white',
                     subTabId === id ? 'opacity-100' : 'opacity-50',
                   )}
@@ -77,7 +76,7 @@ export function ExpandableProductCard({
             <TabsContent
               key={id}
               value={id}
-              className={classNames(
+              className={joinClassNames(
                 'text-white-700 whitespace-pre-wrap py-2',
                 'text-left text-base',
                 'md:text-lg',

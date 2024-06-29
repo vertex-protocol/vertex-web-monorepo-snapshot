@@ -1,13 +1,12 @@
+import {
+  CustomNumberFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { Summary } from 'client/components/Summary';
 import { useSpotOrderFormContext } from 'client/pages/SpotTrading/context/SpotOrderFormContext';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
 
 interface Props {
   leverageEnabled: boolean;
@@ -51,15 +50,15 @@ export function SpotTradingFormAccountInfo({
                 <span className="text-positive">Max</span> Available:
               </>
             }
-            value={`${formatNumber(maxOrderSize, {
-              formatSpecifier: sizeFormatSpecifier,
-            })} ${symbol}`}
+            value={maxOrderSize}
+            numberFormatSpecifier={sizeFormatSpecifier}
+            valueEndElement={symbol}
           />
           <Summary.Item
             label="Borrow:"
-            value={`${formatNumber(derivedMetrics.amountToBorrow, {
-              formatSpecifier: sizeFormatSpecifier,
-            })} ${derivedMetrics.borrowAssetSymbol}`}
+            valueEndElement={derivedMetrics.borrowAssetSymbol}
+            numberFormatSpecifier={sizeFormatSpecifier}
+            value={derivedMetrics.amountToBorrow}
           />
         </>
       );
@@ -68,9 +67,9 @@ export function SpotTradingFormAccountInfo({
     return (
       <Summary.Item
         label="Available:"
-        value={`${formatNumber(maxOrderSize, {
-          formatSpecifier: sizeFormatSpecifier,
-        })} ${symbol}`}
+        value={maxOrderSize}
+        numberFormatSpecifier={sizeFormatSpecifier}
+        valueEndElement={symbol}
         definitionTooltipId={
           showQuote ? 'spotTradingAvailableQuote' : undefined
         }

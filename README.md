@@ -15,11 +15,20 @@ Public snapshots of the Vertex frontend have the following additional steps:
 
 - Install dependencies using `yarn install`.
 - For usage of a _local_ Vertex SDK (useful if you're testing SDK changes / unpublished SDK functionality):
-    - run `yarn link-local` in `vertex-typescript-sdk`,
-    - then `yarn link-local-sdk` in the `apps/trade` app.
-      > To reverse this (i.e. unlink packages for remote SDK), run `yarn unlink-local-sdk` in this `apps/trade`.
-
-NOTE: Be sure to run `yarn build` in the SDK repo for latest SDK changes to reflect
+    - Setup a state where peer dependencies in `@vertex-protocol/react-client` point to the installed dependencies in
+      this repo. This is required for certain packages (such as React) that do not work with multiple instances
+        - run `yarn link-react-package-dependencies` in this repo
+          > To reverse this (i.e. unlink react package dependencies), run `yarn unlink-react-package-dependencies` in
+          the
+          > root of this repo.
+        - then `yarn link-react-package-dependencies` in the SDK repo
+    - Setup a state where the frontend code points to a local SDK build:
+        - run `yarn link-local` in `vertex-typescript-sdk`,
+        - then `yarn link-local-sdk` in the root of this repo.
+          > To reverse this (i.e. unlink packages for remote SDK), run `yarn unlink-local-sdk` in the root of this repo.
+    - Run `yarn build` in the SDK repo when any code changes are made to the SDK. You will also need to build the
+      SDK
+      when setting up the integration for the first time
 
 **Set up environment:**
 
@@ -44,6 +53,7 @@ then saving the file.
 
 **[Trade App] Run against local nodes / custom contract addresses**
 
+- You must have the app running against a local SDK build, see `Getting Started`
+- Ensure the local SDK has the correct contract addresses and endpoints, see `createClientContext`
 - Switch your `.env.local` to point to a local deployment: `NEXT_PUBLIC_DATA_ENV=local`
-- Put the relevant contracts + endpoint info in `useBaseVertexClient`
 - Update token addresses in `tokens.ts` for the local environment. All addresses **must** be lowercase

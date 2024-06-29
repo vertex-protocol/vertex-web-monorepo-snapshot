@@ -1,16 +1,23 @@
+import {
+  EngineServerExecuteSuccessResult,
+  TriggerServerExecuteSuccessResult,
+} from '@vertex-protocol/client';
 import { ProductEngineType } from '@vertex-protocol/contracts';
-import { EngineServerExecuteResult } from '@vertex-protocol/engine-client';
 import { BigDecimal, BigDecimalish } from '@vertex-protocol/utils';
 import { ExecutePlaceOrderParams } from 'client/hooks/execute/placeOrder/types';
 import { ExecuteCloseAllPositionsResult } from 'client/hooks/execute/placeOrder/useExecuteCloseAllPositions';
 import { NewFeatureDisclosureKey } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
 import { OrderType, PlaceOrderPriceType } from 'client/modules/trading/types';
+import { TxResponse } from 'client/types/TxResponse';
 import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
-import { ContractTransactionResponse } from 'ethers';
+import { ContractTransactionResponse, TransactionReceipt } from 'ethers';
 
 // Additional data surrounding user/app state required by notification handlers
 export interface NotificationDispatchContext {
   isSingleSignature: boolean;
+  getConfirmedTxPromise: (
+    txResponsePromise: Promise<TxResponse>,
+  ) => Promise<TransactionReceipt>;
 }
 
 interface OnChainExecutionData {
@@ -29,7 +36,10 @@ export interface OrderNotificationMetadata {
 }
 
 interface OrderActionData {
-  executeResult: Promise<EngineServerExecuteResult>;
+  executeResult: Promise<
+    | EngineServerExecuteSuccessResult<'place_order'>
+    | TriggerServerExecuteSuccessResult<'place_order'>
+  >;
 }
 
 export interface ActionErrorHandlerNotificationData {
@@ -95,6 +105,10 @@ export interface CloseMultiPositionsNotificationData {
   executeResult: Promise<ExecuteCloseAllPositionsResult>;
 }
 
+export interface AcceptReferralNotificationData {
+  referralCode: string;
+}
+
 // All possible notification types
 export type DispatchNotificationParams =
   | {
@@ -145,6 +159,10 @@ export type DispatchNotificationParams =
   | {
       type: 'close_multi_positions';
       data: CloseMultiPositionsNotificationData;
+    }
+  | {
+      type: 'accept_referral';
+      data: AcceptReferralNotificationData;
     };
 
 export type NotificationType = DispatchNotificationParams['type'];

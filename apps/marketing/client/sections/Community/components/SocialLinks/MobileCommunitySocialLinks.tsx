@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
 import { EXTERNAL_LINKS } from 'client/consts';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ export function MobileCommunitySocialLinks() {
   ];
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'flex w-full justify-center gap-x-6',
         'sm:justify-start md:hidden',
       )}

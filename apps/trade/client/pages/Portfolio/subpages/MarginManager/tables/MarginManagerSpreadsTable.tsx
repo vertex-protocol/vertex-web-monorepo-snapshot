@@ -10,7 +10,7 @@ import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlacehold
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { ProductInfoCell } from 'client/modules/tables/cells/ProductInfoCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
 import { MarginManagerActionsCell } from './cells/MarginManagerActionsCell';
@@ -46,7 +46,8 @@ export function MarginManagerSpreadsTable({ className }: WithClassnames) {
           },
           enableSorting: false,
           meta: {
-            cellContainerClassName: 'w-32',
+            cellContainerClassName: 'w-36',
+            withLeftPadding: true,
           },
         }),
         columnHelper.accessor('spreadSize', {

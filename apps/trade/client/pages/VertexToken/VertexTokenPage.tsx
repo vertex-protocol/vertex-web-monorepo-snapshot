@@ -1,7 +1,7 @@
 import {
+  Root as TabsRoot,
   TabsContent,
   TabsList,
-  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import { joinClassNames } from '@vertex-protocol/web-common';
@@ -32,10 +32,10 @@ export function VertexTokenPage() {
 
   const { selectedTabId, setSelectedUntypedTabId, tabs } =
     useTabs(TOKEN_PAGE_TABS);
-  const { protocolTokenProductId } = useVertexMetadataContext();
+  const { protocolTokenMetadata } = useVertexMetadataContext();
 
   const vrtxTradingLink =
-    productTradingLinks[protocolTokenProductId]?.link ?? '';
+    productTradingLinks[protocolTokenMetadata.productId]?.link ?? '';
 
   return (
     <AppPage.Root
@@ -46,13 +46,13 @@ export function VertexTokenPage() {
         APP_PAGE_PADDING.vertical,
       )}
     >
-      <AppPage.Content className="max-w-[1100px] gap-y-4">
-        <TokenPageTitle />
-        <TabsRoot
-          className="flex flex-col gap-y-6"
-          value={selectedTabId}
-          onValueChange={setSelectedUntypedTabId}
-        >
+      <TabsRoot
+        asChild
+        value={selectedTabId}
+        onValueChange={setSelectedUntypedTabId}
+      >
+        <AppPage.Content className="max-w-[1100px]">
+          <TokenPageTitle />
           <TabsList>
             <UnderlinedTabs.Container>
               {tabs.map(({ id }) => (
@@ -82,8 +82,8 @@ export function VertexTokenPage() {
               {content}
             </TabsContent>
           ))}
-        </TabsRoot>
-      </AppPage.Content>
+        </AppPage.Content>
+      </TabsRoot>
     </AppPage.Root>
   );
 }

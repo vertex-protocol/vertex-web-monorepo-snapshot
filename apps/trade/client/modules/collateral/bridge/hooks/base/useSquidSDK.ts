@@ -1,15 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { createQueryKey, useEVMContext } from '@vertex-protocol/web-data';
+import { createQueryKey } from '@vertex-protocol/react-client';
 
 export function useSquidSDK() {
-  const {
-    primaryChainMetadata: { isTestnet },
-  } = useEVMContext();
-
   // Testing/Dev Notes: https://www.notion.so/vertexprotocol/Axelar-Bridge-Dev-Testing-3d32f3cfbd634902beb0d499755469c4?pvs=4
-  const baseUrl = isTestnet
-    ? 'https://testnet.v2.api.squidrouter.com'
-    : 'https://v2.api.squidrouter.com/api';
+  // Flow is only testable in mainnet environment
+  const baseUrl = 'https://apiplus.squidrouter.com';
 
   const { data } = useQuery({
     queryKey: createQueryKey('squidSdk', baseUrl),

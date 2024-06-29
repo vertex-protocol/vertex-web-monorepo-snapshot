@@ -19,6 +19,7 @@ const config: Config = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './client/**/*.{js,ts,jsx,tsx}',
     '../../packages/ui/components/**/*.{js,ts,jsx,tsx}',
+    '../../packages/ui/utils/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -34,7 +35,7 @@ const config: Config = {
         'trade-sidebar': '320px',
       },
       height: {
-        navbar: '4rem',
+        navbar: '3.5rem',
         footer: '2rem',
         'desktop-navbar-item': '2.5rem',
         'trading-top-bar': '3rem',

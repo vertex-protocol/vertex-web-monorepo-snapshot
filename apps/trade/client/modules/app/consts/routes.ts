@@ -31,8 +31,11 @@ export const ROUTES = {
   perpTrading: '/perpetuals',
   pools: '/pools',
   markets: '/markets',
+  moneyMarkets: '/money-markets',
   rewards: '/rewards',
   referrals: '/referrals',
   points: '/points',
   vrtx: '/vrtx',
-};
+  mantleTradingCompetition: '/mantle-trading-competition',
+  blitzTradingCompetition: '/blitz-trading-competition',
+} as const;

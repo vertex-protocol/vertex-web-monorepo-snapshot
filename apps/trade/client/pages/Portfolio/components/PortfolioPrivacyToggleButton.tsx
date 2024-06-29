@@ -1,6 +1,4 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
-import { Button, LabelTooltip } from '@vertex-protocol/web-ui';
-import { ShowHideIcon } from 'client/components/Icons/ShowHideIcon';
+import { IconButton, Icons, LabelTooltip } from '@vertex-protocol/web-ui';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
 
 export function PortfolioPrivacyToggleButton() {
@@ -10,14 +8,11 @@ export function PortfolioPrivacyToggleButton() {
   const hideIconMessage = areAccountValuesPrivate ? 'Show info' : 'Hide info';
 
   return (
-    <LabelTooltip label={hideIconMessage}>
-      <Button
-        className={joinClassNames(
-          'text-text-tertiary hover:text-text-primary flex rounded p-1',
-        )}
-        startIcon={
-          <ShowHideIcon size={14} isHidden={areAccountValuesPrivate} />
-        }
+    <LabelTooltip label={hideIconMessage} asChild noHelpCursor>
+      <IconButton
+        size="xs"
+        className="text-text-tertiary bg-transparent"
+        icon={areAccountValuesPrivate ? Icons.FiEyeOff : Icons.FiEye}
         onClick={() => setAreAccountValuesPrivate(!areAccountValuesPrivate)}
       />
     </LabelTooltip>

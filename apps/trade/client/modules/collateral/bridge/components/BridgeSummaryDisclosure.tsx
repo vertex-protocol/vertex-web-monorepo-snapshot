@@ -1,8 +1,13 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { Divider, Icons } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
-import { LineItem } from 'client/components/LineItem/LineItem';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useBridgeEstimatedSubaccountInfoChange } from 'client/modules/collateral/bridge/hooks/useBridgeEstimatedSubaccountInfoChange';
 import { BridgeRouteSummary } from 'client/modules/collateral/bridge/hooks/useBridgeRouteSummary';
 import {
@@ -10,11 +15,6 @@ import {
   BridgeToken,
   DestinationBridgeToken,
 } from 'client/modules/collateral/bridge/types';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import Image from 'next/image';
 
 interface Props {
@@ -39,9 +39,11 @@ export function BridgeSummaryDisclosure({
 
   const disclosureContent = (
     <div className="flex w-full flex-col gap-y-2 px-3 pb-3">
-      <LineItem.Base
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
+        labelClassName="gap-x-2"
         label={
-          <div className="flex items-center gap-x-2">
+          <>
             <span>Bridge from</span>
             {selectedSourceChain && (
               <div className="flex items-center gap-x-1.5">
@@ -55,11 +57,11 @@ export function BridgeSummaryDisclosure({
                 <span>{selectedSourceChain.chainName}</span>
               </div>
             )}
-          </div>
+          </>
         }
-        value={
+        valueContent={
           selectedSourceToken && (
-            <div className="flex items-center gap-x-1.5">
+            <>
               <AmountWithSymbol
                 formattedSize={formatNumber(selectedSourceAmount, {
                   formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
@@ -71,17 +73,19 @@ export function BridgeSummaryDisclosure({
               <img
                 src={selectedSourceToken.externalIconUrl ?? ''}
                 alt={selectedSourceToken.symbol}
-                className="h-4 w-4"
+                className="size-4"
               />
-            </div>
+            </>
           )
         }
       />
-      <LineItem.Base
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Est. Receive"
-        value={
+        valueClassName="gap-x-1.5"
+        valueContent={
           selectedDestinationToken && (
-            <div className="flex items-center gap-x-1.5">
+            <>
               <AmountWithSymbol
                 formattedSize={formatNumber(bridgeRouteSummary?.receiveAmount, {
                   formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
@@ -97,62 +101,67 @@ export function BridgeSummaryDisclosure({
                 width={16}
                 height={16}
               />
-            </div>
+            </>
           )
         }
       />
       <Divider />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Est. Time"
         tooltip={{ id: 'bridgeEstimatedTime' }}
         value={bridgeRouteSummary?.bridgeTime}
-        renderValue={(val) => {
-          if (!val) return '-';
-          return (
-            <>
-              {`${val}s `}
-              <Icons.BsLightningChargeFill size={12} className="text-warning" />
-            </>
-          );
-        }}
+        valueContent={
+          <>
+            {`${formatNumber(bridgeRouteSummary?.bridgeTime, {
+              formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
+            })}s `}
+            <Icons.BsLightningChargeFill size={12} className="text-warning" />
+          </>
+        }
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Est. Gas"
         tooltip={{ id: 'bridgeEstimatedGas' }}
         value={bridgeRouteSummary?.gas?.amount}
-        renderValue={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
         valueEndElement={bridgeRouteSummary?.gas?.symbol}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Axelar Fee"
         tooltip={{ id: 'bridgeAxelarFee' }}
-        renderValue={PresetNumberFormatSpecifier.CURRENCY_2DP}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
         value={bridgeRouteSummary?.feeUsd}
       />
       <Divider />
-      <LineItem.MetricWithEstimation
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Account Value"
-        currentValue={subaccountInfoChange.current?.accountValueUsd}
-        estimatedValue={subaccountInfoChange.estimated?.accountValueUsd}
-        renderValue={PresetNumberFormatSpecifier.CURRENCY_2DP}
-        arrowClassName="text-positive"
+        value={subaccountInfoChange.current?.accountValueUsd}
+        newValue={subaccountInfoChange.estimated?.accountValueUsd}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
+        changeArrowClassName="text-positive"
       />
-      <LineItem.MetricWithEstimation
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Asset Balance"
-        currentValue={subaccountInfoChange.current?.vertexBalance}
-        estimatedValue={subaccountInfoChange.estimated?.vertexBalance}
-        renderValue={CustomNumberFormatSpecifier.NUMBER_AUTO}
-        arrowClassName="text-positive"
+        value={subaccountInfoChange.current?.vertexBalance}
+        newValue={subaccountInfoChange.estimated?.vertexBalance}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+        changeArrowClassName="text-positive"
         valueEndElement={
           selectedDestinationToken?.vertexProduct.metadata.token.symbol
         }
       />
-      <LineItem.MetricWithEstimation
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Margin Usage"
-        currentValue={subaccountInfoChange.current?.marginUsageBounded}
-        estimatedValue={subaccountInfoChange.estimated?.marginUsageBounded}
-        renderValue={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
-        arrowClassName="text-positive"
+        value={subaccountInfoChange.current?.marginUsageBounded}
+        newValue={subaccountInfoChange.estimated?.marginUsageBounded}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
+        changeArrowClassName="text-positive"
       />
     </div>
   );

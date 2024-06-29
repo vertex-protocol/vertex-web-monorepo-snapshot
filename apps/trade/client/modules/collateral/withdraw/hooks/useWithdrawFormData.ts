@@ -1,12 +1,11 @@
-import { useMemo } from 'react';
-import { WithdrawProduct } from 'client/modules/collateral/withdraw/types';
-import { BigDecimals } from 'client/utils/BigDecimals';
 import { toBigDecimal } from '@vertex-protocol/client';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
-import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
+import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
+import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { sortByDisplayedAssetValue } from 'client/modules/collateral/utils/sortByDisplayedAssetValue';
+import { WithdrawProduct } from 'client/modules/collateral/withdraw/types';
+import { useMemo } from 'react';
 
 interface Params {
   productIdInput: number;

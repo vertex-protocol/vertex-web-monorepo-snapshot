@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 
 /**
  * @param value

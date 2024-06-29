@@ -1,4 +1,5 @@
 import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { ReactNode } from 'react';
 import { TableCell } from './TableCell';
 
 export function StackedTableCell({
@@ -7,8 +8,8 @@ export function StackedTableCell({
   className,
   ...rest
 }: WithClassnames<{
-  top: React.ReactNode;
-  bottom: React.ReactNode;
+  top: ReactNode;
+  bottom: ReactNode;
 }>) {
   return (
     <TableCell

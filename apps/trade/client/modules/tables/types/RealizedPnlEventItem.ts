@@ -1,4 +1,4 @@
-import { NumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
+import { NumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { MarketInfoCellData } from './MarketInfoCellData';
 import { BigDecimal } from '@vertex-protocol/client';
 

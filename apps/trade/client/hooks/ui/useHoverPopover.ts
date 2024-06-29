@@ -28,11 +28,6 @@ export function useHoverPopover(params?: UseFloatingOptions<ReferenceType>) {
     handleClose: safePolygon(),
     // hover is used on desktop.
     mouseOnly: true,
-    // add delay to hover.
-    delay: {
-      open: 0,
-      close: 250,
-    },
   });
   const dismiss = useDismiss(context);
   const role = useRole(context);

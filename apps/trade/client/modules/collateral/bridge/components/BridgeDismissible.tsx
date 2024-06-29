@@ -1,7 +1,7 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { UserDisclosureDismissibleCard } from 'client/components/Disclosure/UserDisclosureDismissibleCard';
 import { LinkButton } from 'client/components/LinkButton';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
 
 export function BridgeDismissible({ className }: WithClassnames) {
@@ -19,7 +19,7 @@ export function BridgeDismissible({ className }: WithClassnames) {
               as={Link}
               href={LINKS.crossChainDocs}
               external
-              color="white"
+              colorVariant="primary"
             >
               here
             </LinkButton>{' '}

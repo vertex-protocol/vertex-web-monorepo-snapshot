@@ -1,6 +1,6 @@
+import { AccountCenterDialogParams } from 'client/modules/accountCenter/components/AccountCenterDialog';
 import { ActionSuccessDialogParams } from 'client/modules/app/dialogs/ActionSuccessDialog';
-import { ControlCenterDialogParams } from 'client/modules/controlCenter/components/ControlCenterDialog';
-import { MarketDetailsDialogParams } from 'client/modules/markets/marketDetails/MarketDetailsDialog';
+import { EditOrderViaChartDialogProps } from 'client/modules/app/dialogs/EditOrderViaChartDialog';
 import { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/types';
 import { PerpPnlSocialSharingDialogParams } from 'client/modules/socialSharing/PerpPnlSocialSharingDialog';
 import { LpBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/LpBalanceDetailsDialog';
@@ -13,6 +13,7 @@ import { RealizedPnlDetailsDialogParams } from 'client/modules/tables/detailDial
 import { SpotBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/SpotBalanceDetailsDialog';
 import { ClosePositionDialogParams } from 'client/modules/trading/closePosition/ClosePositionDialog';
 import { TpSlDialogParams } from 'client/modules/trading/tpsl/tpslDialog/TpSlDialog';
+import { MarketDetailsDialogParams } from 'client/pages/Markets/components/MarketDetailsDialog/MarketDetailsDialog';
 import { PerpLeverageDialogParams } from 'client/pages/PerpTrading/components/PerpLeverageDialog/PerpLeverageDialog';
 import { EmptyObject } from 'type-fest';
 
@@ -34,8 +35,8 @@ export type DialogParams =
       params: EmptyObject;
     }
   | {
-      type: 'control_center';
-      params: ControlCenterDialogParams;
+      type: 'account_center';
+      params: AccountCenterDialogParams;
     }
   | {
       type: 'signature_mode_settings';
@@ -172,6 +173,31 @@ export type DialogParams =
   | {
       type: 'pre_liquidation_details';
       params: PreLiquidationDetailsDialogParams;
+    }
+  | {
+      type: 'customize_referral_link';
+      params: EmptyObject;
+    }
+  | {
+      type: 'confirm_referral';
+      params: EmptyObject;
+    }
+  | {
+      type: 'claim_referral_earnings';
+      params: EmptyObject;
+    }
+  | {
+      type: 'command_center';
+      params: EmptyObject;
+    }
+  | {
+      type: 'edit_order_via_chart';
+      params: EditOrderViaChartDialogProps;
     };
 
 export type DialogType = DialogParams['type'];
+
+export type CollateralDialogType = Extract<
+  DialogType,
+  'deposit' | 'withdraw' | 'borrow' | 'repay'
+>;

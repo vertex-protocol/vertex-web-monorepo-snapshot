@@ -126,7 +126,7 @@ export function BuiltOnEdge() {
               'absolute flex flex-col gap-2',
               'rounded-[14px] border border-zinc-200 p-1.5',
               'bg-zinc-200/20 backdrop-blur-sm',
-              'transition-all delay-100 duration-300 ease-in-out',
+              'transition-all delay-100 duration-300',
               appPreviewName ? 'top-0 scale-100' : 'top-6 scale-90 opacity-0',
             )}
           >

@@ -1,10 +1,9 @@
 import { LBA_AIRDROP_EPOCH } from '@vertex-protocol/client';
 import { DiscList } from '@vertex-protocol/web-ui';
 import { LinkButton } from 'client/components/LinkButton';
-import { LINKS } from 'client/modules/brand/links';
+import { LINKS } from 'common/brandMetadata/links/links';
 import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
 import { StopMarketOrderDescription } from 'client/modules/trading/components/StopMarketOrderDescription';
-import { PRIMARY_QUOTE_SYMBOL } from 'common/productMetadata/primaryQuoteSymbol';
 import {
   VOVRTX_INFO,
   VRTX_TOKEN_INFO,
@@ -12,18 +11,18 @@ import {
 import Link from 'next/link';
 
 const portfolioOverviewTooltips = {
-  overviewPerpPnL: {
+  overviewPerpPnL: ({ primaryQuoteToken }) => ({
     title: `Perp Positions PnL`,
-    content: `The sum of your Estimated PnL across all open perp positions. Perp PnL (${PRIMARY_QUOTE_SYMBOL}) is settled periodically into balances. This represents both settled and unsettled amounts.`,
-  },
+    content: `The sum of your Estimated PnL across all open perp positions. Perp PnL (${primaryQuoteToken.symbol}) is settled periodically into balances. This represents both settled and unsettled amounts.`,
+  }),
   overviewAccountPnL: {
     title: `Account PnL`,
     content: `Your account-wide PnL, including perp trades and spot positions. You can change the time frame in the top right of the chart.`,
   },
-  overviewAccountValue: {
+  overviewAccountValue: ({ primaryQuoteToken }) => ({
     title: `Account Value`,
-    content: `The total $ value of an account, using the oracle price. Account value = assets + pools - borrows +/- unsettled ${PRIMARY_QUOTE_SYMBOL}.`,
-  },
+    content: `The total $ value of an account, using the oracle price. Account value = assets + pools - borrows +/- unsettled ${primaryQuoteToken.symbol}.`,
+  }),
   overviewFundsUntilLiquidation: {
     title: (
       <>
@@ -33,7 +32,7 @@ const portfolioOverviewTooltips = {
     ),
     content: `The amount of funds an account has until it is eligible for liquidation. If this value falls to zero, your positions will be liquidated until a positive balance is restored. This metric is calculated using the sum of maintenance margin values for assets, borrows, pools and perpetual positions.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const portfolioBalancesTooltips = {
   balancesTotalDeposits: {
@@ -56,11 +55,11 @@ const portfolioBalancesTooltips = {
     title: `Net APR`,
     content: `The estimated average APR across your deposits and borrows.`,
   },
-  balancesNetBalance: {
+  balancesNetBalance: ({ primaryQuoteToken }) => ({
     title: `Net Balance`,
-    content: `The sum of your balances. This does not include unsettled Perp PnL (${PRIMARY_QUOTE_SYMBOL}).`,
-  },
-};
+    content: `The sum of your balances. This does not include unsettled Perp PnL (${primaryQuoteToken.symbol}).`,
+  }),
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const portfolioPerpsTooltips = {
   perpOpenPositionsPnl: {
@@ -83,7 +82,7 @@ const portfolioPerpsTooltips = {
     title: `Total Perp PnL`,
     content: `Your total profit or loss from trading perps. This includes all PnL from previously closed perp positions and your current open positions based on the oracle price.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const portfolioPoolsTooltips = {
   poolsAverageAPR: {
@@ -94,21 +93,21 @@ const portfolioPoolsTooltips = {
     title: `Total Unrealized PnL`,
     content: `This is the total sum of your LP PnL across all current positions. This includes trading fees and deposit interest earned.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const portfolioMarginManagerTooltips = {
-  marginManagerSpotQuoteBalance: {
-    title: `${PRIMARY_QUOTE_SYMBOL} Cash Balance`,
-    content: `This is the amount of ${PRIMARY_QUOTE_SYMBOL} you have deposited or are borrowing. The balance is negative if you are borrowing.`,
-  },
-  marginManagerQuoteNetBalance: {
-    title: `Net ${PRIMARY_QUOTE_SYMBOL} Balance`,
+  marginManagerSpotQuoteBalance: ({ primaryQuoteToken }) => ({
+    title: `${primaryQuoteToken.symbol} Cash Balance`,
+    content: `This is the amount of ${primaryQuoteToken.symbol} you have deposited or are borrowing. The balance is negative if you are borrowing.`,
+  }),
+  marginManagerQuoteNetBalance: ({ primaryQuoteToken }) => ({
+    title: `Net ${primaryQuoteToken.symbol} Balance`,
     content: `This is the sum of your cash balance and unsettled balance.`,
-  },
-  marginManagerUnsettledQuoteBalance: {
-    title: `Unsettled ${PRIMARY_QUOTE_SYMBOL} Balance`,
+  }),
+  marginManagerUnsettledQuoteBalance: ({ primaryQuoteToken }) => ({
+    title: `Unsettled ${primaryQuoteToken.symbol} Balance`,
     content: `If you have open perp positions, this is the portion of your PnL that hasn't been settled. Settlements are made automatically between losing and winning positions.`,
-  },
+  }),
   marginManagerSpotAssetBalance: {
     title: `Asset Balance`,
     content: `The balance of the asset. A positive balance indicates a deposit and a negative balance indicates a borrow.`,
@@ -162,10 +161,10 @@ const portfolioMarginManagerTooltips = {
       </>
     ),
   },
-  marginManagerQuoteMarginCalc: {
-    title: `${PRIMARY_QUOTE_SYMBOL} Collateral/Margin`,
-    content: `${PRIMARY_QUOTE_SYMBOL} collateral and borrow value is weighted 1:1 with market value (oracle).`,
-  },
+  marginManagerQuoteMarginCalc: ({ primaryQuoteToken }) => ({
+    title: `${primaryQuoteToken.symbol} Collateral/Margin`,
+    content: `${primaryQuoteToken.symbol} collateral and borrow value is weighted 1:1 with market value (oracle).`,
+  }),
   marginManagerBalancesMarginCalc: {
     title: `Balances Margin Impact`,
     content: (
@@ -227,30 +226,50 @@ const portfolioMarginManagerTooltips = {
         </div>
         <div>
           To learn how this is calculated, refer to{' '}
-          <LinkButton href={LINKS.spreadDocs} external as={Link} color="white">
+          <LinkButton
+            href={LINKS.spreadDocs}
+            external
+            as={Link}
+            colorVariant="primary"
+          >
             Spread Docs.
           </LinkButton>
         </div>
       </div>
     ),
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const referralsTooltips = {
-  referralsTotalRewardsEarned: {
-    title: `Total Earned`,
-    content: 'The amount of VRTX rewards you have realized from referrals.',
+  referralsFeeRebates: {
+    title: `Fee Rebates`,
+    content: `Referred traders earn a 5% rebate on all fees.`,
   },
-  referralsTotalReferredUsers: {
-    title: `Total Referrals`,
-    content: `The total number of new users who have entered the app & deposited using your unique link.`,
+  referralsReferredTakerVolume: {
+    title: `Taker Volume`,
+    content: `Trading volume generated by users you referred.`,
   },
-};
+  referralsPastProgramRewards: {
+    title: `Past Program Rewards`,
+    content: `Rewards earned from the past referrals program. Please refer to Vertex docs for more details.`,
+  },
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const rewardsTooltips = {
   rewardsEstimatedNewRewards: {
     title: `Estimated New Rewards`,
-    content: `The estimated amount of rewards you would receive for the current epoch. This is based on your share of the rewards pool and your trading activity vs. others. Pending rewards will be realized at the end of the epoch.`,
+    content: (
+      <p>
+        The estimated amount of rewards you would receive for the current epoch
+        on the{' '}
+        <span className="text-text-primary font-medium">
+          currently selected chain
+        </span>
+        . This is based on your share of the rewards pool and your trading
+        activity vs. others. Pending rewards will be realized at the end of the
+        epoch.
+      </p>
+    ),
   },
   rewardsAvailableToClaim: {
     title: `Available to Claim`,
@@ -258,12 +277,20 @@ const rewardsTooltips = {
   },
   rewardsShareOfRewardsPool: {
     title: `Share of Rewards Pool`,
-    content:
-      'This is your share of the rewards pool based on your trading activity vs. total trading activity during the epoch.',
+    content: (
+      <p>
+        This is your share of the rewards pool on the{' '}
+        <span className="text-text-primary font-medium">
+          currently selected chain
+        </span>
+        . Your share is based on your trading activity vs. total trading
+        activity during the epoch.
+      </p>
+    ),
   },
   rewardsTotalRewardsEarned: {
     title: `Total Rewards Earned`,
-    content: `The total ${VRTX_TOKEN_INFO.symbol} rewards you have earned from completed epochs.`,
+    content: `The total ${VRTX_TOKEN_INFO.symbol} rewards you have earned from completed epochs. Realized rewards earned on other Vertex chains may take a few days to reflect here.`,
   },
   rewardsTradingFeesPaid: {
     title: `Trading Fees`,
@@ -281,15 +308,19 @@ const rewardsTooltips = {
     title: `Total Rewards`,
     content: `The total ${VRTX_TOKEN_INFO.symbol} earned by your LBA position. Open the summary for details.`,
   },
-  rewardsArbTotalEarned: {
+  rewardsFoundationTotalEarned: {
     title: `Total Earned`,
-    content: `The total amount of ARB you have earned excluding your estimated rewards for the current week. ARB incentives are earned based on the trading fees that you have accrued.`,
+    content: `The total amount of tokens you have earned excluding your estimated rewards for the current week. Incentives are earned based on the trading fees that you have accrued.`,
   },
-  rewardsArbAvailableToClaim: {
+  rewardsFoundationEstNew: {
+    title: `Est. New`,
+    content: `The estimated new incentives you could earn for the current week. Incentives are based on the trading fees that you have accrued and are realized at the end of each week.`,
+  },
+  rewardsFoundationAvailableToClaim: {
     title: `Available to Claim`,
-    content: `ARB incentives are distributed on a weekly basis. There may be a delay of up to a few days between the end of each week and when the rewards are distributed. Each transaction will automatically claim all unclaimed rewards from previous weeks.`,
+    content: `Incentives are distributed per week. There may be a delay of up to a few days between the end of each week and when the rewards are distributed. Each transaction will automatically claim all unclaimed rewards from previous weeks.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const pointsTooltips = {
   pointsTradingPoints: {
@@ -298,13 +329,13 @@ const pointsTooltips = {
   },
   pointsReferralPoints: {
     title: `Referral Earned`,
-    content: `You earn 20% of the points that your referrals earn.`,
+    content: `You earn 25% of the points that your referrals earn.`,
   },
   pointsInitialPoints: {
     title: `Initial Points`,
     content: `The initial points airdrop was distributed to wallets based on their on-chain activity. Wallets have 2 weeks to claim their points.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const stakingTooltips = {
   stakingLbaPosition: {
@@ -346,21 +377,21 @@ const stakingTooltips = {
       </>
     ),
   },
-  stakingRewards: {
+  stakingRewards: ({ primaryQuoteToken }) => ({
     title: `Staking Rewards`,
     content: (
       <>
         <p>
-          A portion of protocol revenue ({PRIMARY_QUOTE_SYMBOL}) is distributed
-          to {VOVRTX_INFO.symbol} stakers weekly.
+          A portion of protocol revenue ({primaryQuoteToken.symbol}) is
+          distributed to {VOVRTX_INFO.symbol} stakers weekly.
         </p>
         <p>
-          You have two options: claim {PRIMARY_QUOTE_SYMBOL} to wallet or
+          You have two options: claim {primaryQuoteToken.symbol} to wallet or
           compound rewards into staked {VRTX_TOKEN_INFO.symbol}.
         </p>
       </>
     ),
-  },
+  }),
   stakingEstMaxApr: {
     title: `Est. Max APR`,
     content: `Your estimated APR when you reach your max ${VOVRTX_INFO.symbol} score. APRs are variable and subject to change`,
@@ -417,7 +448,7 @@ const stakingTooltips = {
     title: `${VRTX_TOKEN_INFO.symbol} in Wallet`,
     content: `Staking is done from your wallet. If you have ${VRTX_TOKEN_INFO.symbol} in your Vertex account, you'll need to withdraw before staking.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const lpTooltips = {
   lpEstimatedConversionPrice: {
@@ -448,7 +479,7 @@ const lpTooltips = {
     title: `Balance`,
     content: `Your underlying spot balance for the asset. The max you can contribute may be less than this amount due to slippage and margin requirements.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const spotTradingTooltips = {
   spotLeverageToggle: {
@@ -456,10 +487,10 @@ const spotTradingTooltips = {
     content: `Leveraged spot enables you to auto-borrow assets against your margin to trade with a larger size. Turn Leverage ON to enable borrowing. Turn OFF to disable borrowing.`,
   },
   spotTradingAvailableQuote: {
-    title: `Available (${PRIMARY_QUOTE_SYMBOL})`,
+    title: `Available`,
     content: `Your available balance for the order. For market orders, this may be less than your asset balance due to slippage.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const perpTradingTooltips = {
   perpFundingRate1h: {
@@ -476,15 +507,15 @@ const perpTradingTooltips = {
       </>
     ),
   },
-  perpOpenInterest: {
+  perpOpenInterest: ({ primaryQuoteToken }) => ({
     title: `Open Interest`,
-    content: `The total outstanding in perpetual contracts for that market, denominated in the quote ${PRIMARY_QUOTE_SYMBOL}.`,
-  },
+    content: `The total outstanding in perpetual contracts for that market, denominated in the quote ${primaryQuoteToken.symbol}.`,
+  }),
   perpUnderlyingSpotIndexPrice: {
     title: `Spot Index Price`,
     content: `The price of the underlying spot asset across other exchanges. It's used to calculate funding rates.`,
   },
-};
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const tradingTooltips = {
   tradingStopMarketInfo: {
@@ -505,28 +536,27 @@ const tradingTooltips = {
       <>
         <DiscList.Container>
           <DiscList.Item>
-            <span className="font-medium">Good Until:</span> The order will
-            remain open until it is filled, cancelled, or expires based on the
-            time set below.
+            Good Until: The order will remain open until it is filled,
+            cancelled, or expires based on the time set below.
           </DiscList.Item>
           <DiscList.Item>
-            <span className="font-medium">IOC:</span> The order will be
-            immediately executed and any unfilled portion will be cancelled.
+            IOC: The order will be immediately executed and any unfilled portion
+            will be cancelled.
           </DiscList.Item>
           <DiscList.Item>
-            <span className="font-medium">FOK:</span> The order will be
-            cancelled if not entirely filled. No partial fills are allowed.
+            FOK: The order will be cancelled if not entirely filled. No partial
+            fills are allowed.
           </DiscList.Item>
         </DiscList.Container>
       </>
     ),
   },
-  tradingEstimatedFee: {
+  tradingEstimatedFee: ({ primaryQuoteToken }) => ({
     title: `Est. Fee`,
     content: (
       <>
         <p>
-          Trading fees are paid in {PRIMARY_QUOTE_SYMBOL} and apply to taker
+          Trading fees are paid in {primaryQuoteToken.symbol} and apply to taker
           orders: trades that immediately cross the book.
         </p>
         <p>
@@ -539,8 +569,8 @@ const tradingTooltips = {
         </p>
       </>
     ),
-  },
-};
+  }),
+} as const satisfies Record<string, DefinitionTooltipConfig>;
 
 export const pageTooltips = {
   ...portfolioOverviewTooltips,

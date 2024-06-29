@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_PADDING,
@@ -8,11 +7,12 @@ import {
 import { BlogLinks } from './components/BlogLinks/BlogLinks';
 import { NewsLinks } from './components/NewsLinks';
 import { SocialLinks } from './components/SocialLinks/SocialLinks';
+import { joinClassNames } from '@vertex-protocol/web-common';
 
 export const Community = () => {
   return (
     <section
-      className={classNames(
+      className={joinClassNames(
         'flex scroll-m-10 flex-col gap-y-12',
         'lg:gap-y-16 lg:pb-0',
         DEFAULT_SECTION_PADDING,

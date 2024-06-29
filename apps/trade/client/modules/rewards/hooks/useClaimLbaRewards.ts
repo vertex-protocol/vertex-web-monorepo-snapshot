@@ -1,10 +1,10 @@
+import { asyncResult } from '@vertex-protocol/utils';
 import { useExecuteClaimLbaRewards } from 'client/hooks/execute/vrtxToken/useExecuteClaimLbaRewards';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
+import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { asyncResult } from '@vertex-protocol/web-common';
-import { getConfirmedTxPromise } from 'client/utils/getConfirmedTxPromise';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import { useCallback } from 'react';
 
@@ -13,6 +13,7 @@ import { useCallback } from 'react';
  */
 export function useClaimLbaRewards() {
   const { dispatchNotification } = useNotificationManagerContext();
+  const getConfirmedTxPromise = useGetConfirmedTxPromise();
   const { show } = useDialog();
 
   const mutation = useExecuteClaimLbaRewards();
@@ -61,7 +62,7 @@ export function useClaimLbaRewards() {
         },
       });
     }
-  }, [dispatchNotification, mutation, show]);
+  }, [dispatchNotification, getConfirmedTxPromise, mutation, show]);
 
   return {
     claim,

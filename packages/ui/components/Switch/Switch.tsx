@@ -30,7 +30,7 @@ function SwitchToggle({
       <BaseSwitch.Thumb
         className={joinClassNames(
           'bg-surface-card block h-3 w-3 rounded-full',
-          'translate-x-px transition-transform duration-100',
+          'translate-x-px transform-gpu duration-100',
           'will-change-transform data-[state=checked]:translate-x-[17px]',
         )}
       />

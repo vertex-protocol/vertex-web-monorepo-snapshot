@@ -1,5 +1,4 @@
-import { WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { ReactNode } from 'react';
 
 export function HeaderCard({
@@ -18,13 +17,13 @@ export function HeaderCard({
 }>) {
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'flex flex-col items-start justify-center gap-y-2 p-0',
         className,
       )}
     >
       <div
-        className={classNames(
+        className={joinClassNames(
           'bg-headerTitleGradient font-dmSans gradient-text text-xs font-bold uppercase',
           'sm:text-base',
         )}
@@ -32,7 +31,7 @@ export function HeaderCard({
         {title}
       </div>
       <div
-        className={classNames(
+        className={joinClassNames(
           'text-2xl font-bold leading-tight text-white',
           'sm:text-4xl',
           'lg:text-6xl',
@@ -43,7 +42,7 @@ export function HeaderCard({
       </div>
       {content && (
         <div
-          className={classNames(
+          className={joinClassNames(
             'font-dmSans text-white-700 text-sm leading-4',
             'sm:text-lg sm:leading-5',
             'md:text-xl md:leading-7',

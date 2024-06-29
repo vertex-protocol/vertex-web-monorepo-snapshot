@@ -1,6 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { calcChangeFrac } from 'client/utils/calcs/calcChangeFrac';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 
 /**
  * @param currentValue

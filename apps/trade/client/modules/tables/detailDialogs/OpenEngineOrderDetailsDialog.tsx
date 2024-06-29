@@ -1,15 +1,15 @@
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  formatNumber,
+  getMarketPriceFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { LineItem } from 'client/components/LineItem/LineItem';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
 import {
   TimeFormatSpecifier,
   formatTimestamp,
@@ -55,106 +55,83 @@ export function OpenEngineOrderDetailsDialog({
 
   const metricItems = (
     <div className="flex flex-col gap-y-4">
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Time"
-        renderValue={(val) => (
-          <div className="flex gap-x-1.5">
-            {formatTimestamp(val, {
-              formatSpecifier: TimeFormatSpecifier.MONTH_D_YYYY,
-            })}
-            <div className="text-text-tertiary">
-              {formatTimestamp(val, {
-                formatSpecifier: TimeFormatSpecifier.HH_MM_SS_12H,
-              })}
-            </div>
-          </div>
-        )}
-        value={timePlacedMillis}
+        valueContent={formatTimestamp(timePlacedMillis, {
+          formatSpecifier: TimeFormatSpecifier.MONTH_D_YYYY,
+        })}
+        valueClassName="gap-x-1.5"
+        valueEndElement={formatTimestamp(timePlacedMillis, {
+          formatSpecifier: TimeFormatSpecifier.HH_MM_SS_12H,
+        })}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Type"
         valueClassName="text-text-tertiary uppercase"
-        renderValue={(val) => (val ? getOrderTypeLabel(val) : undefined)}
-        value={orderType}
+        valueContent={getOrderTypeLabel(orderType)}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Action"
-        renderValue={(val) => (
-          <div
-            className={signDependentValue(val, {
-              positive: 'text-positive',
-              negative: 'text-negative',
-              zero: 'text-text-secondary',
-            })}
-          >
-            {getOrderSideLabel({
-              isPerp,
-              alwaysShowOrderDirection: true,
-              amountForSide,
-            })}
-          </div>
-        )}
-        value={amountForSide}
+        valueClassName={signDependentValue(amountForSide, {
+          positive: 'text-positive',
+          negative: 'text-negative',
+          zero: 'text-text-secondary',
+        })}
+        valueContent={getOrderSideLabel({
+          isPerp,
+          alwaysShowOrderDirection: true,
+          amountForSide,
+        })}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Price"
-        renderValue={getMarketPriceFormatSpecifier(marketInfo.priceIncrement)}
+        numberFormatSpecifier={getMarketPriceFormatSpecifier(
+          marketInfo.priceIncrement,
+        )}
         value={price}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Amount"
-        renderValue={(val) => (
-          <div className="flex gap-x-1">
-            {formatNumber(val, {
-              formatSpecifier: sizeFormatSpecifier,
-            })}
-            <div className="text-text-tertiary">{symbol}</div>
-          </div>
-        )}
         value={totalAmount}
+        numberFormatSpecifier={sizeFormatSpecifier}
+        valueEndElement={symbol}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Total"
-        renderValue={(val) => (
-          <div className="flex gap-x-1">
-            {formatNumber(val, {
-              formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
-            })}
-            <div className="text-text-tertiary">{primaryQuoteToken.symbol}</div>
-          </div>
-        )}
         value={totalCost}
+        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+        valueEndElement={primaryQuoteToken.symbol}
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Filled"
-        renderValue={(val) => (
-          <div className="flex gap-x-1">
-            {formatNumber(val?.filledAmount, {
-              formatSpecifier: sizeFormatSpecifier,
-            })}
-            <div className="text-text-tertiary">{symbol}</div>
-            <div className="text-text-tertiary">
+        value={filledAmount}
+        numberFormatSpecifier={sizeFormatSpecifier}
+        valueEndElement={
+          <div className="flex items-center gap-x-1">
+            {symbol}
+            <span>
               (
-              {formatNumber(val?.filledFraction, {
+              {formatNumber(filledFraction, {
                 formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
               })}
               )
-            </div>
+            </span>
           </div>
-        )}
-        value={{ filledAmount, filledFraction }}
+        }
       />
-      <LineItem.Metric
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Unfilled"
-        renderValue={(val) => (
-          <div className="flex gap-x-1">
-            {formatNumber(val, {
-              formatSpecifier: sizeFormatSpecifier,
-            })}
-            <div className="text-text-tertiary">{symbol}</div>
-          </div>
-        )}
         value={unfilledAmount}
+        numberFormatSpecifier={sizeFormatSpecifier}
+        valueEndElement={symbol}
       />
     </div>
   );

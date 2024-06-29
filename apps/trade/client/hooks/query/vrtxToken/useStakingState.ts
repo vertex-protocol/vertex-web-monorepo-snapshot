@@ -3,12 +3,11 @@ import { IStaking__factory } from '@vertex-protocol/client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  useEnableSubaccountQueries,
+  QueryDisabledError,
   useIsChainType,
   usePrimaryChainPublicClient,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { Address } from 'viem';
 
 export function stakingStateQueryKey() {
@@ -34,12 +33,10 @@ interface Data {
  */
 export function useStakingState() {
   const { isArb } = useIsChainType();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const publicClient = usePrimaryChainPublicClient();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
 
-  const disabled =
-    !vertexClient || !publicClient || !isArb || !enableSubaccountQueries;
+  const disabled = !vertexClient || !publicClient || !isArb;
 
   const queryFn = async (): Promise<Data> => {
     if (disabled) {

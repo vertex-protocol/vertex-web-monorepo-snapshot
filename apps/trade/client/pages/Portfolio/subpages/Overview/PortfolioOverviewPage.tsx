@@ -13,8 +13,8 @@ export function PortfolioOverviewPage() {
       <div className="flex flex-col gap-y-3.5">
         <OverviewWelcomeHeader />
         <OverviewHeroSection
-          accountLeverage={overview?.accountLeverage}
           portfolioValueUsd={overview?.portfolioValueUsd}
+          accountLeverage={overview?.accountLeverage}
           liquidationRiskFractionBounded={
             overview?.liquidationRiskFractionBounded
           }

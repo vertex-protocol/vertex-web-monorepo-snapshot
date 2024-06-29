@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { LINKS } from 'client/modules/brand/links';
 import { LinkButton } from 'client/components/LinkButton';
+import { LINKS } from 'common/brandMetadata/links/links';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
+import Link from 'next/link';
 
 export function PoolsHeader() {
   return (
@@ -10,7 +10,7 @@ export function PoolsHeader() {
       <LinkButton
         as={Link}
         href={LINKS.lpDocs}
-        color="white"
+        colorVariant="primary"
         className="text-sm"
         external
         withExternalIcon

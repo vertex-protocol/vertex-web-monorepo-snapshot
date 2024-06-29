@@ -6,9 +6,9 @@ import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessi
 export function TriggerOrderEnableOneClickTradingInfo() {
   const { show } = useDialog();
   const userActionState = useUserActionState();
-  const isSignOnce = useIsSingleSignatureSession();
+  const isSingleSignatureSession = useIsSingleSignatureSession();
 
-  if (userActionState !== 'allow_all' || isSignOnce) {
+  if (userActionState !== 'allow_all' || isSingleSignatureSession) {
     return null;
   }
 

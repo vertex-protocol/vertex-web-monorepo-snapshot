@@ -3,8 +3,8 @@ import { Icons } from '@vertex-protocol/web-ui';
 import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { formatNumber } from '@vertex-protocol/react-client';
 import {
   TimeFormatSpecifier,
   formatTimestamp,

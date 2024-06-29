@@ -1,10 +1,9 @@
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
 import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/types';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
-import { formatNumber } from 'client/utils/formatNumber/formatNumber';
 import { StakingClaimAndStakeChangeItems } from '../components/StakingClaimAndStakeChangeItems';
 import { StakingRadioGroup } from '../components/StakingRadioGroup';
 import { useClaimTradingRewardsDialog } from './useClaimTradingRewardsDialog';
@@ -55,10 +54,9 @@ export function ClaimTradingRewardsDialog(
       <Divider />
       <StakingRadioGroup.LineItem
         label="Available Rewards"
-        value={formatNumber(params.claimableRewards, {
-          formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
-        })}
-        symbol={protocolTokenSymbol}
+        value={params.claimableRewards}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+        valueEndElement={protocolTokenSymbol}
       />
     </div>
   );
@@ -91,7 +89,6 @@ export function ClaimTradingRewardsDialog(
           />
         </StakingRadioGroup.Root>
         <PrimaryButton
-          size="lg"
           isLoading={actionButtonState === 'loading'}
           disabled={actionButtonState === 'disabled'}
           onClick={onSubmit}

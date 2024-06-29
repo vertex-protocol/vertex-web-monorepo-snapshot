@@ -1,5 +1,5 @@
 import { WithChildren } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { LinkedSignerSync } from 'client/modules/singleSignatureSessions/components/LinkedSignerSync';
 import { useSavedSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSavedSubaccountSigningPreference';
 import { SubaccountSigningPreference } from 'client/modules/singleSignatureSessions/types';
@@ -19,7 +19,7 @@ interface SubaccountContextData {
   currentSubaccount: Subaccount;
   signingPreference: {
     current?: SubaccountSigningPreference;
-    isLoading: boolean;
+    didLoadPersistedValue: boolean;
     update: UpdateSigningPreferenceFn;
   };
 
@@ -40,7 +40,11 @@ export const useSubaccountContext = () => useContext(SubaccountContext);
  * Context for managing the current subaccount and its signing preferences
  */
 export function SubaccountContextProvider({ children }: WithChildren) {
-  const { connectionStatus, disconnect: baseDisconnect } = useEVMContext();
+  const {
+    connectionStatus,
+    primaryChain: { id: primaryChainId },
+    disconnect: baseDisconnect,
+  } = useEVMContext();
 
   /**
    * Subaccount
@@ -51,9 +55,10 @@ export function SubaccountContextProvider({ children }: WithChildren) {
   const currentSubaccount = useMemo((): Subaccount => {
     return {
       name: currentSubaccountName,
+      chainId: primaryChainId,
       address: connectionStatus?.address,
     };
-  }, [currentSubaccountName, connectionStatus?.address]);
+  }, [currentSubaccountName, primaryChainId, connectionStatus?.address]);
 
   /**
    * Signing preferences
@@ -63,14 +68,14 @@ export function SubaccountContextProvider({ children }: WithChildren) {
   const [sessionAuthorizedSigner, setSessionAuthorizedSigner] =
     useState<Wallet>();
 
-  // Clear session signer on subaccount change
+  // Clear session signer on subaccount changes
   useEffect(() => {
     setSessionAuthorizedSigner(undefined);
   }, [currentSubaccount]);
 
   const {
     signingPreference: savedSigningPreference,
-    isLoading: isLoadingSavedSigningPreference,
+    didLoadPersistedValue: didLoadSigningPreferencePersistedValue,
     saveSigningPreference,
     clearPrivateKeyIfSaved,
   } = useSavedSubaccountSigningPreference(currentSubaccount);
@@ -124,18 +129,17 @@ export function SubaccountContextProvider({ children }: WithChildren) {
       setCurrentSubaccountName,
       signingPreference: {
         current: signingPreference,
-        isLoading: isLoadingSavedSigningPreference,
+        didLoadPersistedValue: didLoadSigningPreferencePersistedValue,
         update: updateSigningPreference,
       },
       disconnect,
     };
   }, [
     currentSubaccount,
-    disconnect,
-    isLoadingSavedSigningPreference,
     signingPreference,
+    didLoadSigningPreferencePersistedValue,
     updateSigningPreference,
-    setCurrentSubaccountName,
+    disconnect,
   ]);
 
   return (

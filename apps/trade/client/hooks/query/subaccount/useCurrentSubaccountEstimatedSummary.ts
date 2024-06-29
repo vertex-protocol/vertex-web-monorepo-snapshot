@@ -4,20 +4,20 @@ import {
   SubaccountTx,
 } from '@vertex-protocol/engine-client';
 import {
-  PrimaryChainID,
   createQueryKey,
+  PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
+import { useDebounce } from 'ahooks';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 
 import {
   AnnotatedSubaccountSummary,
   annotateSubaccountSummary,
 } from './annotateSubaccountSummary';
-import { useDebounce } from 'ahooks';
 
 export interface EstimateSubaccountStateChangeParams {
   estimateStateTxs: SubaccountTx[];
@@ -45,7 +45,7 @@ export function useCurrentSubaccountEstimatedSummary({
   estimateStateTxs,
 }: EstimateSubaccountStateChangeParams) {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
     currentSubaccount: { address: subaccountOwner, name: subaccountName },
   } = useSubaccountContext();

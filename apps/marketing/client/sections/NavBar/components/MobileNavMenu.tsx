@@ -1,5 +1,4 @@
-import { WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import Link from 'next/link';
 import { BsArrowRight } from 'react-icons/bs';
@@ -21,7 +20,7 @@ export function MobileNavMenu({
 
   return (
     <div
-      className={classNames(
+      className={joinClassNames(
         'text-white-700 flex h-full w-full flex-col items-start justify-center px-1 pt-8 duration-500',
         className,
       )}

@@ -3,13 +3,12 @@ import { IERC20__factory } from '@vertex-protocol/client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  useEnableSubaccountQueries,
+  QueryDisabledError,
   useEVMContext,
   useIsChainType,
   usePrimaryChainPublicClient,
-} from '@vertex-protocol/web-data';
+} from '@vertex-protocol/react-client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { Token } from 'common/productMetadata/types';
 import { ZeroAddress } from 'ethers';
 import { Address } from 'viem';
@@ -33,11 +32,11 @@ export function useLbaTokenWalletBalances() {
   const {
     connectionStatus: { address },
   } = useEVMContext();
-  const { primaryQuoteToken, protocolToken } = useVertexMetadataContext();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
+  const { primaryQuoteToken, protocolTokenMetadata } =
+    useVertexMetadataContext();
 
   const addressForQuery = address ?? ZeroAddress;
-  const disabled = !publicClient || !isArb || !enableSubaccountQueries;
+  const disabled = !publicClient || !isArb;
 
   const queryFn = async (): Promise<Data> => {
     if (disabled) {
@@ -58,7 +57,7 @@ export function useLbaTokenWalletBalances() {
           ...commonMulticallArgs,
         },
         {
-          address: protocolToken.address as Address,
+          address: protocolTokenMetadata.token.address as Address,
           ...commonMulticallArgs,
         },
       ],
@@ -71,7 +70,7 @@ export function useLbaTokenWalletBalances() {
       },
       vrtx: {
         balanceAmount: toBigDecimal(multicallResult[1]),
-        ...protocolToken,
+        ...protocolTokenMetadata.token,
       },
     };
   };

@@ -1,7 +1,7 @@
 import { BigDecimal, IndexerSnapshotBalance } from '@vertex-protocol/client';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { calcIndexerSummaryUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
-import { removeDecimals } from 'client/utils/decimalAdjustment';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
 
 interface Params {
@@ -13,7 +13,7 @@ export function useTpSlPlaceOrderFormEstimatedState({
   validTriggerPrice,
   indexerSnapshotBalance,
 }: Params) {
-  const quotePrice = useQuotePriceUsd();
+  const quotePrice = usePrimaryQuotePriceUsd();
 
   const unrealizedPnl = useMemo(() => {
     if (!validTriggerPrice || !indexerSnapshotBalance) {

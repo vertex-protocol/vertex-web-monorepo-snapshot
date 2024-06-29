@@ -1,3 +1,4 @@
+import { PrimaryChainID } from '@vertex-protocol/react-client';
 import {
   SubaccountSignAlwaysPreference,
   SubaccountSignOncePreference,
@@ -5,6 +6,7 @@ import {
 
 export interface Subaccount {
   name: string;
+  chainId: PrimaryChainID;
   // Not defined if not connected
   address?: string;
 }

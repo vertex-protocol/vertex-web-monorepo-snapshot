@@ -1,4 +1,5 @@
 import { calcLpTokenValue } from '@vertex-protocol/contracts';
+import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import {
   percentageValidator,
   safeParseForData,
@@ -6,7 +7,7 @@ import {
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useExecuteWithdrawLbaLiquidity } from 'client/hooks/execute/vrtxToken/useExecuteWithdrawLbaLiquidity';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { useQuotePriceUsd } from 'client/hooks/markets/useQuotePriceUsd';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 import { useAccountLbaState } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
@@ -20,7 +21,6 @@ import {
   WithdrawLbaLiquidityFormValues,
 } from 'client/modules/rewards/dialogs/WithdrawLbaLiquidityDialog/hooks/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { addDecimals, removeDecimals } from 'client/utils/decimalAdjustment';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
@@ -29,16 +29,16 @@ import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
-  const { protocolTokenProductId, primaryQuoteToken, protocolToken } =
+  const { primaryQuoteToken, protocolTokenMetadata } =
     useVertexMetadataContext();
   const { hide } = useDialog();
   const { dispatchNotification } = useNotificationManagerContext();
-  const quotePriceUsd = useQuotePriceUsd();
+  const quotePriceUsd = usePrimaryQuotePriceUsd();
 
   const { data: accountLbaState } = useAccountLbaState();
 
   const { data: vrtxMarket } = useMarket({
-    productId: protocolTokenProductId,
+    productId: protocolTokenMetadata.productId,
   });
 
   // Mutation
@@ -216,7 +216,7 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
         {
           amount: addDecimals(
             amountToWithdraw,
-            protocolToken.tokenDecimals,
+            protocolTokenMetadata.token.tokenDecimals,
           ).toFixed(),
         },
         {
@@ -240,7 +240,7 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
       dispatchNotification,
       executeWithdrawLbaLiquidity,
       useWithdrawLbaLiquidityForm,
-      protocolToken.tokenDecimals,
+      protocolTokenMetadata.token.tokenDecimals,
     ],
   );
 
@@ -256,7 +256,7 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
     marketState,
     estimatedReceiveAmounts,
     pairMetadata: {
-      base: protocolToken,
+      base: protocolTokenMetadata.token,
       quote: primaryQuoteToken,
     },
     priceIncrement: vrtxMarket?.priceIncrement,

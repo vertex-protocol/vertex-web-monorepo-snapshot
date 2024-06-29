@@ -1,5 +1,4 @@
-import { WithClassnames } from '@vertex-protocol/web-common';
-import classNames from 'classnames';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { GradientButton } from 'client/components/Button/GradientButton';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import Link from 'next/link';
@@ -28,7 +27,7 @@ export function DeveloperCard({
       as={Link}
       href={href}
       disabled={comingSoon}
-      className={classNames(
+      className={joinClassNames(
         'bg-grayGradient group flex h-28 w-full overflow-hidden rounded-xl bg-center',
         'text-3xl font-bold text-white duration-500 disabled:opacity-70',
         'md:h-40',
@@ -40,7 +39,7 @@ export function DeveloperCard({
       <div className="flex h-full w-full flex-col gap-y-3 overflow-hidden rounded-xl bg-black/30 backdrop-blur-xl">
         <Header icon={icon} title={title} comingSoon={comingSoon} />
         <div
-          className={classNames(
+          className={joinClassNames(
             'font-dmSans text-white-700/75 w-2/3 px-3 text-left text-sm font-normal leading-5',
             'sm:text-base',
             'md:px-4',
@@ -82,7 +81,7 @@ function Header({
         <div className="bg-white-400 text-black-500 rounded-xl p-2 md:p-3">
           <Icon
             size={20}
-            className={classNames(
+            className={joinClassNames(
               'transition duration-300',
               !comingSoon && 'group-hover:text-purple-800',
             )}

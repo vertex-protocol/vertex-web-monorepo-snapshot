@@ -1,16 +1,15 @@
 import * as Popover from '@radix-ui/react-popover';
 import { ProductEngineType } from '@vertex-protocol/contracts';
 import { joinClassNames } from '@vertex-protocol/web-common';
+import { Card } from '@vertex-protocol/web-ui';
+import { ProductFilterTabs } from 'client/components/ProductFilterTabs';
 import { SearchBar } from 'client/components/SearchBar';
-import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
-import { MarketSwitcherPopoverTrigger } from 'client/modules/trading/components/TradingMarketSwitcher/MarketSwitcherPopoverTrigger';
+import { useIsMobile } from 'client/hooks/ui/breakpoints';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { TradingMarketSwitcherPopoverTrigger } from 'client/modules/trading/components/TradingMarketSwitcher/TradingMarketSwitcherPopoverTrigger';
 import { useTradingMarketSwitcher } from 'client/modules/trading/hooks/useTradingMarketSwitcher';
-import { TradingCard } from 'client/modules/trading/layout/TradingCard';
 import { MarketSwitcherProps } from 'client/modules/trading/layout/types';
-import { get } from 'lodash';
-import { MarketSwitcherHeader } from './MarketSwitcherHeader';
-import { MarketSwitcherItem } from './MarketSwitcherItem';
-import { ProductFilterTabs } from './ProductFilterTabs';
+import { TradingMarketSwitcherTable } from 'client/modules/trading/components/TradingMarketSwitcher/TradingMarketSwitcherTable';
 
 interface TradingMarketSwitcherProps extends MarketSwitcherProps {
   productId: number | undefined;
@@ -22,7 +21,7 @@ export function TradingMarketSwitcher({
   defaultMarketType,
   triggerClassName,
 }: TradingMarketSwitcherProps) {
-  const productTradingLinks = useProductTradingLinks();
+  const { trackEvent } = useAnalyticsContext();
 
   const {
     selectedMarket,
@@ -31,8 +30,6 @@ export function TradingMarketSwitcher({
     selectedMarketTypeFilter,
     setSelectedMarketTypeFilter,
     toggleIsFavoritedMarket,
-    sortByFavorites,
-    setSortByFavorites,
     isMarketSwitcherOpen,
     setIsMarketSwitcherOpen,
     query,
@@ -40,36 +37,41 @@ export function TradingMarketSwitcher({
     disableFavoriteButton,
   } = useTradingMarketSwitcher(productId, defaultMarketType);
 
+  const isMobile = useIsMobile();
+
   return (
     <Popover.Root
       open={isMarketSwitcherOpen}
       onOpenChange={setIsMarketSwitcherOpen}
+      // Ensures appropriate body styles are applied so we don't get funky scroll behavior on iOS.
+      modal
     >
-      <MarketSwitcherPopoverTrigger
+      <TradingMarketSwitcherPopoverTrigger
         disabled={disableMarketSwitcherButton}
         open={isMarketSwitcherOpen}
         selectedMarket={selectedMarket}
         className={triggerClassName}
       />
       <Popover.Content
-        // Prevent autofocus of search bar on open
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        sideOffset={6}
+        className="z-20"
+        // Render it flush against the trigger on mobile to save some room.
+        sideOffset={isMobile ? 0 : 6}
         asChild
       >
-        <TradingCard
+        <Card
           className={joinClassNames(
-            'flex flex-col gap-y-1.5 overflow-y-auto p-1',
+            'flex flex-col overflow-y-auto p-1 shadow-xl shadow-black',
             // See: https://www.radix-ui.com/primitives/docs/components/popover
             // Subtracting "8px" from available height to have a little padding from the screen's edge
             'h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popover-trigger-width)]',
+            // On mobile it's flush against the bottom of the trigger, which has 0 radius corners.
+            'rounded-t-none sm:rounded-t-lg',
           )}
         >
-          <div className="flex flex-col gap-y-3 px-2 py-1">
+          <div className="flex flex-col gap-y-1.5 px-2 lg:gap-y-3 lg:py-1">
             <SearchBar
-              inputClassName="py-2"
+              sizeVariant="xs"
               placeholder="Search"
-              iconSize={18}
               query={query}
               setQuery={setQuery}
             />
@@ -78,38 +80,21 @@ export function TradingMarketSwitcher({
               setMarketType={setSelectedMarketTypeFilter}
             />
           </div>
-          <MarketSwitcherHeader
-            // Only adding right padding here to align with the market items in the body
-            // Internally, `FavoriteButton` has padding baked in for clickable area so no left padding is necessary
-            className="pr-3"
+          <TradingMarketSwitcherTable
             disableFavoriteButton={disableFavoriteButton}
-            sortByFavorites={sortByFavorites}
-            setSortByFavorites={setSortByFavorites}
+            toggleIsFavoritedMarket={toggleIsFavoritedMarket}
+            markets={displayedMarkets}
+            onRowClick={() => {
+              trackEvent({
+                type: 'market_entrypoint_clicked',
+                data: {
+                  entrypoint: 'trade_dropdown',
+                },
+              });
+              setIsMarketSwitcherOpen(false);
+            }}
           />
-          <div className="no-scrollbar overflow-y-auto">
-            {displayedMarkets.map((item) => {
-              return (
-                <MarketSwitcherItem
-                  key={item.market.name}
-                  // Only applying right padding here to compensate for the left padding applied to the favorite button.
-                  // We lose clickable space on the item's button if this padding is applied via the container
-                  className="pr-3"
-                  product={item}
-                  disableFavoriteButton={disableFavoriteButton}
-                  isFavorited={item.isFavorited}
-                  toggleIsFavoritedMarket={toggleIsFavoritedMarket}
-                  onRowClick={() => {
-                    setIsMarketSwitcherOpen(false);
-                  }}
-                  href={
-                    get(productTradingLinks, item.market.productId, undefined)
-                      ?.link ?? ''
-                  }
-                />
-              );
-            })}
-          </div>
-        </TradingCard>
+        </Card>
       </Popover.Content>
     </Popover.Root>
   );

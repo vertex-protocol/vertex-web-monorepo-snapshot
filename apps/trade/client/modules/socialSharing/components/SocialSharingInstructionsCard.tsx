@@ -6,7 +6,7 @@ export function SocialSharingInstructionsCard() {
       <div className="text-accent">Twitter Instructions</div>
       <DiscList.Container>
         <DiscList.Item>Twitter will open</DiscList.Item>
-        <DiscList.Item>Paste what’s on your clipboard</DiscList.Item>
+        <DiscList.Item>Paste what&apos;s on your clipboard</DiscList.Item>
         <DiscList.Item>Share your position!</DiscList.Item>
       </DiscList.Container>
     </div>

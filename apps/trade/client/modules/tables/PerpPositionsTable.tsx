@@ -1,8 +1,16 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
-import { Icons, LabelTooltip, SecondaryButton } from '@vertex-protocol/web-ui';
+import {
+  PresetNumberFormatSpecifier,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
+import {
+  IconButton,
+  Icons,
+  LabelTooltip,
+  SecondaryButton,
+} from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
@@ -10,18 +18,17 @@ import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
+import { CloseAllPositionsHeaderCell } from 'client/modules/tables/cells/CloseAllPositionsHeaderCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { PresetNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useMemo } from 'react';
 import { PerpStackedPnlCell } from './cells/PerpStackedPnlCell';
 import { PerpTpSlCell } from './cells/PerpTpSlCell';
@@ -31,7 +38,6 @@ import {
   usePerpPositionsTable,
 } from './hooks/usePerpPositionsTable';
 import { getTableButtonOnClickHandler } from './utils/getTableButtonOnClickHandler';
-import { CloseAllPositionsHeaderCell } from 'client/modules/tables/cells/CloseAllPositionsHeaderCell';
 
 const columnHelper = createColumnHelper<PerpPositionsTableItem>();
 
@@ -45,7 +51,6 @@ export function PerpPositionsTable({
   marketFilter,
   hasBackground,
 }: WithClassnames<Props>) {
-  const { primaryQuoteToken } = useVertexMetadataContext();
   const { connectionStatus } = useEVMContext();
 
   const { positions, isLoading } = usePerpPositionsTable({
@@ -75,7 +80,8 @@ export function PerpPositionsTable({
         ),
         enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-32',
+          cellContainerClassName: 'w-36',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('amountInfo', {
@@ -90,7 +96,7 @@ export function PerpPositionsTable({
               symbol={symbol}
               size={position}
               sizeFormatSpecifier={context.row.original.sizeFormatSpecifier}
-              value={notionalValueUsd}
+              valueUsd={notionalValueUsd}
             />
           );
         },
@@ -237,7 +243,7 @@ export function PerpPositionsTable({
           return (
             <AmountWithSymbolCell
               amount={netFunding}
-              symbol={primaryQuoteToken.symbol}
+              symbol={context.row.original.marketInfo.quoteSymbol}
               formatSpecifier={PresetNumberFormatSpecifier.SIGNED_NUMBER_2DP}
             />
           );
@@ -260,11 +266,10 @@ export function PerpPositionsTable({
 
           return (
             <TableCell className="pointer-events-auto px-4">
-              <div className="flex w-full gap-x-3">
-                <LabelTooltip label="Share Position">
-                  <SecondaryButton
-                    size="sm"
-                    className="p-2"
+              <div className="flex w-full items-center gap-x-3">
+                <LabelTooltip label="Share Position" asChild noHelpCursor>
+                  <IconButton
+                    size="xs"
                     onClick={getTableButtonOnClickHandler(() => {
                       show({
                         type: 'perp_pnl_social_sharing',
@@ -277,13 +282,13 @@ export function PerpPositionsTable({
                         },
                       });
                     })}
-                    startIcon={<Icons.RiShareForwardFill size={12} />}
+                    icon={Icons.RiShareForwardFill}
                   />
                 </LabelTooltip>
                 <SecondaryButton
-                  className="w-full"
                   destructive
-                  size="sm"
+                  className="flex-1"
+                  size="xs"
                   title="Close Position"
                   onClick={getTableButtonOnClickHandler(() => {
                     show({
@@ -306,7 +311,7 @@ export function PerpPositionsTable({
         },
       }),
     ];
-  }, [disableClosePosition, show, primaryQuoteToken.symbol]);
+  }, [disableClosePosition, show]);
 
   const onRowClicked = (row: Row<PerpPositionsTableItem>) => {
     if (isDesktop || !isConnected) {

@@ -1,24 +1,22 @@
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { DataTable } from 'client/components/DataTable/DataTable';
+import { getMarketQuoteSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
+import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import {
   HistoricalSettlementEvent,
   useHistoricalSettlementsTable,
 } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalSettlementsTable';
-import { CustomNumberFormatSpecifier } from 'client/utils/formatNumber/NumberFormatSpecifier';
 import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<HistoricalSettlementEvent>();
 
 export function HistoricalSettlementsTable() {
-  const { primaryQuoteToken } = useVertexMetadataContext();
   const {
     mappedData,
     isLoading,
@@ -36,7 +34,8 @@ export function HistoricalSettlementsTable() {
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('marketInfo', {
@@ -63,8 +62,11 @@ export function HistoricalSettlementsTable() {
         cell: (context) => (
           <AmountWithSymbolCell
             amount={context.getValue()}
-            symbol={primaryQuoteToken.symbol}
-            formatSpecifier={CustomNumberFormatSpecifier.SIGNED_NUMBER_AUTO}
+            symbol={context.row.original.marketInfo.quoteSymbol}
+            formatSpecifier={getMarketQuoteSizeFormatSpecifier(
+              context.row.original.marketInfo.isPrimaryQuote,
+              true,
+            )}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -73,7 +75,7 @@ export function HistoricalSettlementsTable() {
         },
       }),
     ];
-  }, [primaryQuoteToken.symbol]);
+  }, []);
 
   return (
     <DataTable

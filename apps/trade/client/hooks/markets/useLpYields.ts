@@ -3,11 +3,11 @@ import { BigDecimal, TimeInSeconds } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-} from '@vertex-protocol/web-data';
+} from '@vertex-protocol/react-client';
 import { useAllProducts24hrHistoricalSnapshot } from 'client/hooks/markets/useAllProducts24hrHistoricalSnapshot';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { calcEstimatedLpApr } from 'client/utils/calcs/calcEstimatedLpApr';
 import { calcDepositAPR } from 'client/utils/calcs/calcSpotApr';
 
@@ -15,6 +15,7 @@ import { calcDepositAPR } from 'client/utils/calcs/calcSpotApr';
 export function lpYieldsQueryKey(chainId?: PrimaryChainID) {
   return createQueryKey('lpYields', chainId);
 }
+
 /**
  * Hook for LP APR rates for all products
  */
@@ -30,7 +31,9 @@ export function useLpYields() {
       throw new QueryDisabledError();
     }
 
-    const quoteDepositAPR = calcDepositAPR(latestMarkets.quoteProduct.product);
+    const quoteDepositAPR = calcDepositAPR(
+      latestMarkets.primaryQuoteProduct.product,
+    );
     // Assume all markets data is current
     const yieldsByProductId: Record<number, BigDecimal> = {};
 

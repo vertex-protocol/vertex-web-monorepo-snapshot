@@ -1,6 +1,6 @@
 import * as RadixDialog from '@radix-ui/react-dialog';
 import { hasClass, mergeClassNames } from '@vertex-protocol/web-common';
-import { Button, Icons } from '@vertex-protocol/web-ui';
+import { IconButton, Icons } from '@vertex-protocol/web-ui';
 import { DIALOG_PADDING } from 'client/components/BaseDialog/consts';
 import {
   BaseDialogBodyProps,
@@ -23,7 +23,7 @@ function DialogContainer({
       <div className="pointer-events-auto fixed inset-0 z-50" />
       {/*Manually handle the overlay - if modal={false} and we use the overlay, then nothing is rendered*/}
       <div
-        className="dialog-gradient-overlay fixed inset-0 z-[51] flex items-center justify-center"
+        className="from-grad-overlay-dialog-start/80 to-grad-overlay-dialog-end/80 fixed inset-0 z-[51] flex items-center justify-center bg-gradient-to-b backdrop-blur-sm"
         onClick={() => {
           onOpenChange(false);
         }}
@@ -71,11 +71,7 @@ function Title({
       <div className="flex-1">{children}</div>
       {endElement}
       {onClose && (
-        <Button
-          className="border-stroke bg-surface-card text-text-tertiary rounded border p-1 hover:brightness-110"
-          startIcon={<Icons.MdClose />}
-          onClick={onClose}
-        />
+        <IconButton size="sm" icon={Icons.MdClose} onClick={onClose} />
       )}
     </RadixDialog.Title>
   );
@@ -87,7 +83,7 @@ function Body({ children, className }: BaseDialogBodyProps) {
       className={mergeClassNames(
         // Prevent dialog content from overflowing the screen
         'no-scrollbar text-text-secondary max-h-[85vh] w-full overflow-y-auto overflow-x-hidden',
-        // Leaving hasClass usage for better DX - EditUserProfile overrides default padding but 'sm:px-6' is not being overriden
+        // Leaving hasClass usage for better DX - EditUserProfile overrides default padding but 'sm:px-6' is not being overridden
         !hasClass(className, 'px-') && DIALOG_PADDING.horizontal,
         !hasClass(className, 'py-') && DIALOG_PADDING.bodyVertical,
         className,

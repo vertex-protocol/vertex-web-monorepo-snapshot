@@ -1,7 +1,10 @@
 import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
-import { CardButton, Icons, NavCardBaseProps } from '@vertex-protocol/web-ui';
+import { getStateOverlayClassNames } from '../../../utils';
+import { CARD_CLASSNAMES } from '../../Card';
+import { Icons } from '../../Icons';
+import { Button } from '../Button';
 import { NavCardButtonContent } from './NavCardButtonContent';
-import { NavCardButtonStartIcon } from './NavCardButtonStartIcon';
+import { NavCardBaseProps } from './types';
 
 type Props = NavCardBaseProps & {
   active?: boolean;
@@ -11,20 +14,29 @@ export function NavCardButton({
   className,
   children: baseChildren,
   title,
+  icon: Icon,
   description,
-  icon,
   active,
   contentClassName,
   ...rest
 }: Props) {
+  const stateOverlayClassNames = getStateOverlayClassNames({
+    borderRadiusVariant: 'lg',
+    disabled: rest.disabled,
+    active,
+  });
+
   return (
-    <CardButton
+    <Button
       className={mergeClassNames(
-        'bg-transparent px-2 py-1.5 shadow-none ring-0',
-        active && 'bg-overlay-hover/5',
+        CARD_CLASSNAMES,
+        'relative bg-transparent px-2 py-1.5 shadow-none ring-0',
+        stateOverlayClassNames,
         className,
       )}
-      startIcon={<NavCardButtonStartIcon icon={icon} />}
+      startIcon={
+        Icon ? <Icon className="text-text-primary" size={24} /> : undefined
+      }
       endIcon={
         <Icons.FiChevronRight size={20} className="text-text-tertiary" />
       }
@@ -35,6 +47,6 @@ export function NavCardButton({
         description={description}
         className={joinClassNames('flex-1', contentClassName)}
       />
-    </CardButton>
+    </Button>
   );
 }

@@ -10,9 +10,9 @@ import {
   joinClassNames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { Button } from '@vertex-protocol/web-ui';
+import { Button, getStateOverlayClassNames } from '@vertex-protocol/web-ui';
 import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
-import { Countdown } from 'client/modules/rewards/components/Countdown';
+import { Countdown } from 'client/components/Countdown';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
@@ -29,6 +29,9 @@ function Container({
   collapsibleContent,
 }: ContainerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const hoverStateOverlayClassNames = getStateOverlayClassNames({
+    stateClassNameOverrides: 'before:rounded-b-lg',
+  });
 
   return (
     <CollapsibleRoot className="flex flex-col" onOpenChange={setIsOpen}>
@@ -54,7 +57,9 @@ function Container({
               'bg-surface-card flex items-center self-center',
               'gap-x-2 rounded-b-lg px-4 py-1.5',
               'text-text-secondary text-xs lg:text-sm',
-              'transition hover:brightness-125',
+              // Adding 1px of top margin to prevent overlap with the `ring` stroke
+              'mt-px',
+              hoverStateOverlayClassNames,
               collapsibleTriggerClassName,
             )}
           >
@@ -103,9 +108,7 @@ function Content({
 
 function CollapsibleTitle({ children }: WithChildren) {
   return (
-    <div className="text-text-primary text-base font-medium sm:text-lg">
-      {children}
-    </div>
+    <div className="text-text-primary text-base sm:text-lg">{children}</div>
   );
 }
 

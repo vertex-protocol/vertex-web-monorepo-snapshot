@@ -5,11 +5,11 @@ import {
 } from '@vertex-protocol/contracts';
 import {
   PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
 import {
   AnnotatedMarket,
@@ -26,9 +26,13 @@ interface AllMarketsParams<TSelectedData> {
 }
 
 export interface AllMarketsData {
-  // All markets trade against quote, this is a market for typing purposes but only the product is relevant
-  quoteProduct: AnnotatedSpotMarket;
-  // Registered markets from product id -> data
+  /**
+   * This is a market for typing purposes but only the product is relevant
+   */
+  primaryQuoteProduct: AnnotatedSpotMarket;
+  /**
+   * Registered markets from product id -> data
+   */
   allMarkets: Record<number, AnnotatedMarket>;
   spotMarkets: Record<number, AnnotatedSpotMarket>;
   perpMarkets: Record<number, AnnotatedPerpMarket>;
@@ -48,7 +52,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
     'allMarkets',
     true,
   );
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const { getPerpMetadata, getSpotMetadata } = useVertexMetadataContext();
   const primaryChainId = usePrimaryChainId();
 
@@ -63,8 +67,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
     const baseResponse = await vertexClient.market.getAllEngineMarkets();
     endProfiling();
 
-    // Construct money-markets from base data
-    let quoteProduct: AnnotatedSpotMarket | undefined = undefined;
+    let primaryQuoteProduct: AnnotatedSpotMarket | undefined = undefined;
     const spotMarkets: Record<number, AnnotatedSpotMarket> = {};
     const perpMarkets: Record<number, AnnotatedPerpMarket> = {};
 
@@ -78,7 +81,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
         const annotatedSpotMarket = { ...market, metadata };
 
         if (market.productId === QUOTE_PRODUCT_ID) {
-          quoteProduct = annotatedSpotMarket;
+          primaryQuoteProduct = annotatedSpotMarket;
         } else {
           spotMarkets[market.productId] = annotatedSpotMarket;
         }
@@ -101,7 +104,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
       }
     });
 
-    if (quoteProduct == null) {
+    if (primaryQuoteProduct == null) {
       throw Error('Quote product not found');
     }
 
@@ -109,7 +112,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
     const perpMarketsProductIds = Object.keys(perpMarkets).map(Number);
 
     return {
-      quoteProduct,
+      primaryQuoteProduct,
       spotMarkets,
       perpMarkets,
       allMarkets: { ...spotMarkets, ...perpMarkets },

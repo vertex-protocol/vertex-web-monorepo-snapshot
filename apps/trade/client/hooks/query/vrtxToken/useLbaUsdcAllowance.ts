@@ -1,5 +1,5 @@
+import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
 import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useVertexClient } from '@vertex-protocol/web-data';
 import { useTokenAllowance } from 'client/hooks/query/useTokenAllowance';
 
 /**
@@ -7,7 +7,7 @@ import { useTokenAllowance } from 'client/hooks/query/useTokenAllowance';
  */
 export function useLbaUsdcAllowance() {
   const { primaryQuoteToken } = useVertexMetadataContext();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
 
   return useTokenAllowance({
     spenderAddress: vertexClient?.context.contractAddresses.vrtxLba,

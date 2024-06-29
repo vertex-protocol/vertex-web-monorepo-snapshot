@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import {
+  createQueryKey,
   PrimaryChainID,
+  QueryDisabledError,
   usePrimaryChainId,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
-import { createQueryKey } from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 
 export function subaccountLinkedSignerQueryKey(
   chainId?: PrimaryChainID,
@@ -26,7 +26,7 @@ export function subaccountLinkedSignerQueryKey(
  */
 export function useSubaccountLinkedSigner() {
   const primaryChainId = usePrimaryChainId();
-  const vertexClient = useVertexClient();
+  const vertexClient = usePrimaryChainVertexClient();
   const {
     currentSubaccount: { address: subaccountOwner, name: subaccountName },
   } = useSubaccountContext();

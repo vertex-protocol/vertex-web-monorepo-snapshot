@@ -1,4 +1,4 @@
-import { asyncResult } from '@vertex-protocol/web-common';
+import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
 import { ActionErrorNotification } from 'client/modules/notifications/components/collateral/ActionErrorNotification';
 import { CloseMultiPositionsErrorNotification } from 'client/modules/notifications/components/positions/CloseMultiPositionsErrorNotification';

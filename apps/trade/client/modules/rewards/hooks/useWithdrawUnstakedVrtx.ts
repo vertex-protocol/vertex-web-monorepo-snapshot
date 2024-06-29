@@ -1,18 +1,19 @@
+import { asyncResult } from '@vertex-protocol/utils';
 import { useExecuteWithdrawUnstakedVrtx } from 'client/hooks/execute/vrtxToken/useExecuteWithdrawUnstakedVrtx';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
+import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { asyncResult } from '@vertex-protocol/web-common';
 import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import { useCallback } from 'react';
-import { getConfirmedTxPromise } from 'client/utils/getConfirmedTxPromise';
 
 /**
  * Util hook for withdrawing unlocked unstaked VRTX
  */
 export function useWithdrawUnstakedVrtx() {
   const { dispatchNotification } = useNotificationManagerContext();
+  const getConfirmedTxPromise = useGetConfirmedTxPromise();
   const { show } = useDialog();
 
   const mutation = useExecuteWithdrawUnstakedVrtx();
@@ -52,7 +53,7 @@ export function useWithdrawUnstakedVrtx() {
         },
       });
     }
-  }, [dispatchNotification, mutation, show]);
+  }, [dispatchNotification, getConfirmedTxPromise, mutation, show]);
 
   return {
     withdraw,

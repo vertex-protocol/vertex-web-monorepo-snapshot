@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   createQueryKey,
-  useEnableSubaccountQueries,
+  QueryDisabledError,
   useIsChainType,
-  useVertexClient,
-} from '@vertex-protocol/web-data';
+  usePrimaryChainVertexClient,
+} from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { QueryDisabledError } from 'client/hooks/query/QueryDisabledError';
 
 export function subaccountTokenRewardsQueryKey(sender?: string) {
   return createQueryKey('subaccountTokenRewards', sender);
@@ -19,11 +18,10 @@ const NOT_CONNECTED_REWARDS_ADDRESS =
 export function useSubaccountTokenRewards() {
   const { isArb } = useIsChainType();
   const { currentSubaccount } = useSubaccountContext();
-  const vertexClient = useVertexClient();
-  const enableSubaccountQueries = useEnableSubaccountQueries();
+  const vertexClient = usePrimaryChainVertexClient();
 
   // Rewards on non-arb chains follow a points structure
-  const disabled = !vertexClient || !isArb || !enableSubaccountQueries;
+  const disabled = !vertexClient || !isArb;
   const addressForQuery =
     currentSubaccount.address ?? NOT_CONNECTED_REWARDS_ADDRESS;
 

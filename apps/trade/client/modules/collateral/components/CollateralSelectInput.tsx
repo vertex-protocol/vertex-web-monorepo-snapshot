@@ -1,7 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { ErrorTooltip } from '@vertex-protocol/web-ui';
-import { Input, InputProps } from 'client/components/Input/Input';
+import { CompactInput, CompactInputProps } from '@vertex-protocol/web-ui';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
 import React, { ReactNode } from 'react';
 import {
@@ -9,7 +8,7 @@ import {
   CollateralAssetSelect,
 } from './CollateralAssetSelect';
 
-interface Props extends InputProps {
+interface Props extends CompactInputProps {
   inputClassName?: string;
   dropdownProps: AssetSelectProps;
   estimatedValueUsd: BigDecimal | undefined;
@@ -26,7 +25,7 @@ export const CollateralSelectInput = React.forwardRef<
     dropdownProps,
     estimatedValueUsd,
     error,
-    ...inputProps
+    ...rest
   },
   ref,
 ) {
@@ -40,47 +39,28 @@ export const CollateralSelectInput = React.forwardRef<
   } = dropdownProps;
 
   return (
-    <ErrorTooltip
-      errorContent={error}
-      contentWrapperClassName={joinClassNames(
-        'bg-surface-2 relative h-10',
-        'rounded border',
-        'divide-overlay-divider/10',
-        'flex items-center',
-        !!error
-          ? 'border-negative'
-          : 'focus-within:border-accent border-stroke',
-        className,
-      )}
-    >
-      <CollateralAssetSelect
-        className="h-full w-24 min-w-fit"
-        disabled={disabled}
-        availableProducts={availableProducts}
-        selectedProduct={selectedProduct}
-        assetAmountTitle={assetAmountTitle}
-        optionsClassName={optionsClassName}
-        onProductSelected={onProductSelected}
-      />
-      <Input
-        placeholder="0.00"
-        type="number"
-        min={0}
-        {...inputProps}
-        className={joinClassNames(
-          'text-text-primary h-full flex-1',
-          'bg-transparent px-2 text-sm font-medium',
-          'border-y-none border-l transition',
-          'placeholder:text-disabled placeholder:font-medium',
-          !!error ? 'text-negative' : 'text-text-primary',
-          inputClassName,
-        )}
-        ref={ref}
-      />
-      <EstimatedCurrencyValueItem
-        className="mr-2 text-xs"
-        estimatedValueUsd={estimatedValueUsd}
-      />
-    </ErrorTooltip>
+    <CompactInput
+      type="number"
+      min={0}
+      errorTooltipContent={error}
+      disabled={disabled}
+      inputContainerClassName={joinClassNames('pl-0', className)}
+      startElement={
+        <CollateralAssetSelect
+          className="border-overlay-divider/10 h-full w-24 min-w-24 border-r"
+          disabled={disabled}
+          availableProducts={availableProducts}
+          selectedProduct={selectedProduct}
+          assetAmountTitle={assetAmountTitle}
+          optionsClassName={optionsClassName}
+          onProductSelected={onProductSelected}
+        />
+      }
+      endElement={
+        <EstimatedCurrencyValueItem estimatedValueUsd={estimatedValueUsd} />
+      }
+      ref={ref}
+      {...rest}
+    />
   );
 });

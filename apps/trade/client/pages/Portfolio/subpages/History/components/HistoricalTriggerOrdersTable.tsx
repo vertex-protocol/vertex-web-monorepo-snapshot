@@ -14,8 +14,8 @@ import {
   HistoricalTriggerOrder,
   useHistoricalTriggerOrdersTable,
 } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalTriggerOrdersTable';
-import { getMarketPriceFormatSpecifier } from 'client/utils/formatNumber/getMarketPriceFormatSpecifier';
-import { getMarketSizeFormatSpecifier } from 'client/utils/formatNumber/getMarketSizeFormatSpecifier';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { startCase } from 'lodash';
 import { useMemo } from 'react';
 
@@ -41,7 +41,8 @@ export function HistoricalTriggerOrdersTable() {
         ),
         sortingFn: 'basic',
         meta: {
-          cellContainerClassName: 'w-28',
+          cellContainerClassName: 'w-32',
+          withLeftPadding: true,
         },
       }),
       columnHelper.accessor('marketInfo', {

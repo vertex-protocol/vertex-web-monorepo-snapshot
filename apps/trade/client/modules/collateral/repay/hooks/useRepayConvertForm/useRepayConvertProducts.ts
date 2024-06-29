@@ -24,7 +24,12 @@ export function useRepayConvertProducts({
   const availableRepayProducts = useMemo((): RepayConvertProduct[] => {
     return (
       balances
-        ?.filter((balance) => balance.amount.isNegative())
+        ?.filter(
+          // Only negative balances with quote = primary quote
+          (balance) =>
+            balance.amount.isNegative() &&
+            balance.metadata.quoteProductId === QUOTE_PRODUCT_ID,
+        )
         .map((balance) => {
           return toRepayConvertProduct(
             balance,
@@ -50,7 +55,11 @@ export function useRepayConvertProducts({
     return (
       balances
         ?.filter((balance) => {
-          if (balance.amount.lte(0)) {
+          // Only positive balances with quote = primary quote are allowed
+          if (
+            balance.amount.lte(0) ||
+            balance.metadata.quoteProductId !== QUOTE_PRODUCT_ID
+          ) {
             return false;
           }
           // If repaying USDC, can't sell USDC, if repaying asset, can only sell USDC

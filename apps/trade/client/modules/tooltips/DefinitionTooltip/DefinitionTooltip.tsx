@@ -5,11 +5,13 @@ import {
   IconBaseProps,
   Icons,
 } from '@vertex-protocol/web-ui';
+import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import {
   DEFINITION_TOOLTIP_CONFIG_BY_ID,
   DefinitionTooltipID,
 } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import { ReactNode } from 'react';
+import { DefinitionTooltipContent } from './types';
 
 export type DefinitionTooltipDecoration =
   | 'underline'
@@ -19,7 +21,11 @@ export type DefinitionTooltipDecoration =
 interface Props
   extends Pick<
     BaseDefinitionTooltipProps,
-    'portal' | 'contentWrapperClassName' | 'tooltipOptions'
+    | 'portal'
+    | 'contentWrapperClassName'
+    | 'tooltipOptions'
+    | 'asChild'
+    | 'noHelpCursor'
   > {
   // This is optional as there are many usecases where we may or may not show a tooltip in an array-based rendering pattern
   // If this is not specified, no tooltip is rendered and children are returned as-is
@@ -37,7 +43,10 @@ export function DefinitionTooltip({
   contentWrapperClassName,
   children,
   decoration = 'underline',
+  asChild,
+  noHelpCursor,
 }: Props) {
+  const { primaryQuoteToken } = useVertexMetadataContext();
   if (!definitionId) {
     // Wrap with contentWrapperClassName to ensure consistent behavior between when definitionId is specified and when it is not
     return <div className={contentWrapperClassName}>{children}</div>;
@@ -62,7 +71,15 @@ export function DefinitionTooltip({
     );
   })();
 
-  const tooltipConfig = DEFINITION_TOOLTIP_CONFIG_BY_ID[definitionId];
+  const tooltipConfig: DefinitionTooltipContent = (() => {
+    const config = DEFINITION_TOOLTIP_CONFIG_BY_ID[definitionId];
+
+    if (typeof config === 'function') {
+      return config({ primaryQuoteToken });
+    }
+
+    return config;
+  })();
 
   const underlineClassNames = (() => {
     if (decoration !== 'underline') {
@@ -71,8 +88,8 @@ export function DefinitionTooltip({
 
     return mergeClassNames(
       'underline underline-offset-[3px]',
-      'decoration-dashed decoration-disabled hover:decoration-text-primary',
-      'transition-colors duration-200 ease-in-out',
+      'decoration-dashed decoration-disabled',
+      'transition-colors',
       contentWrapperClassName,
     );
   })();
@@ -94,9 +111,11 @@ export function DefinitionTooltip({
         interactive: false,
         ...tooltipOptions,
       }}
+      asChild={asChild}
+      noHelpCursor={noHelpCursor}
+      endIcon={icon}
     >
       {children}
-      {icon}
     </BaseDefinitionTooltip>
   );
 }

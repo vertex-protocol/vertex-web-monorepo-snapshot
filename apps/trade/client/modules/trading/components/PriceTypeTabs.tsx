@@ -1,7 +1,7 @@
 import { TabsList, Root as TabsRoot, TabsTrigger } from '@radix-ui/react-tabs';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/web-data';
-import { Icons, TextButton } from '@vertex-protocol/web-ui';
+import { useEVMContext } from '@vertex-protocol/react-client';
+import { Icons, TabTextButton, TextButton } from '@vertex-protocol/web-ui';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { PlaceOrderPriceType } from 'client/modules/trading/types';
 import { useFormContext } from 'react-hook-form';
@@ -29,7 +29,7 @@ function AppSettingsButton({ className }: WithClassnames) {
       startIcon={<Icons.BsGear size={12} />}
       onClick={() => {
         show({
-          type: 'control_center',
+          type: 'account_center',
           params: { initialShowSettingsContent: true },
         });
       }}
@@ -56,13 +56,13 @@ export function PriceTypeTabs() {
         {ORDER_PRICE_TYPES.map((type) => {
           return (
             <TabsTrigger key={type} value={type} asChild>
-              <TextButton
+              <TabTextButton
                 // No left padding on first item to align buttons flush with left side of container
                 className="px-1 text-xs first:pl-0 sm:px-2"
                 active={selectedPriceType === type}
               >
                 {TYPE_TO_LABEL[type]}
-              </TextButton>
+              </TabTextButton>
             </TabsTrigger>
           );
         })}
