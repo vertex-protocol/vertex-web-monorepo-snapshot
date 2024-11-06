@@ -1,14 +1,14 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
+import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { useMemo } from 'react';
-import { MarginWeightMetrics } from '../../types';
 
 export interface MarginManagerPerpPositionsTableItem {
   productId: number;
@@ -29,7 +29,7 @@ export function useMarginManagerPerpPositionsTable() {
   const {
     primaryQuoteToken: { symbol: primaryQuoteSymbol },
   } = useVertexMetadataContext();
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const mappedData: MarginManagerPerpPositionsTableItem[] | undefined =
     useMemo(() => {
@@ -69,18 +69,27 @@ export function useMarginManagerPerpPositionsTable() {
             notionalValueUsd: position.notionalValueUsd,
             initialHealth: {
               marginUsd:
-                position.healthMetrics.initial.multipliedBy(quotePrice),
+                position.healthMetrics.initial.multipliedBy(
+                  primaryQuotePriceUsd,
+                ),
               weight: healthWeights.initial,
             },
             maintenanceHealth: {
               marginUsd:
-                position.healthMetrics.maintenance.multipliedBy(quotePrice),
+                position.healthMetrics.maintenance.multipliedBy(
+                  primaryQuotePriceUsd,
+                ),
               weight: healthWeights.maintenance,
             },
           };
         })
         .filter(nonNullFilter);
-    }, [marketsStaticData, perpBalances, primaryQuoteSymbol, quotePrice]);
+    }, [
+      marketsStaticData,
+      perpBalances,
+      primaryQuoteSymbol,
+      primaryQuotePriceUsd,
+    ]);
 
   return {
     positions: mappedData,

@@ -1,4 +1,3 @@
-import { ProductEngineType } from '@vertex-protocol/client';
 import {
   HistoricalTradesTab,
   historicalTradesTableFilters,
@@ -17,18 +16,19 @@ import {
   realizedPnlEventsTableFilters,
 } from 'client/modules/trading/components/RealizedPnlEventsTab';
 import { TradingTab } from 'client/modules/trading/layout/types';
-import { SpotBalancesTab } from 'client/pages/SpotTrading/components/SpotBalancesTab';
-import { useMemo } from 'react';
-import { PerpOrderPlacementSection } from '../components/PerpOrderPlacementSection/PerpOrderPlacementSection';
+import { PerpOrderPlacementSection } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/PerpOrderPlacementSection';
 import {
   PerpPositionsTab,
   positionsTableFilters,
-} from '../components/PerpPositionsTab';
+} from 'client/pages/PerpTrading/components/PerpPositionsTab';
+import { SpotBalancesTab } from 'client/pages/SpotTrading/components/SpotBalancesTab';
+import { MarketFilter } from 'client/types/MarketFilter';
+import { useMemo } from 'react';
 
 const SHOW_ALL_FILTER = undefined;
 
-const PERP_ONLY_FILTER = {
-  marketType: ProductEngineType.PERP,
+const PERP_ONLY_FILTER: MarketFilter = {
+  marketCategory: 'perp',
 };
 
 export function usePerpTradingTableTabs(productId: number | undefined) {
@@ -38,10 +38,7 @@ export function usePerpTradingTableTabs(productId: number | undefined) {
         id: 'trade',
         label: 'Trade',
         content: (
-          <MobileTradeTab
-            productId={productId}
-            OrderPlacementSection={PerpOrderPlacementSection}
-          />
+          <MobileTradeTab OrderPlacementSection={PerpOrderPlacementSection} />
         ),
       },
       {

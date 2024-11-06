@@ -1,4 +1,5 @@
 import {
+  BalanceSide,
   ProductEngineType,
   QUOTE_PRODUCT_ID,
 } from '@vertex-protocol/contracts';
@@ -23,31 +24,29 @@ import { useOrderFormProductData } from 'client/modules/trading/hooks/orderFormC
 import { useOrderFormSubmitHandler } from 'client/modules/trading/hooks/orderFormContext/useOrderFormSubmitHandler';
 import { useOrderFormValidators } from 'client/modules/trading/hooks/orderFormContext/useOrderFormValidators';
 import {
+  TradeEntryEstimate,
+  useEstimateTradeEntry,
+} from 'client/modules/trading/hooks/useEstimateTradeEntry';
+import { UseTpSlPlaceOrderForm } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/types';
+import {
   OrderFormError,
   OrderFormValidators,
+  PlaceOrderPriceType,
 } from 'client/modules/trading/types';
-import { usePerpOrderFormEstimateStateTxs } from 'client/pages/PerpTrading/context/hooks/usePerpOrderFormEstimateStateTxs';
 import { usePerpOrderFormOnChangeSideEffects } from 'client/pages/PerpTrading/context/hooks/usePerpOrderFormOnChangeSideEffects';
 import { PerpOrderFormValues } from 'client/pages/PerpTrading/context/types';
+import { usePerpTpSlOrderForm } from 'client/pages/PerpTrading/hooks/usePerpTpSlOrderForm';
 import { useSelectedPerpLeverage } from 'client/pages/PerpTrading/hooks/useSelectedPerpLeverage';
 import { perpPriceInputAtom } from 'client/store/trading/perpTradingStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { mapValues } from 'lodash';
 import { createContext, useContext, useMemo } from 'react';
-import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
-import {
-  OrderFormPerpTradingAccountMetrics,
-  usePerpOrderFormTradingAccountMetrics,
-} from './hooks/usePerpOrderFormTradingAccountMetrics';
+import { FormProvider, useForm } from 'react-hook-form';
 
 export interface PerpOrderFormContextData {
   // Market selection
   currentMarket: PerpStaticMarketData | undefined;
-  /**
-   * RHF instance to pass to `<Form />`
-   */
-  form: UseFormReturn<PerpOrderFormValues>;
   /**
    * Validators for the form
    */
@@ -81,6 +80,10 @@ export interface PerpOrderFormContextData {
    */
   executionConversionPrice: BigDecimal | undefined;
   /**
+   * The estimated entry given the current form values. Note this excludes any existing position's net entry.
+   */
+  estimatedTradeEntry: TradeEntryEstimate | undefined;
+  /**
    * Configured slippage for the current order type
    */
   slippageFraction: number;
@@ -92,13 +95,54 @@ export interface PerpOrderFormContextData {
     size: BigDecimal | undefined;
   };
   /**
-   * Estimated account status changes corresponding to the current order form input
+   * The current selected side of the order.
    */
-  tradingAccountMetrics: OrderFormPerpTradingAccountMetrics;
+  orderSide: BalanceSide;
+  /**
+   * The current selected type of order.
+   */
+  priceType: PlaceOrderPriceType;
+  /**
+   * Whether there is already a position open for the current market.
+   */
+  hasExistingPosition: boolean;
+  /**
+   * Maximum order size, in terms of the asset, for the currently selected market
+   */
+  maxAssetOrderSize: BigDecimal | undefined;
+  /**
+   * Whether to enable max size logic
+   */
+  enableMaxSizeLogic: boolean;
   /**
    * Form submit handler
    */
   onSubmit: () => void;
+  /**
+   * Whether the TP/SL checkbox is checked.
+   */
+  isTpSlCheckboxChecked: boolean;
+  /**
+   * Setter for `isTpSlCheckboxChecked`.
+   */
+  setIsTpSlCheckboxChecked: (isChecked: boolean) => void;
+  /**
+   * Whether the TP/Sl checkbox is disabled, e.g. when 1CT is not configured.
+   */
+  isTpSlCheckboxDisabled: boolean;
+  /**
+   * True when `isTpSlCheckboxChecked` is true and `priceType` is `'market'`.
+   * Used to determine if certain TP/SL-related logic should run.
+   */
+  takeProfitOrderForm: UseTpSlPlaceOrderForm;
+  /**
+   * TpSl form utils for Stop Loss inputs.
+   */
+  stopLossOrderForm: UseTpSlPlaceOrderForm;
+  /**
+   * Whether the current market has an existing TP/SL.
+   */
+  hasExistingTriggerOrder: boolean;
 }
 
 const PerpOrderFormContext = createContext<PerpOrderFormContextData>(
@@ -113,6 +157,8 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   const { data: latestMarketPrices } = useLatestMarketPrice({
     productId: currentMarket?.productId,
   });
+  const userStateError = useUserStateError();
+
   const usePerpForm = useForm<PerpOrderFormValues>({
     mode: 'onTouched',
     defaultValues: {
@@ -143,6 +189,7 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
     form: usePerpForm,
     currentMarket,
     latestMarketPrices,
+    productId,
   });
 
   const { selectedLeverage } = useSelectedPerpLeverage(productId);
@@ -215,6 +262,39 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   const enableMaxSizeLogic = useOrderFormEnableMaxSizeLogic({ priceType });
 
   /**
+   * Get estimated trade entry.
+   */
+  const estimatedTradeEntry = useEstimateTradeEntry({
+    amountInput: validatedAssetAmountInput,
+    executionLimitPrice: executionConversionPrice,
+    productId,
+    orderSide,
+  });
+
+  /**
+   * TP/SL
+   */
+  const {
+    isTpSlCheckboxChecked,
+    setIsTpSlCheckboxChecked,
+    isTpSlCheckboxDisabled,
+    isTpSlEnabled,
+    takeProfitOrderForm,
+    stopLossOrderForm,
+    hasExistingTriggerOrder,
+    hasTpSlOrderFormError,
+    hasExistingPosition,
+  } = usePerpTpSlOrderForm({
+    productId: currentMarket?.productId,
+    longWeightInitial: currentMarket?.longWeightInitial,
+    estimatedTradeEntry,
+    priceIncrement,
+    validatedAssetAmountInput,
+    orderSide,
+    priceType,
+  });
+
+  /**
    * Input validation
    */
   const inputValidators = useOrderFormValidators({
@@ -242,13 +322,16 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   usePerpOrderFormOnChangeSideEffects({
     form: usePerpForm,
     selectedLeverage,
+    isTpSlCheckboxDisabled,
+    setIsTpSlCheckboxChecked,
+    orderSide,
+    takeProfitOrderFormResetField: takeProfitOrderForm.form.resetField,
+    stopLossOrderFormResetField: stopLossOrderForm.form.resetField,
   });
 
   /**
    * Form error states
    */
-
-  const userStateError = useUserStateError();
 
   const formError = useOrderFormError({
     form: usePerpForm,
@@ -257,28 +340,16 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   });
 
   /**
-   * Subaccount state estimation
-   */
-  const estimateStateTxs = usePerpOrderFormEstimateStateTxs({
-    orderSide,
-    productId,
-    validatedAssetAmountInput,
-    executionConversionPrice,
-    maxAssetOrderSize,
-    enableMaxSizeLogic,
-  });
-
-  /**
-   * Perp Trading Account Metrics
-   */
-  const tradingAccountMetrics = usePerpOrderFormTradingAccountMetrics({
-    currentMarket,
-    estimateStateTxs,
-  });
-
-  /**
    * On submit handler
    */
+  const submitHandlerTpSlParam = useMemo(
+    () => ({
+      isTpSlEnabled,
+      takeProfitOrderFormOnSubmit: takeProfitOrderForm.onSubmit,
+      stopLossOrderFormOnSubmit: stopLossOrderForm.onSubmit,
+    }),
+    [isTpSlEnabled, takeProfitOrderForm, stopLossOrderForm],
+  );
   const submitHandler = useOrderFormSubmitHandler({
     executionConversionPriceRef,
     inputConversionPriceRef,
@@ -287,6 +358,7 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
     allowAnyOrderSizeIncrement: false,
     // Multi-quote not supported for perps
     quoteProductId: QUOTE_PRODUCT_ID,
+    tpsl: submitHandlerTpSlParam,
   });
 
   /**
@@ -302,18 +374,25 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
 
     const hasRequiredInputs =
       validatedAssetAmountInput && executionConversionPrice;
-    if (!hasRequiredInputs || userStateError || formError) {
+    if (
+      !hasRequiredInputs ||
+      userStateError ||
+      formError ||
+      (isTpSlEnabled && hasTpSlOrderFormError)
+    ) {
       return 'disabled';
     }
 
     return 'idle';
   }, [
-    executionConversionPrice,
-    formError,
     executePlaceOrder.isSuccess,
     executePlaceOrder.isPending,
-    userStateError,
     validatedAssetAmountInput,
+    executionConversionPrice,
+    userStateError,
+    formError,
+    isTpSlEnabled,
+    hasTpSlOrderFormError,
   ]);
 
   const value = useMemo((): PerpOrderFormContextData => {
@@ -323,35 +402,56 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
         price: priceIncrement,
         size: sizeIncrement,
       },
+      enableMaxSizeLogic,
       minAssetOrderSize,
+      maxAssetOrderSize,
       inputConversionPrice,
       executionConversionPrice,
+      estimatedTradeEntry,
       slippageFraction,
       validatedAssetAmountInput,
-      form: usePerpForm,
       onSubmit: usePerpForm.handleSubmit(submitHandler),
       validators: inputValidators,
       formError,
       userStateError,
       buttonState,
-      tradingAccountMetrics,
+      orderSide,
+      priceType,
+      hasExistingPosition,
+      isTpSlCheckboxChecked,
+      setIsTpSlCheckboxChecked,
+      isTpSlCheckboxDisabled,
+      takeProfitOrderForm,
+      stopLossOrderForm,
+      hasExistingTriggerOrder,
     };
   }, [
     buttonState,
     currentMarket,
+    enableMaxSizeLogic,
     executionConversionPrice,
+    estimatedTradeEntry,
     formError,
     inputConversionPrice,
     inputValidators,
     minAssetOrderSize,
+    maxAssetOrderSize,
     priceIncrement,
     sizeIncrement,
     slippageFraction,
     submitHandler,
-    tradingAccountMetrics,
     usePerpForm,
     userStateError,
     validatedAssetAmountInput,
+    orderSide,
+    priceType,
+    hasExistingPosition,
+    isTpSlCheckboxChecked,
+    setIsTpSlCheckboxChecked,
+    isTpSlCheckboxDisabled,
+    takeProfitOrderForm,
+    stopLossOrderForm,
+    hasExistingTriggerOrder,
   ]);
 
   return (

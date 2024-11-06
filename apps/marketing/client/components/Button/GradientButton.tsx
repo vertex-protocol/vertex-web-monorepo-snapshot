@@ -1,6 +1,6 @@
-import { HomePageButton } from './HomePageButton';
-import { ButtonElement, ButtonProps } from './types';
 import { joinClassNames } from '@vertex-protocol/web-common';
+import { HomePageButton } from 'client/components/Button/HomePageButton';
+import { ButtonElement, ButtonProps } from 'client/components/Button/types';
 
 export function GradientButton<E extends ButtonElement = 'button'>(
   props: ButtonProps<E>,
@@ -10,7 +10,7 @@ export function GradientButton<E extends ButtonElement = 'button'>(
   return (
     <HomePageButton
       className={joinClassNames(
-        'rounded-lg font-bold text-white shadow hover:brightness-125',
+        'rounded-[10px] font-bold text-white shadow hover:brightness-125',
         'bg-buttonGradient',
         className,
       )}

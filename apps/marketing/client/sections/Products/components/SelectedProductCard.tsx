@@ -7,7 +7,7 @@ import {
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
 import { useState } from 'react';
-import { ProductData } from '../data';
+import { ProductData } from 'client/sections/Products/data';
 
 interface Props extends WithClassnames {
   selectedCard: ProductData;

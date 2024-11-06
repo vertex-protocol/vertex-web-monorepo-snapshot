@@ -17,8 +17,10 @@ export const FUUL_REFERRALS_REWARDS_CONFIG = {
   // If the user is referred by someone else, the user will get a % rebate of the trading fees
   rebatePercentage: 10,
   tierCommissionPercentages: {
-    tierOne: 20,
-    tierTwo: 25,
-    tierThree: 30,
+    tierOne: 10,
+    tierTwo: 20,
+    tierThree: 25,
+    tierFour: 30,
+    tierFive: 40,
   },
 };

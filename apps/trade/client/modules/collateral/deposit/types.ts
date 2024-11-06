@@ -1,8 +1,7 @@
 import { BigDecimal } from '@vertex-protocol/utils';
+import { CollateralSpotProduct } from 'client/modules/collateral/types';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
 import { OnChainActionButtonStateWithApproval } from 'client/types/OnChainActionButtonStateWithApproval';
-import { CollateralSpotProduct } from '../types';
-
 // We do NOT check for max deposit based on user wallet balance because public RPCs can be unreliable, and we do not
 // want to block users from depositing if the RPC is down
 export type DepositErrorType =
@@ -23,4 +22,9 @@ export interface DepositProduct extends CollateralSpotProduct {
   oraclePriceUsd: BigDecimal;
 }
 
-export type DepositInfoCardType = 'weth' | 'vrtx' | 'usdb' | 'wmnt';
+export type DepositInfoCardType =
+  | 'weth'
+  | 'vrtx'
+  | 'blast_native_yield'
+  | 'wmnt'
+  | 'wsei';

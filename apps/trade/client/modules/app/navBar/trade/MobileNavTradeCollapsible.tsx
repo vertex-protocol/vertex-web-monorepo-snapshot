@@ -1,42 +1,44 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import { NewPill } from 'client/components/NewPill';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { AppNavItemButton } from 'client/modules/app/navBar/components/AppNavItemButton';
 import { MobileNavCustomCollapsible } from 'client/modules/app/navBar/components/MobileNavCustomCollapsible';
 import { useGetIsActiveRoute } from 'client/modules/app/navBar/hooks/useGetIsActiveRoute';
 import { useMobileCollapsible } from 'client/modules/app/navBar/hooks/useMobileCollapsible';
-import { TRADE_NAV_ITEMS } from 'client/modules/app/navBar/trade/tradeNavItems';
+import { useNavTradeMarketCategories } from 'client/modules/app/navBar/trade/useNavTradeMarketCategories';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 
 export function MobileNavTradeCollapsible({ className }: WithClassnames) {
+  const marketCategories = useNavTradeMarketCategories();
+  const { isElectionMarketsEnabled } = useEnabledFeatures();
   const getIsActiveRoute = useGetIsActiveRoute();
-  const { setCollapsibleIsOpen, collapsibleIsOpen, onCollapsibleLinkClick } =
-    useMobileCollapsible();
+  const { onCollapsibleLinkClick } = useMobileCollapsible();
 
   // If the user is on a spot or perp trading page, or the collapsible is open, then we want Trade to be in an active state
-  const currentlySelected =
-    collapsibleIsOpen ||
-    getIsActiveRoute(ROUTES.spotTrading, ROUTES.perpTrading);
+  const currentlySelected = getIsActiveRoute(
+    ROUTES.spotTrading,
+    ROUTES.perpTrading,
+  );
 
   return (
     <MobileNavCustomCollapsible.Root
       className={className}
-      open={collapsibleIsOpen}
-      setOpen={setCollapsibleIsOpen}
       triggerContent={
         <AppNavItemButton
           withMobilePadding
+          withCaret
           active={currentlySelected}
-          endIcon={<UpDownChevronIcon open={collapsibleIsOpen} />}
         >
           Trade
+          {isElectionMarketsEnabled && <NewPill />}
         </AppNavItemButton>
       }
       collapsibleContent={
         <MobileNavCustomCollapsible.LinksContainer>
-          {TRADE_NAV_ITEMS.map((tradeNavItem) => (
+          {marketCategories.map((tradeNavItem, index) => (
             <MobileNavCustomCollapsible.LinkButton
-              key={tradeNavItem.title}
-              active={getIsActiveRoute(tradeNavItem.href)}
+              key={index}
+              active={getIsActiveRoute(...tradeNavItem.activeRouteHrefs)}
               href={tradeNavItem.href}
               onClick={onCollapsibleLinkClick}
             >

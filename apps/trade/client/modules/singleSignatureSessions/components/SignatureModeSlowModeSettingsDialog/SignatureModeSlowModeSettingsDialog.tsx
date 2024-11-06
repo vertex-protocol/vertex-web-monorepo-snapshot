@@ -1,15 +1,13 @@
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
+import { Divider } from '@vertex-protocol/web-ui';
+import { Form } from 'client/components/Form';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useSignatureModeSlowModeSettingsDialog } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/hooks/useSignatureModeSlowModeSettingsDialog';
-import React from 'react';
-import { SlowModeSettingsActionButton } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/SlowModeSettingsActionButton';
+import { useSlowModeSettingsPrivateKeyErrorTooltipContent } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/hooks/useSlowModeSettingsPrivateKeyErrorTooltipContent';
 import { PrivateKeyInput } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/PrivateKeyInput';
 import { SlowModeEnable1CTSwitch } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/SlowModeEnable1CTSwitch';
+import { SlowModeSettingsActionButton } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/SlowModeSettingsActionButton';
 import { SlowModeSettingsInfoCollapsible } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/SlowModeSettingsInfoCollapsible';
-import { Divider } from '@vertex-protocol/web-ui';
-import { useSlowModeSettingsPrivateKeyErrorTooltipContent } from './hooks/useSlowModeSettingsPrivateKeyErrorTooltipContent';
-import { Form } from 'client/components/Form';
 
 export function SignatureModeSlowModeSettingsDialog() {
   const { hide } = useDialog();
@@ -31,12 +29,10 @@ export function SignatureModeSlowModeSettingsDialog() {
   const disablePrivateKeyInput = !isSingleSignatureEnabled;
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>
-        Trading Mode (Advanced)
-      </BaseDialog.Title>
-      <BaseDialog.Body>
-        <Form onSubmit={onSubmit} className="flex flex-col gap-y-4 text-sm">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>Advanced 1CT</BaseAppDialog.Title>
+      <BaseAppDialog.Body asChild>
+        <Form onSubmit={onSubmit}>
           <SlowModeSettingsInfoCollapsible />
           <Divider />
           <SlowModeEnable1CTSwitch
@@ -55,7 +51,7 @@ export function SignatureModeSlowModeSettingsDialog() {
             buttonState={buttonState}
           />
         </Form>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

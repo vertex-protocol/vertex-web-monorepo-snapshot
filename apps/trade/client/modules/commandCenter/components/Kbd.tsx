@@ -1,9 +1,9 @@
-import { WithClassnames, mergeClassNames } from '@vertex-protocol/web-common';
-import { IconType } from '@vertex-protocol/web-ui';
+import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { IconComponent } from '@vertex-protocol/web-ui';
 import React from 'react';
 
 interface Props extends WithClassnames {
-  icon?: IconType;
+  icon?: IconComponent;
   iconClassname?: string;
   text?: string;
 }

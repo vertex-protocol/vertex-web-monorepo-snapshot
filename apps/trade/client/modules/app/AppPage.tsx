@@ -4,63 +4,11 @@ import {
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { BlitzPointsBanner } from 'client/modules/app/components/BlitzPointsBanner';
-import { AppNavBar } from 'client/modules/app/navBar/AppNavBar';
-import { clientEnv } from 'common/environment/clientEnv';
-import Head from 'next/head';
+import { SizeVariant } from '@vertex-protocol/web-ui';
+import { APP_PAGE_PADDING } from 'client/modules/app/consts/padding';
+import { IMAGES } from 'common/brandMetadata/images';
 import Image from 'next/image';
 import { ReactNode } from 'react';
-import { IMAGES } from 'common/brandMetadata/images';
-import { AppBottomSheet } from './AppBottomSheet';
-import { AppFooter } from './AppFooter';
-import { AppBackgroundHighlights } from './components/AppBackgroundHighlights';
-
-interface RootProps extends WithChildren<WithClassnames> {
-  // To be rendered with ` | Vertex` in the browser tab title
-  routeName?: string;
-  hasNavBorder?: boolean;
-  hideHighlights?: boolean;
-  contentWrapperClassName?: string;
-}
-
-function Root({
-  routeName,
-  children,
-  className,
-  hasNavBorder,
-  hideHighlights,
-  contentWrapperClassName,
-}: RootProps) {
-  const displayName = clientEnv.brandMetadata.displayName;
-  const title = routeName ? `${routeName} | ${displayName}` : displayName;
-
-  return (
-    <div
-      className={joinClassNames(
-        'relative flex h-svh w-screen flex-col overflow-hidden',
-        className,
-      )}
-    >
-      {!hideHighlights && <AppBackgroundHighlights />}
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <AppNavBar className="z-40" hasNavBorder={hasNavBorder} />
-      <BlitzPointsBanner className="z-30" />
-      <div
-        // Hide horizontal overflow to ensure that tables never expand fully, but allow vertical scrolling
-        className={joinClassNames(
-          'no-scrollbar flex-1 overflow-x-hidden',
-          contentWrapperClassName,
-        )}
-      >
-        {children}
-      </div>
-      <AppFooter className="hidden lg:flex" />
-      <AppBottomSheet />
-    </div>
-  );
-}
 
 interface HeaderProps {
   title: string;
@@ -78,18 +26,15 @@ function Header({
         {title}
       </h1>
       {description && (
-        <p className="text-text-tertiary text-xs lg:text-sm">{description}</p>
+        <div className="text-text-tertiary text-xs lg:text-sm">
+          {description}
+        </div>
       )}
     </div>
   );
 }
 
-interface EarnHeaderProps {
-  title: string;
-  description?: ReactNode;
-}
-
-function EarnHeader({ title, description }: EarnHeaderProps) {
+function EarnHeader({ title, description }: HeaderProps) {
   return (
     <div className="flex flex-col gap-y-1 lg:gap-y-2">
       <div className="flex items-center gap-x-2">
@@ -113,11 +58,24 @@ function EarnHeader({ title, description }: EarnHeaderProps) {
   );
 }
 
-function Content({ className, children }: WithClassnames<WithChildren>) {
+interface ContentProps extends WithChildren, WithClassnames {
+  layoutWidth?: Extract<SizeVariant, 'sm' | 'base'>;
+}
+
+function Content({ layoutWidth = 'base', className, children }: ContentProps) {
+  const maxWidthClassName = {
+    sm: 'max-w-[1100px]',
+    base: 'max-w-[1770px]',
+  }[layoutWidth];
+
   return (
     <div
       className={mergeClassNames(
-        'mx-auto flex max-w-[1770px] flex-col gap-y-4 lg:gap-y-6',
+        // `box-content` so we can add padding while keeping our widths aligned with Figma.
+        'mx-auto box-content flex flex-col gap-y-4 lg:gap-y-6',
+        APP_PAGE_PADDING.horizontal,
+        APP_PAGE_PADDING.vertical,
+        maxWidthClassName,
         className,
       )}
     >
@@ -127,7 +85,6 @@ function Content({ className, children }: WithClassnames<WithChildren>) {
 }
 
 export const AppPage = {
-  Root,
   Header,
   EarnHeader,
   Content,

@@ -1,45 +1,35 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useIsMobile } from 'client/hooks/ui/breakpoints';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import {
-  ARB_CHAIN_IDS,
-  BLAST_CHAIN_IDS,
-  MANTLE_CHAIN_IDS,
-} from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
-import { DepositOptionsPopover } from './DepositOptionsPopover';
+import { DepositOptionsDropdown } from 'client/modules/collateral/deposit/components/DepositOptionsDropdown/DepositOptionsDropdown';
 
 export function OverviewCollateralButtons({ className }: WithClassnames) {
   const { show } = useDialog();
-  const userActionState = useUserActionState();
-  const showDepositsOptionsPopover = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-    ...BLAST_CHAIN_IDS,
-  ]);
+  const isMobile = useIsMobile();
+  const { trackEvent } = useAnalyticsContext();
+  const isConnected = useIsConnected();
 
   return (
-    <div className={joinClassNames('flex items-center gap-x-2.5', className)}>
-      {showDepositsOptionsPopover ? (
-        <DepositOptionsPopover
-          userActionState={userActionState}
-          triggerClassName="flex-1"
-          onShowDialog={show}
-        />
-      ) : (
-        <SecondaryButton
-          className="flex-1"
-          disabled={userActionState === 'block_all'}
-          onClick={() => show({ type: 'deposit', params: {} })}
-        >
-          Deposit
-        </SecondaryButton>
-      )}
+    <div className={joinClassNames('flex gap-x-2.5', className)}>
+      <DepositOptionsDropdown
+        hideTriggerIcons={isMobile}
+        triggerClassName="flex-1"
+      />
       <SecondaryButton
         className="flex-1"
-        disabled={userActionState !== 'allow_all'}
-        onClick={() => show({ type: 'withdraw', params: {} })}
+        disabled={!isConnected}
+        onClick={() => {
+          trackEvent({
+            type: 'overview_collateral_buttons_clicked',
+            data: {
+              buttonType: 'withdraw',
+            },
+          });
+          show({ type: 'withdraw', params: {} });
+        }}
       >
         Withdraw
       </SecondaryButton>

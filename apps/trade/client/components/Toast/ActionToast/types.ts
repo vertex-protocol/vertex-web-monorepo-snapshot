@@ -1,11 +1,11 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { ElementType, ReactNode } from 'react';
 import {
   ToastBodyProps,
   ToastHeaderProps,
   ToastProps,
   ToastSeparatorProps,
-} from '../types';
+} from 'client/components/Toast/types';
+import { ElementType, ReactNode } from 'react';
 
 type ActionToastVariant = 'success' | 'failure' | 'pending';
 

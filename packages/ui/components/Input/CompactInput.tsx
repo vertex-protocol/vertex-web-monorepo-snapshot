@@ -1,10 +1,8 @@
 import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
-import {
-  ErrorTooltip,
-  getStateOverlayClassNames,
-} from '@vertex-protocol/web-ui';
 import { ReactNode, forwardRef } from 'react';
 import { Input, InputTextAreaProps } from './Input';
+import { getStateOverlayClassNames } from '../../utils';
+import { ErrorTooltip } from '../Tooltip';
 
 export interface CompactInputProps extends InputTextAreaProps {
   textAreaClassName?: string;

@@ -3,18 +3,17 @@
 
 import { BigDecimal } from '@vertex-protocol/client';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
-import { DIALOG_PADDING } from 'client/components/BaseDialog/consts';
+import { DIALOG_PADDING } from '@vertex-protocol/web-ui';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
-import Image from 'next/image';
-import { useDialog } from '../app/dialogs/hooks/useDialog';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
-import { MarketInfoCellData } from '../tables/types/MarketInfoCellData';
-import { SocialSharingButtons } from './components/SocialSharingButtons';
-import { SocialSharingInstructionsCard } from './components/SocialSharingInstructionsCard';
-import { SocialSharingPreview } from './components/SocialSharingPreview';
-import { SocialSharingThemeSelector } from './components/SocialSharingThemeSelector';
-import { useSocialSharingImageGeneration } from './hooks/useSocialSharingImageGeneration';
+import { SocialSharingButtons } from 'client/modules/socialSharing/components/SocialSharingButtons';
+import { SocialSharingInstructionsCard } from 'client/modules/socialSharing/components/SocialSharingInstructionsCard';
+import { SocialSharingPreview } from 'client/modules/socialSharing/components/SocialSharingPreview';
+import { SocialSharingThemeSelector } from 'client/modules/socialSharing/components/SocialSharingThemeSelector';
+import { useSocialSharingImageGeneration } from 'client/modules/socialSharing/hooks/useSocialSharingImageGeneration';
+import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
+import Image from 'next/image';
 
 export interface PerpPnlSocialSharingDialogParams {
   isRealized: boolean;
@@ -51,10 +50,10 @@ export function PerpPnlSocialSharingDialog({
   const { priceIncrement, marketName, icon, amountForSide } = marketInfo;
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Share Position</BaseDialog.Title>
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>Share Position</BaseAppDialog.Title>
       {/*Applying px-0 here to override default x padding. We want the scrollable theme selector to be full width.*/}
-      <BaseDialog.Body className="flex w-full flex-col gap-y-3 px-0 text-sm">
+      <BaseAppDialog.Body className="px-0">
         {/*Hiding theme selector on Blitz until we get different themes */}
         <BrandSpecificContent enabledBrands={['vertex']}>
           <SocialSharingThemeSelector
@@ -77,7 +76,7 @@ export function PerpPnlSocialSharingDialog({
                 theme={theme}
                 priceIncrement={priceIncrement}
                 marketName={marketName}
-                iconUrl={icon.url}
+                iconSrc={icon.asset}
                 amountForSide={amountForSide}
                 entryPrice={entryPrice}
                 referencePrice={referencePrice}
@@ -101,7 +100,7 @@ export function PerpPnlSocialSharingDialog({
           />
           <SocialSharingInstructionsCard />
         </div>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

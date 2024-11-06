@@ -1,11 +1,11 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { SubaccountCountIndicatorKey } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { TabIdentifiable } from 'client/hooks/ui/tabs/types';
-import { PrimitiveAtom } from 'jotai';
+import { SelectedFilterByTradingTableTab } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import React, { ReactNode } from 'react';
 
 export interface TradingSectionProps extends WithClassnames {
-  productId?: number;
+  productId: number | undefined;
 }
 
 export interface TradingTabFilterOption<T extends string> {
@@ -14,7 +14,7 @@ export interface TradingTabFilterOption<T extends string> {
 }
 
 export interface TradingTabFilters<TOption extends string = string> {
-  valueAtom: PrimitiveAtom<TOption>;
+  tradingTableTab: keyof SelectedFilterByTradingTableTab;
   options: TradingTabFilterOption<TOption>[];
 }
 
@@ -34,12 +34,11 @@ export interface MarketSwitcherProps {
 }
 
 export interface TradingLayoutProps {
-  productId?: number;
+  productId: number | undefined;
   desktopTradingTabs: TradingTab[];
   mobileTradingTabs: TradingTab[];
   MarketSwitcher: React.ElementType<MarketSwitcherProps>;
-  InfoCards: React.ElementType<TradingSectionProps>;
+  InfoCards: React.ElementType<WithClassnames>;
   OrderPlacement: React.ElementType<WithClassnames>;
-  AccountHealth: React.ElementType<WithClassnames>;
-  PriceChart: React.ElementType<TradingSectionProps>;
+  ChartComponent: React.ElementType<TradingSectionProps>;
 }

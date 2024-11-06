@@ -2,7 +2,14 @@ import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function HeroBanner() {
   return (
-    <div className="font-dmSans text-white-700 flex max-w-[682px] flex-col items-center gap-y-3.5 lg:gap-y-5">
+    <div
+      className={joinClassNames(
+        'flex flex-col items-center gap-y-2',
+        'font-dmSans max-w-[682px]',
+        'sm:gap-3.5',
+        'lg:gap-y-4',
+      )}
+    >
       <div
         className={joinClassNames(
           'text-center font-sans font-bold',
@@ -14,7 +21,7 @@ export function HeroBanner() {
             'text-xl leading-none text-purple-800',
             'sm:text-3xl',
             'lg:text-4xl',
-            'xl:text-6xl',
+            'xl:text-5xl',
           )}
         >
           Decentralized trading
@@ -30,18 +37,18 @@ export function HeroBanner() {
           Powerhouse
         </div>
       </div>
-      <p
+      <div
         className={joinClassNames(
-          'px-3 text-center text-base leading-tight',
-          'xs:px-10',
-          'sm:px-32',
-          'lg:px-12 lg:text-xl',
-          'xl:px-4 xl:text-2xl',
+          'px-4 text-center text-sm',
+          'sm:text-base',
+          'lg:text-lg',
         )}
       >
-        Lightning-fast orderbook DEX with powerful trading features &amp;
-        cross-margining for max efficiency.
-      </p>
+        <p>
+          Lightning-fast orderbook, cross-chain liquidity, and unbeatable fees.
+        </p>
+        <p>Vertex is not just another exchange.</p>
+      </div>
     </div>
   );
 }

@@ -1,33 +1,33 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import { IndexerOraclePrice } from '@vertex-protocol/indexer-client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 
 export function latestOraclePricesQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   productIds?: number[],
 ) {
-  return createQueryKey('latestOraclePrices', chainId, productIds);
+  return createQueryKey('latestOraclePrices', chainEnv, productIds);
 }
 
 /**
  * Latest oracle prices, in terms of the primary quote (Product ID of 0)
  */
 export function useLatestOraclePrices() {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const vertexClient = usePrimaryChainVertexClient();
   const { filteredProductIds: allProductIds } = useFilteredMarkets();
 
   const disabled = !vertexClient || !allProductIds.length;
 
   return useQuery({
-    queryKey: latestOraclePricesQueryKey(primaryChainId, allProductIds),
+    queryKey: latestOraclePricesQueryKey(primaryChainEnv, allProductIds),
     // Keyed by product ID
     queryFn: async (): Promise<Record<number, IndexerOraclePrice>> => {
       if (disabled) {

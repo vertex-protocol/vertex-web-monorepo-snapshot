@@ -1,6 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { ClaimAndStakeRadioID } from 'client/modules/rewards/dialogs/staking/components/StakingRadioGroup';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { ClaimAndStakeRadioID } from './components/StakingRadioGroup';
 
 export interface BaseClaimAndStakeHookReturn {
   selectedRadioId: ClaimAndStakeRadioID | undefined;

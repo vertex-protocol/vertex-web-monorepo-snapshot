@@ -1,9 +1,12 @@
 import { Header } from '@tanstack/react-table';
 import { mergeClassNames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
+import {
+  TableCell,
+  TableCellProps,
+} from 'client/components/DataTable/cells/TableCell';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
-import { TableCell, TableCellProps } from './TableCell';
 
 export interface HeaderCellProps<T> extends TableCellProps {
   header: Header<T, any>;
@@ -22,14 +25,14 @@ export function HeaderCell<T>({
       return null;
     }
     if (header?.column.getIsSorted() === 'asc') {
-      return <Icons.FaSortUp size={10} />;
+      return <Icons.CaretUpFill size={10} />;
     }
     if (header?.column.getIsSorted() === 'desc') {
-      return <Icons.FaSortDown size={10} />;
+      return <Icons.CaretDownFill size={10} />;
     }
     // Unsorted
     return (
-      <Icons.FaSort
+      <Icons.CaretUpDownFill
         size={10}
         className="text-text-tertiary group-hover:text-text-secondary"
       />

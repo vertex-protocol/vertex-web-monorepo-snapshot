@@ -25,11 +25,11 @@ export function PerpLeverageSelector({ productId, className }: Props) {
         });
       }}
       className={joinClassNames(
-        'ring-stroke text-text-tertiary hover:text-text-tertiary bg-surface-1',
+        'text-text-tertiary hover:text-text-tertiary bg-surface-1',
         'flex items-center justify-center gap-x-1 py-1.5',
         className,
       )}
-      endIcon={<Icons.FaCaretDown />}
+      endIcon={<Icons.CaretDownFill />}
     >
       Leverage:
       <span className="text-text-primary">{selectedLeverage}x</span>

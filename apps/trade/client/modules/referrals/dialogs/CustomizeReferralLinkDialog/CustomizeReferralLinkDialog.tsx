@@ -1,5 +1,4 @@
 import { CompactInput } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { Form } from 'client/components/Form';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -24,10 +23,12 @@ export function CustomizeReferralLinkDialog() {
     useCustomizeReferralLinkErrorTooltipContent({ formError });
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Customize Your Link</BaseDialog.Title>
-      <BaseDialog.Body>
-        <Form onSubmit={onSubmit} className="flex flex-col gap-y-6">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>
+        Customize Your Link
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body asChild>
+        <Form onSubmit={onSubmit}>
           <div className="flex flex-col gap-y-3">
             {existingCustomReferralCode && (
               <div className="bg-surface-1 rounded p-2 text-xs">
@@ -52,8 +53,8 @@ export function CustomizeReferralLinkDialog() {
           </div>
           <CustomizeReferralLinkSubmitButton state={buttonState} />
         </Form>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }
 

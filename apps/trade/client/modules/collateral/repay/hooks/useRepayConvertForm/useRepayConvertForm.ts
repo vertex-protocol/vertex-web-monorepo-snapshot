@@ -4,9 +4,9 @@ import { safeParseForData } from '@vertex-protocol/web-common';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
 import { getMarketOrderExecutionPrice } from 'client/hooks/execute/util/getMarketOrderExecutionPrice';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import {
-  RepayConvertErrorType,
+  RepayConvertAmountInputErrorType,
+  RepayConvertFormErrorType,
   RepayConvertFormValues,
   UseRepayConvertForm,
 } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
@@ -16,12 +16,11 @@ import { useRepayConvertOnChangeSideEffects } from 'client/modules/collateral/re
 import { useRepayConvertProducts } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/useRepayConvertProducts';
 import { useRepayConvertSubmitHandler } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/useRepayConvertSubmitHandler';
 import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
-import { depositProductIdAtom } from 'client/store/collateralStore';
+import { incrementValidator } from 'client/modules/trading/utils/incrementValidator';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { roundToDecimalPlaces } from 'client/utils/rounding';
-import { useAtom } from 'jotai';
+import { roundToDecimalPlaces, roundToString } from 'client/utils/rounding';
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -30,25 +29,27 @@ import { useForm } from 'react-hook-form';
  * is supported. This is because LP's are disabled for markets with alternative quotes, which would prevent users from trading below
  * the size increment (and therefore not being able to repay arbitrary borrowed amounts)
  */
-export function useRepayConvertForm(): UseRepayConvertForm {
-  const [depositProductIdAtomValue] = useAtom(depositProductIdAtom);
+export function useRepayConvertForm({
+  initialProductId,
+}: {
+  initialProductId: number | undefined;
+}): UseRepayConvertForm {
   const {
     savedSettings: { market: marketSlippageFraction },
   } = useOrderSlippageSettings();
-  const { hide } = useDialog();
 
   // Mutation
   const executePlaceOrder = useExecutePlaceOrder();
   useRunWithDelayOnCondition({
     condition: executePlaceOrder.isSuccess,
-    fn: hide,
+    fn: executePlaceOrder.reset,
   });
 
   // Form state
   const form = useForm<RepayConvertFormValues>({
     defaultValues: {
       // Product being repaid
-      repayProductId: depositProductIdAtomValue,
+      repayProductId: initialProductId,
       // Amount of repayProduct to repay
       repayAmount: '',
       // Source is the product being sold to repay
@@ -62,10 +63,8 @@ export function useRepayConvertForm(): UseRepayConvertForm {
   const repayProductIdInput = form.watch('repayProductId');
   const sourceProductIdInput = form.watch('sourceProductId');
 
-  const amountInputError: RepayConvertErrorType | undefined = watchFormError(
-    form,
-    'repayAmount',
-  );
+  const amountInputError: RepayConvertAmountInputErrorType | undefined =
+    watchFormError(form, 'repayAmount');
 
   const validRepayAmount = useMemo(() => {
     return safeParseForData(positiveBigDecimalValidator, repayAmountInput);
@@ -82,10 +81,14 @@ export function useRepayConvertForm(): UseRepayConvertForm {
     repayProductIdInput,
   });
 
-  const { marketProduct, market, isSellOrder } = useRepayConvertMarketData({
-    selectedRepayProduct,
-    selectedSourceProduct,
-  });
+  const { marketProduct, market, isSellOrder, sizeIncrement, roundAmount } =
+    useRepayConvertMarketData({
+      selectedRepayProduct,
+      selectedSourceProduct,
+    });
+
+  // Allow orders of any size only if there is an available LP pool with liquidity.
+  const allowAnyOrderSizeIncrement = !!market?.product.totalLpSupply.gt(0);
 
   const executionConversionPrice = useMemo(() => {
     if (!marketProduct || !marketProduct.marketPrices) {
@@ -105,19 +108,22 @@ export function useRepayConvertForm(): UseRepayConvertForm {
       isSellOrder,
       marketProductId: marketProduct?.productId,
       selectedRepayProduct,
+      roundAmount,
+      allowAnyOrderSizeIncrement,
     });
 
   // Side effects
   useRepayConvertOnChangeSideEffects({
     form,
-    depositProductIdAtomValue,
     availableSourceProducts,
     repayProductIdInput,
   });
 
   // Validation for amount input, allow any large input beyond the currently borrowed
   const validateRepayAmount = useCallback(
-    (amountInput: string | undefined): RepayConvertErrorType | undefined => {
+    (
+      amountInput: string | undefined,
+    ): RepayConvertFormErrorType | undefined => {
       if (!amountInput) {
         return;
       }
@@ -126,6 +132,15 @@ export function useRepayConvertForm(): UseRepayConvertForm {
       if (!amount) {
         return 'invalid_input';
       }
+
+      if (
+        sizeIncrement &&
+        !allowAnyOrderSizeIncrement &&
+        !incrementValidator(amount, sizeIncrement)
+      ) {
+        return 'invalid_size_increment';
+      }
+
       if (
         maxRepaySizeIgnoringAmountBorrowed &&
         amount.gt(maxRepaySizeIgnoringAmountBorrowed)
@@ -133,11 +148,15 @@ export function useRepayConvertForm(): UseRepayConvertForm {
         return 'max_exceeded';
       }
     },
-    [maxRepaySizeIgnoringAmountBorrowed],
+    [
+      sizeIncrement,
+      allowAnyOrderSizeIncrement,
+      maxRepaySizeIgnoringAmountBorrowed,
+    ],
   );
 
   // Global form error state
-  const formError: RepayConvertErrorType | undefined = useMemo(() => {
+  const formError: RepayConvertFormErrorType | undefined = useMemo(() => {
     if (selectedRepayProduct?.decimalAdjustedVertexBalance.isPositive()) {
       return 'not_borrowing';
     } else if (selectedRepayProduct && availableSourceProducts.length === 0) {
@@ -220,7 +239,6 @@ export function useRepayConvertForm(): UseRepayConvertForm {
     validRepayAmount,
   ]);
 
-  const disableRepayAmountInput = !selectedSourceProduct;
   const disableMaxRepayButton = !maxRepaySize || !selectedSourceProduct;
 
   const onMaxRepayClicked = useCallback(() => {
@@ -233,6 +251,24 @@ export function useRepayConvertForm(): UseRepayConvertForm {
     });
   }, [disableMaxRepayButton, form, maxRepaySize]);
 
+  const onAmountBorrowingClicked = useCallback(() => {
+    if (!selectedRepayProduct) {
+      return;
+    }
+    form.setValue(
+      'repayAmount',
+      roundToString(
+        selectedRepayProduct.amountBorrowed,
+        8,
+        BigDecimal.ROUND_UP,
+      ),
+      {
+        shouldValidate: true,
+        shouldTouch: true,
+      },
+    );
+  }, [form, selectedRepayProduct]);
+
   // Form submit handler
   const onSubmitForm = useRepayConvertSubmitHandler({
     form,
@@ -241,10 +277,12 @@ export function useRepayConvertForm(): UseRepayConvertForm {
     market,
     executionConversionPrice,
     isSellOrder,
+    allowAnyOrderSizeIncrement,
   });
 
   return {
     form,
+    amountInputError,
     formError,
     validateRepayAmount,
     availableRepayProducts,
@@ -259,9 +297,9 @@ export function useRepayConvertForm(): UseRepayConvertForm {
     repayAmountValueUsd:
       selectedRepayProduct &&
       validRepayAmount?.multipliedBy(selectedRepayProduct.oraclePriceUsd),
-    disableRepayAmountInput,
     disableMaxRepayButton,
     maxRepaySize,
+    sizeIncrement,
 
     oracleConversionPrice: market?.product.oraclePrice,
     isMaxRepayDismissibleOpen: maxRepaySize?.eq(repayAmountInput),
@@ -269,6 +307,7 @@ export function useRepayConvertForm(): UseRepayConvertForm {
 
     market,
     onMaxRepayClicked,
+    onAmountBorrowingClicked,
     onSubmit: form.handleSubmit(onSubmitForm),
   };
 }

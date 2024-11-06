@@ -13,7 +13,7 @@ interface Params {
  * Returns a string of class names for overlay state based on the provided parameters.
  *
  * @param borderRadiusVariant - The variant of border radius to apply to the overlay.
- * e.g. `'base' | 'sm' | 'md' | 'lg'`
+ * e.g. `'base' | 'sm' | 'md' | 'lg' | 'full'`
  *
  * @param active - Optional param used in components with an `active` state. The overlay is set to a static "active" state, regardless of cursor position. Defaults to false. Note: Will be overridden by the `disabled` state.
  *
@@ -60,11 +60,13 @@ export function getStateOverlayClassNames({
     if (!borderRadiusVariant) {
       return;
     }
+
     return {
       base: 'before:rounded',
       sm: 'before:rounded-sm',
       md: 'before:rounded-md',
       lg: 'before:rounded-lg',
+      full: 'before:rounded-full',
     }[borderRadiusVariant];
   })();
 

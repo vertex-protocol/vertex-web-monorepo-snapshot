@@ -1,8 +1,14 @@
-import { DiscList } from '@vertex-protocol/web-ui';
+import { joinClassNames } from '@vertex-protocol/web-common';
+import { COMMON_TRANSPARENCY_COLORS, DiscList } from '@vertex-protocol/web-ui';
 
 export function SocialSharingInstructionsCard() {
   return (
-    <div className="text-text-secondary bg-overlay-accent/10 flex flex-col gap-y-2 rounded p-3 text-xs">
+    <div
+      className={joinClassNames(
+        'text-text-secondary flex flex-col gap-y-2 rounded p-3 text-xs',
+        COMMON_TRANSPARENCY_COLORS.bgAccent,
+      )}
+    >
       <div className="text-accent">Twitter Instructions</div>
       <DiscList.Container>
         <DiscList.Item>Twitter will open</DiscList.Item>

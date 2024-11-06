@@ -2,9 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -14,9 +12,10 @@ import {
   useVertexClientHasLinkedSigner,
 } from 'client/hooks/util/useVertexClientHasLinkedSigner';
 import { get } from 'lodash';
+import { ChainEnv } from '@vertex-protocol/client';
 
 export function subaccountPaginatedHistoricalTriggerOrdersQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   subaccountOwner?: string,
   subaccountName?: string,
   // Without this in the query key, the query will be disabled but data will not be reset, resulting in "stale"
@@ -26,7 +25,7 @@ export function subaccountPaginatedHistoricalTriggerOrdersQueryKey(
 ) {
   return createQueryKey(
     'subaccountPaginatedHistoricalTriggerOrders',
-    chainId,
+    chainEnv,
     subaccountOwner,
     subaccountName,
     hasLinkedSigner,
@@ -45,19 +44,22 @@ interface Params {
 export function useSubaccountPaginatedHistoricalTriggerOrders({
   pageSize,
 }: Params) {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const hasLinkedSigner = useVertexClientHasLinkedSigner();
   const getRecvTime = useGetRecvTime();
   const {
-    currentSubaccount: { address: subaccountOwner, name: subaccountName },
+    currentSubaccount: {
+      address: subaccountOwner,
+      name: subaccountName,
+      chainEnv,
+    },
   } = useSubaccountContext();
 
   const disabled = !vertexClient || !subaccountOwner || !hasLinkedSigner;
 
   return useInfiniteQuery({
     queryKey: subaccountPaginatedHistoricalTriggerOrdersQueryKey(
-      primaryChainId,
+      chainEnv,
       subaccountOwner,
       subaccountName,
       hasLinkedSigner,

@@ -1,9 +1,9 @@
-import { clientEnv } from 'common/environment/clientEnv';
-import { useTvlUsd } from '../hooks/useTvlUsd';
 import {
   CustomNumberFormatSpecifier,
   formatNumber,
 } from '@vertex-protocol/react-client';
+import { useTvlUsd } from 'client/pages/MoneyMarkets/hooks/useTvlUsd';
+import { clientEnv } from 'common/environment/clientEnv';
 
 export function TvlStats() {
   const tvlUsd = useTvlUsd();

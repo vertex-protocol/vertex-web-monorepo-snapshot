@@ -1,20 +1,19 @@
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { LinkButton } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { InputSummary } from 'client/components/InputSummary';
-import { LinkButton } from 'client/components/LinkButton';
+import { InputSummaryItem } from 'client/components/InputSummaryItem';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
+import { StakingDialogInput } from 'client/modules/rewards/dialogs/staking/components/StakingDialogInput';
+import { useUnstakeVrtxAmountErrorTooltipContent } from 'client/modules/rewards/dialogs/staking/hooks/useUnstakeVrtxAmountErrorTooltipContent';
 import { UnstakeVrtxDisclosure } from 'client/modules/rewards/dialogs/staking/UnstakeVrtxDialog/UnstakeVrtxDisclosure';
+import { UnstakeVrtxSubmitButton } from 'client/modules/rewards/dialogs/staking/UnstakeVrtxDialog/UnstakeVrtxSubmitButton';
+import { UnstakeVrtxSummary } from 'client/modules/rewards/dialogs/staking/UnstakeVrtxDialog/UnstakeVrtxSummary';
+import { useUnstakeVrtxForm } from 'client/modules/rewards/dialogs/staking/UnstakeVrtxDialog/useUnstakeVrtxForm';
+import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import Link from 'next/link';
-import { StakingDialogInput } from '../components/StakingDialogInput';
-import { UnstakeVrtxSubmitButton } from './UnstakeVrtxSubmitButton';
-import { UnstakeVrtxSummary } from './UnstakeVrtxSummary';
-import { useUnstakeVrtxAmountErrorTooltipContent } from './useUnstakeVrtxAmountErrorTooltipContent';
-import { useUnstakeVrtxForm } from './useUnstakeVrtxForm';
 
 export function UnstakeVrtxDialog() {
   const { hide } = useDialog();
@@ -29,6 +28,7 @@ export function UnstakeVrtxDialog() {
     estimatedStakeValueUsd,
     onFractionSelected,
     onSubmit,
+    onMaxAmountSelected,
   } = useUnstakeVrtxForm();
 
   const amountErrorTooltipContent = useUnstakeVrtxAmountErrorTooltipContent({
@@ -36,8 +36,8 @@ export function UnstakeVrtxDialog() {
   });
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title
         onClose={hide}
         endElement={
           <LinkButton
@@ -53,10 +53,10 @@ export function UnstakeVrtxDialog() {
         }
       >
         Unstake
-      </BaseDialog.Title>
-      <BaseDialog.Body>
-        <Form onSubmit={onSubmit} className="flex flex-col gap-y-4">
-          <div className="flex flex-col">
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body asChild>
+        <Form onSubmit={onSubmit}>
+          <div className="flex flex-col gap-y-1.5">
             <StakingDialogInput
               {...form.register('amount', {
                 validate: validateAmount,
@@ -67,13 +67,12 @@ export function UnstakeVrtxDialog() {
               estimatedStakeValueUsd={estimatedStakeValueUsd}
               error={amountErrorTooltipContent}
             />
-            <InputSummary.Container>
-              <InputSummary.Item
-                label="Available:"
-                currentValue={amountVrtxStaked}
-                formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-              />
-            </InputSummary.Container>
+            <InputSummaryItem
+              label="Available:"
+              currentValue={amountVrtxStaked}
+              formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              onValueClick={onMaxAmountSelected}
+            />
           </div>
           <FractionAmountButtons
             onFractionSelected={onFractionSelected}
@@ -86,7 +85,7 @@ export function UnstakeVrtxDialog() {
             <UnstakeVrtxSubmitButton state={buttonState} />
           </ActionSummary.Container>
         </Form>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

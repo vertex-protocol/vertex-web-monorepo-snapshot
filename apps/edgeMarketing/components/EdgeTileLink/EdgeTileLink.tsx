@@ -1,11 +1,15 @@
+import { ArrowRight } from '@phosphor-icons/react/dist/ssr/ArrowRight';
+import { ArrowSquareOut } from '@phosphor-icons/react/dist/ssr/ArrowSquareOut';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import Image, { ImageProps } from 'next/image';
 import Link from 'next/link';
 import { ComponentPropsWithRef, ReactNode } from 'react';
-import { RxArrowRight, RxExternalLink } from 'react-icons/rx';
 
 interface EdgeTileLinkProps
-  extends Omit<ComponentPropsWithRef<typeof Link>, 'as' | 'children'> {
+  extends Omit<
+    ComponentPropsWithRef<typeof Link>,
+    'as' | 'children' | 'content'
+  > {
   external?: boolean;
   content: ReactNode;
   contentOnHover?: ReactNode;
@@ -87,9 +91,9 @@ export function EdgeTileLink({
             </span>
           </div>
           {external ? (
-            <RxExternalLink className={iconClassName} size={13} />
+            <ArrowSquareOut className={iconClassName} size={13} />
           ) : (
-            <RxArrowRight className={iconClassName} size={13} />
+            <ArrowRight className={iconClassName} size={13} />
           )}
         </span>
       </span>

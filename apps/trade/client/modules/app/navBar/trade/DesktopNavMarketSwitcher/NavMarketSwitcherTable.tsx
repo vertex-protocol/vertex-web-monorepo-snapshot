@@ -1,4 +1,4 @@
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
@@ -8,9 +8,9 @@ import {
 } from 'client/components/DataTable/utils/sortingFns';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
-import { BaseMarketSwitcherTable } from 'client/modules/trading/components/BaseMarketSwitcherTable/BaseMarketSwitcherTable';
 import { MarketSwitcherStackedPriceCell } from 'client/modules/trading/components/BaseMarketSwitcherTable/cells/MarketSwitcherStackedPriceCell';
 import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
+import { FixedHeaderDataTable } from 'client/components/FixedHeaderDataTable';
 import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
 import { useMemo } from 'react';
@@ -21,13 +21,15 @@ interface Props {
   disableFavoriteButton: boolean;
   toggleIsFavoritedMarket: (marketId: number) => void;
   markets: MarketSwitcherItem[];
-  onRowClick: () => void;
+  isLoading: boolean;
+  onRowClick: (row: Row<MarketSwitcherItem>) => void;
 }
 
 export function NavMarketSwitcherTable({
   disableFavoriteButton,
   toggleIsFavoritedMarket,
   markets,
+  isLoading,
   onRowClick,
 }: Props) {
   const columns: ColumnDef<MarketSwitcherItem, any>[] = useMemo(
@@ -56,12 +58,12 @@ export function NavMarketSwitcherTable({
       columnHelper.accessor('market', {
         header: ({ header }) => <HeaderCell header={header}>Market</HeaderCell>,
         cell: (context) => {
-          const { name, icon } =
+          const { marketName, icon } =
             context.getValue<MarketSwitcherItem['market']>();
 
           return (
             <MarketProductInfoCell
-              name={name}
+              symbol={marketName}
               iconSrc={icon.asset}
               isNewMarket={context.row.original.isNew}
             />
@@ -85,12 +87,13 @@ export function NavMarketSwitcherTable({
           return (
             <MarketSwitcherStackedPriceCell
               currentPrice={currentPrice}
-              priceChangeFrac={priceChangeFrac}
               priceIncrement={priceIncrement}
+              priceChangeFrac={priceChangeFrac}
+              priceChangeFracClassName="text-2xs"
             />
           );
         },
-        sortingFn: getKeyedBigDecimalSortFn('currentPrice'),
+        sortingFn: getKeyedBigDecimalSortFn('priceChangeFrac'),
         meta: {
           cellContainerClassName: 'w-16',
         },
@@ -118,11 +121,20 @@ export function NavMarketSwitcherTable({
   );
 
   return (
-    <BaseMarketSwitcherTable
-      markets={markets}
+    <FixedHeaderDataTable
+      data={markets}
+      isLoading={isLoading}
       columns={columns}
+      initialSortingState={[{ id: 'isFavorited', desc: false }]}
+      rowAsLinkHref={(row) => row.original.href}
       onRowClick={onRowClick}
-      rowClassName="py-0.5"
+      emptyState={
+        <p className="text-text-tertiary p-2 text-xs">No markets found.</p>
+      }
+      // `pr-3` needed as each favorite button has its own left padding (increases hit area)
+      headerClassName="pr-3"
+      rowClassName="pr-3 py-1"
+      scrollContainerClassName="gap-y-0.5"
     />
   );
 }

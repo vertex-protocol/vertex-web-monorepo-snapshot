@@ -1,26 +1,28 @@
+'use client';
+
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
+import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
 import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
-import { ProductInfoCell } from 'client/modules/tables/cells/ProductInfoCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { useMemo } from 'react';
-import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
-import { MarginManagerActionsCell } from './cells/MarginManagerActionsCell';
-import { MarginWeightCell } from './cells/MarginWeightCell';
-import { MarginWeightHeaderCell } from './cells/MarginWeightHeaderCell';
-import { SpreadCell } from './cells/SpreadCell';
+import { CalculatorIconHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/CalculatorIconHeaderCell';
+import { MarginManagerActionsCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginManagerActionsCell';
+import { MarginWeightCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginWeightCell';
+import { MarginWeightHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginWeightHeaderCell';
+import { SpreadCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/SpreadCell';
 import {
   MarginManagerSpreadTableItem,
   useMarginManagerSpreadsTable,
-} from './hooks/useMarginManagerSpreadsTable';
+} from 'client/pages/Portfolio/subpages/MarginManager/tables/hooks/useMarginManagerSpreadsTable';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarginManagerSpreadTableItem>();
 
@@ -38,7 +40,7 @@ export function MarginManagerSpreadsTable({ className }: WithClassnames) {
             const spotMetadata =
               getValue<MarginManagerSpreadTableItem['spotMetadata']>();
             return (
-              <ProductInfoCell
+              <MarketProductInfoCell
                 symbol={spotMetadata.token.symbol}
                 iconSrc={spotMetadata.token.icon.asset}
               />

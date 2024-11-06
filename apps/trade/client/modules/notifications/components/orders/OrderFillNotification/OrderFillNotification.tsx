@@ -1,20 +1,20 @@
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+  getMarketPriceFormatSpecifier,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { CounterPill } from '@vertex-protocol/web-ui';
 import { ActionToast } from 'client/components/Toast/ActionToast/ActionToast';
 import { Toast } from 'client/components/Toast/Toast';
 import { ToastProps } from 'client/components/Toast/types';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { NotificationPositionInfo } from 'client/modules/notifications/components/NotificationPositionInfo';
+import { PartialFillIcon } from 'client/modules/notifications/components/orders/OrderFillNotification/PartialFillIcon';
+import { useOrderFilledNotification } from 'client/modules/notifications/components/orders/OrderFillNotification/useOrderFilledNotification';
+import { OrderNotificationValueItem } from 'client/modules/notifications/components/orders/OrderNotificationValueItem';
 import { OrderFillNotificationData } from 'client/modules/notifications/types';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
-import { OrderNotificationValueItem } from '../OrderNotificationValueItem';
-import { PartialFillIcon } from './PartialFillIcon';
-import { useOrderFilledNotification } from './useOrderFilledNotification';
 
 interface OrderFillNotificationProps extends ToastProps {
   data: OrderFillNotificationData;

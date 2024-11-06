@@ -44,7 +44,7 @@ export function useClaimReferralEarningsDialog() {
       return;
     }
 
-    const serverExecutionResult = executeClaimReferralRewards.mutateAsync({
+    const txResponsePromise = executeClaimReferralRewards.mutateAsync({
       amount: onChainReferralRewardsData.availableToClaim,
     });
 
@@ -52,9 +52,7 @@ export function useClaimReferralEarningsDialog() {
       type: 'action_error_handler',
       data: {
         errorNotificationTitle: 'Claim Referral Rewards Failed',
-        executionData: {
-          serverExecutionResult,
-        },
+        executionData: { txResponsePromise },
       },
     });
   }, [

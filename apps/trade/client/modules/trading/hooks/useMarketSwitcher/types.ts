@@ -1,12 +1,14 @@
 import { BigDecimal, ProductEngineType } from '@vertex-protocol/client';
-import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
+import { TokenIconMetadata } from '@vertex-protocol/metadata';
+import { MarketCategory } from '@vertex-protocol/metadata';
 
 export interface MarketSwitcherItem {
   market: {
     productType: ProductEngineType;
     symbol: string;
-    name: string;
+    marketName: string;
     icon: TokenIconMetadata;
+    categories: Set<MarketCategory>;
   };
   price: {
     currentPrice: BigDecimal | undefined;

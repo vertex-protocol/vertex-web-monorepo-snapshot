@@ -1,10 +1,4 @@
-import { DM_Sans, Inter } from 'next/font/google';
-
-const DM_SANS = DM_Sans({
-  weight: ['400', '500', '700'],
-  variable: '--font-title',
-  subsets: ['latin'],
-});
+import { Inter } from 'next/font/google';
 
 const INTER = Inter({
   variable: '--font-default',
@@ -12,6 +6,6 @@ const INTER = Inter({
 });
 
 export const VERTEX_FONTS = {
-  title: DM_SANS,
+  title: INTER,
   default: INTER,
 };

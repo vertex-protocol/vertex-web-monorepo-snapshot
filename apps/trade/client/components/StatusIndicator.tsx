@@ -3,7 +3,7 @@ import { SizeVariant } from '@vertex-protocol/web-ui';
 
 interface Props {
   sizeVariant?: Extract<SizeVariant, 'sm' | 'base'>;
-  colorVariant: 'warning' | 'positive' | 'primary';
+  colorVariant: 'warning' | 'positive' | 'negative';
 }
 
 export function StatusIndicator({ sizeVariant = 'base', colorVariant }: Props) {
@@ -23,10 +23,10 @@ export function StatusIndicator({ sizeVariant = 'base', colorVariant }: Props) {
       middle: 'bg-positive/20',
       inner: 'bg-positive',
     },
-    primary: {
-      outer: 'bg-primary/20',
-      middle: 'bg-primary/20',
-      inner: 'bg-primary',
+    negative: {
+      outer: 'bg-negative/20',
+      middle: 'bg-negative/20',
+      inner: 'bg-negative',
     },
   }[colorVariant];
 

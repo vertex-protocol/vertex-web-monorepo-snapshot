@@ -5,11 +5,9 @@ export const PORTFOLIO_SUBROUTES = {
   balances: 'balances',
   positions: 'positions',
   pools: 'pools',
-  newLp: 'new-lp-positions',
   orders: 'orders',
   marginManager: 'margin-manager',
   history: 'history',
-  faq: 'faq',
   faucet: 'faucet',
 };
 
@@ -22,9 +20,7 @@ export const ROUTES = {
     orders: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.orders}`,
     marginManager: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.marginManager}`,
     history: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.history}`,
-    faq: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.faq}`,
     pools: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.pools}`,
-    newPools: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.newLp}`,
     faucet: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.faucet}`,
   },
   spotTrading: '/spot',
@@ -34,8 +30,6 @@ export const ROUTES = {
   moneyMarkets: '/money-markets',
   rewards: '/rewards',
   referrals: '/referrals',
-  points: '/points',
+  vaults: '/vaults',
   vrtx: '/vrtx',
-  mantleTradingCompetition: '/mantle-trading-competition',
-  blitzTradingCompetition: '/blitz-trading-competition',
 } as const;

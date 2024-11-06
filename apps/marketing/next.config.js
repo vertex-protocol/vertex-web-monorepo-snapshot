@@ -5,9 +5,19 @@
  **/
 module.exports = {
   reactStrictMode: true,
-  // Without this, Next.js is unable to resolve imports from the common package
-  transpilePackages: [],
+  webpack: (config) => {
+    config.externals.push('pino-pretty', 'encoding');
+    return config;
+  },
   images: {
-    domains: ['blog.vertexprotocol.com'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'blog.vertexprotocol.com' },
+    ],
+  },
+  experimental: {
+    optimizePackageImports: [
+      '@vertex-protocol/react-client',
+      '@vertex-protocol/web-common',
+    ],
   },
 };

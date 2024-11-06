@@ -1,7 +1,7 @@
 import * as Accordion from '@radix-ui/react-accordion';
 import { joinClassNames, NextImageSrc } from '@vertex-protocol/web-common';
 import { Card } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import Image from 'next/image';
 import { ReactNode } from 'react';
 

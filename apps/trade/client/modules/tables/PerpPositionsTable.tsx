@@ -1,16 +1,8 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import {
-  PresetNumberFormatSpecifier,
-  useEVMContext,
-} from '@vertex-protocol/react-client';
-import {
-  IconButton,
-  Icons,
-  LabelTooltip,
-  SecondaryButton,
-} from '@vertex-protocol/web-ui';
+import { IconButton, Icons, SecondaryButton } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
@@ -18,26 +10,26 @@ import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CloseAllPositionsHeaderCell } from 'client/modules/tables/cells/CloseAllPositionsHeaderCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
+import { PerpStackedPnlCell } from 'client/modules/tables/cells/PerpStackedPnlCell';
+import { PerpTpSlCell } from 'client/modules/tables/cells/PerpTpSlCell';
+import { StackedAmountValueCell } from 'client/modules/tables/cells/StackedAmountValueCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { MarketFilter } from 'client/types/MarketFilter';
-import { useMemo } from 'react';
-import { PerpStackedPnlCell } from './cells/PerpStackedPnlCell';
-import { PerpTpSlCell } from './cells/PerpTpSlCell';
-import { StackedAmountValueCell } from './cells/StackedAmountValueCell';
 import {
   PerpPositionsTableItem,
   usePerpPositionsTable,
-} from './hooks/usePerpPositionsTable';
-import { getTableButtonOnClickHandler } from './utils/getTableButtonOnClickHandler';
+} from 'client/modules/tables/hooks/usePerpPositionsTable';
+import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
+import { MarketFilter } from 'client/types/MarketFilter';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<PerpPositionsTableItem>();
 
@@ -51,20 +43,16 @@ export function PerpPositionsTable({
   marketFilter,
   hasBackground,
 }: WithClassnames<Props>) {
-  const { connectionStatus } = useEVMContext();
+  const { show } = useDialog();
+  const isDesktop = useIsDesktop();
+  const pushTradePage = usePushTradePage();
 
   const { positions, isLoading } = usePerpPositionsTable({
     marketFilter,
   });
 
-  const { show } = useDialog();
-  const pushTradePage = usePushTradePage();
-
-  const userActionState = useUserActionState();
-  const disableClosePosition = userActionState !== 'allow_all';
-
-  const isDesktop = useIsDesktop();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
+  const disableClosePosition = !isConnected;
 
   const columns: ColumnDef<PerpPositionsTableItem, any>[] = useMemo(() => {
     return [
@@ -267,24 +255,23 @@ export function PerpPositionsTable({
           return (
             <TableCell className="pointer-events-auto px-4">
               <div className="flex w-full items-center gap-x-3">
-                <LabelTooltip label="Share Position" asChild noHelpCursor>
-                  <IconButton
-                    size="xs"
-                    onClick={getTableButtonOnClickHandler(() => {
-                      show({
-                        type: 'perp_pnl_social_sharing',
-                        params: {
-                          marketInfo,
-                          pnlFrac: estimatedPnlFrac,
-                          entryPrice: averageEntryPrice,
-                          referencePrice: fastOraclePrice,
-                          isRealized: false,
-                        },
-                      });
-                    })}
-                    icon={Icons.RiShareForwardFill}
-                  />
-                </LabelTooltip>
+                <IconButton
+                  tooltipLabel="Share Position"
+                  size="xs"
+                  onClick={getTableButtonOnClickHandler(() => {
+                    show({
+                      type: 'perp_pnl_social_sharing',
+                      params: {
+                        marketInfo,
+                        pnlFrac: estimatedPnlFrac,
+                        entryPrice: averageEntryPrice,
+                        referencePrice: fastOraclePrice,
+                        isRealized: false,
+                      },
+                    });
+                  })}
+                  icon={Icons.ShareFatFill}
+                />
                 <SecondaryButton
                   destructive
                   className="flex-1"

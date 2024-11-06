@@ -1,9 +1,32 @@
-import { ExternalNavCardButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
-import { FAQ_LINKS } from 'client/modules/app/consts/faqLinks';
+import { ExternalNavCardButton, Icons } from '@vertex-protocol/web-ui';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
+
+const FAQ_LINKS = {
+  faq: {
+    href: LINKS.faq,
+    external: true,
+    title: 'FAQ',
+    description: 'Answers to common questions',
+    icon: Icons.FileText,
+  },
+  tutorials: {
+    href: LINKS.tutorials,
+    external: true,
+    title: 'Tutorials',
+    description: 'How to use the app',
+    icon: Icons.NavigationArrowFill,
+  },
+  discord: {
+    href: LINKS.discord,
+    external: true,
+    title: 'Get Help',
+    description: 'Ask questions in Discord',
+    icon: Icons.DiscordLogo,
+  },
+} as const;
 
 export function HelpCenterDialog() {
   const { hide } = useDialog();
@@ -15,9 +38,9 @@ export function HelpCenterDialog() {
   };
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Help Center</BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-2">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>Help Center</BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         {Object.values(FAQ_LINKS).map(
           ({ title, href, external, description, icon }) => {
             return (
@@ -35,7 +58,7 @@ export function HelpCenterDialog() {
             );
           },
         )}
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

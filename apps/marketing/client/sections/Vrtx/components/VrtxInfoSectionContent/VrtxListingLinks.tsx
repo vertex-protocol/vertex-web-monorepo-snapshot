@@ -3,7 +3,7 @@ import { HomePageButton } from 'client/components/Button/HomePageButton';
 import { EXTERNAL_LINKS } from 'client/consts';
 import Image from 'next/image';
 import Link from 'next/link';
-import { VrtxInfoSectionContainer } from './VrtxInfoSectionContainer';
+import { VrtxInfoSectionContainer } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxInfoSectionContainer';
 
 import bybitIcon from 'client/sections/Vrtx/assets/bybit-logo.svg';
 import camelotIcon from 'client/sections/Vrtx/assets/camelot-logo.svg';
@@ -13,7 +13,7 @@ import kucoinIcon from 'client/sections/Vrtx/assets/kucoin-logo.svg';
 import mexcIcon from 'client/sections/Vrtx/assets/mexc-logo.svg';
 import traderIcon from 'client/sections/Vrtx/assets/trader-joe.webp';
 import vertexIcon from 'client/sections/Vrtx/assets/vertex-logo.svg';
-import { VrtxLinkProps } from './VrtxNetworkCard';
+import { VrtxLinkProps } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxNetworkCard/VrtxNetworkCard';
 
 const LISTING_LINKS = [
   {

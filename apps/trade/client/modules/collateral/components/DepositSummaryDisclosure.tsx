@@ -1,4 +1,5 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
@@ -7,16 +8,15 @@ import { WithClassnames } from '@vertex-protocol/web-common';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { DepositInfoCardType } from 'client/modules/collateral/deposit/types';
 import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import { useMemo } from 'react';
-import { DepositInfoCardType } from '../deposit/types';
 
 interface Props extends WithClassnames {
   estimateStateTxs: SubaccountTx[];
   displayedInfoCardType?: DepositInfoCardType;
   productId?: number;
-  triggerOpen?: boolean;
+  isHighlighted?: boolean;
   symbol?: string;
 }
 
@@ -25,7 +25,7 @@ export function DepositSummaryDisclosure({
   estimateStateTxs,
   displayedInfoCardType,
   productId,
-  triggerOpen,
+  isHighlighted,
   symbol,
 }: Props) {
   const { current: currentState, estimated: estimatedState } =
@@ -74,7 +74,7 @@ export function DepositSummaryDisclosure({
   })();
 
   const content = (
-    <div className="flex flex-col gap-y-2 px-3 pb-2.5">
+    <>
       {metricItems.map(
         (
           { numberFormatSpecifier, label, value, newValue, valueEndElement },
@@ -93,7 +93,7 @@ export function DepositSummaryDisclosure({
         ),
       )}
       {vrtxMarginInfoContent}
-    </div>
+    </>
   );
 
   return (
@@ -101,8 +101,7 @@ export function DepositSummaryDisclosure({
       className={className}
       expandableContent={content}
       labelContent="Summary"
-      triggerOpen={triggerOpen}
-      isHighlighted={triggerOpen}
+      isHighlighted={isHighlighted}
     />
   );
 }

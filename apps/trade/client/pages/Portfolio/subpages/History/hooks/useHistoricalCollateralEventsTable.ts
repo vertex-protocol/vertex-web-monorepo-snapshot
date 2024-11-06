@@ -1,27 +1,39 @@
+import { BigDecimals } from '@vertex-protocol/client';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import {
   GetIndexerSubaccountCollateralEventsResponse,
   IndexerCollateralEvent,
 } from '@vertex-protocol/indexer-client';
 import { CollateralEventType } from '@vertex-protocol/indexer-client/dist/types/collateralEventType';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
-import { removeDecimals } from '@vertex-protocol/utils';
+import { Token } from '@vertex-protocol/metadata';
+import {
+  BigDecimal,
+  removeDecimals,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import {
+  SpotStaticMarketData,
+  useAllMarketsStaticData,
+} from 'client/hooks/markets/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedCollateralEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedCollateralEvents';
-import { useNSubmissions } from 'client/hooks/query/useNSubmissions';
+import { useAllProductsWithdrawPoolLiquidity } from 'client/hooks/query/withdrawPool/useAllProductsWithdrawPoolLiquidity';
+import { useAreWithdrawalsProcessing } from 'client/modules/collateral/hooks/useAreWithdrawalsProcessing';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { Token } from 'common/productMetadata/types';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
-export interface HistoricalCollateralItem {
+export interface HistoricalCollateralEventsTableItem {
   metadata: Token;
   timestampMillis: number;
   size: BigDecimal;
   valueUsd: BigDecimal;
-  isPending: boolean;
+  isProcessing: boolean | undefined;
+  hasWithdrawPoolLiquidity: boolean;
+  submissionIndex: string;
+  amount: BigDecimal;
+  productId: number;
 }
 
 const PAGE_SIZE = 10;
@@ -37,88 +49,147 @@ export function useHistoricalCollateralEventsTable({
 }: {
   eventTypes: CollateralEventType[];
 }) {
+  const { data: allProductsWithdrawPoolLiquidityData } =
+    useAllProductsWithdrawPoolLiquidity();
   const { data: allMarketsStaticData, isLoading: allMarketsLoading } =
     useAllMarketsStaticData();
-  const quotePrice = usePrimaryQuotePriceUsd();
-  const { data: nSubmissions, isLoading: nSubmissionsLoading } =
-    useNSubmissions();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const {
     data: subaccountPaginatedEvents,
     isLoading: subaccountPaginatedEventsLoading,
-    isFetchingNextPage,
     fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
     hasNextPage,
   } = useSubaccountPaginatedCollateralEvents({
     eventTypes,
     pageSize: PAGE_SIZE,
   });
 
-  const { pageCount, paginationState, setPaginationState, getPageData } =
-    useDataTablePagination<
-      GetIndexerSubaccountCollateralEventsResponse,
-      IndexerCollateralEvent
-    >({
-      numPagesFromQuery: subaccountPaginatedEvents?.pages.length,
-      pageSize: PAGE_SIZE,
-      hasNextPage,
-      fetchNextPage,
-      extractItems,
-    });
-
-  const mappedData: HistoricalCollateralItem[] | undefined = useMemo(() => {
-    if (!subaccountPaginatedEvents || !allMarketsStaticData || !nSubmissions) {
-      return undefined;
-    }
-
-    return getPageData(subaccountPaginatedEvents)
-      .map((event) => {
-        const productId = event.snapshot.market.productId;
-        const productData =
-          productId === QUOTE_PRODUCT_ID
-            ? allMarketsStaticData.primaryQuote
-            : allMarketsStaticData.spot[productId];
-
-        if (!productData) {
-          console.warn(
-            `Product ${productId} not found for historical deposits/withdrawals`,
-          );
-          return undefined;
-        }
-
-        const metadata = productData.metadata.token;
-        const amount = removeDecimals(toBigDecimal(event.amount));
-        const size = amount.abs();
-        const isPending = nSubmissions.lt(event.submissionIndex);
-
-        const oraclePrice = event.snapshot.market.product.oraclePrice;
-
-        return {
-          metadata,
-          timestampMillis: secondsToMilliseconds(event.timestamp.toNumber()),
-          valueUsd: size.times(oraclePrice).times(quotePrice),
-          size,
-          isPending,
-        };
-      })
-      .filter(nonNullFilter);
-  }, [
-    subaccountPaginatedEvents,
-    allMarketsStaticData,
+  const {
+    pageCount,
+    paginationState,
+    setPaginationState,
     getPageData,
-    quotePrice,
-    nSubmissions,
-  ]);
+    isFetchingCurrPage,
+  } = useDataTablePagination<
+    GetIndexerSubaccountCollateralEventsResponse,
+    IndexerCollateralEvent
+  >({
+    numPagesFromQuery: subaccountPaginatedEvents?.pages.length,
+    pageSize: PAGE_SIZE,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    extractItems,
+  });
+
+  const pageDataEvents = useMemo(
+    () => getPageData(subaccountPaginatedEvents),
+    [getPageData, subaccountPaginatedEvents],
+  );
+
+  const submissionIndices = useMemo(
+    () => pageDataEvents?.map((event) => event.submissionIndex),
+    [pageDataEvents],
+  );
+
+  const areWithdrawalsProcessingData = useAreWithdrawalsProcessing({
+    submissionIndices,
+  });
+
+  const mappedData: HistoricalCollateralEventsTableItem[] | undefined =
+    useMemo(() => {
+      if (!subaccountPaginatedEvents || !allMarketsStaticData) {
+        return undefined;
+      }
+      return getPageData(subaccountPaginatedEvents)
+        .map((event) => {
+          const productId = event.snapshot.market.productId;
+          const staticMarketData =
+            productId === QUOTE_PRODUCT_ID
+              ? allMarketsStaticData.primaryQuote
+              : allMarketsStaticData.spot[productId];
+
+          if (!staticMarketData) {
+            console.warn(
+              `[useHistoricalCollateralEventsTable] Product ${productId} not found`,
+            );
+            return undefined;
+          }
+
+          return getHistoricalCollateralEventsTableItem({
+            event,
+            staticMarketData,
+            areWithdrawalsProcessingData,
+            allProductsWithdrawPoolLiquidityData,
+            primaryQuotePriceUsd,
+          });
+        })
+        .filter(nonNullFilter);
+    }, [
+      subaccountPaginatedEvents,
+      allMarketsStaticData,
+      getPageData,
+      areWithdrawalsProcessingData,
+      allProductsWithdrawPoolLiquidityData,
+      primaryQuotePriceUsd,
+    ]);
 
   return {
     isLoading:
       subaccountPaginatedEventsLoading ||
-      nSubmissionsLoading ||
-      isFetchingNextPage ||
-      allMarketsLoading,
+      allMarketsLoading ||
+      isFetchingCurrPage,
     mappedData,
     pageCount,
     paginationState,
     setPaginationState,
+  };
+}
+
+interface GetHistoricalCollateralEventsTableItemParams {
+  event: IndexerCollateralEvent;
+  staticMarketData: SpotStaticMarketData;
+  areWithdrawalsProcessingData: Record<string, boolean> | undefined;
+  allProductsWithdrawPoolLiquidityData: Record<number, BigDecimal> | undefined;
+  primaryQuotePriceUsd: BigDecimal;
+}
+
+export function getHistoricalCollateralEventsTableItem({
+  event,
+  staticMarketData,
+  primaryQuotePriceUsd,
+  areWithdrawalsProcessingData,
+  allProductsWithdrawPoolLiquidityData,
+}: GetHistoricalCollateralEventsTableItemParams) {
+  const productId = event.snapshot.market.productId;
+  const metadata = staticMarketData.metadata.token;
+  const amount = removeDecimals(toBigDecimal(event.amount));
+  const size = amount.abs();
+  const isWithdraw = event.eventType === 'withdraw_collateral';
+  const isProcessing =
+    isWithdraw && areWithdrawalsProcessingData?.[event.submissionIndex];
+
+  const oraclePrice = event.snapshot.market.product.oraclePrice;
+
+  // If there is liquidity in the withdraw pool for this product, then a fast withdraw is available,
+  // We enable fast withdraw button depending on this.
+  const hasWithdrawPoolLiquidity =
+    allProductsWithdrawPoolLiquidityData?.[productId]?.gt(BigDecimals.ZERO) ??
+    false;
+
+  return {
+    metadata,
+    timestampMillis: secondsToMilliseconds(event.timestamp.toNumber()),
+    valueUsd: size.times(oraclePrice).times(primaryQuotePriceUsd),
+    size,
+    isProcessing,
+    hasWithdrawPoolLiquidity,
+    submissionIndex: event.submissionIndex,
+    amount,
+    productId,
   };
 }

@@ -1,10 +1,9 @@
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
 import { useSpotLeverageEnabled } from 'client/modules/trading/hooks/useSpotLeverageEnabled';
-import { useEVMContext } from '@vertex-protocol/react-client';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 
 export function useShowLeverageWarnings() {
-  const { connectionStatus } = useEVMContext();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
 
   const { spotLeverageEnabled } = useSpotLeverageEnabled();
   const { shouldShow: shouldShowLeverageOnDisclosure } = useShowUserDisclosure(

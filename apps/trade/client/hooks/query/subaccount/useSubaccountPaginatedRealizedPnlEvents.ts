@@ -1,17 +1,16 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   GetIndexerSubaccountMatchEventParams,
   IndexerMatchEvent,
   PaginatedIndexerEventsResponse,
 } from '@vertex-protocol/indexer-client';
-import { BigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { calcOrderFillPrice } from 'client/utils/calcs/calcOrderFillPrice';
 import { calcPreMatchEventBalanceAmount } from 'client/utils/calcs/calcPreMatchEventBalanceAmount';
@@ -25,7 +24,7 @@ interface Params {
 }
 
 export function subaccountPaginatedRealizedPnlEventsQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   subaccountOwner?: string,
   subaccountName?: string,
   productIds?: number[],
@@ -33,7 +32,7 @@ export function subaccountPaginatedRealizedPnlEventsQueryKey(
 ) {
   return createQueryKey(
     'subaccountPaginatedRealizedPnlEvents',
-    chainId,
+    chainEnv,
     subaccountOwner,
     subaccountName,
     productIds,
@@ -63,16 +62,19 @@ export function useSubaccountPaginatedRealizedPnlEvents({
   pageSize = 10,
   productIds,
 }: Params) {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const {
-    currentSubaccount: { address: subaccountOwner, name: subaccountName },
+    currentSubaccount: {
+      address: subaccountOwner,
+      name: subaccountName,
+      chainEnv,
+    },
   } = useSubaccountContext();
   const disabled = !vertexClient || !subaccountOwner || !productIds;
 
   return useInfiniteQuery({
     queryKey: subaccountPaginatedRealizedPnlEventsQueryKey(
-      primaryChainId,
+      chainEnv,
       subaccountOwner,
       subaccountName,
       productIds,
@@ -107,43 +109,13 @@ export function useSubaccountPaginatedRealizedPnlEvents({
           );
 
         matchEventsResponse.events.forEach((event) => {
-          // Realized PnL = -1 * amount delta * (fill price inc. fees - pre-entry price) = amount delta * (pre-entry price - fill price inc. fees)
-          //    - The negative is because we sell (amount delta is negative) to realize pnl for a long position
-          //    - Amount delta = sign(base filled) * min(abs(base filled), abs(pre-balance amt)) as we can have a fill that reduces the position, then opens a new position
-          //    - Fill price inc. fees = abs(quote filled / base filled)
-          //    - Pre-entry price = abs(net entry unrealized / pre-balance amt)
-          const preTradeBalanceAmount = event.preBalances.base.amount;
-          const baseFilled = event.baseFilled;
-          const preEventBalanceAmount = calcPreMatchEventBalanceAmount(event);
+          const realizedPnlEvent = getRealizedPnlEvent({ matchEvent: event });
 
-          if (!isReducePositionMatchEvent(event)) {
+          if (!realizedPnlEvent) {
             return;
           }
 
-          const reduceOnlyBaseFilledAmount = BigDecimal.min(
-            baseFilled.abs(),
-            preEventBalanceAmount.abs(),
-          ).multipliedBy(baseFilled.isPositive() ? 1 : -1);
-          const entryPrice = event.preEventTrackedVars.netEntryUnrealized
-            .div(preTradeBalanceAmount)
-            .abs();
-          const fillPrice = event.quoteFilled.div(baseFilled).abs();
-          const realizedPnl = reduceOnlyBaseFilledAmount.multipliedBy(
-            entryPrice.minus(fillPrice),
-          );
-
-          events.push({
-            ...event,
-            realizedPnl,
-            entryPrice,
-            reduceOnlyBaseFilledAmount,
-            preEventBalanceAmount,
-            exitPrice: calcOrderFillPrice(
-              event.quoteFilled,
-              event.totalFee,
-              event.baseFilled,
-            ),
-          });
+          events.push(realizedPnlEvent);
         });
 
         // Update the next cursor
@@ -177,4 +149,47 @@ export function useSubaccountPaginatedRealizedPnlEvents({
     enabled: !disabled,
     // This query is refreshed via `OrderFillQueryRefetchListener` so we shouldn't need "dumb" refresh intervals
   });
+}
+
+/**
+ * From an indexer match event, create a realized pnl event, or null if the event is not a reduce position event
+ * @param matchEvent
+ */
+export function getRealizedPnlEvent({
+  matchEvent,
+}: {
+  matchEvent: IndexerMatchEvent;
+}): RealizedPnlEvent | null {
+  const preTradeBalanceAmount = matchEvent.preBalances.base.amount;
+  const baseFilled = matchEvent.baseFilled;
+  const preEventBalanceAmount = calcPreMatchEventBalanceAmount(matchEvent);
+
+  if (!isReducePositionMatchEvent(matchEvent)) {
+    return null;
+  }
+
+  const reduceOnlyBaseFilledAmount = BigDecimal.min(
+    baseFilled.abs(),
+    preEventBalanceAmount.abs(),
+  ).multipliedBy(baseFilled.isPositive() ? 1 : -1);
+  const entryPrice = matchEvent.preEventTrackedVars.netEntryUnrealized
+    .div(preTradeBalanceAmount)
+    .abs();
+  const fillPrice = matchEvent.quoteFilled.div(baseFilled).abs();
+  const realizedPnl = reduceOnlyBaseFilledAmount.multipliedBy(
+    entryPrice.minus(fillPrice),
+  );
+
+  return {
+    ...matchEvent,
+    realizedPnl,
+    entryPrice,
+    reduceOnlyBaseFilledAmount,
+    preEventBalanceAmount,
+    exitPrice: calcOrderFillPrice(
+      matchEvent.quoteFilled,
+      matchEvent.totalFee,
+      matchEvent.baseFilled,
+    ),
+  };
 }

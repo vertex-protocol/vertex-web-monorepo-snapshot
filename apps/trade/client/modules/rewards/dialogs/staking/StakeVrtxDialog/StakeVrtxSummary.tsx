@@ -1,22 +1,16 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { VOVRTX_INFO, VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
+import { formatTimestamp, TimeFormatSpecifier } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
-import {
-  VOVRTX_INFO,
-  VRTX_TOKEN_INFO,
-} from 'common/productMetadata/vertexTokenInfo';
+import { StakingSummary } from 'client/modules/rewards/dialogs/staking/components/StakingSummary';
+import { useStakingSummary } from 'client/modules/rewards/dialogs/staking/useStakingSummary';
 import Image from 'next/image';
-import { StakingSummary } from '../components/StakingSummary';
-import { useStakingSummary } from '../useStakingSummary';
 
 interface Props extends WithClassnames {
   validAmount: BigDecimal | undefined;
@@ -124,7 +118,7 @@ export function StakeVrtxSummary({ className, validAmount }: Props) {
       className={className}
       expandableContent={content}
       labelContent="Summary"
-      triggerOpen={!!estimatedSummary}
+      isHighlighted={!!estimatedSummary}
     />
   );
 }

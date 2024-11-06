@@ -11,7 +11,9 @@ export function ErrorPanel({
   return (
     <div
       className={mergeClassNames(
-        'text-negative rounded p-2 text-xs',
+        'flex flex-col items-start gap-y-1.5',
+        'rounded px-3 py-2',
+        'text-text-secondary text-xs',
         'bg-negative-muted',
         className,
       )}

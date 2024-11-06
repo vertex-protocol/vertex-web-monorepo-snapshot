@@ -6,14 +6,13 @@ import {
   IndexerSubaccountSnapshot,
 } from '@vertex-protocol/indexer-client';
 import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
+import { calcIndexerCumulativePerpEntryCost } from 'client/utils/calcs/perpEntryCostCalcs';
 import {
   calcIndexerSummaryCumulativeLpPnl,
   calcIndexerSummaryCumulativePnl,
   calcPnlFracForNonZeroDenom,
 } from 'client/utils/calcs/pnlCalcs';
-import { safeDiv } from '../safeDiv';
-import { calcBorrowAPR, calcDepositAPR } from './calcSpotApr';
-import { calcIndexerCumulativePerpEntryCost } from './perpEntryCostCalcs';
+import { safeDiv } from 'client/utils/safeDiv';
 
 // Values are NOT decimal adjusted
 export interface IndexerSubaccountMetrics {
@@ -33,8 +32,7 @@ export interface IndexerSubaccountMetrics {
   totalDepositsValue: BigDecimal;
   // Expect this to be negative as borrows have negative value
   totalBorrowsValue: BigDecimal;
-  averageSpotApr: BigDecimal;
-  cumulativeNetSpotInterest: BigDecimal;
+  cumulativeNetSpotInterestValue: BigDecimal;
   // LP
   cumulativeTotalLpPnl: BigDecimal;
   cumulativeTotalLpPnlFrac: BigDecimal | undefined;
@@ -52,8 +50,7 @@ export function getSubaccountMetricsFromIndexerSnapshot(
   let cumulativePerpEntryCostWithLeverage = BigDecimals.ZERO;
   let totalDepositsValue = BigDecimals.ZERO;
   let totalBorrowsValue = BigDecimals.ZERO;
-  let spotAprWeightedByValue = BigDecimals.ZERO;
-  let cumulativeNetSpotInterest = BigDecimals.ZERO;
+  let cumulativeNetSpotInterestValue = BigDecimals.ZERO;
   let cumulativeTotalLpPnl = BigDecimals.ZERO;
   let cumulativeLpEntryCost = BigDecimals.ZERO;
   let totalLpValue = BigDecimals.ZERO;
@@ -93,22 +90,15 @@ export function getSubaccountMetricsFromIndexerSnapshot(
       if (balanceValue.gt(0)) {
         // Calculate positive deposit values
         totalDepositsValue = totalDepositsValue.plus(balanceValue);
-        // Yearly interest rate
-        const depositApr = calcDepositAPR(balance.state.market.product);
-        spotAprWeightedByValue = spotAprWeightedByValue.plus(
-          balanceValue.multipliedBy(depositApr),
-        );
       } else {
         // Calculate negative borrow values
         totalBorrowsValue = totalBorrowsValue.plus(balanceValue);
-        // Yearly interest rate
-        const borrowApr = calcBorrowAPR(balance.state.market.product);
-        spotAprWeightedByValue = spotAprWeightedByValue.plus(
-          balanceValue.multipliedBy(borrowApr),
-        );
       }
-      cumulativeNetSpotInterest = cumulativeNetSpotInterest.plus(
-        balance.trackedVars.netInterestCumulative,
+      // increment cumulative spot interest in usd value at the time of snapshot
+      cumulativeNetSpotInterestValue = cumulativeNetSpotInterestValue.plus(
+        balance.trackedVars.netInterestCumulative.multipliedBy(
+          balanceMarket.product.oraclePrice,
+        ),
       );
       portfolioValue = portfolioValue.plus(balanceValue);
     } else if (balanceType === ProductEngineType.PERP) {
@@ -155,11 +145,7 @@ export function getSubaccountMetricsFromIndexerSnapshot(
     totalDepositsValue,
     totalBorrowsValue,
     totalNetSpotValue: totalDepositsValue.plus(totalBorrowsValue),
-    cumulativeNetSpotInterest,
-    averageSpotApr: safeDiv(
-      spotAprWeightedByValue,
-      totalDepositsValue.plus(totalBorrowsValue.abs()),
-    ),
+    cumulativeNetSpotInterestValue,
     cumulativeTotalLpPnl,
     cumulativeTotalLpPnlFrac: calcPnlFracForNonZeroDenom(
       cumulativeTotalLpPnl,

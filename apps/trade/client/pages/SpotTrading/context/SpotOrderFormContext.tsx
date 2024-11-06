@@ -26,11 +26,6 @@ import {
   OrderFormError,
   OrderFormValidators,
 } from 'client/modules/trading/types';
-import {
-  SpotOrderFormTradingAccountMetrics,
-  useSpotOrderFormAccountMetrics,
-} from 'client/pages/SpotTrading/context/hooks/useSpotOrderFormAccountMetrics';
-import { useSpotOrderFormEstimateStateTxs } from 'client/pages/SpotTrading/context/hooks/useSpotOrderFormEstimateStateTxs';
 import { useSpotOrderFormOnChangeSideEffects } from 'client/pages/SpotTrading/context/hooks/useSpotOrderFormOnChangeSideEffects';
 import { useSpotOrderFormUserStateError } from 'client/pages/SpotTrading/context/hooks/useSpotOrderFormUserStateError';
 import {
@@ -107,9 +102,13 @@ export interface SpotOrderFormContextData {
     size: BigDecimal | undefined;
   };
   /**
-   * Estimated account status changes corresponding to the current order form input
+   * Maximum order size, in terms of the asset, for the currently selected market
    */
-  tradingAccountMetrics: SpotOrderFormTradingAccountMetrics;
+  maxAssetOrderSize: BigDecimal | undefined;
+  /**
+     Whether to enable max size logic
+  */
+  enableMaxSizeLogic: boolean;
   /**
    * Form submit handler
    */
@@ -159,10 +158,12 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
     roundPrice,
     roundAmount,
     minAssetOrderSize,
+    totalLpSupply,
   } = useOrderFormProductData({
     form: useSpotForm,
     latestMarketPrices,
     currentMarket,
+    productId,
   });
 
   const executePlaceOrder = useExecutePlaceOrder();
@@ -181,7 +182,7 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
 
   // Trades for any size are only allowed for market orders in markets where a LP pool is available
   const allowAnyOrderSizeIncrement = Boolean(
-    priceType === 'market' && currentMarket?.metadata.hasLpPool,
+    priceType === 'market' && totalLpSupply?.gt(0),
   );
 
   /**
@@ -273,29 +274,6 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
   });
 
   /**
-   * Subaccount state estimation
-   */
-  const estimateStateTxs = useSpotOrderFormEstimateStateTxs({
-    orderSide,
-    productId,
-    quoteProductId: quoteMetadata?.productId,
-    validatedAssetAmountInput,
-    executionConversionPrice,
-    maxAssetOrderSize,
-    enableMaxSizeLogic,
-  });
-
-  /**
-   * Perp Trading Account Metrics
-   */
-  const tradingAccountMetrics = useSpotOrderFormAccountMetrics({
-    currentMarket,
-    quoteMetadata,
-    estimateStateTxs,
-    orderSide,
-  });
-
-  /**
    * On submit handler
    */
   const submitHandler = useOrderFormSubmitHandler({
@@ -342,7 +320,9 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
         size: sizeIncrement,
       },
       maxOrderSizes,
+      enableMaxSizeLogic,
       minAssetOrderSize,
+      maxAssetOrderSize,
       allowAnyOrderSizeIncrement,
       form: useSpotForm,
       onSubmit: useSpotForm.handleSubmit(submitHandler),
@@ -353,7 +333,6 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
       executionConversionPrice,
       slippageFraction,
       validatedAssetAmountInput,
-      tradingAccountMetrics,
       inputConversionPrice,
       quoteMetadata,
     };
@@ -362,7 +341,9 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
     priceIncrement,
     sizeIncrement,
     maxOrderSizes,
+    enableMaxSizeLogic,
     minAssetOrderSize,
+    maxAssetOrderSize,
     allowAnyOrderSizeIncrement,
     useSpotForm,
     submitHandler,
@@ -373,7 +354,6 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
     executionConversionPrice,
     slippageFraction,
     validatedAssetAmountInput,
-    tradingAccountMetrics,
     inputConversionPrice,
     quoteMetadata,
   ]);

@@ -1,5 +1,6 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { WALLET_BUTTON_ICON_SIZE_CLASSNAME } from 'client/modules/app/dialogs/wallet/states/connect/consts';
 import { ConnectorMetadata } from 'client/modules/app/dialogs/wallet/states/connect/customConnectorMetadata';
 import { Connector } from 'wagmi';
@@ -21,6 +22,7 @@ export function WalletButton({
   isLoading,
   isDisabled,
 }: Props) {
+  const { trackEvent } = useAnalyticsContext();
   const connectorIcon = (() => {
     // Resolved external icon URL
     if (typeof metadata.icon === 'string') {
@@ -45,6 +47,12 @@ export function WalletButton({
       )}
       onClick={() => {
         connect(connector);
+        trackEvent({
+          type: 'wallet_connected',
+          data: {
+            walletName: connector.name,
+          },
+        });
       }}
       isLoading={isLoading}
       disabled={isDisabled}

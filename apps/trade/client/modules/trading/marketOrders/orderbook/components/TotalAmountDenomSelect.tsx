@@ -1,5 +1,4 @@
-import { Icons, Select, useSelect } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import { Select, UpDownChevronIcon, useSelect } from '@vertex-protocol/web-ui';
 import { useMemo } from 'react';
 
 interface Props {
@@ -41,10 +40,8 @@ export function TotalAmountDenomSelect({
     open,
     onValueChange,
     value,
-    defaultOpen,
     onOpenChange,
   } = useSelect({
-    defaultOpen: false,
     selectedValue,
     onSelectedValueChange,
     options,
@@ -55,7 +52,6 @@ export function TotalAmountDenomSelect({
       open={open}
       onValueChange={onValueChange}
       value={value}
-      defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
       <Select.Trigger
@@ -66,11 +62,7 @@ export function TotalAmountDenomSelect({
       </Select.Trigger>
       <Select.Options className="min-w-20">
         {selectOptions.map(({ label, value }) => (
-          <Select.Option
-            key={value}
-            value={value}
-            selectionEndIcon={<Icons.MdCheck />}
-          >
+          <Select.Option key={value} value={value}>
             {label}
           </Select.Option>
         ))}

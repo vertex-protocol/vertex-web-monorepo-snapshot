@@ -1,3 +1,5 @@
+'use client';
+
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import Image from 'next/image';
 

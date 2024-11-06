@@ -16,18 +16,18 @@ export function LpInfoPanelTokenPairHeader({
     <div className="flex items-center gap-x-2">
       <TokenPairIcons
         first={{
-          alt: metadata.base.name,
+          alt: metadata.base.symbol,
           src: metadata.base.icon.asset,
         }}
         second={{
-          alt: metadata.quote.name,
+          alt: metadata.quote.symbol,
           src: metadata.quote.icon.asset,
         }}
         size={25}
       />
       <div className="flex flex-col">
-        <span className="text-text-primary text-sm">{marketName}</span>
-        <span className="text-accent leading-3">POOL</span>
+        <span className="text-text-primary">{marketName}</span>
+        <span className="text-accent text-xs">POOL</span>
       </div>
     </div>
   );

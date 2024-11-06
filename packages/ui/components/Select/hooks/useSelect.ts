@@ -1,5 +1,5 @@
 import { UseSelect, UseSelectParams } from './types';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 /**
  * Utility hook for Radix controlled select components. Allows for options with arbitrary values, as long as they have
@@ -11,7 +11,7 @@ export function useSelect<TIdentifier extends string, TValue>({
   selectedValue,
   options,
 }: UseSelectParams<TIdentifier, TValue>): UseSelect<TIdentifier, TValue> {
-  const [open, setOpen] = useState(defaultOpen);
+  const [open, setOpen] = useState(!!defaultOpen);
 
   // Get currently selected option.
   const selectedOption = useMemo(
@@ -20,15 +20,18 @@ export function useSelect<TIdentifier extends string, TValue>({
   );
 
   // Pass newly selected value to onValueChange.
-  const onValueChange = (newId: TIdentifier) => {
-    const newOption = options.find((option) => option.id === newId);
+  const onValueChange = useCallback(
+    (newId: TIdentifier) => {
+      const newOption = options.find((option) => option.id === newId);
 
-    if (newOption == null) {
-      return;
-    }
+      if (newOption == null) {
+        return;
+      }
 
-    onSelectedValueChange(newOption.value);
-  };
+      onSelectedValueChange(newOption.value);
+    },
+    [onSelectedValueChange, options],
+  );
 
   const selectOptions = useMemo(() => {
     return options.map((option) => {
@@ -45,7 +48,6 @@ export function useSelect<TIdentifier extends string, TValue>({
     open,
     onValueChange,
     value: selectedOption?.id,
-    defaultOpen,
     onOpenChange: setOpen,
     selectOptions,
     selectedOption,

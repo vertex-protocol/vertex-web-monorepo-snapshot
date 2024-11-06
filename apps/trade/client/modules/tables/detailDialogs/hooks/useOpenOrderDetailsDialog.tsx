@@ -1,10 +1,11 @@
 import { BigDecimal, ProductEngineType } from '@vertex-protocol/client';
+import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { useExecuteCancelOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrdersWithNotification';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
-import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
-import { MarketInfoCellData } from '../../types/MarketInfoCellData';
+import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { OrderType } from 'client/modules/trading/types';
 
 interface Params {
@@ -30,6 +31,7 @@ export function useOpenOrderDetailsDialog({
     useExecuteCancelOrdersWithNotification();
   const { productType } = marketInfo;
   const { hide } = useDialog();
+  const pushTradePage = usePushTradePage();
 
   useRunWithDelayOnCondition({
     condition: status === 'success',
@@ -61,9 +63,15 @@ export function useOpenOrderDetailsDialog({
     });
   };
 
+  const navigateToTradePage = () => {
+    hide();
+    pushTradePage({ productId });
+  };
+
   return {
     disableCancelOrder,
     cancelOrderHandler,
+    navigateToTradePage,
     sizeFormatSpecifier,
     isPerp,
   };

@@ -1,6 +1,6 @@
 import { BigDecimals } from '@vertex-protocol/utils';
-import { SignOfValuePill } from '../SignOfValuePill';
-import { MarginManagerDefinition } from './MarginManagerDefinition';
+import { MarginManagerDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/MarginManagerDefinition';
+import { SignOfValuePill } from 'client/pages/Portfolio/subpages/MarginManager/components/SignOfValuePill';
 
 const { ContentContainer, Description, Section, Title, InfoCard } =
   MarginManagerDefinition;

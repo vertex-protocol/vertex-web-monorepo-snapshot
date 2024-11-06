@@ -19,15 +19,15 @@ export function useOverviewTabs() {
   const overviewTabs = useMemo(
     (): OverviewTab[] => [
       {
-        id: 'balances',
-        label: 'Balances',
-        content: <SpotBalancesTable hasBackground />,
-      },
-      {
         id: 'perp_positions',
         label: 'Positions',
         associatedCount: numPerpPositions,
         content: <PerpPositionsTable hasBackground />,
+      },
+      {
+        id: 'balances',
+        label: 'Balances',
+        content: <SpotBalancesTable hasBackground />,
       },
       {
         id: 'pools',

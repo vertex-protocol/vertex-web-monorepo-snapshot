@@ -1,3 +1,5 @@
+'use client';
+
 import { BigDecimal } from '@vertex-protocol/client';
 import {
   formatNumber,

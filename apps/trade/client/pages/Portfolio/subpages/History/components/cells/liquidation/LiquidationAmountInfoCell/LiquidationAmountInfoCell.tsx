@@ -7,10 +7,10 @@ import {
 import { LIQUIDATION_MULTI_BALANCE_CELL_CONTAINER_CLASSNAME } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/consts';
 import { LiquidationInfo } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/LiquidationAmountInfoCell/components/LiquidationInfo';
 import { LpLiquidationInfo } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/LiquidationAmountInfoCell/components/LpLiquidationInfo';
-import { HistoricalLiquidationEvent } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
+import { HistoricalLiquidationsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 
 type LiquidationAmountInfoCellProps = TableCellProps &
-  Pick<HistoricalLiquidationEvent, 'spot' | 'perp' | 'decomposedLps'>;
+  Pick<HistoricalLiquidationsTableItem, 'spot' | 'perp' | 'decomposedLps'>;
 
 export function LiquidationAmountInfoCell({
   spot,
@@ -29,9 +29,9 @@ export function LiquidationAmountInfoCell({
     >
       {decomposedLps.map((decomposedLp) => (
         <LpLiquidationInfo
-          key={decomposedLp.baseMetadata.symbol}
+          key={decomposedLp.sharedMetadata.symbol}
           metadata={{
-            base: decomposedLp.baseMetadata,
+            base: decomposedLp.sharedMetadata,
             quote: decomposedLp.primaryQuoteToken,
           }}
           amountLp={decomposedLp.amountLpDecomposed}
@@ -42,23 +42,23 @@ export function LiquidationAmountInfoCell({
       {spot && (
         <LiquidationInfo
           productType={ProductEngineType.SPOT}
-          productLabel={spot.baseMetadata.symbol}
-          iconSrc={spot.baseMetadata.icon.asset}
+          productLabel={spot.sharedMetadata.symbol}
+          iconSrc={spot.sharedMetadata.icon.asset}
           amountLiquidated={spot.amountLiquidated}
           sizeFormatSpecifier={spot.sizeFormatSpecifier}
           amountLiquidatedValueUsd={spot.liquidatedValueUsd}
-          symbol={spot.baseMetadata.symbol}
+          symbol={spot.sharedMetadata.symbol}
         />
       )}
       {perp && (
         <LiquidationInfo
           productType={ProductEngineType.PERP}
-          productLabel={perp.baseMetadata.name}
-          iconSrc={perp.baseMetadata.icon.asset}
+          productLabel={perp.sharedMetadata.marketName}
+          iconSrc={perp.sharedMetadata.icon.asset}
           amountLiquidated={perp.amountLiquidated}
           sizeFormatSpecifier={perp.sizeFormatSpecifier}
           amountLiquidatedValueUsd={perp.liquidatedValueUsd}
-          symbol={perp.baseMetadata.name}
+          symbol={perp.sharedMetadata.marketName}
         />
       )}
     </TableCell>

@@ -21,7 +21,7 @@ export function NewFeatureNotification({
         onDismiss={onDismiss}
         className="text-accent flex items-center gap-x-2"
       >
-        <Icons.MdOutlineNotificationsActive size={18} />
+        <Icons.BellSimple size={18} />
         {title}
       </Toast.Header>
       <Toast.Separator ttl={ttl} />

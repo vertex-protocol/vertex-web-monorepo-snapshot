@@ -1,13 +1,11 @@
-import { ProductEngineType } from '@vertex-protocol/contracts';
 import { OpenEngineOrdersTable } from 'client/modules/tables/OpenEngineOrdersTable';
+import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
+import { OpenOrdersFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
   TradingTabFilterOption,
   TradingTabFilters,
 } from 'client/modules/trading/layout/types';
-import { openEngineOrdersSelectedFilterIdAtom } from 'client/store/trading/commonTradingStore';
-import { OpenOrdersFilterOptionID } from 'client/store/trading/types';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { useAtom } from 'jotai';
 import { useMemo } from 'react';
 
 const openEngineOrdersFilterOptions: TradingTabFilterOption<OpenOrdersFilterOptionID>[] =
@@ -33,7 +31,7 @@ const openEngineOrdersFilterOptions: TradingTabFilterOption<OpenOrdersFilterOpti
 export const openEngineOrdersTableFilters: TradingTabFilters<OpenOrdersFilterOptionID> =
   {
     options: openEngineOrdersFilterOptions,
-    valueAtom: openEngineOrdersSelectedFilterIdAtom,
+    tradingTableTab: 'openEngineOrders',
   };
 
 export function OpenEngineOrdersTab({
@@ -47,22 +45,23 @@ export function OpenEngineOrdersTab({
   defaultFilter: MarketFilter | undefined;
   isDesktop: boolean;
 }) {
-  const [openEngineOrdersSelectedFilterId] = useAtom(
-    openEngineOrdersSelectedFilterIdAtom,
-  );
+  const { selectedFilter } =
+    useSelectedFilterByTradingTableTabSetting<OpenOrdersFilterOptionID>({
+      tradingTableTab: 'openEngineOrders',
+    });
 
   const userFilter = useMemo((): MarketFilter | undefined => {
-    switch (openEngineOrdersSelectedFilterId) {
+    switch (selectedFilter) {
       case 'all':
         return;
       case 'spot_only':
-        return { marketType: ProductEngineType.SPOT };
+        return { marketCategory: 'spot' };
       case 'perp_only':
-        return { marketType: ProductEngineType.PERP };
+        return { marketCategory: 'perp' };
       case 'current_market':
         return productId ? { productIds: [productId] } : undefined;
     }
-  }, [openEngineOrdersSelectedFilterId, productId]);
+  }, [selectedFilter, productId]);
 
   return (
     <OpenEngineOrdersTable

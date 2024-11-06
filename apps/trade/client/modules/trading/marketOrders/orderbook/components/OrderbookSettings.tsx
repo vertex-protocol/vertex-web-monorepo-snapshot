@@ -2,8 +2,8 @@ import { BigDecimal } from '@vertex-protocol/client';
 import { TickSpacingSelect } from 'client/modules/trading/marketOrders/orderbook/components/TickSpacingSelect';
 import { ToggleViewButton } from 'client/modules/trading/marketOrders/orderbook/components/ToggleViewButton';
 import { TotalAmountDenomSelect } from 'client/modules/trading/marketOrders/orderbook/components/TotalAmountDenomSelect';
+import { OrderbookPriceTickSpacingMultiplier } from 'client/modules/trading/marketOrders/orderbook/types';
 import React from 'react';
-import { OrderbookPriceTickSpacingMultiplier } from '../types';
 
 interface Props {
   currentTickSpacing: number;

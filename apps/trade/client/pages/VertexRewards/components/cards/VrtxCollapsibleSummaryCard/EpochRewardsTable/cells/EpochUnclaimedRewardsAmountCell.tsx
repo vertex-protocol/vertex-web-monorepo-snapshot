@@ -1,15 +1,17 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { Icons } from '@vertex-protocol/web-ui';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
+import {
+  formatTimestamp,
+  Icons,
+  TimeFormatSpecifier,
+} from '@vertex-protocol/web-ui';
 import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 
 interface Props extends TableCellProps {
   amount: BigDecimal | undefined;
@@ -34,7 +36,7 @@ export function EpochUnclaimedRewardsAmountCell({
     <StackedTableCell
       top={
         <div className="flex items-center gap-x-1">
-          {isBurned && <Icons.SiFireship size={12} className="text-negative" />}
+          {isBurned && <Icons.FireFill size={12} className="text-negative" />}
           <AmountWithSymbol
             formattedSize={formatNumber(amount, {
               formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,

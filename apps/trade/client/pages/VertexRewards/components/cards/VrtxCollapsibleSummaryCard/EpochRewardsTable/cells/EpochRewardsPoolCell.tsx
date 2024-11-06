@@ -6,7 +6,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { formatNumber } from '@vertex-protocol/react-client';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 
 interface Props extends TableCellProps {
   subaccountShareFrac: BigDecimal;

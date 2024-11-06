@@ -1,9 +1,11 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { InputValidatorFn } from '@vertex-protocol/web-common';
+import {
+  ProvideFormValidators,
+  ProvideLiquidityErrorType,
+} from 'client/modules/pools/types';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { useCallback } from 'react';
-
-import { ProvideFormValidators, ProvideLiquidityErrorType } from '../../types';
 
 interface Params {
   maxBaseLpAmount?: BigDecimal;

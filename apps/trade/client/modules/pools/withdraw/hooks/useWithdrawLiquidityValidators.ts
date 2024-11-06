@@ -1,12 +1,11 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { InputValidatorFn } from '@vertex-protocol/web-common';
-import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { useCallback } from 'react';
-
 import {
   WithdrawFormValidators,
   WithdrawLiquidityErrorType,
-} from '../../types';
+} from 'client/modules/pools/types';
+import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
+import { useCallback } from 'react';
 
 interface Params {
   currentLpAmount?: BigDecimal;

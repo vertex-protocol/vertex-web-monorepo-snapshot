@@ -6,13 +6,13 @@ import {
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
-import { currentSubaccountSummaryQueryKey } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { subaccountSummaryQueryKey } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { accountLbaStateQueryKey } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useCallback } from 'react';
 
 const REFETCH_QUERY_KEYS: string[][] = [
   accountLbaStateQueryKey(),
-  currentSubaccountSummaryQueryKey(),
+  subaccountSummaryQueryKey(),
 ];
 
 /**

@@ -1,9 +1,4 @@
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import {
-  CustomNumberFormatSpecifier,
-  getMarketPriceFormatSpecifier,
-  getMarketQuoteSizeFormatSpecifier,
-} from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
@@ -11,12 +6,12 @@ import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymb
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
+import { OrderTypeCell } from 'client/modules/tables/cells/OrderTypeCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { useHistoricalTradesTable } from 'client/modules/tables/hooks/useHistoricalTradesTable';
-import { HistoricalTradeItem } from 'client/modules/tables/types/HistoricalTradeItem';
+import { HistoricalTradesTableItem } from 'client/modules/tables/types/HistoricalTradesTableItem';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { useMemo } from 'react';
-import { OrderTypeCell } from './cells/OrderTypeCell';
 
 interface Props {
   marketFilter?: MarketFilter;
@@ -25,7 +20,7 @@ interface Props {
   hasBackground?: boolean;
 }
 
-const columnHelper = createColumnHelper<HistoricalTradeItem>();
+const columnHelper = createColumnHelper<HistoricalTradesTableItem>();
 
 export function PaginatedHistoricalTradesTable({
   pageSize,
@@ -45,7 +40,7 @@ export function PaginatedHistoricalTradesTable({
     marketFilter,
   });
 
-  const columns: ColumnDef<HistoricalTradeItem, any>[] = useMemo(() => {
+  const columns: ColumnDef<HistoricalTradesTableItem, any>[] = useMemo(() => {
     return [
       columnHelper.accessor('timestampMillis', {
         header: ({ header }) => <HeaderCell header={header}>Time</HeaderCell>,
@@ -78,7 +73,7 @@ export function PaginatedHistoricalTradesTable({
         cell: (context) => <OrderTypeCell value={context.getValue()} />,
         enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-24',
+          cellContainerClassName: 'w-20',
         },
       }),
       columnHelper.accessor('filledPrice', {
@@ -88,9 +83,7 @@ export function PaginatedHistoricalTradesTable({
         cell: (context) => (
           <NumberCell
             value={context.getValue()}
-            formatSpecifier={getMarketPriceFormatSpecifier(
-              context.row.original.marketInfo.priceIncrement,
-            )}
+            formatSpecifier={context.row.original.marketPriceFormatSpecifier}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -104,8 +97,7 @@ export function PaginatedHistoricalTradesTable({
           <AmountWithSymbolCell
             amount={context.getValue()}
             symbol={context.row.original.marketInfo.symbol}
-            // Spot market orders can be of arbitrary size, so we show as much precision as possible
-            formatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+            formatSpecifier={context.row.original.marketSizeFormatSpecifier}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -119,9 +111,7 @@ export function PaginatedHistoricalTradesTable({
           <AmountWithSymbolCell
             amount={context.getValue()}
             symbol={context.row.original.marketInfo.quoteSymbol}
-            formatSpecifier={getMarketQuoteSizeFormatSpecifier(
-              context.row.original.marketInfo.isPrimaryQuote,
-            )}
+            formatSpecifier={context.row.original.quoteSizeFormatSpecifier}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -137,9 +127,7 @@ export function PaginatedHistoricalTradesTable({
           <AmountWithSymbolCell
             amount={context.getValue()}
             symbol={context.row.original.marketInfo.quoteSymbol}
-            formatSpecifier={getMarketQuoteSizeFormatSpecifier(
-              context.row.original.marketInfo.isPrimaryQuote,
-            )}
+            formatSpecifier={context.row.original.quoteSizeFormatSpecifier}
           />
         ),
         sortingFn: bigDecimalSortFn,

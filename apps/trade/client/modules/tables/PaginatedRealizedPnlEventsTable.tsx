@@ -11,21 +11,20 @@ import {
 } from 'client/components/DataTable/utils/sortingFns';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
+import { PerpStackedPnlCell } from 'client/modules/tables/cells/PerpStackedPnlCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
+import { useRealizedPnlEventsTable } from 'client/modules/tables/hooks/useRealizedPnlEventsTable';
+import { RealizedPnlEventsTableItem } from 'client/modules/tables/types/RealizedPnlEventsTableItem';
+import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
-import { useDialog } from '../app/dialogs/hooks/useDialog';
-import { AmountWithSymbolCell } from './cells/AmountWithSymbolCell';
-import { PerpStackedPnlCell } from './cells/PerpStackedPnlCell';
-import { useRealizedPnlEventsTable } from './hooks/useRealizedPnlEventsTable';
-import { RealizedPnlEventItem } from './types/RealizedPnlEventItem';
-import { getTableButtonOnClickHandler } from './utils/getTableButtonOnClickHandler';
 
-const columnHelper = createColumnHelper<RealizedPnlEventItem>();
+const columnHelper = createColumnHelper<RealizedPnlEventsTableItem>();
 
 interface Props {
   marketFilter: MarketFilter | undefined;
@@ -58,7 +57,7 @@ export function PaginatedRealizedPnlEventsTable({
 
   const isDesktop = useIsDesktop();
 
-  const columns: ColumnDef<RealizedPnlEventItem, any>[] = useMemo(() => {
+  const columns: ColumnDef<RealizedPnlEventsTableItem, any>[] = useMemo(() => {
     return [
       columnHelper.accessor('timestampMillis', {
         header: ({ header }) => <HeaderCell header={header}>Time</HeaderCell>,
@@ -138,9 +137,7 @@ export function PaginatedRealizedPnlEventsTable({
             <AmountWithSymbolCell
               amount={context.getValue()}
               symbol={context.row.original.marketInfo.symbol}
-              formatSpecifier={getMarketSizeFormatSpecifier(
-                context.row.original.marketInfo.sizeIncrement,
-              )}
+              formatSpecifier={context.row.original.marketSizeFormatSpecifier}
             />
           );
         },
@@ -157,7 +154,7 @@ export function PaginatedRealizedPnlEventsTable({
         ),
         cell: (context) => {
           const { realizedPnlFrac, realizedPnlUsd } =
-            context.getValue<RealizedPnlEventItem['pnlInfo']>();
+            context.getValue<RealizedPnlEventsTableItem['pnlInfo']>();
           return (
             <PerpStackedPnlCell
               pnlFrac={realizedPnlFrac}
@@ -184,7 +181,7 @@ export function PaginatedRealizedPnlEventsTable({
               <SecondaryButton
                 size="sm"
                 className="w-full"
-                startIcon={<Icons.RiShareForwardFill size={12} />}
+                startIcon={<Icons.ShareFatFill size={12} />}
                 onClick={getTableButtonOnClickHandler(() => {
                   show({
                     type: 'perp_pnl_social_sharing',
@@ -210,7 +207,7 @@ export function PaginatedRealizedPnlEventsTable({
     ];
   }, [show]);
 
-  const onRowClicked = (row: Row<RealizedPnlEventItem>) => {
+  const onRowClicked = (row: Row<RealizedPnlEventsTableItem>) => {
     if (isDesktop) {
       pushTradePage({
         productId: row.original.productId,

@@ -15,13 +15,7 @@ Public snapshots of the Vertex frontend have the following additional steps:
 
 - Install dependencies using `yarn install`.
 - For usage of a _local_ Vertex SDK (useful if you're testing SDK changes / unpublished SDK functionality):
-    - Setup a state where peer dependencies in `@vertex-protocol/react-client` point to the installed dependencies in
-      this repo. This is required for certain packages (such as React) that do not work with multiple instances
-        - run `yarn link-react-package-dependencies` in this repo
-          > To reverse this (i.e. unlink react package dependencies), run `yarn unlink-react-package-dependencies` in
-          the
-          > root of this repo.
-        - then `yarn link-react-package-dependencies` in the SDK repo
+
     - Setup a state where the frontend code points to a local SDK build:
         - run `yarn link-local` in `vertex-typescript-sdk`,
         - then `yarn link-local-sdk` in the root of this repo.
@@ -30,7 +24,7 @@ Public snapshots of the Vertex frontend have the following additional steps:
       SDK
       when setting up the integration for the first time
 
-**Set up environment:**
+**Setup environment:**
 
 For apps where a `.env` file is required, there is a `.env.local.example` file in the root of the app directory.
 Copy this file to `.env.local` and fill in the necessary environment variables.

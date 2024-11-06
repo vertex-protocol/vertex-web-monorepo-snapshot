@@ -1,31 +1,28 @@
+'use client';
+
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { truncateAddress } from '@vertex-protocol/web-common';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { SeparatedRowDataTable } from 'client/components/DataTable/SeparatedRowDataTable';
+import { useFuulReferralsContext } from 'client/modules/referrals/context/FuulReferralsContext';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
-import { getTruncatedAddress } from 'client/utils/getTruncatedAddress';
-import { Token } from 'common/productMetadata/types';
-import { useMemo } from 'react';
 import {
   ReferralsRewardsLeaderboardTableItem,
   useReferralsRewardsLeaderboardTable,
-} from './hooks/useReferralsRewardsLeaderboardTable';
+} from 'client/pages/VertexReferrals/components/ReferralsRewardsLeaderboardTable/useReferralsRewardsLeaderboardTable';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<ReferralsRewardsLeaderboardTableItem>();
 
-export function ReferralsRewardsLeaderboardTable({
-  payoutToken,
-  volumeAmountSymbol,
-}: {
-  payoutToken: Token;
-  volumeAmountSymbol: string;
-}) {
+export function ReferralsRewardsLeaderboardTable() {
   const { data, isLoading, paginationState, setPaginationState, pageCount } =
-    useReferralsRewardsLeaderboardTable({});
+    useReferralsRewardsLeaderboardTable();
+  const { payoutToken, volumeAmountSymbol } = useFuulReferralsContext();
 
   const columns: ColumnDef<ReferralsRewardsLeaderboardTableItem, any>[] =
     useMemo(() => {
@@ -46,11 +43,7 @@ export function ReferralsRewardsLeaderboardTable({
             <HeaderCell header={header}>Account</HeaderCell>
           ),
           cell: (context) => {
-            return (
-              <TableCell>
-                {getTruncatedAddress(context.getValue(), 4)}
-              </TableCell>
-            );
+            return <TableCell>{truncateAddress(context.getValue())}</TableCell>;
           },
           enableSorting: false,
           meta: {
@@ -90,10 +83,10 @@ export function ReferralsRewardsLeaderboardTable({
         columnHelper.accessor('referredVolumeUsdc', {
           header: ({ header }) => (
             <HeaderCell
-              definitionTooltipId="referralsReferredTakerVolume"
+              definitionTooltipId="referralsTotalReferredTakerVolume"
               header={header}
             >
-              Taker Volume
+              Total Taker Volume
             </HeaderCell>
           ),
           cell: (context) => {

@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import { GetEngineMaxMintLpAmountParams } from '@vertex-protocol/engine-client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -16,7 +15,7 @@ type Params = Omit<
 >;
 
 export function maxMintLpAmountQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   sender?: string,
   subaccountName?: string,
   productId?: number,
@@ -24,7 +23,7 @@ export function maxMintLpAmountQueryKey(
 ) {
   return createQueryKey(
     'maxMintLpAmount',
-    chainId,
+    chainEnv,
     sender,
     subaccountName,
     productId,
@@ -33,7 +32,6 @@ export function maxMintLpAmountQueryKey(
 }
 
 export function useMaxMintLpAmount(params?: Params) {
-  const primaryChainId = usePrimaryChainId();
   const { currentSubaccount } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 
@@ -55,7 +53,7 @@ export function useMaxMintLpAmount(params?: Params) {
 
   return useQuery({
     queryKey: maxMintLpAmountQueryKey(
-      primaryChainId,
+      currentSubaccount.chainEnv,
       queryParams?.subaccountOwner,
       queryParams?.subaccountName,
       queryParams?.productId,

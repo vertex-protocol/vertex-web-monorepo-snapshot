@@ -91,69 +91,77 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
     return Promise.resolve([]);
   }
 
-  getChartTemplateContent(templateName: string): Promise<ChartTemplate> {
+  getChartTemplateContent(_templateName: string): Promise<ChartTemplate> {
     return Promise.resolve({ content: undefined });
   }
 
-  getDrawingTemplates(toolName: string): Promise<string[]> {
+  getDrawingTemplates(_toolName: string): Promise<string[]> {
     return Promise.resolve([]);
   }
 
   getStudyTemplateContent(
-    studyTemplateInfo: StudyTemplateMetaInfo,
+    _studyTemplateInfo: StudyTemplateMetaInfo,
   ): Promise<string> {
     return Promise.resolve('');
   }
 
   saveLineToolsAndGroups(
-    layoutId: string | undefined,
-    chartId: string,
-    state: LineToolsAndGroupsState,
+    _layoutId: string | undefined,
+    _chartId: string,
+    _state: LineToolsAndGroupsState,
   ): Promise<void> {
     return Promise.resolve(undefined);
   }
 
   loadLineToolsAndGroups(
-    layoutId: string | undefined,
-    chartId: string,
-    requestType: LineToolsAndGroupsLoadRequestType,
-    requestContext: LineToolsAndGroupsLoadRequestContext,
+    _layoutId: string | undefined,
+    _chartId: string,
+    _requestType: LineToolsAndGroupsLoadRequestType,
+    _requestContext: LineToolsAndGroupsLoadRequestContext,
   ): Promise<Partial<LineToolsAndGroupsState> | null> {
     return Promise.resolve(null);
   }
 
-  loadDrawingTemplate(toolName: string, templateName: string): Promise<string> {
+  loadDrawingTemplate(
+    _toolName: string,
+    _templateName: string,
+  ): Promise<string> {
     return Promise.resolve('');
   }
 
-  removeChartTemplate(templateName: string): Promise<void> {
+  removeChartTemplate(_templateName: string): Promise<void> {
     return Promise.resolve(undefined);
   }
 
-  removeDrawingTemplate(toolName: string, templateName: string): Promise<void> {
+  removeDrawingTemplate(
+    _toolName: string,
+    _templateName: string,
+  ): Promise<void> {
     return Promise.resolve(undefined);
   }
 
-  removeStudyTemplate(studyTemplateInfo: StudyTemplateMetaInfo): Promise<void> {
+  removeStudyTemplate(
+    _studyTemplateInfo: StudyTemplateMetaInfo,
+  ): Promise<void> {
     return Promise.resolve(undefined);
   }
 
   saveChartTemplate(
-    newName: string,
-    theme: ChartTemplateContent,
+    _newName: string,
+    _theme: ChartTemplateContent,
   ): Promise<void> {
     return Promise.resolve(undefined);
   }
 
   saveDrawingTemplate(
-    toolName: string,
-    templateName: string,
-    content: string,
+    _toolName: string,
+    _templateName: string,
+    _content: string,
   ): Promise<void> {
     return Promise.resolve(undefined);
   }
 
-  saveStudyTemplate(studyTemplateData: StudyTemplateData): Promise<void> {
+  saveStudyTemplate(_studyTemplateData: StudyTemplateData): Promise<void> {
     return Promise.resolve(undefined);
   }
 

@@ -1,6 +1,6 @@
 import { TabsContent, TabsList, Root as TabsRoot } from '@radix-ui/react-tabs';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
+import { Divider, ScrollShadowsContainer } from '@vertex-protocol/web-ui';
 import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
 import { TradingTableTabsTrigger } from 'client/modules/trading/components/TradingTableTabs/TradingTableTabsTrigger';
@@ -16,34 +16,38 @@ export function MobileTradingTableTabs({
 
   return (
     <TabsRoot
+      // Using `flex-col` to stretch the tab list and tab content.
       className={joinClassNames('flex flex-col', className)}
       value={selectedTabId}
       onValueChange={setSelectedTabId}
     >
-      <TabsList
-        className={joinClassNames(
-          'no-scrollbar flex items-center justify-between gap-x-2',
-          'border-stroke overflow-x-auto border-b px-4 py-1',
-        )}
-      >
-        {tradingTabs.map(({ countIndicatorKey, id, label }) => {
-          const associatedCount = countIndicatorKey
-            ? countIndicators[countIndicatorKey]
-            : undefined;
-          return (
-            <Fragment key={id}>
-              <TradingTableTabsTrigger
-                className="w-full px-4 text-xs"
-                id={id}
-                active={selectedTabId === id}
-                associatedCount={associatedCount}
-              >
-                {label}
-              </TradingTableTabsTrigger>
-              <Divider vertical className="h-4 last:hidden" />
-            </Fragment>
-          );
-        })}
+      <TabsList asChild>
+        <ScrollShadowsContainer
+          orientation="horizontal"
+          className={joinClassNames(
+            'flex items-center justify-between gap-x-2',
+            'border-stroke border-b px-4 py-1',
+          )}
+        >
+          {tradingTabs.map(({ countIndicatorKey, id, label }) => {
+            const associatedCount = countIndicatorKey
+              ? countIndicators[countIndicatorKey]
+              : undefined;
+            return (
+              <Fragment key={id}>
+                <TradingTableTabsTrigger
+                  className="w-full px-4 text-xs"
+                  id={id}
+                  active={selectedTabId === id}
+                  associatedCount={associatedCount}
+                >
+                  {label}
+                </TradingTableTabsTrigger>
+                <Divider vertical className="h-4 last:hidden" />
+              </Fragment>
+            );
+          })}
+        </ScrollShadowsContainer>
       </TabsList>
       {tabs.map(({ id, content }) => (
         <TabsContent

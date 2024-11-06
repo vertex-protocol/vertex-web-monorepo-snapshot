@@ -1,6 +1,6 @@
 import { WithChildren, joinClassNames } from '@vertex-protocol/web-common';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
-import { BGVariant } from '../data';
+import { BGVariant } from 'client/sections/Products/data';
 
 export function ProductInfoButton({
   children,
@@ -20,7 +20,7 @@ export function ProductInfoButton({
   return (
     <HomePageButton
       className={joinClassNames(
-        'relative z-10 box-content flex w-full items-center justify-start gap-x-4',
+        'relative z-10 box-content flex items-center justify-start gap-x-4',
         'overflow-hidden rounded-xl px-6 py-3 backdrop-blur-xl',
         'text-base font-bold leading-8 text-white',
         'md:text-2xl',

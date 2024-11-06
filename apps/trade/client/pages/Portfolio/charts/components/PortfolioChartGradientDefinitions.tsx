@@ -1,5 +1,5 @@
+import { PORTFOLIO_CHART_GRADIENT_IDS } from 'client/pages/Portfolio/charts/consts';
 import { COLORS } from 'common/theme/colors';
-import { PORTFOLIO_CHART_GRADIENT_IDS } from '../consts';
 
 export function PortfolioChartGradientDefinitions() {
   return (

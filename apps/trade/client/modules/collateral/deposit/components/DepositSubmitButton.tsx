@@ -1,8 +1,9 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { PrimaryButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
+import { DepositActionButtonState } from 'client/modules/collateral/deposit/types';
 import { useMemo } from 'react';
-import { DepositActionButtonState } from '../types';
 
 interface DepositButtonProps {
   state: DepositActionButtonState;
@@ -34,13 +35,16 @@ export function DepositSubmitButton({
   const isLoading = state === 'approve_loading' || state === 'loading';
 
   return (
-    <PrimaryButton
+    <ValidUserStatePrimaryButton
       className={className}
       type="submit"
       isLoading={isLoading}
       disabled={state === 'disabled'}
+      handledErrors={
+        HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+      }
     >
       {message}
-    </PrimaryButton>
+    </ValidUserStatePrimaryButton>
   );
 }

@@ -1,9 +1,12 @@
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
   SpotBalanceItem,
   useSpotBalances,
 } from 'client/hooks/subaccount/useSpotBalances';
 import { MarketFilter } from 'client/types/MarketFilter';
+import { clientEnv } from 'common/environment/clientEnv';
+import { KNOWN_PRODUCT_IDS } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 interface BalanceInfo {
@@ -14,6 +17,7 @@ interface BalanceInfo {
 
 export interface SpotBalanceTableItem extends SpotBalanceItem {
   balanceInfo: BalanceInfo;
+  showBlastNativeYieldInfo: boolean;
 }
 
 interface Params {
@@ -53,6 +57,17 @@ export const useSpotBalancesTable = ({ marketFilter }: Params) => {
         return true;
       })
       .map((balance) => {
+        const showBlastNativeYieldInfo = (() => {
+          if (clientEnv.base.brandName !== 'blitz') {
+            return false;
+          }
+          return [
+            QUOTE_PRODUCT_ID,
+            KNOWN_PRODUCT_IDS.wethBlastSepolia,
+            KNOWN_PRODUCT_IDS.wethBlast,
+          ].includes(balance.productId);
+        })();
+
         return {
           ...balance,
           balanceInfo: {
@@ -60,6 +75,7 @@ export const useSpotBalancesTable = ({ marketFilter }: Params) => {
             valueUsd: balance.valueUsd,
             symbol: balance.metadata.token.symbol,
           },
+          showBlastNativeYieldInfo,
         };
       });
   }, [marketFilter?.amount, marketFilter?.productIds, spotBalances]);

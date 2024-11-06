@@ -1,32 +1,31 @@
 import { useQuery } from '@tanstack/react-query';
-import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
-
-import { AllLatestMarketPricesData } from './types';
+import { AllLatestMarketPricesData } from 'client/hooks/query/markets/types';
 
 export function allLatestMarketPricesQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   productIds?: number[],
 ) {
-  return createQueryKey('latestMarketPrices', chainId, productIds);
+  return createQueryKey('latestMarketPrices', chainEnv, productIds);
 }
 
 export function useAllMarketsLatestPrices() {
   const vertexClient = usePrimaryChainVertexClient();
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const { filteredProductIds: allProductIds } = useFilteredMarkets();
 
   const disabled = !vertexClient || allProductIds.length === 0;
 
   return useQuery({
-    queryKey: allLatestMarketPricesQueryKey(primaryChainId, allProductIds),
+    queryKey: allLatestMarketPricesQueryKey(primaryChainEnv, allProductIds),
     queryFn: async (): Promise<AllLatestMarketPricesData> => {
       if (disabled) {
         throw new QueryDisabledError();

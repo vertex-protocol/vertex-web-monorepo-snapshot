@@ -1,5 +1,5 @@
 import { ChainEnv } from '@vertex-protocol/client';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
 /**
@@ -10,23 +10,20 @@ export function useChainEnvQueryParam({
 }: {
   supportedChainEnvs: ChainEnv[];
 }) {
-  const {
-    query: { chain },
-  } = useRouter();
+  const searchParams = useSearchParams();
+
+  const chainEnv = searchParams.get('chain') as ChainEnv;
 
   return useMemo(() => {
-    if (
-      typeof chain === 'string' &&
-      supportedChainEnvs.includes(chain as ChainEnv)
-    ) {
-      return chain as ChainEnv;
+    if (supportedChainEnvs.includes(chainEnv)) {
+      return chainEnv;
     }
 
-    if (chain) {
+    if (chainEnv) {
       console.debug(
         '[useChainEnvQueryParam] Unsupported chain in query param:',
-        chain,
+        chainEnv,
       );
     }
-  }, [chain, supportedChainEnvs]);
+  }, [chainEnv, supportedChainEnvs]);
 }

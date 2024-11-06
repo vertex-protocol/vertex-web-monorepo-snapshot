@@ -5,14 +5,9 @@ import { formatDate } from 'client/utils/formatDate';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export function BlogCard({
-  description,
-  image,
-  title,
-  url,
-  date,
-  ...rest
-}: BlogPost) {
+import defaultBlogImage from 'assets/default-blog-image.jpeg';
+
+export function BlogCard({ image, title, url, date, ...rest }: BlogPost) {
   return (
     <HomePageButton
       className={joinClassNames(
@@ -27,7 +22,7 @@ export function BlogCard({
     >
       <div className="relative h-56 w-full overflow-hidden rounded-md md:h-full">
         <Image
-          src={image}
+          src={image ?? defaultBlogImage}
           alt={title}
           sizes="(max-width: 875px) 100vw, (max-width: 1200px) 50vw, 33vw"
           fill

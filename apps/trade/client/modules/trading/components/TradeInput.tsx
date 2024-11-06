@@ -29,13 +29,19 @@ export const TradeInput = React.forwardRef<HTMLInputElement, TradeInputProps>(
         ref={ref}
         errorTooltipContent={error}
         startElement={
-          <DefinitionTooltip definitionId={definitionId}>
+          <DefinitionTooltip
+            definitionId={definitionId}
+            // Ensure it doesn't render over the input.
+            tooltipOptions={{ placement: 'bottom' }}
+            asChild
+          >
             <Input.Label className="text-xs" htmlFor={id}>
               {label}
             </Input.Label>
           </DefinitionTooltip>
         }
-        textAreaClassName="text-right"
+        textAreaClassName="text-right text-xs"
+        inputContainerClassName="h-9"
         endElement={symbol}
         {...rest}
       />

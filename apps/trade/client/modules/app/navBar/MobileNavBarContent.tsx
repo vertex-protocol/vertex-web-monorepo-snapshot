@@ -1,26 +1,31 @@
-import { useEVMContext } from '@vertex-protocol/react-client';
+import * as NavigationMenu from '@radix-ui/react-navigation-menu';
+import * as Popover from '@radix-ui/react-popover';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
-  Button,
+  COMMON_TRANSPARENCY_COLORS,
   Divider,
   Icons,
   NavBarCardButton,
+  TextButton,
 } from '@vertex-protocol/web-ui';
 import { useUserStateError } from 'client/hooks/subaccount/useUserStateError';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { AccountCenterWalletIcon } from 'client/modules/accountCenter/components/AccountCenterWalletIcon';
+import { AppVersion } from 'client/modules/app/components/AppVersion';
+import { LatencyMonitor } from 'client/modules/app/components/LatencyMonitor';
 import { StatusButton } from 'client/modules/app/components/StatusButton';
-import { UpcomingMaintenance } from 'client/modules/app/components/UpcomingMaintenance';
+import { UpcomingMaintenanceLink } from 'client/modules/app/components/UpcomingMaintenanceLink';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useAlertUpcomingMaintenanceWindow } from 'client/modules/app/hooks/useAlertUpcomingMaintenanceWindow';
-import { ChainSwitcherPopover } from 'client/modules/app/navBar/chainSwitcher/ChainSwitcherPopover';
+import { ChainEnvSwitcherDropdown } from 'client/modules/app/navBar/chainEnvSwitcher/ChainEnvSwitcherDropdown';
 import { AppNavItemButton } from 'client/modules/app/navBar/components/AppNavItemButton';
+import { AppNavLogo } from 'client/modules/app/navBar/components/AppNavLogo/AppNavLogo';
 import { useAppNavItems } from 'client/modules/app/navBar/hooks/useAppNavItems';
 import { useGetIsActiveRoute } from 'client/modules/app/navBar/hooks/useGetIsActiveRoute';
 import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
 import { openMobileNavAtom } from 'client/store/navigationStore';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
-import { AppNavLogo } from './components/AppNavLogo/AppNavLogo';
 
 function MobileNavMenu({ className }: WithClassnames) {
   const [, setOpenMobileNav] = useAtom(openMobileNavAtom);
@@ -32,51 +37,67 @@ function MobileNavMenu({ className }: WithClassnames) {
   return (
     <div
       className={joinClassNames(
-        'h-[calc(100vh-theme(height.navbar))] w-screen',
+        'w-screen',
         'no-scrollbar flex flex-col justify-between overflow-y-auto',
-        'bg-background border-overlay-divider/10 border-t',
+        'bg-background border-t',
+        COMMON_TRANSPARENCY_COLORS.border,
         className,
       )}
+      style={{
+        height: 'var(--radix-popper-available-height)',
+      }}
     >
-      <div className="flex flex-col p-4">
-        {appNavItems.map((navItem) => {
-          if (navItem.type === 'link') {
-            return (
-              <AppNavItemButton
-                withMobilePadding
-                as={Link}
-                active={getIsActiveRoute(navItem.basePath)}
-                key={navItem.id}
-                disabled={navItem.disabled}
-                href={navItem.href}
-                onClick={() => setOpenMobileNav(false)}
-              >
-                {navItem.label}
-              </AppNavItemButton>
-            );
-          } else if (navItem.type === 'custom') {
-            const { Mobile } = navItem.content;
-            return <Mobile key={navItem.id} />;
-          }
-        })}
-      </div>
-      <div className="flex flex-col gap-y-3 p-3">
-        <div className="flex gap-x-4">
-          <StatusButton />
-          <Button
-            className="text-text-tertiary text-xs"
-            onClick={() => {
-              setOpenMobileNav(false);
-              show({ type: 'help_center', params: {} });
-            }}
-          >
-            Need Help?
-          </Button>
+      <NavigationMenu.Root orientation="vertical">
+        <NavigationMenu.List className="flex flex-col p-4">
+          {appNavItems.map((navItem) => {
+            if (navItem.type === 'link') {
+              return (
+                <NavigationMenu.Item key={navItem.id}>
+                  <NavigationMenu.Link asChild>
+                    <AppNavItemButton
+                      withMobilePadding
+                      as={Link}
+                      active={getIsActiveRoute(navItem.basePath)}
+                      key={navItem.id}
+                      disabled={navItem.disabled}
+                      href={navItem.href}
+                      onClick={() => setOpenMobileNav(false)}
+                    >
+                      {navItem.label}
+                    </AppNavItemButton>
+                  </NavigationMenu.Link>
+                </NavigationMenu.Item>
+              );
+            } else if (navItem.type === 'custom') {
+              const { Mobile } = navItem.content;
+              return <Mobile key={navItem.id} />;
+            }
+          })}
+        </NavigationMenu.List>
+      </NavigationMenu.Root>
+      <div className="flex flex-col gap-y-2 p-3 text-xs">
+        <div className="flex items-center justify-between">
+          <div className="flex gap-x-2">
+            <StatusButton />
+            <TextButton
+              className="text-text-secondary"
+              onClick={() => {
+                setOpenMobileNav(false);
+                show({ type: 'help_center', params: {} });
+              }}
+            >
+              Need Help?
+            </TextButton>
+          </div>
+          <div className="flex gap-x-2">
+            <AppVersion />
+            <LatencyMonitor />
+          </div>
         </div>
         {alertUpcomingMaintenanceWindow && (
           <>
             <Divider />
-            <UpcomingMaintenance className="px-1" />
+            <UpcomingMaintenanceLink />
           </>
         )}
       </div>
@@ -87,17 +108,18 @@ function MobileNavMenu({ className }: WithClassnames) {
 export function MobileNavBarContent() {
   const { show } = useDialog();
   const userStateError = useUserStateError();
-  const { connectionStatus } = useEVMContext();
   const [openMobileNav, setOpenMobileNav] = useAtom(openMobileNavAtom);
 
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
 
   const navDrawerButton = (
     <NavBarCardButton
-      onClick={() => setOpenMobileNav(!openMobileNav)}
+      // `Popover.Trigger` is needed as a container for proper alignment of `Popover.Content`
+      // Using `NavBarCardButton` as a `div` for styling of the "button" content
+      as="div"
       className={joinClassNames('w-max p-2', openMobileNav && 'bg-surface-2')}
     >
-      {openMobileNav ? <Icons.MdClose size={20} /> : <Icons.MdMenu size={20} />}
+      {openMobileNav ? <Icons.X size={20} /> : <Icons.List size={20} />}
     </NavBarCardButton>
   );
 
@@ -106,7 +128,7 @@ export function MobileNavBarContent() {
     if (isConnected) {
       show({
         type: 'account_center',
-        params: { initialShowSettingsContent: false },
+        params: {},
       });
     } else {
       show({
@@ -116,38 +138,38 @@ export function MobileNavBarContent() {
     }
   };
 
+  // To remain consistent with other nav bar buttons, the account center button's icon is set to 20px
   const accountCenterButton = (
     <NavBarCardButton onClick={onAccountCenterButtonClick}>
       {isConnected ? (
-        <AccountCenterWalletIcon userStateError={userStateError} size={18} />
+        <AccountCenterWalletIcon userStateError={userStateError} size={20} />
       ) : (
-        <Icons.BsWallet2 className="text-text-secondary" size={18} />
+        <Icons.Wallet className="text-text-secondary" size={20} />
       )}
     </NavBarCardButton>
   );
 
-  const chainSwitcher = (
+  const chainEnvSwitcher = (
     <BrandSpecificContent enabledBrands={['vertex']}>
-      <ChainSwitcherPopover />
+      <ChainEnvSwitcherDropdown />
     </BrandSpecificContent>
   );
 
-  const menuContent = (() => {
-    if (!openMobileNav) return null;
-    return <MobileNavMenu className="absolute left-0 top-full" />;
-  })();
-
   return (
-    <div className="relative">
+    <Popover.Root open={openMobileNav} onOpenChange={setOpenMobileNav}>
       <div className="h-navbar grid grid-cols-3 items-center px-4">
-        {navDrawerButton}
+        <Popover.Trigger className="h-full w-min">
+          {navDrawerButton}
+        </Popover.Trigger>
         <AppNavLogo className="justify-self-center" />
         <div className="flex w-max gap-x-2 justify-self-end">
           {accountCenterButton}
-          {chainSwitcher}
+          {chainEnvSwitcher}
         </div>
       </div>
-      {menuContent}
-    </div>
+      <Popover.Content side="top" align="end">
+        <MobileNavMenu />
+      </Popover.Content>
+    </Popover.Root>
   );
 }

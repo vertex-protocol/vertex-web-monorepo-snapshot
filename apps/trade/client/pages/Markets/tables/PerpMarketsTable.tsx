@@ -8,37 +8,38 @@ import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { LinkButton } from 'client/components/LinkButton';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { PercentageChangeCell } from 'client/modules/tables/cells/PercentageChangeCell';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
-import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
-import { useMemo } from 'react';
-import { FundingRateCell } from '../components/FundingRateCell';
-import { FundingRatePeriodSelect } from '../components/FundingRatePeriodSelect';
-import { FundingRatePeriodID } from '../hooks/useFundingRatePeriodSelect';
+import { FundingRateCell } from 'client/pages/Markets/components/FundingRateCell';
+import { FundingRatePeriodSelect } from 'client/pages/Markets/components/FundingRatePeriodSelect';
 import {
   PerpMarketTableItem,
   usePerpMarketsTable,
-} from '../hooks/usePerpMarketsTable';
+} from 'client/pages/Markets/hooks/usePerpMarketsTable';
+import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
+import { FundingRateTimespan } from 'client/utils/calcs/funding';
+import { useMemo } from 'react';
+import { LinkButton } from '@vertex-protocol/web-ui';
 
 const columnHelper = createColumnHelper<PerpMarketTableItem>();
-const FUNDING_PERIOD_SORT_KEY: FundingRatePeriodID = 'hourly';
+const FUNDING_PERIOD_SORT_KEY: FundingRateTimespan = 'hourly';
 
-export function PerpMarketsTable() {
+export function PerpMarketsTable({ query }: { query: string }) {
   const { primaryQuoteToken } = useVertexMetadataContext();
   const {
     isLoading,
     perpProducts,
     disableFavoriteButton,
     toggleIsFavoritedMarket,
-  } = usePerpMarketsTable();
+  } = usePerpMarketsTable({ query });
   const pushTradePage = usePushTradePage();
   const { show } = useDialog();
 
@@ -75,7 +76,7 @@ export function PerpMarketsTable() {
           const value = context.getValue<PerpMarketTableItem['metadata']>();
           return (
             <MarketProductInfoCell
-              name={value.name}
+              symbol={value.marketName}
               iconSrc={value.icon.asset}
               isNewMarket={context.row.original.isNewMarket}
             />
@@ -247,6 +248,7 @@ export function PerpMarketsTable() {
       columns={columns}
       data={perpProducts}
       onRowClicked={onRowClicked}
+      emptyState={query && <EmptyTablePlaceholder type="no_search_results" />}
     />
   );
 }

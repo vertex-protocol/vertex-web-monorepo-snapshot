@@ -1,16 +1,8 @@
 import { useSelect } from '@vertex-protocol/web-ui';
 import { marketsPageFundingRatePeriodAtom } from 'client/store/marketsPageStore';
+import { FUNDING_RATE_TIMESPANS } from 'client/utils/calcs/funding';
 import { useAtom } from 'jotai';
 import { useMemo } from 'react';
-
-export type FundingRatePeriodID =
-  (typeof FUNDING_RATE_DROPDOWN_OPTIONS)[number];
-
-export const FUNDING_RATE_DROPDOWN_OPTIONS = [
-  'hourly',
-  'daily',
-  'annualized',
-] as const;
 
 export function useFundingRatePeriodSelect() {
   const [fundingRatePeriod, setFundingRatePeriod] = useAtom(
@@ -18,7 +10,7 @@ export function useFundingRatePeriodSelect() {
   );
 
   const options = useMemo(() => {
-    return FUNDING_RATE_DROPDOWN_OPTIONS.map((id) => ({
+    return FUNDING_RATE_TIMESPANS.map((id) => ({
       id,
       label: id,
       value: id,
@@ -27,7 +19,6 @@ export function useFundingRatePeriodSelect() {
 
   const { selectOptions, open, onValueChange, value, onOpenChange } = useSelect(
     {
-      defaultOpen: false,
       selectedValue: fundingRatePeriod,
       onSelectedValueChange: (option) => setFundingRatePeriod(option),
       options,

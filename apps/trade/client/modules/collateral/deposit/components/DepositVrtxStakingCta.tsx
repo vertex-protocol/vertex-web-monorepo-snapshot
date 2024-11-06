@@ -1,14 +1,14 @@
-import { LinkButton } from 'client/components/LinkButton';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
-import { DepositInfoCardType } from '../types';
+import { DepositInfoCardType } from 'client/modules/collateral/deposit/types';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import { LinkButton } from '@vertex-protocol/web-ui';
 
 export function DepositVrtxStakingCta({
   displayedInfoCardType,
 }: {
   displayedInfoCardType: DepositInfoCardType | undefined;
 }) {
-  const { show } = useDialog();
+  const { push } = useDialog();
 
   if (displayedInfoCardType !== 'vrtx') {
     return null;
@@ -20,7 +20,7 @@ export function DepositVrtxStakingCta({
       <LinkButton
         colorVariant="accent"
         as="button"
-        onClick={() => show({ type: 'stake_vrtx', params: {} })}
+        onClick={() => push({ type: 'stake_vrtx', params: {} })}
       >
         Click here
       </LinkButton>

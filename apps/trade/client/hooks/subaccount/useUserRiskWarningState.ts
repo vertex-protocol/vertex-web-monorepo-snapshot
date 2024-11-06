@@ -1,6 +1,6 @@
+import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useUserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { getLiquidationRiskLevel } from 'client/utils/getLiquidationRiskLevel';
-import { useDerivedSubaccountOverview } from './useDerivedSubaccountOverview';
-import { useUserStateError } from './useUserStateError';
 
 export type UserRiskWarningState =
   | 'extreme_liquidation_risk'

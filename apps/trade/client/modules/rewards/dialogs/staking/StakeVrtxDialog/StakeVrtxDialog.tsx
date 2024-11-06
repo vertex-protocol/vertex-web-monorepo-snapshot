@@ -1,26 +1,21 @@
+import { VOVRTX_INFO, VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { ButtonHelperInfo } from '@vertex-protocol/web-ui';
+import { ButtonHelperInfo, LinkButton } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { UserDisclosureDismissibleCard } from 'client/components/Disclosure/UserDisclosureDismissibleCard';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { InputSummary } from 'client/components/InputSummary';
-import { LinkButton } from 'client/components/LinkButton';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { StakingDialogInput } from 'client/modules/rewards/dialogs/staking/components/StakingDialogInput';
+import { useStakeVrtxAmountErrorTooltipContent } from 'client/modules/rewards/dialogs/staking/hooks/useStakeVrtxAmountErrorTooltipContent';
+import { StakeVrtxSubmitButton } from 'client/modules/rewards/dialogs/staking/StakeVrtxDialog/StakeVrtxSubmitButton';
+import { StakeVrtxSummary } from 'client/modules/rewards/dialogs/staking/StakeVrtxDialog/StakeVrtxSummary';
+import { useStakeVrtxForm } from 'client/modules/rewards/dialogs/staking/StakeVrtxDialog/useStakeVrtxForm';
 import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
-import {
-  VOVRTX_INFO,
-  VRTX_TOKEN_INFO,
-} from 'common/productMetadata/vertexTokenInfo';
 import Link from 'next/link';
-import { StakingDialogInput } from '../components/StakingDialogInput';
-import { StakeVrtxSubmitButton } from './StakeVrtxSubmitButton';
-import { StakeVrtxSummary } from './StakeVrtxSummary';
-import { useStakeVrtxAmountErrorTooltipContent } from './useStakeVrtxAmountErrorTooltipContent';
-import { useStakeVrtxForm } from './useStakeVrtxForm';
+import { InputSummaryItem } from 'client/components/InputSummaryItem';
 
 export function StakeVrtxDialog() {
   const {
@@ -46,8 +41,8 @@ export function StakeVrtxDialog() {
   const showDialogForProduct = useShowDialogForProduct();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title
         onClose={hide}
         endElement={
           <LinkButton
@@ -63,9 +58,9 @@ export function StakeVrtxDialog() {
         }
       >
         Stake
-      </BaseDialog.Title>
-      <BaseDialog.Body>
-        <Form onSubmit={onSubmit} className="flex flex-col gap-y-4">
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body asChild>
+        <Form onSubmit={onSubmit}>
           <UserDisclosureDismissibleCard
             disclosureKey="stake_vrtx"
             title={`${VRTX_TOKEN_INFO.symbol} in Wallet`}
@@ -75,11 +70,12 @@ export function StakeVrtxDialog() {
                 {VRTX_TOKEN_INFO.symbol} in your Vertex account, you&apos;ll
                 need to{' '}
                 <LinkButton
-                  colorVariant="accent"
+                  colorVariant="primary"
                   onClick={() =>
                     showDialogForProduct({
                       dialogType: 'withdraw',
                       productId: protocolTokenProductId,
+                      navBehavior: 'push',
                     })
                   }
                 >
@@ -89,7 +85,7 @@ export function StakeVrtxDialog() {
               </div>
             }
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-y-1.5">
             <StakingDialogInput
               {...form.register('amount', {
                 validate: validateAmount,
@@ -100,15 +96,13 @@ export function StakeVrtxDialog() {
               estimatedStakeValueUsd={estimatedStakeValueUsd}
               error={amountErrorTooltipContent}
             />
-            <InputSummary.Container>
-              <InputSummary.Item
-                label="In Wallet:"
-                currentValue={vrtxWalletBalance}
-                definitionTooltipId="stakingVrtxInWallet"
-                formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                onValueClick={onMaxAmountSelected}
-              />
-            </InputSummary.Container>
+            <InputSummaryItem
+              label="In Wallet:"
+              currentValue={vrtxWalletBalance}
+              definitionTooltipId="stakingVrtxInWallet"
+              formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              onValueClick={onMaxAmountSelected}
+            />
           </div>
           <FractionAmountButtons
             onFractionSelected={onFractionSelected}
@@ -138,7 +132,7 @@ export function StakeVrtxDialog() {
             </ButtonHelperInfo.Content>
           )}
         </Form>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

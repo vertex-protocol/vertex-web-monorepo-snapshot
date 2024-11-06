@@ -1,10 +1,9 @@
-import { OrderFormWarningPanel } from './OrderFormWarningPanel';
+import { WarningPanel } from 'client/components/WarningPanel';
 
 export function OrderFormSpreadWarningPanel() {
   return (
-    <OrderFormWarningPanel
-      title="Spread is High"
-      content="Manage your risk by adjusting slippage tolerance or using limit orders."
-    />
+    <WarningPanel title="Spread is High">
+      Manage your risk by adjusting slippage tolerance or using limit orders.
+    </WarningPanel>
   );
 }

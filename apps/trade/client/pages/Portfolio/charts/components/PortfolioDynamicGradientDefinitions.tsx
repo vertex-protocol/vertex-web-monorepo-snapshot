@@ -1,8 +1,8 @@
-import { clamp } from 'lodash';
 import {
   ChartGradientOffsetParams,
   useChartGradientOffset,
-} from '../hooks/useChartGradientOffset';
+} from 'client/pages/Portfolio/charts/hooks/useChartGradientOffset';
+import { clamp } from 'lodash';
 
 interface Props extends ChartGradientOffsetParams {
   gradientConfigs: DynamicGradientConfig[];

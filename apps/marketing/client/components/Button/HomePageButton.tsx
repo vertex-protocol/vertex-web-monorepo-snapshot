@@ -3,7 +3,7 @@ import { Spinner } from 'client/components/Spinner';
 import Link from 'next/link';
 import { ElementType } from 'react';
 
-import { ButtonElement, ButtonProps } from './types';
+import { ButtonElement, ButtonProps } from 'client/components/Button/types';
 
 function BaseButton<E extends ButtonElement>({
   as: Component,
@@ -33,7 +33,6 @@ export function HomePageButton<E extends ButtonElement = 'button'>(
 ) {
   const {
     className,
-    iconClassName,
     startIcon = null,
     endIcon = null,
     disabled = false,

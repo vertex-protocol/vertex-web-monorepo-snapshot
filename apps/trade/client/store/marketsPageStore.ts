@@ -1,5 +1,5 @@
-import { FundingRatePeriodID } from 'client/pages/Markets/hooks/useFundingRatePeriodSelect';
+import { FundingRateTimespan } from 'client/utils/calcs/funding';
 import { atom } from 'jotai';
 
 export const marketsPageFundingRatePeriodAtom =
-  atom<FundingRatePeriodID>('hourly');
+  atom<FundingRateTimespan>('hourly');

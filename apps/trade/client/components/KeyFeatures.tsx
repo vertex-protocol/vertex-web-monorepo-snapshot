@@ -1,6 +1,10 @@
-import { Icons, IconType, imageToIconComponent } from '@vertex-protocol/web-ui';
-import { IMAGES } from 'common/brandMetadata/images';
+import {
+  IconComponent,
+  Icons,
+  imageToIconComponent,
+} from '@vertex-protocol/web-ui';
 import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
+import { IMAGES } from 'common/brandMetadata/images';
 
 const BrandMonochromeIcon = imageToIconComponent({
   src: IMAGES.brandMonochromeIcon,
@@ -29,15 +33,15 @@ export function KeyFeatures() {
         ]
       : []),
     {
-      icon: Icons.HiLightningBolt,
+      icon: Icons.LightningFill,
       description: 'Fast and deep liquidity',
     },
     {
-      icon: Icons.BiPlus,
+      icon: Icons.Plus,
       description: 'All collateral earns interest',
     },
     {
-      icon: Icons.AiOutlineDollarCircle,
+      icon: Icons.CurrencyCircleDollar,
       description: 'Unbeatable fees: 0-0.02%',
     },
   ];
@@ -52,16 +56,14 @@ export function KeyFeatures() {
 }
 
 function Feature({
-  icon,
+  icon: Icon,
   description,
 }: {
-  icon: IconType;
+  icon: IconComponent;
   description: string;
 }) {
-  const Icon = icon;
-
   return (
-    <div className="text-text-secondary flex items-center gap-x-2 text-sm">
+    <div className="text-text-secondary flex items-center gap-x-2">
       <div className="bg-surface-2 rounded p-1">
         <Icon size={16} />
       </div>

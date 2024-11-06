@@ -1,21 +1,18 @@
+import { formatNumber } from '@vertex-protocol/react-client';
 import { BigDecimals } from '@vertex-protocol/utils';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { formatNumber } from '@vertex-protocol/react-client';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
+import { MarketOrderRow } from 'client/modules/trading/marketOrders/components/MarketOrderRow';
+import { MarketOrderRows } from 'client/modules/trading/marketOrders/components/MarketOrderRows';
+import { MarketOrdersHeaderRow } from 'client/modules/trading/marketOrders/components/MarketOrdersHeaderRow';
 import {
   MarketTradeRowItem,
   useLatestMarketTrades,
 } from 'client/modules/trading/marketOrders/latestMarketTrades/hooks/useLatestMarketTrades';
-import {
-  formatTimestamp,
-  TimeFormatSpecifier,
-} from 'client/utils/formatTimestamp';
 import { safeDiv } from 'client/utils/safeDiv';
+import { formatTimestamp, TimeFormatSpecifier } from '@vertex-protocol/web-ui';
 import { first } from 'lodash';
 import { useCallback } from 'react';
-import { MarketOrderRow } from '../components/MarketOrderRow';
-import { MarketOrderRows } from '../components/MarketOrderRows';
-import { MarketOrdersHeaderRow } from '../components/MarketOrdersHeaderRow';
 
 interface LatestMarketTradesProps extends WithClassnames {
   productId: number | undefined;
@@ -94,15 +91,13 @@ export function LatestMarketTrades({
         <MarketOrdersHeaderRow.Item label="Size" symbol={data?.symbol} />
         <MarketOrdersHeaderRow.Item label="Time" />
       </MarketOrdersHeaderRow.Container>
-      {/* Allow vertical scrolling */}
-      <div className="no-scrollbar flex flex-1 flex-col gap-y-0.5 overflow-y-auto">
-        <MarketOrderRows
-          rows={data?.trades}
-          numRows={50}
-          renderRow={renderRow}
-          skeletonRow={SKELETON_ROW}
-        />
-      </div>
+      <MarketOrderRows
+        className="flex-1"
+        rows={data?.trades}
+        numRows={50}
+        renderRow={renderRow}
+        skeletonRow={SKELETON_ROW}
+      />
     </div>
   );
 }

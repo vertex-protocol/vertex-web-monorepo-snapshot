@@ -1,8 +1,8 @@
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { AnnotatedMarket } from 'common/productMetadata/types';
+import { AnnotatedMarket } from '@vertex-protocol/metadata';
 import { pickBy } from 'lodash';
 import { useCallback, useMemo } from 'react';
 
@@ -15,12 +15,12 @@ interface UseFilteredMarkets {
 export function useFilteredMarkets(filters?: MarketFilter): UseFilteredMarkets {
   const { data: allMarketsData, isLoading: loadingMarkets } = useAllMarkets();
   const { data: subaccountSummary, isLoading: loadingSubaccountSummary } =
-    useCurrentSubaccountSummary();
+    useSubaccountSummary();
   const { favoritedMarketIds } = useFavoritedMarkets();
 
   // Destructure for a nice dependency array
   const amountFilter = filters?.amount;
-  const marketTypeFilter = filters?.marketType;
+  const marketCategoryFilter = filters?.marketCategory;
   const productIdFilters = filters?.productIds;
 
   const filterFn = useCallback(
@@ -29,8 +29,11 @@ export function useFilteredMarkets(filters?: MarketFilter): UseFilteredMarkets {
       if (filters?.isFavorited && !favoritedMarketIds.has(market.productId)) {
         return false;
       }
-      // Check market type
-      if (marketTypeFilter != null && marketTypeFilter !== market.type) {
+      // Check market category
+      if (
+        marketCategoryFilter != null &&
+        !market.metadata.marketCategories.has(marketCategoryFilter)
+      ) {
         return false;
       }
       // Check product IDs
@@ -69,7 +72,7 @@ export function useFilteredMarkets(filters?: MarketFilter): UseFilteredMarkets {
       amountFilter,
       favoritedMarketIds,
       filters?.isFavorited,
-      marketTypeFilter,
+      marketCategoryFilter,
       productIdFilters,
       subaccountSummary,
     ],

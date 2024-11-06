@@ -1,10 +1,10 @@
 import { calcLpTokenValue } from '@vertex-protocol/contracts';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useExecuteWithdrawLbaLiquidity } from 'client/hooks/execute/vrtxToken/useExecuteWithdrawLbaLiquidity';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
@@ -33,7 +33,7 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
     useVertexMetadataContext();
   const { hide } = useDialog();
   const { dispatchNotification } = useNotificationManagerContext();
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const { data: accountLbaState } = useAccountLbaState();
 
@@ -84,13 +84,13 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
         totalLiquidityUsd: lockedLpTokens
           .plus(unlockedLpTokens)
           .multipliedBy(marketState.lpTokenValue)
-          .multipliedBy(quotePriceUsd),
+          .multipliedBy(primaryQuotePriceUsd),
         unlockedLiquidityUsd: unlockedLpTokens
           .multipliedBy(marketState.lpTokenValue)
-          .multipliedBy(quotePriceUsd),
+          .multipliedBy(primaryQuotePriceUsd),
         unlockedLpTokens: unlockedLpTokens,
       };
-    }, [accountLbaState, marketState, quotePriceUsd]);
+    }, [accountLbaState, marketState, primaryQuotePriceUsd]);
 
   // Form
   const useWithdrawLbaLiquidityForm = useForm<WithdrawLbaLiquidityFormValues>({
@@ -178,10 +178,15 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
         vrtx: amountVrtx,
         valueUsd: marketState?.lpTokenValue
           .multipliedBy(validAmount)
-          .multipliedBy(quotePriceUsd),
+          .multipliedBy(primaryQuotePriceUsd),
         conversionRate: safeDiv(totalDepositedUsdc, totalDepositedVrtx),
       };
-    }, [marketState?.lpTokenValue, quotePriceUsd, validAmount, vrtxMarket]);
+    }, [
+      marketState?.lpTokenValue,
+      primaryQuotePriceUsd,
+      validAmount,
+      vrtxMarket,
+    ]);
 
   const onFractionSelected = useOnFractionSelectedHandler({
     setValue,
@@ -256,7 +261,13 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
     marketState,
     estimatedReceiveAmounts,
     pairMetadata: {
-      base: protocolTokenMetadata.token,
+      // Constructing this manually rather than using `getSharedProductMetadata` because
+      // `ProtocolTokenMetadata` doesn't satisfy `SpotProductMetadata | PerpProductMetadata`.
+      base: {
+        marketName: `${protocolTokenMetadata.token.symbol}-${primaryQuoteToken.symbol}`,
+        symbol: protocolTokenMetadata.token.symbol,
+        icon: protocolTokenMetadata.token.icon,
+      },
       quote: primaryQuoteToken,
     },
     priceIncrement: vrtxMarket?.priceIncrement,

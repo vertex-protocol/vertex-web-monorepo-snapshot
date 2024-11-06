@@ -1,10 +1,12 @@
-import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+'use client';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { StatusIndicator } from 'client/components/StatusIndicator';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 import { useCountdownDuration } from 'client/hooks/ui/useCountdownDuration';
+import { TradingCompetitionStatusBadge } from 'client/modules/tradingCompetition/components/TradingCompetitionStatusBadge';
 import { useTradingCompetitionContext } from 'client/pages/TradingCompetition/context/TradingCompetitionContext';
 
 export function TradingCompetitionCountdownHeader() {
@@ -21,39 +23,15 @@ export function TradingCompetitionCountdownHeader() {
     done: { title: undefined, endTime: undefined },
   }[currentContestStatus];
 
-  const isDone = currentContestStatus === 'done';
-
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 lg:gap-x-8">
       <div className="flex flex-col items-center gap-y-2">
-        <StatusBadge status={currentContestStatus} />
-        {!isDone && (
-          <span className="text-text-tertiary text-2xs lg:text-xs">
-            {title}
-          </span>
-        )}
+        <TradingCompetitionStatusBadge status={currentContestStatus} />
+        <span className="text-text-tertiary text-2xs empty:hidden lg:text-xs">
+          {title}
+        </span>
       </div>
-      {!isDone && <Countdown endTimeMillis={endTime} />}
-    </div>
-  );
-}
-
-function StatusBadge({ status }: { status: 'pending' | 'active' | 'done' }) {
-  const { label, colorVariant } = {
-    pending: { label: 'Starting soon', colorVariant: 'warning' as const },
-    active: { label: 'Live', colorVariant: 'positive' as const },
-    done: { label: 'Ended', colorVariant: 'primary' as const },
-  }[status];
-
-  return (
-    <div
-      className={joinClassNames(
-        'flex items-center gap-x-1.5 rounded-full p-1 pr-2.5',
-        'bg-surface-2 text-text-primary text-xs lg:text-sm',
-      )}
-    >
-      <StatusIndicator colorVariant={colorVariant} />
-      {label}
+      {endTime && <Countdown endTimeMillis={endTime} />}
     </div>
   );
 }
@@ -85,16 +63,17 @@ function DurationSegment({ unit, value, className }: DurationSegmentProps) {
     <div
       className={joinClassNames(
         'flex flex-col items-center gap-y-1 p-1 lg:px-3',
-        'border-overlay-divider/10 rounded-sm border',
+        'rounded-sm border',
+        COMMON_TRANSPARENCY_COLORS.border,
         className,
       )}
     >
-      <div className="text-text-primary font-title text-xl leading-none lg:text-3xl">
+      <div className="text-text-primary title-text text-xl leading-none lg:text-3xl">
         {formatNumber(value, {
           formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
         })}
       </div>
-      <div className="text-text-tertiary text-2xs font-title lg:text-xs">
+      <div className="text-text-tertiary text-2xs title-text lg:text-xs">
         {unit}
       </div>
     </div>

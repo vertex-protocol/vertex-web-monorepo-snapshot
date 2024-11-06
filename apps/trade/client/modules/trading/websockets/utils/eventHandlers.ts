@@ -1,8 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
 import { EnginePriceTickLiquidity } from '@vertex-protocol/engine-client';
 import { fromX18, toBigDecimal } from '@vertex-protocol/utils';
-import { PrimaryChainID } from '@vertex-protocol/react-client';
 import {
+  LATEST_ORDER_FILLS_LIMIT,
   LatestOrderFill,
   latestOrderFillsForProductQueryKey,
 } from 'client/hooks/query/markets/useLatestOrderFillsForProduct';
@@ -15,6 +15,7 @@ import {
   BatchMarketTradeUpdateData,
 } from 'client/modules/trading/websockets/types';
 import { first, random } from 'lodash';
+import { ChainEnv } from '@vertex-protocol/client';
 
 function updateBookTicks(
   prevTicks: EnginePriceTickLiquidity[],
@@ -45,7 +46,7 @@ function updateBookTicks(
 }
 
 export function handleBatchedMarketTradeEvents(
-  chainId: PrimaryChainID,
+  chainEnv: ChainEnv,
   batchedUpdateData: BatchMarketTradeUpdateData,
   productId: number,
   queryClient: QueryClient,
@@ -59,7 +60,7 @@ export function handleBatchedMarketTradeEvents(
   // will be wiped out. Indexer is always _slightly_ behind WS, so it's going to miss the latest fill.
   queryClient.setQueriesData<LatestOrderFill[]>(
     {
-      queryKey: latestOrderFillsForProductQueryKey(chainId, productId),
+      queryKey: latestOrderFillsForProductQueryKey(chainEnv, productId),
     },
     (prev) => {
       if (!prev) {
@@ -82,14 +83,14 @@ export function handleBatchedMarketTradeEvents(
         };
       });
 
-      // Trim the earliest and add the latest - data is in descending order
-      return [...newFills, ...prev.slice(0, -1 * newFills.length)];
+      // Return the new & prev trades trimmed to the limit, data is in descending order.
+      return [...newFills, ...prev].slice(0, LATEST_ORDER_FILLS_LIMIT);
     },
   );
 }
 
 export function handleBatchedBookDepthEvents(
-  chainId: PrimaryChainID,
+  chainEnv: ChainEnv,
   batchedUpdateData: BatchBookDepthUpdateData,
   productId: number,
   queryClient: QueryClient,
@@ -104,7 +105,7 @@ export function handleBatchedBookDepthEvents(
 
   queryClient.setQueriesData<MarketLiquidityData>(
     {
-      queryKey: marketLiquidityQueryKey(true, chainId, productId),
+      queryKey: marketLiquidityQueryKey(true, chainEnv, productId),
     },
     (prev) => {
       if (!prev) {
@@ -142,7 +143,7 @@ export function handleBatchedBookDepthEvents(
         );
         queryClient.invalidateQueries(
           {
-            queryKey: marketLiquidityQueryKey(true, chainId, productId),
+            queryKey: marketLiquidityQueryKey(true, chainEnv, productId),
           },
           {
             // This guards against multiple overriding invalidations when fast websocket updates occur and book is

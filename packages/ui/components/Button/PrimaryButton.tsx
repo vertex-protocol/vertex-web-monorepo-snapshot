@@ -20,7 +20,7 @@ export type PrimaryButtonProps = Exclude<ButtonProps, 'size'> & {
  * @param size - The size of the button. Default is 'base'.
  */
 export const PrimaryButton = forwardRef(function PrimaryButton(
-  { className, color, size = 'base', ...rest }: PrimaryButtonProps,
+  { className, size = 'base', ...rest }: PrimaryButtonProps,
   ref,
 ) {
   const stateOverlayClassNames = getStateOverlayClassNames({

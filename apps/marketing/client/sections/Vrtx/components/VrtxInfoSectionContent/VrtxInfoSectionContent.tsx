@@ -1,7 +1,7 @@
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { VrtxInfoLinks } from './VrtxInfoLinks';
-import { VrtxListingLinks } from './VrtxListingLinks';
-import { VrtxNetworkCards } from './VrtxNetworkCards';
+import { VrtxInfoLinks } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxInfoLinks';
+import { VrtxListingLinks } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxListingLinks';
+import { VrtxNetworkCards } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxNetworkCards';
 
 export function VrtxInfoSectionContent({ className }: WithClassnames) {
   return (

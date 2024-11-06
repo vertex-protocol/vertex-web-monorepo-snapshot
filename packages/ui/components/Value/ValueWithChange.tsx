@@ -9,11 +9,12 @@ import { Icons } from '../Icons';
 import { Value } from './Value';
 
 export interface ValueWithChangeProps extends WithClassnames {
-  sizeVariant?: SizeVariant;
+  sizeVariant: SizeVariant;
   endElement?: ReactNode;
   currentValue: ReactNode;
   newValue?: ReactNode;
   valueClassName?: string;
+  /** When overriding icon size use `size-` className. ex. `size-4`  */
   arrowClassName?: string;
 }
 
@@ -26,6 +27,13 @@ export function ValueWithChange({
   endElement,
   className,
 }: ValueWithChangeProps) {
+  const iconSizeClassNames = {
+    xs: 'size-3',
+    sm: 'size-3.5',
+    base: 'size-4',
+    lg: 'size-5',
+  }[sizeVariant];
+
   return (
     <div className={mergeClassNames('flex items-center gap-x-1', className)}>
       <Value
@@ -40,9 +48,12 @@ export function ValueWithChange({
       </Value>
       {newValue && (
         <>
-          <Icons.MdArrowRightAlt
-            size={16}
-            className={mergeClassNames('text-text-tertiary', arrowClassName)}
+          <Icons.ArrowRight
+            className={mergeClassNames(
+              'text-text-tertiary',
+              iconSizeClassNames,
+              arrowClassName,
+            )}
           />
           <Value
             sizeVariant={sizeVariant}

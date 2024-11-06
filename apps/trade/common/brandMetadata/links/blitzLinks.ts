@@ -2,10 +2,14 @@ export const BLITZ_SPECIFIC_LINKS = {
   galxe: 'https://galxe.com/Untv4CWb4bpdfzajsDq9aA/campaign/GCyc1t4byf',
   bridge: 'https://blast.io/en/bridge',
   blastAirdropPoints: 'https://blast.io/en/airdrop',
+  blastPhase2Details: 'https://blog.blast.io/phase-2-users/',
   pointsProgramDocs:
     'https://docs.blitz.exchange/points-and-protocol-rewards/blitz-points-program',
+  pointsEpochSchedule:
+    'https://medium.com/@blitz_exchange/rewards-phase-2-gold-distribution-1-new-epoch-weights-opportunities-1bfe7e310e52',
+  blitzBlog: 'https://medium.com/@blitz_exchange',
   tradingCompetitionDocs:
-    'https://docs.blitz.exchange/points-and-protocol-rewards/blitz-trading-competition',
+    'https://docs.blitz.exchange/rewards/trading-competition',
 };
 
 export const BLITZ_COMMON_LINKS = {
@@ -15,14 +19,17 @@ export const BLITZ_COMMON_LINKS = {
   crossChainDocs: 'https://docs.blitz.exchange/tutorials/cross-chain-deposits',
   discord: 'https://discord.gg/blitzexchange',
   docs: 'https://docs.blitz.exchange/',
+  faq: 'https://docs.blitz.exchange/basics/faqs',
   faqFeesDocs: 'https://docs.blitz.exchange/basics/fees',
-  faqGasFeesDocs: `https://docs.blitz.exchange/basics/fees#gas-fees`,
+  fastWithdrawalsLearnMore: `https://docs.blitz.exchange/tutorials/fast-withdrawals`,
   // Blitz hacken uses the same link as Vertex
-  hacken: 'https://hackenproof.com/vertex-protocol',
+  hacken: 'https://hackenproof.com/company/vertex-protocol/programs',
   lpDocs: 'https://docs.blitz.exchange/basics/blitz-dex-technical-stack',
   maintenanceWindowDocs:
     'https://docs.blitz.exchange/resources-and-links/maintenance-windows-and-status',
   marketingSite: 'https://blitz.exchange',
+  multipleSubaccountsDocs:
+    'https://docs.blitz.exchange/tutorials/multiple-accounts',
   privacyPolicy: 'https://blitz.exchange/docs/PrivacyPolicy.pdf',
   productSpecDocs:
     'https://docs.blitz.exchange/basics/perpetual-and-spot-market-specifications',

@@ -1,7 +1,17 @@
 import { Head, Html, Main, NextScript } from 'next/document';
 import { SEO_INFO } from 'config/seoInfo';
+import { LINKS } from 'config/links';
 
 export default function AppDocument() {
+  const schemaData = {
+    '@context': 'https://schema.org/',
+    '@type': 'WebSite',
+    name: SEO_INFO.title,
+    '@id': 'https://blitz.exchange/',
+    url: 'https://blitz.exchange/',
+    image: SEO_INFO.bannerImage,
+    sameAs: [LINKS.x, LINKS.discord, LINKS.blog],
+  };
   return (
     <Html>
       <Head>
@@ -43,6 +53,11 @@ export default function AppDocument() {
         <meta name="twitter:description" content={SEO_INFO.description} />
         <meta name="twitter:image" content={SEO_INFO.bannerImage} />
         <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://blitz.exchange/" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+        />
       </Head>
       <body>
         <Main />

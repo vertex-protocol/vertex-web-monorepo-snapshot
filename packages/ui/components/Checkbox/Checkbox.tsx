@@ -4,9 +4,9 @@ import {
   WithClassnames,
   joinClassNames,
 } from '@vertex-protocol/web-common';
-import { Icons } from '../Icons';
 import { SizeVariant } from '../../types';
 import { getStateOverlayClassNames } from '../../utils';
+import { Icons } from '../Icons';
 
 type CheckboxSizeVariant = Extract<SizeVariant, 'xs' | 'sm'>;
 
@@ -55,7 +55,7 @@ function CheckboxCheck({
       checked={checked}
     >
       <RadixCheckbox.Indicator>
-        <Icons.MdCheck className="text-background" size={iconSize} />
+        <Icons.Check className="text-background" size={iconSize} />
       </RadixCheckbox.Indicator>
     </RadixCheckbox.Root>
   );

@@ -2,15 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { ChainEnv } from '@vertex-protocol/client';
 
 export function maxWithdrawableQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   sender?: string,
   subaccountName?: string,
   productId?: number,
@@ -18,7 +17,7 @@ export function maxWithdrawableQueryKey(
 ) {
   return createQueryKey(
     'maxWithdrawable',
-    chainId,
+    chainEnv,
     sender,
     subaccountName,
     productId,
@@ -29,27 +28,34 @@ export function maxWithdrawableQueryKey(
 interface Params {
   productId?: number;
   spotLeverage?: boolean;
+  subaccountName?: string;
 }
 
 // Always non-negative, includes any current positive balances
 export function useMaxWithdrawableAmount(params?: Params) {
-  const primaryChainId = usePrimaryChainId();
   const { currentSubaccount } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 
+  const subaccountName = params?.subaccountName
+    ? params.subaccountName
+    : currentSubaccount.name;
+
+  const productId = params?.productId ?? 0;
+  const spotLeverage = params?.spotLeverage ?? false;
+
   const disabled =
     !currentSubaccount.address ||
-    !currentSubaccount.name ||
+    !subaccountName ||
     !vertexClient ||
     params == null;
 
   return useQuery({
     queryKey: maxWithdrawableQueryKey(
-      primaryChainId,
+      currentSubaccount.chainEnv,
       currentSubaccount.address,
-      currentSubaccount.name,
-      params?.productId,
-      params?.spotLeverage,
+      subaccountName,
+      productId,
+      spotLeverage,
     ),
     queryFn: async (): Promise<BigDecimal> => {
       if (disabled) {
@@ -57,9 +63,9 @@ export function useMaxWithdrawableAmount(params?: Params) {
       }
       return vertexClient.spot.getMaxWithdrawable({
         subaccountOwner: currentSubaccount.address ?? '',
-        subaccountName: currentSubaccount.name,
-        productId: params?.productId ?? 0,
-        spotLeverage: params?.spotLeverage ?? false,
+        subaccountName,
+        productId,
+        spotLeverage,
       });
     },
     enabled: !disabled,

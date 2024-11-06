@@ -1,4 +1,4 @@
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
+import { Divider } from '@vertex-protocol/web-ui';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { ReactNode } from 'react';
@@ -19,13 +19,14 @@ export function TableDetailDialog({
   const { hide } = useDialog();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>{title}</BaseDialog.Title>
-      <BaseDialog.Body className="flex w-full flex-col py-2">
-        <div className="border-overlay-divider/10 border-b py-4">{header}</div>
-        <div className="py-4">{metricItems}</div>
-        <div className="py-4">{actions}</div>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>{title}</BaseAppDialog.Title>
+      <BaseAppDialog.Body>
+        {header}
+        <Divider />
+        {metricItems}
+        {actions}
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

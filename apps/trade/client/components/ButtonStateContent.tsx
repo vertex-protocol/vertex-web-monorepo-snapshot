@@ -4,7 +4,7 @@ import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessi
 function SuccessButtonContent({ message }: { message: string }) {
   return (
     <div className="flex items-center gap-x-1">
-      <Icons.MdCheck />
+      <Icons.Check />
       <span>{message}</span>
     </div>
   );

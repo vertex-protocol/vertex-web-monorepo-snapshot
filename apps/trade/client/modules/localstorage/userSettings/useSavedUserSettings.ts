@@ -22,6 +22,7 @@ export function useSavedUserSettings() {
     setUserSettingsAtomValue,
     didLoadPersistedValue,
   ] = useStorageAtom(userSettingsAtom, {});
+
   const addrKey = useLocalStorageAddressKey();
 
   const userSettingsForAddr = useMemo((): SavedUserSettings => {
@@ -35,6 +36,7 @@ export function useSavedUserSettings() {
           getUserSettingsWithDefaults(prev[addrKey]),
           setSettings,
         );
+
         return {
           ...prev,
           [addrKey]: newSettingsForAddr,

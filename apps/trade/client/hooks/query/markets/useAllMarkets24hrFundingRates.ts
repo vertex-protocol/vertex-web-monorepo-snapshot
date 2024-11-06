@@ -1,36 +1,35 @@
 import { useQuery } from '@tanstack/react-query';
-import { ProductEngineType } from '@vertex-protocol/contracts';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { MarketFilter } from 'client/types/MarketFilter';
 
 export function allMarkets24HrFundingRatesQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   productIds?: number[],
 ) {
-  return createQueryKey('allMarkets24HrFundingRates', chainId, productIds);
+  return createQueryKey('allMarkets24HrFundingRates', chainEnv, productIds);
 }
 
 const PERP_MARKET_FILTER: MarketFilter = {
-  marketType: ProductEngineType.PERP,
+  marketCategory: 'perp',
 };
 
 export function useAllMarkets24HrFundingRates() {
   const vertexClient = usePrimaryChainVertexClient();
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const { filteredProductIds } = useFilteredMarkets(PERP_MARKET_FILTER);
 
   const disabled = !vertexClient || !filteredProductIds.length;
 
   return useQuery({
     queryKey: allMarkets24HrFundingRatesQueryKey(
-      primaryChainId,
+      primaryChainEnv,
       filteredProductIds,
     ),
     queryFn: async () => {

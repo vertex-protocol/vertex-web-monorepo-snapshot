@@ -1,4 +1,5 @@
 import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { ScrollShadowsContainer } from '@vertex-protocol/web-ui';
 import { range } from 'lodash';
 import { Fragment, ReactNode } from 'react';
 
@@ -11,6 +12,7 @@ interface Props<TRow extends RowIdentifiable> extends WithClassnames {
   numRows: number;
   renderRow: (row: TRow) => ReactNode;
   skeletonRow: ReactNode;
+  reverseRows?: boolean;
 }
 
 export function MarketOrderRows<TRow extends RowIdentifiable>({
@@ -19,6 +21,7 @@ export function MarketOrderRows<TRow extends RowIdentifiable>({
   skeletonRow,
   renderRow,
   className,
+  reverseRows,
 }: Props<TRow>) {
   const content = (() => {
     if (!rows?.length) {
@@ -33,8 +36,16 @@ export function MarketOrderRows<TRow extends RowIdentifiable>({
   })();
 
   return (
-    <div className={mergeClassNames('flex flex-col gap-y-0.5', className)}>
+    <ScrollShadowsContainer
+      className={mergeClassNames(
+        'flex gap-y-0.5',
+        reverseRows ? 'flex-col-reverse' : 'flex-col',
+        className,
+      )}
+      isReversed={reverseRows}
+      shadowSize={14}
+    >
       {content}
-    </div>
+    </ScrollShadowsContainer>
   );
 }

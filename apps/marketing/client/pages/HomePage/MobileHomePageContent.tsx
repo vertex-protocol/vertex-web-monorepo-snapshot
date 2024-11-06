@@ -5,7 +5,7 @@ import { FAQ } from 'client/sections/FAQ/FAQ';
 import { Flexibility } from 'client/sections/Flexibility/Flexibility';
 import { Footer } from 'client/sections/Footer/Footer';
 import { Hero } from 'client/sections/Hero/Hero';
-import { MobileInterface } from 'client/sections/Interface/MobileInterface';
+import { MobileInterface } from 'client/sections/Interface/MobileInterface/MobileInterface';
 import { Investors } from 'client/sections/Investors/Investors';
 import { LearnMore } from 'client/sections/LearnMore';
 import { MobileNavBar } from 'client/sections/NavBar/MobileNavBar';
@@ -28,7 +28,7 @@ export function MobileHomePageContent() {
       <BgWrapper src={topBg} fill imgClassName="object-cover">
         <Hero />
       </BgWrapper>
-      <BgWrapper src={midBg} className="mt-36" fill>
+      <BgWrapper src={midBg} fill>
         <Image
           alt="mid-grid"
           src={midGrid}

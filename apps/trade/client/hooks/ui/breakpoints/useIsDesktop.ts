@@ -1,3 +1,5 @@
+'use client';
+
 import { useSizeClass } from 'client/hooks/ui/breakpoints/useSizeClass';
 
 export function useIsDesktop() {

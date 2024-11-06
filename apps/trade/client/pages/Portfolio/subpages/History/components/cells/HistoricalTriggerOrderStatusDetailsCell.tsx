@@ -56,7 +56,7 @@ export function HistoricalTriggerOrderStatusDetailsCell({
               placement: 'auto',
             }}
           >
-            <Icons.MdInfoOutline size={16} className="text-text-tertiary" />
+            <Icons.Info size={16} className="text-text-tertiary" />
           </BaseDefinitionTooltip>
         )}
       </div>

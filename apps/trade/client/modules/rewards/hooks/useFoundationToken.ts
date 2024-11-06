@@ -4,17 +4,19 @@ import {
   arbitrumSepolia,
   mantle,
   mantleSepoliaTestnet,
-} from 'wagmi/chains';
+  seiTestnet,
+  sei,
+} from 'viem/chains';
 import {
+  NOOP_TOKEN,
   ARB_ARB_ONE,
   ARB_ARB_SEPOLIA,
-} from 'common/productMetadata/arbitrum/tokens';
-import {
   WMNT_MANTLE,
   WMNT_MANTLE_SEPOLIA,
-} from 'common/productMetadata/mantle/tokens';
-import { NOOP_TOKEN } from 'common/productMetadata/noopMetadata';
-import { Token } from 'common/productMetadata/types';
+  WSEI_SEI_TESTNET,
+  WSEI_SEI,
+} from '@vertex-protocol/metadata';
+import { Token } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 /**
@@ -33,7 +35,12 @@ export function useFoundationToken() {
         return WMNT_MANTLE;
       case mantleSepoliaTestnet.id:
         return WMNT_MANTLE_SEPOLIA;
+      case seiTestnet.id:
+        return WSEI_SEI_TESTNET;
+      case sei.id:
+        return WSEI_SEI;
+      default:
+        return NOOP_TOKEN;
     }
-    return NOOP_TOKEN;
   }, [primaryChain.id]);
 }

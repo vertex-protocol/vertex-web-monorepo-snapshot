@@ -1,17 +1,26 @@
+'use client';
+
 import {
   Root as TabsRoot,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
-import { UnderlinedTabs } from '@vertex-protocol/web-ui';
+import {
+  ScrollShadowsContainer,
+  SecondaryButton,
+  UnderlinedTabs,
+} from '@vertex-protocol/web-ui';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
 import { PortfolioPageContentWrapper } from 'client/pages/Portfolio/components/PortfolioPageContentWrapper';
-import { HistoryTabsPopover } from './components/HistoryTabsPopover';
-import { usePortfolioHistoryTabs } from './hooks/usePortfolioHistoryTabs';
+import { HistoryTabsDropdown } from 'client/pages/Portfolio/subpages/History/components/HistoryTabsDropdown';
+import { usePortfolioHistoryTabs } from 'client/pages/Portfolio/subpages/History/hooks/usePortfolioHistoryTabs';
 
 export function PortfolioHistoryPage() {
+  const { show } = useDialog();
   const {
     tabs,
     selectedTabId,
@@ -21,6 +30,7 @@ export function PortfolioHistoryPage() {
     enabledOptionalTabIds,
   } = usePortfolioHistoryTabs();
   const isDesktop = useIsDesktop();
+  const { trackEvent } = useAnalyticsContext();
 
   return (
     <PortfolioPageContentWrapper>
@@ -28,29 +38,45 @@ export function PortfolioHistoryPage() {
       <TabsRoot
         className="flex flex-col gap-y-3"
         value={selectedTabId}
-        onValueChange={setSelectedUntypedTabId}
+        onValueChange={(value) => {
+          trackEvent({
+            type: 'history_tabs_clicked',
+            data: {
+              historyTab: value,
+            },
+          });
+          setSelectedUntypedTabId(value);
+        }}
       >
-        {/* Using TabsList as scrollable container */}
-        <TabsList className="no-scrollbar overflow-x-auto">
-          <UnderlinedTabs.Container className="items-center">
-            {tabs.map(({ id, label }) => (
-              <TabsTrigger asChild value={id} key={id}>
-                <UnderlinedTabs.Button
-                  size={isDesktop ? 'lg' : 'sm'}
-                  active={id === selectedTabId}
+        <TabsList asChild>
+          <ScrollShadowsContainer orientation="horizontal">
+            <UnderlinedTabs.Container className="items-center">
+              {tabs.map(({ id, label }) => (
+                <TabsTrigger asChild value={id} key={id}>
+                  <UnderlinedTabs.Button
+                    size={isDesktop ? 'lg' : 'sm'}
+                    active={id === selectedTabId}
+                  >
+                    {label}
+                  </UnderlinedTabs.Button>
+                </TabsTrigger>
+              ))}
+              {/*Padding enforces a minimum gap between the tabs and the end buttons*/}
+              <div className="ml-auto flex gap-x-1 pl-2">
+                <SecondaryButton
+                  size="xs"
+                  onClick={() => show({ type: 'export_history', params: {} })}
                 >
-                  {label}
-                </UnderlinedTabs.Button>
-              </TabsTrigger>
-            ))}
-            {/*Enforce a minimum gap between the tabs and the popover trigger*/}
-            <div className="w-2 flex-1" />
-            <HistoryTabsPopover
-              enabledOptionalTabIds={enabledOptionalTabIds}
-              toggleOptionalTabId={toggleOptionalTabId}
-              setSelectedTabId={setSelectedTabId}
-            />
-          </UnderlinedTabs.Container>
+                  Export
+                </SecondaryButton>
+                <HistoryTabsDropdown
+                  enabledOptionalTabIds={enabledOptionalTabIds}
+                  toggleOptionalTabId={toggleOptionalTabId}
+                  setSelectedTabId={setSelectedTabId}
+                />
+              </div>
+            </UnderlinedTabs.Container>
+          </ScrollShadowsContainer>
         </TabsList>
         {tabs.map(({ id, content }) => (
           <TabsContent key={id} value={id}>

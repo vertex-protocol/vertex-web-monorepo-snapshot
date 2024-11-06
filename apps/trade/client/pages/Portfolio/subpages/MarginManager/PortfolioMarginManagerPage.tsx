@@ -1,12 +1,12 @@
-import { PortfolioPageContentWrapper } from 'client/pages/Portfolio/components/PortfolioPageContentWrapper';
 import { Divider } from '@vertex-protocol/web-ui';
-import { MarginManagerDefinitionsCollapsible } from './components/MarginManagerDefinitionsCollapsible/MarginManagerDefinitionsCollapsible';
-import { MarginManagerHeader } from './components/MarginManagerHeader/MarginManagerHeader';
-import { MarginManagerPerpPositionsTable } from './tables/MarginManagerPerpPositionsTable';
-import { MarginManagerPoolsTable } from './tables/MarginManagerPoolsTable';
-import { MarginManagerQuoteBalanceTable } from './tables/MarginManagerQuoteBalanceTable';
-import { MarginManagerSpotBalancesTable } from './tables/MarginManagerSpotBalancesTable';
-import { MarginManagerSpreadsTable } from './tables/MarginManagerSpreadsTable';
+import { PortfolioPageContentWrapper } from 'client/pages/Portfolio/components/PortfolioPageContentWrapper';
+import { MarginManagerDefinitionsCollapsible } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/MarginManagerDefinitionsCollapsible';
+import { MarginManagerHeader } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerHeader/MarginManagerHeader';
+import { MarginManagerPerpPositionsTable } from 'client/pages/Portfolio/subpages/MarginManager/tables/MarginManagerPerpPositionsTable';
+import { MarginManagerPoolsTable } from 'client/pages/Portfolio/subpages/MarginManager/tables/MarginManagerPoolsTable';
+import { MarginManagerQuoteBalanceTable } from 'client/pages/Portfolio/subpages/MarginManager/tables/MarginManagerQuoteBalanceTable';
+import { MarginManagerSpotBalancesTable } from 'client/pages/Portfolio/subpages/MarginManager/tables/MarginManagerSpotBalancesTable';
+import { MarginManagerSpreadsTable } from 'client/pages/Portfolio/subpages/MarginManager/tables/MarginManagerSpreadsTable';
 
 export const PortfolioMarginManagerPage = () => {
   return (

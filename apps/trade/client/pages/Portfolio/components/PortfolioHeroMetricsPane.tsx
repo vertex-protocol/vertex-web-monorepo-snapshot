@@ -4,6 +4,7 @@ import {
   joinClassNames,
 } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
+import { PrivacyToggleButton } from 'client/components/PrivacyToggleIcon';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
@@ -12,7 +13,6 @@ import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySettin
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import { ReactNode } from 'react';
-import { PortfolioPrivacyToggleButton } from './PortfolioPrivacyToggleButton';
 
 interface HeaderProps extends WithClassnames {
   title: ReactNode;
@@ -28,9 +28,9 @@ function Header({
   changeContent,
   definitionTooltipId,
 }: HeaderProps) {
-  const [areAccountValuesPrivate] = usePrivacySetting(
-    'areAccountValuesPrivate',
-  );
+  const [areAccountValuesPrivate, setAreAccountValuesPrivate] =
+    usePrivacySetting('areAccountValuesPrivate');
+
   return (
     <div
       className={joinClassNames(
@@ -38,14 +38,18 @@ function Header({
         className,
       )}
     >
-      <div className="flex items-center gap-x-2">
+      <div className="flex items-center gap-x-1.5">
         <DefinitionTooltip
           definitionId={definitionTooltipId}
           contentWrapperClassName="text-xs sm:text-sm text-text-tertiary"
         >
           {title}
         </DefinitionTooltip>
-        <PortfolioPrivacyToggleButton />
+        <PrivacyToggleButton
+          isPrivate={areAccountValuesPrivate}
+          onClick={() => setAreAccountValuesPrivate(!areAccountValuesPrivate)}
+          className="text-text-tertiary"
+        />
       </div>
       <div className="flex flex-col">
         <PrivateContent

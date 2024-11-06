@@ -17,6 +17,7 @@ import { useCallback } from 'react';
 interface Params {
   productId: number | undefined;
   estimateStateTxs: SubaccountTx[];
+  subaccountName?: string;
 }
 
 // Partial<EstimatedBaseSubaccountInfo> is used to override the default behavior of useEstimateSubaccountInfoChange when needed
@@ -30,8 +31,9 @@ export interface AdditionalInfo extends Partial<EstimatedBaseSubaccountInfo> {
 export function useCollateralEstimateSubaccountInfoChange({
   productId,
   estimateStateTxs,
+  subaccountName,
 }: Params) {
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const additionalInfoFactory = useCallback<
     AdditionalSubaccountInfoFactory<AdditionalInfo>
   >(
@@ -68,7 +70,8 @@ export function useCollateralEstimateSubaccountInfoChange({
         vertexBalance,
         BigDecimals.ZERO,
       ).abs();
-      const oraclePriceUsd = balance.oraclePrice.multipliedBy(quotePriceUsd);
+      const oraclePriceUsd =
+        balance.oraclePrice.multipliedBy(primaryQuotePriceUsd);
 
       // Override base subaccount info assuming that the new balance is the only balance that the user has
       const baseSubaccountInfo = ((): Partial<EstimatedBaseSubaccountInfo> => {
@@ -101,11 +104,12 @@ export function useCollateralEstimateSubaccountInfoChange({
         ...baseSubaccountInfo,
       };
     },
-    [estimateStateTxs, productId, quotePriceUsd],
+    [estimateStateTxs, productId, primaryQuotePriceUsd],
   );
 
   return useEstimateSubaccountInfoChange({
     estimateStateTxs,
     additionalInfoFactory,
+    subaccountName,
   });
 }

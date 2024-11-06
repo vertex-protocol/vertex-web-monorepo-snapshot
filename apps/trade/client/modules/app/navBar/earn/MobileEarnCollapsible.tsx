@@ -1,48 +1,44 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
 import { AppNavItemButton } from 'client/modules/app/navBar/components/AppNavItemButton';
 import { MobileNavCustomCollapsible } from 'client/modules/app/navBar/components/MobileNavCustomCollapsible';
+import { NavPopoverHeader } from 'client/modules/app/navBar/components/NavPopoverHeader';
+import { useEarnLinks } from 'client/modules/app/navBar/earn/useEarnLinks';
+import { useGetIsActiveRoute } from 'client/modules/app/navBar/hooks/useGetIsActiveRoute';
 import { useMobileCollapsible } from 'client/modules/app/navBar/hooks/useMobileCollapsible';
-import { useGetIsActiveRoute } from '../hooks/useGetIsActiveRoute';
-import { useEarnLinks } from './useEarnLinks';
 
 export function MobileEarnCollapsible({ className }: WithClassnames) {
   const earnLinks = useEarnLinks();
   const getIsActiveRoute = useGetIsActiveRoute();
-  const { setCollapsibleIsOpen, collapsibleIsOpen, onCollapsibleLinkClick } =
-    useMobileCollapsible();
+  const { onCollapsibleLinkClick } = useMobileCollapsible();
 
   const showEcosystemLinks = !!earnLinks.ecosystem.length;
 
   // Since earnLinks.ecosystem is an external link, it is enough to check earnLinks.products - but if that changes, we need to update this logic too
-  const currentlySelected =
-    collapsibleIsOpen ||
-    getIsActiveRoute(...earnLinks.products.map(({ href }) => href));
+  const currentlySelected = getIsActiveRoute(
+    ...earnLinks.products.map(({ href }) => href),
+  );
 
   return (
     <MobileNavCustomCollapsible.Root
       className={className}
-      open={collapsibleIsOpen}
-      setOpen={setCollapsibleIsOpen}
       triggerContent={
         <AppNavItemButton
           withMobilePadding
+          withCaret
           active={currentlySelected}
-          endIcon={<UpDownChevronIcon open={collapsibleIsOpen} />}
         >
           Earn
         </AppNavItemButton>
       }
       collapsibleContent={
         <MobileNavCustomCollapsible.LinksContainer className="gap-y-4">
-          <div className="flex flex-col gap-y-2">
-            <MobileEarnHeader title="Products" />
+          <div className="flex flex-col gap-y-1">
+            <NavPopoverHeader title="Products" />
             <div>
-              {earnLinks.products.map(({ label, icon, href, external }) => {
+              {earnLinks.products.map(({ label, href, external }, index) => {
                 return (
                   <MobileNavCustomCollapsible.LinkButton
-                    key={label}
-                    icon={icon}
+                    key={index}
                     href={href}
                     external={external}
                     active={getIsActiveRoute(href)}
@@ -55,14 +51,13 @@ export function MobileEarnCollapsible({ className }: WithClassnames) {
             </div>
           </div>
           {showEcosystemLinks && (
-            <div className="flex flex-col gap-y-2">
-              <MobileEarnHeader title="Ecosystem" />
+            <div className="flex flex-col gap-y-1">
+              <NavPopoverHeader title="Ecosystem" />
               <div>
-                {earnLinks.ecosystem.map(({ label, icon, href, external }) => {
+                {earnLinks.ecosystem.map(({ label, href, external }, index) => {
                   return (
                     <MobileNavCustomCollapsible.LinkButton
-                      key={label}
-                      icon={icon}
+                      key={index}
                       href={href}
                       external={external}
                       active={getIsActiveRoute(href)}
@@ -79,8 +74,4 @@ export function MobileEarnCollapsible({ className }: WithClassnames) {
       }
     />
   );
-}
-
-function MobileEarnHeader({ title }: { title: string }) {
-  return <div className="text-text-tertiary px-2 text-xs">{title}</div>;
 }

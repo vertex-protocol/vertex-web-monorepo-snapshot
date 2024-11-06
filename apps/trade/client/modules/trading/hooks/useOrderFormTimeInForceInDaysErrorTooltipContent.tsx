@@ -1,4 +1,4 @@
-import { OrderFormError } from '../types';
+import { OrderFormError } from 'client/modules/trading/types';
 import { useMemo } from 'react';
 
 export function useOrderFormTimeInForceInDaysErrorTooltipContent({

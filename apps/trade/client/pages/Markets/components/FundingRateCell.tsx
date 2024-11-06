@@ -1,10 +1,12 @@
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
+import { PerpMarketTableItem } from 'client/pages/Markets/hooks/usePerpMarketsTable';
 import { marketsPageFundingRatePeriodAtom } from 'client/store/marketsPageStore';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { useAtom } from 'jotai';
-import { PerpMarketTableItem } from '../hooks/usePerpMarketsTable';
 
 interface Props {
   value: PerpMarketTableItem['fundingRates'];

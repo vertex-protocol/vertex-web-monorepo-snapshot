@@ -1,8 +1,5 @@
 import { DisclosureCard } from '@vertex-protocol/web-ui';
-import {
-  VOVRTX_INFO,
-  VRTX_TOKEN_INFO,
-} from 'common/productMetadata/vertexTokenInfo';
+import { VOVRTX_INFO, VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 
 export function UnstakeVrtxDisclosure() {
   return (

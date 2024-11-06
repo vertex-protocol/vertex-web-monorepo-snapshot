@@ -36,13 +36,17 @@ export function useExecuteUpsertAffiliateCode() {
         ? Fuul.updateAffiliateCode
         : Fuul.createAffiliateCode;
 
-      return execute(context.subaccount.address, params.code, signature);
+      return execute({
+        address: context.subaccount.address,
+        code: params.code,
+        signature,
+      });
     }, []),
   );
 
   return useMutation({
     mutationFn,
-    onSuccess(data, variables) {
+    onSuccess() {
       refetchQueries();
     },
     onError(error, variables) {

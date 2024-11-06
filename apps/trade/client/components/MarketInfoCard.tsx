@@ -1,15 +1,23 @@
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
+import { BigDecimal } from '@vertex-protocol/client';
+import {
+  WithClassnames,
+  joinClassNames,
+  mergeClassNames,
+} from '@vertex-protocol/web-common';
+import { useShouldFlash } from 'client/hooks/ui/useShouldFlash';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import { ReactNode } from 'react';
 import { Config } from 'react-popper-tooltip';
 
 interface MarketInfoCardProps {
-  value: ReactNode;
   label?: string;
   labelPostfix?: string;
+  value: ReactNode;
   valueClassName?: string;
   definitionTooltipId?: DefinitionTooltipID;
+  /** Optional key that, when provided, adds an overlay flash when `flashOnChangeKey` changes */
+  flashOnChangeKey?: BigDecimal;
 }
 
 export function MarketInfoCard({
@@ -18,16 +26,31 @@ export function MarketInfoCard({
   value,
   definitionTooltipId,
   valueClassName,
+  flashOnChangeKey,
   className,
 }: WithClassnames<MarketInfoCardProps>) {
   const tooltipOptions: Partial<Config> = {
     placement: 'bottom',
   };
 
+  const shouldFlash = useShouldFlash({
+    flashKey: flashOnChangeKey?.toString(),
+    flashDuration: 400,
+  });
+
+  const flashClassName = shouldFlash ? 'backdrop-brightness-200' : undefined;
+
   return (
     <div
       className={joinClassNames(
-        'flex min-w-max flex-col justify-center',
+        'flex h-full min-w-max flex-col',
+        'justify-center gap-y-0.5 px-2 py-0.5',
+        'transition',
+        // Using `cursor-default` to prevent the cursor from rapidly changing when hovering over different elements of the card.
+        'cursor-default',
+        // Applying a rounded border to the container so that when the backdrop flashes, it isn't as rigid.
+        'rounded',
+        flashClassName,
         className,
       )}
     >
@@ -45,21 +68,18 @@ export function MarketInfoCard({
           )}
         </DefinitionTooltip>
       )}
-      <div
-        className={joinClassNames(
+      {/* Wrapping `value` with a tooltip if `label` doesn't exist and `tooltipId` is defined */}
+      <DefinitionTooltip
+        definitionId={!label ? definitionTooltipId : undefined}
+        tooltipOptions={tooltipOptions}
+        contentWrapperClassName={mergeClassNames(
           'text-text-primary min-w-max text-xs leading-4 tracking-wide',
           !value && 'animate-pulse',
           valueClassName,
         )}
       >
-        {/* Wrapping `value` with a tooltip if `label` doesn't exist and `tooltipId` is defined */}
-        <DefinitionTooltip
-          definitionId={!label ? definitionTooltipId : undefined}
-          tooltipOptions={tooltipOptions}
-        >
-          {value}
-        </DefinitionTooltip>
-      </div>
+        {value}
+      </DefinitionTooltip>
     </div>
   );
 }

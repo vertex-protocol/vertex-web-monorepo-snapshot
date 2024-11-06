@@ -1,9 +1,9 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
+import { TOAST_MARKET_ICON_CLASSNAME } from 'client/modules/notifications/components/consts';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
-import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
+import { TokenIconMetadata } from '@vertex-protocol/metadata';
 import Image from 'next/image';
-import { TOAST_MARKET_ICON_CLASSNAME } from './consts';
 
 interface Props extends WithClassnames {
   productType: ProductEngineType;

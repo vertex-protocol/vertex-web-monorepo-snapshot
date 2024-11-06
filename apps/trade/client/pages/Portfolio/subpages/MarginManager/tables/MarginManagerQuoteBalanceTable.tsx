@@ -1,23 +1,25 @@
+'use client';
+
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
-import { ProductInfoCell } from 'client/modules/tables/cells/ProductInfoCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
-import { signDependentValue } from 'client/utils/signDependentValue';
-import { useMemo } from 'react';
-import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
-import { MarginManagerActionsCell } from './cells/MarginManagerActionsCell';
-import { MarginWeightCell } from './cells/MarginWeightCell';
-import { MarginWeightHeaderCell } from './cells/MarginWeightHeaderCell';
-import { MarginManagerPopoverAction } from './components/MarginManagerTableActionsPopover';
+import { CalculatorIconHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/CalculatorIconHeaderCell';
+import { MarginManagerActionsCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginManagerActionsCell';
+import { MarginWeightCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginWeightCell';
+import { MarginWeightHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginWeightHeaderCell';
+import { MarginManagerDropdownAction } from 'client/pages/Portfolio/subpages/MarginManager/tables//components/MarginManagerTableActionsDropdown';
 import {
   MarginManagerQuoteBalanceTableItem,
   useMarginManagerQuoteBalanceTable,
-} from './hooks/useMarginManagerQuoteBalanceTable';
+} from 'client/pages/Portfolio/subpages/MarginManager/tables//hooks/useMarginManagerQuoteBalanceTable';
+import { signDependentValue } from 'client/utils/signDependentValue';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarginManagerQuoteBalanceTableItem>();
 
@@ -38,7 +40,7 @@ export function MarginManagerQuoteBalanceTable({ className }: WithClassnames) {
             const metadata =
               getValue<MarginManagerQuoteBalanceTableItem['metadata']>();
             return (
-              <ProductInfoCell
+              <MarketProductInfoCell
                 symbol={metadata.token.symbol}
                 iconSrc={metadata.token.icon.asset}
               />
@@ -136,7 +138,7 @@ export function MarginManagerQuoteBalanceTable({ className }: WithClassnames) {
           cell: (context) => {
             const { productId, balanceAmount } = context.row.original;
 
-            const actions: MarginManagerPopoverAction[] = signDependentValue(
+            const actions: MarginManagerDropdownAction[] = signDependentValue(
               balanceAmount,
               {
                 positive: [

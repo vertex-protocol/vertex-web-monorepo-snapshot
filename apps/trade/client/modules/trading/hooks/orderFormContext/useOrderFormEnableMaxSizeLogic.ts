@@ -1,12 +1,12 @@
 import { PlaceOrderPriceType } from 'client/modules/trading/types';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 
 interface Params {
   priceType: PlaceOrderPriceType;
 }
 
 export function useOrderFormEnableMaxSizeLogic({ priceType }: Params) {
-  const { data: subaccountSummary } = useCurrentSubaccountSummary();
+  const { data: subaccountSummary } = useSubaccountSummary();
   const isNegativeInitialHealth =
     subaccountSummary?.health.initial.health.lt(0) ?? false;
 

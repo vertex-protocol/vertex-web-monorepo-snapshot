@@ -1,7 +1,7 @@
 import { WithChildren } from '@vertex-protocol/web-common';
 import { useIsGeolocationBlocked } from 'client/hooks/useIsGeolocationBlocked';
 
-import { LocationRestrictedDialog } from './LocationRestrictedDialog';
+import { LocationRestrictedDialog } from 'client/components/LocationRestrictedDialog';
 
 export function GatedAccessWrapper({ children }: WithChildren) {
   const { data: isGeolocationBlocked } = useIsGeolocationBlocked();

@@ -22,8 +22,7 @@ const REFETCH_QUERY_KEYS: string[][] = [
  */
 export function useExecuteWithdrawUnstakedVrtx() {
   const mutationFn = useExecuteInValidContext(
-    useCallback(async (params: EmptyObject, context: ValidExecuteContext) => {
-      console.log('Withdrawing unstaked VRTX', params);
+    useCallback(async (_: EmptyObject, context: ValidExecuteContext) => {
       return context.vertexClient.rewards.withdrawUnstakedTokens();
     }, []),
   );

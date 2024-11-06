@@ -1,7 +1,6 @@
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-
-import { PairMetadata } from '../types';
-import { TokenIconLabel } from './TokenIconLabel';
+import { TokenIconLabel } from 'client/modules/pools/components/TokenIconLabel';
+import { PairMetadata } from 'client/modules/pools/types';
 
 interface Props {
   metadata?: PairMetadata;

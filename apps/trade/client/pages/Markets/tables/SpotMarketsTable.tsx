@@ -5,8 +5,7 @@ import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketP
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { SeparatedRowDataTable } from 'client/components/DataTable/SeparatedRowDataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
-import { LinkButton } from 'client/components/LinkButton';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
@@ -14,12 +13,13 @@ import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { PercentageChangeCell } from 'client/modules/tables/cells/PercentageChangeCell';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
-import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
-import { useMemo } from 'react';
 import {
   SpotMarketTableItem,
   useSpotMarketsTable,
-} from '../hooks/useSpotMarketsTable';
+} from 'client/pages/Markets/hooks/useSpotMarketsTable';
+import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
+import { useMemo } from 'react';
+import { LinkButton } from '@vertex-protocol/web-ui';
 
 const columnHelper = createColumnHelper<SpotMarketTableItem>();
 
@@ -67,7 +67,7 @@ export function SpotMarketsTable() {
           const value = context.getValue<SpotMarketTableItem['metadata']>();
           return (
             <MarketProductInfoCell
-              name={value.marketName}
+              symbol={value.marketName}
               iconSrc={value.token.icon.asset}
               isNewMarket={context.row.original.isNewMarket}
             />

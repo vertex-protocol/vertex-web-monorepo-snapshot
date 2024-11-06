@@ -15,6 +15,8 @@ export interface BaseClientEnv {
   brandName: BrandName;
   // Enables any WIP / experimental features
   enableExperimentalFeatures: boolean;
+  // An identifier for the current build
+  buildId: string;
 }
 
 const dataEnv: DataEnv =
@@ -24,7 +26,8 @@ const brandName = envBrandName;
 
 export const baseClientEnv: BaseClientEnv = {
   enableExperimentalFeatures:
-    process.env.NEXT_PUBLIC_ENABLE_EXPERIMENTAL_FEATURES === 'true' ?? false,
+    process.env.NEXT_PUBLIC_ENABLE_EXPERIMENTAL_FEATURES === 'true',
   dataEnv,
   brandName,
+  buildId: process.env.NEXT_PUBLIC_BUILD_ID ?? 'dev',
 };

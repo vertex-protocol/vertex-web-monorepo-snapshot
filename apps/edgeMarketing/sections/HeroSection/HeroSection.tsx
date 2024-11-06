@@ -1,11 +1,10 @@
+import { CookieNoticeBanner } from 'components/CookieNoticeBanner';
+import { EdgeBanner } from 'components/EdgeBanner/EdgeBanner';
 import { EdgeBgImage } from 'components/EdgeBgImage/EdgeBgImage';
 import { EdgeDescription } from 'components/EdgeDescription/EdgeDescription';
 import Image from 'next/image';
 import logo from 'public/img/edge-logo.svg';
-import React from 'react';
-import { BuiltOnEdge } from './components/BuiltOnEdge';
-import { EdgeBanner } from 'components/EdgeBanner/EdgeBanner';
-import { CookieNoticeBanner } from 'components/CookieNoticeBanner';
+import { BuiltOnEdge } from 'sections/HeroSection/components/BuiltOnEdge';
 
 /**
  * @name HeroSection
@@ -24,7 +23,7 @@ export function HeroSection() {
           priority
         />
       </div>
-      <div className="flex flex-1 flex-col justify-between sm:flex-row md:flex-none ">
+      <div className="flex flex-1 flex-col justify-between sm:flex-row md:flex-none">
         <EdgeDescription />
         <BuiltOnEdge />
       </div>

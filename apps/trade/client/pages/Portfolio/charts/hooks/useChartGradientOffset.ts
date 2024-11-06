@@ -1,6 +1,6 @@
+import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
 import { clamp, maxBy, minBy } from 'lodash';
 import { useMemo } from 'react';
-import { PortfolioChartDataItem } from './usePortfolioChartData/usePortfolioChartData';
 
 export interface ChartGradientOffsetParams {
   valueKey: keyof Omit<PortfolioChartDataItem, 'deltas' | 'timestamp'>;
@@ -25,8 +25,12 @@ export function useChartGradientOffset({
     const max = maxBy(data, valueKey)?.[valueKey];
     const min = minBy(data, valueKey)?.[valueKey];
 
-    if (!max || !min || max === min) {
+    if (!max || !min) {
       return 1;
+    }
+
+    if (max === min) {
+      return max < 0 ? 0 : 1;
     }
 
     return clamp(max / (max - min), 0, 1);

@@ -1,94 +1,112 @@
+'use client';
+
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { EdgeTileLink } from 'components/EdgeTileLink/EdgeTileLink';
+import { useEdgeMetrics } from 'hooks/useEdgeMetrics';
 import Image, { ImageProps } from 'next/image';
 import arbitrumImage from 'public/img/arbitrum-arb-logo.svg';
+import baseImage from 'public/img/base-logo.svg';
 import blastImage from 'public/img/blast-logo.png';
 import blitzImage from 'public/img/blitz-app.png';
 import blitzLinkBgImage from 'public/img/blitz-button-bg.svg';
 import blitzLightLogoImage from 'public/img/blitz-logo-light.svg';
 import blitzLogoImage from 'public/img/blitz-logo.svg';
+import mantleImage from 'public/img/mantle-logo.svg';
+import seiImage from 'public/img/sei-logo.svg';
 import vertexImage from 'public/img/vertex-app.png';
 import vertexLinkBgImage from 'public/img/vertex-button-bg.svg';
 import vertexLightLogoImage from 'public/img/vertex-logo-light.svg';
 import vertexLogoImage from 'public/img/vertex-logo.svg';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
-interface SourceItem {
+interface AppCard {
   preview: ReactNode;
   content: ReactNode;
   contentOnHover: ReactNode;
   url: string;
-  features: ReactNode[];
+  feature: ReactNode;
   bgImageOnHover: ImageProps['src'];
 }
 
-const featureClassName = 'flex items-center gap-1';
+const featureClassName = 'flex items-center gap-1 whitespace-nowrap';
 
-const APPS: Record<string, SourceItem> = {
-  vertex: {
-    url: 'https://vertexprotocol.com',
-    preview: <Image src={vertexImage} alt="Vertex" />,
-    content: (
-      <Image src={vertexLogoImage} alt="Vertex" className="max-h-2.5 w-auto" />
-    ),
-    contentOnHover: (
-      <Image
-        src={vertexLightLogoImage}
-        alt="Vertex"
-        className="max-h-2.5 w-auto"
-      />
-    ),
-    bgImageOnHover: vertexLinkBgImage,
-    features: [
-      <span key="vertex-1">$80B+ trading volume</span>,
-      <span key="vertex-2" className={featureClassName}>
-        Built on Arbitrum{' '}
-        <Image src={arbitrumImage} className="max-h-4 w-auto" alt="Arbitrum" />
-      </span>,
-    ],
-  },
-  blitz: {
-    url: 'https://blitz.exchange',
-    preview: <Image src={blitzImage} alt="Blitz" />,
-    content: (
-      <Image src={blitzLogoImage} alt="Vertex" className="max-h-2.5 w-auto" />
-    ),
-    contentOnHover: (
-      <Image
-        src={blitzLightLogoImage}
-        alt="Vertex"
-        className="max-h-2.5 w-auto"
-      />
-    ),
-    bgImageOnHover: blitzLinkBgImage,
-    features: [
-      <span key="blitz-1">New trading platform</span>,
-      <span key="blitz-2" className={featureClassName}>
-        Built on{' '}
-        <Image src={blastImage} className="max-h-3.5  w-auto" alt="Blast" />
-      </span>,
-    ],
-  },
-};
-
-/**
- * @name BuiltOnEdge
- * @description List of links to applications built on top of the Vertex Edge
- */
 export function BuiltOnEdge() {
   const [appPreviewName, setAppPreviewName] = useState<string>();
-  const [lastAppPreviewName, setLastAppPreviewName] = useState<string>();
+  const { data: chainMetrics } = useEdgeMetrics();
 
-  const currentApp = appPreviewName
-    ? APPS[appPreviewName]
-    : lastAppPreviewName
-      ? APPS[lastAppPreviewName]
-      : undefined;
+  const apps = useMemo(
+    (): Record<string, AppCard> => ({
+      vertex: {
+        url: 'https://vertexprotocol.com',
+        preview: <Image src={vertexImage} alt="Vertex" />,
+        content: (
+          <Image src={vertexLogoImage} alt="Vertex" className="h-2.5 w-auto" />
+        ),
+        contentOnHover: (
+          <Image
+            src={vertexLightLogoImage}
+            alt="Vertex"
+            className="h-2.5 w-auto"
+          />
+        ),
+        bgImageOnHover: vertexLinkBgImage,
+        feature: (
+          <span className={featureClassName}>
+            <span>
+              {formatNumber(chainMetrics?.totalVertexVolume, {
+                formatSpecifier:
+                  CustomNumberFormatSpecifier.CURRENCY_LARGE_ABBREVIATED,
+              })}
+              + trading volume |{' '}
+            </span>
+            <Image src={arbitrumImage} className="h-4 w-auto" alt="Arbitrum" />
+            <Image src={mantleImage} className="h-5 w-auto" alt="Mantle" />
+            <Image src={seiImage} className="h-4 w-auto" alt="SEI" />
+            <Image src={baseImage} className="h-4 w-auto" alt="Base" />
+          </span>
+        ),
+      },
+      blitz: {
+        url: 'https://blitz.exchange',
+        preview: <Image src={blitzImage} alt="Blitz" />,
+        content: (
+          <Image src={blitzLogoImage} alt="Blitz" className="h-2.5 w-auto" />
+        ),
+        contentOnHover: (
+          <Image
+            src={blitzLightLogoImage}
+            alt="Blitz"
+            className="h-2.5 w-auto"
+          />
+        ),
+        bgImageOnHover: blitzLinkBgImage,
+        feature: (
+          <span className={featureClassName}>
+            <span>
+              {formatNumber(chainMetrics?.totalBlitzVolume, {
+                formatSpecifier:
+                  CustomNumberFormatSpecifier.CURRENCY_LARGE_ABBREVIATED,
+              })}
+              + trading volume |{' '}
+            </span>
+            <Image src={blastImage} className="h-3.5 w-auto" alt="Blast" />
+          </span>
+        ),
+      },
+    }),
+    [chainMetrics],
+  );
+
+  const currentApp = appPreviewName ? apps[appPreviewName] : undefined;
 
   return (
     <div className="self-end p-6 pb-12 lg:px-12">
       <div className="bg-gray-light relative inline-flex items-center gap-3 rounded-[22px] p-3 pr-1.5">
-        {Object.entries(APPS).map(([name, app]) => (
+        {Object.entries(apps).map(([name, app]) => (
           <EdgeTileLink
             key={name}
             href={app.url}
@@ -96,14 +114,9 @@ export function BuiltOnEdge() {
             contentOnHover={app.contentOnHover}
             bgImageOnHover={app.bgImageOnHover}
             linkIconClassName="text-white"
-            external={true}
-            onMouseEnter={() => {
-              setAppPreviewName(name);
-              setLastAppPreviewName(name);
-            }}
-            onMouseLeave={() =>
-              appPreviewName === name && setAppPreviewName(undefined)
-            }
+            external
+            onMouseEnter={() => setAppPreviewName(name)}
+            onMouseLeave={() => setAppPreviewName(undefined)}
           />
         ))}
 
@@ -126,25 +139,16 @@ export function BuiltOnEdge() {
               'absolute flex flex-col gap-2',
               'rounded-[14px] border border-zinc-200 p-1.5',
               'bg-zinc-200/20 backdrop-blur-sm',
-              'transition-all delay-100 duration-300',
+              'transition-all duration-300',
               appPreviewName ? 'top-0 scale-100' : 'top-6 scale-90 opacity-0',
             )}
           >
             <div className="h-[196px] w-[350px] overflow-hidden rounded-[10px]">
               {currentApp?.preview}
             </div>
-            <ul className="text-md flex h-9 justify-center rounded-[10px] bg-black px-3 py-2 text-center leading-snug text-white">
-              {currentApp?.features.map((feat, idx) => {
-                return (
-                  <li
-                    key={idx}
-                    className="after:px-1 after:opacity-50 after:content-['•'] last:after:hidden"
-                  >
-                    {feat}
-                  </li>
-                );
-              })}
-            </ul>
+            <div className="text-md flex h-9 justify-center rounded-[10px] bg-black py-2 text-white">
+              {currentApp?.feature}
+            </div>
           </div>
         </div>
       </div>

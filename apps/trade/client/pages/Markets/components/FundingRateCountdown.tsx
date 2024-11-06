@@ -1,13 +1,13 @@
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { useNextFundingTime } from 'client/modules/trading/hooks/useNextFundingTime';
 import {
+  formatDurationMillis,
   TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
+} from '@vertex-protocol/web-ui';
 
 export function FundingRateCountdown({ className }: WithClassnames) {
   const { millisToNextFunding } = useNextFundingTime();
-  const countdown = formatTimestamp(millisToNextFunding, {
+  const countdown = formatDurationMillis(millisToNextFunding, {
     formatSpecifier: TimeFormatSpecifier.MM_SS,
   });
 

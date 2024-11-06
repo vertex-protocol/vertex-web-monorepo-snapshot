@@ -4,20 +4,20 @@ import {
   formatNumber,
   getMarketPriceFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { SecondaryButton } from '@vertex-protocol/web-ui';
+import {
+  SecondaryButton,
+  formatTimestamp,
+  TimeFormatSpecifier,
+} from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
+import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
+import { useOpenOrderDetailsDialog } from 'client/modules/tables/detailDialogs/hooks/useOpenOrderDetailsDialog';
+import { OpenEngineOrderTableItem } from 'client/modules/tables/hooks/useOpenEngineOrdersTable';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
 import { signDependentValue } from 'client/utils/signDependentValue';
-import { OpenEngineOrderTableItem } from '../hooks/useOpenEngineOrdersTable';
-import { ProductHeader } from './components/ProductHeader';
-import { useOpenOrderDetailsDialog } from './hooks/useOpenOrderDetailsDialog';
 
 export type OpenEngineOrderDetailsDialogParams = OpenEngineOrderTableItem;
 
@@ -39,6 +39,7 @@ export function OpenEngineOrderDetailsDialog({
     isPerp,
     disableCancelOrder,
     cancelOrderHandler,
+    navigateToTradePage,
   } = useOpenOrderDetailsDialog({
     isTrigger: false,
     orderType,
@@ -145,16 +146,19 @@ export function OpenEngineOrderDetailsDialog({
   );
 
   const actions = (
-    <SecondaryButton
-      className="w-full"
-      destructive
-      size="sm"
-      title="Cancel Order"
-      disabled={disableCancelOrder}
-      onClick={cancelOrderHandler}
-    >
-      Cancel Order
-    </SecondaryButton>
+    <div className="flex flex-col gap-y-3">
+      <SecondaryButton title="Trade" onClick={navigateToTradePage}>
+        Trade
+      </SecondaryButton>
+      <SecondaryButton
+        destructive
+        title="Cancel Order"
+        disabled={disableCancelOrder}
+        onClick={cancelOrderHandler}
+      >
+        Cancel Order
+      </SecondaryButton>
+    </div>
   );
 
   return (

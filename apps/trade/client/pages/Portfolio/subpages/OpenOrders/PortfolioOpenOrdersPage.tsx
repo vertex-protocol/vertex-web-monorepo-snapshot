@@ -1,15 +1,16 @@
+'use client';
+
 import {
-  Root as TabsRoot,
   TabsContent,
   TabsList,
+  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
-import { UnderlinedTabs } from '@vertex-protocol/web-ui';
+import { CounterPill, UnderlinedTabs } from '@vertex-protocol/web-ui';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
 import { PortfolioPageContentWrapper } from 'client/pages/Portfolio/components/PortfolioPageContentWrapper';
-import { usePortfolioOpenOrderTabs } from './hooks/usePortfolioOpenOrderTabs';
-import { CounterPill } from '@vertex-protocol/web-ui';
+import { usePortfolioOpenOrderTabs } from 'client/pages/Portfolio/subpages/OpenOrders/hooks/usePortfolioOpenOrderTabs';
 
 export const PortfolioOpenOrdersPage = () => {
   const { openOrderTabs, selectedTabId, setSelectedTabId } =

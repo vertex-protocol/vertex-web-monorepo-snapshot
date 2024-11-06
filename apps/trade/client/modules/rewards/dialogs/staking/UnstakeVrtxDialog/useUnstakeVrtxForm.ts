@@ -5,7 +5,7 @@ import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useExecuteUnstakeVrtx } from 'client/hooks/execute/vrtxToken/useExecuteUnstakeVrtx';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
@@ -17,7 +17,7 @@ import {
   useOnFractionSelectedHandler,
 } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
@@ -52,12 +52,13 @@ export function useUnstakeVrtxForm(): UseUnstakeVrtxForm {
   const { data: vrtxSpotMarket } = useMarket({
     productId: protocolTokenMetadata.productId,
   });
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
-  const { hide } = useDialog();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const amountVrtxStaked = removeDecimals(
     accountStakingState?.amountStaked,
     protocolTokenMetadata.token.tokenDecimals,
   );
+
+  const { trackEvent } = useAnalyticsContext();
 
   const { dispatchNotification } = useNotificationManagerContext();
 
@@ -82,7 +83,7 @@ export function useUnstakeVrtxForm(): UseUnstakeVrtxForm {
 
   useRunWithDelayOnCondition({
     condition: isTxSuccessful,
-    fn: hide,
+    fn: unstakeVrtxMutation.reset,
   });
 
   // Watched state
@@ -107,8 +108,8 @@ export function useUnstakeVrtxForm(): UseUnstakeVrtxForm {
     }
     return validAmount
       .multipliedBy(vrtxSpotMarket.product.oraclePrice)
-      .multipliedBy(quotePriceUsd);
-  }, [validAmount, vrtxSpotMarket, quotePriceUsd]);
+      .multipliedBy(primaryQuotePriceUsd);
+  }, [validAmount, vrtxSpotMarket, primaryQuotePriceUsd]);
 
   // Linked inputs
   useLinkedPercentageAmountInputEffects({
@@ -180,6 +181,7 @@ export function useUnstakeVrtxForm(): UseUnstakeVrtxForm {
         },
         {
           onSuccess: () => {
+            trackEvent({ type: 'unstake_vrtx', data: {} });
             useUnstakeVrtxForm.resetField('amount');
             useUnstakeVrtxForm.setValue('percentageAmount', 0);
           },
@@ -198,6 +200,7 @@ export function useUnstakeVrtxForm(): UseUnstakeVrtxForm {
       protocolTokenMetadata.token.tokenDecimals,
       unstakeVrtxMutation,
       dispatchNotification,
+      trackEvent,
       useUnstakeVrtxForm,
     ],
   );

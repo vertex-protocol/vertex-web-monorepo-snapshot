@@ -1,17 +1,17 @@
+import { ProductEngineType } from '@vertex-protocol/contracts';
+import { formatNumber } from '@vertex-protocol/react-client';
+import { joinClassNames } from '@vertex-protocol/web-common';
+import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
 import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { HistoricalLiquidationEvent } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { joinClassNames } from '@vertex-protocol/web-common';
-import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
 import { LIQUIDATION_MULTI_BALANCE_CELL_CONTAINER_CLASSNAME } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/consts';
-import { ProductEngineType } from '@vertex-protocol/contracts';
+import { HistoricalLiquidationsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 
 interface Props
   extends TableCellProps,
-    Pick<HistoricalLiquidationEvent, 'spot' | 'perp' | 'decomposedLps'> {}
+    Pick<HistoricalLiquidationsTableItem, 'spot' | 'perp' | 'decomposedLps'> {}
 
 export function LiquidationBalanceChangesCell({
   spot,
@@ -33,7 +33,7 @@ export function LiquidationBalanceChangesCell({
         return (
           <div
             className="flex flex-1 flex-col justify-center gap-y-1"
-            key={lp.baseMetadata.symbol}
+            key={lp.sharedMetadata.symbol}
           >
             <AmountWithSymbol
               formattedSize={formatNumber(lp.amountLpDecomposed.negated(), {
@@ -45,11 +45,10 @@ export function LiquidationBalanceChangesCell({
               formattedSize={formatNumber(lp.underlyingBalanceDelta, {
                 formatSpecifier: lp.signedSizeFormatSpecifier,
               })}
-              // Use `name` here for perps as we want "ETH-PERP" and not "ETH"
               symbol={
                 lp.type === ProductEngineType.PERP
-                  ? lp.baseMetadata.name
-                  : lp.baseMetadata.symbol
+                  ? lp.sharedMetadata.marketName
+                  : lp.sharedMetadata.symbol
               }
             />
           </div>
@@ -61,7 +60,7 @@ export function LiquidationBalanceChangesCell({
           formattedSize={formatNumber(spot.amountLiquidated.negated(), {
             formatSpecifier: spot.signedSizeFormatSpecifier,
           })}
-          symbol={spot.baseMetadata.symbol}
+          symbol={spot.sharedMetadata.symbol}
         />
       )}
       {perp && (
@@ -70,8 +69,7 @@ export function LiquidationBalanceChangesCell({
           formattedSize={formatNumber(perp.amountLiquidated.negated(), {
             formatSpecifier: perp.signedSizeFormatSpecifier,
           })}
-          // Use `name` here as we want "ETH-PERP" and not "ETH"
-          symbol={perp.baseMetadata.name}
+          symbol={perp.sharedMetadata.marketName}
         />
       )}
     </TableCell>

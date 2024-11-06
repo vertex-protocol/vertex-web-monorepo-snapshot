@@ -1,11 +1,12 @@
 import { NextImageSrc } from '@vertex-protocol/web-common';
 import { clientEnv } from 'common/environment/clientEnv';
-import defaultPreview from '../preview/default.png';
-import miladyPreview from '../preview/milady.png';
-import pepePreview from '../preview/pepe.png';
-import vertessieCandlestickPreview from '../preview/vertessie-candlestick.png';
-import vertessieHonestPreview from '../preview/vertessie-honest.png';
-import waifuPreview from '../preview/waifu.png';
+
+import defaultPreview from 'client/modules/socialSharing/preview/default.png';
+import miladyPreview from 'client/modules/socialSharing/preview/milady.png';
+import pepePreview from 'client/modules/socialSharing/preview/pepe.png';
+import vertessieCandlestickPreview from 'client/modules/socialSharing/preview/vertessie-candlestick.png';
+import vertessieHonestPreview from 'client/modules/socialSharing/preview/vertessie-honest.png';
+import waifuPreview from 'client/modules/socialSharing/preview/waifu.png';
 
 export interface SocialSharingTheme {
   id: string;

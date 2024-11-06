@@ -1,26 +1,27 @@
+'use client';
+
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
-import { LinkButton } from 'client/components/LinkButton';
+import {
+  Divider,
+  formatTimestamp,
+  LinkButton,
+  TimeFormatSpecifier,
+  ValueWithChange,
+} from '@vertex-protocol/web-ui';
+import { LeaderboardContest } from 'client/hooks/query/tradingCompetition/useLeaderboardContests';
 import { useTradingCompetitionContext } from 'client/pages/TradingCompetition/context/TradingCompetitionContext';
 import { differenceInDays, formatDuration } from 'date-fns';
 import Link from 'next/link';
 
 export function TradingCompetitionSubheader() {
   const {
-    config: { hasPeriods, periodLabel, participantPrizes, docsHref },
-    currentPeriod,
     currentContest,
-    contestIds,
+    config: { docsHref },
   } = useTradingCompetitionContext();
 
   if (!currentContest) {
     return null;
   }
-
-  const period =
-    hasPeriods && currentPeriod
-      ? `${currentPeriod}/${contestIds?.length}`
-      : undefined;
 
   const numDays = differenceInDays(
     currentContest.endTimeMillis,
@@ -34,21 +35,14 @@ export function TradingCompetitionSubheader() {
         'text-text-tertiary whitespace-nowrap text-xs lg:text-sm',
       )}
     >
-      {periodLabel && period && (
-        <>
-          <SubheaderSection label={periodLabel} value={period} />
-          <Divider className="h-3" vertical />
-        </>
-      )}
-      <SubheaderSection
-        label="Duration"
-        value={formatDuration({ days: numDays })}
-      />
+      <Timeline contest={currentContest} />
       <Divider className="h-3" vertical />
-      <SubheaderSection
-        label="Prizes for"
-        value={`Top ${participantPrizes.length}`}
-      />
+      <div>
+        Duration{' '}
+        <span className="text-text-primary">
+          {formatDuration({ days: numDays })}
+        </span>
+      </div>
       {/* Hide this divider on mobile, as the following element should be on its own line. */}
       <Divider className="hidden h-3 lg:block" vertical />
       {/*Using `basis-full` to force the link onto its own line on mobile. */}
@@ -60,17 +54,36 @@ export function TradingCompetitionSubheader() {
           withExternalIcon
           external
         >
-          View Details
+          Competition Docs
         </LinkButton>
       </div>
     </div>
   );
 }
 
-function SubheaderSection({ label, value }: { label: string; value: string }) {
+function Timeline({ contest }: { contest: LeaderboardContest | undefined }) {
+  const startMonthDay = formatTimestamp(contest?.startTimeMillis, {
+    formatSpecifier: TimeFormatSpecifier.MONTH_D,
+  });
+  const endMonthDay = formatTimestamp(contest?.endTimeMillis, {
+    formatSpecifier: TimeFormatSpecifier.MONTH_D,
+  });
+  const endHrMin = formatTimestamp(contest?.endTimeMillis, {
+    formatSpecifier: TimeFormatSpecifier.HH_MM_12H,
+  });
+
   return (
-    <div>
-      {label} <span className="text-text-primary">{value}</span>
-    </div>
+    <ValueWithChange
+      sizeVariant="sm"
+      currentValue={
+        <span className="text-text-primary text-sm">{startMonthDay}</span>
+      }
+      newValue={
+        <>
+          <span className="text-text-primary text-sm">{endMonthDay}</span>
+          <span className="text-text-tertiary text-sm">{endHrMin}</span>
+        </>
+      }
+    />
   );
 }

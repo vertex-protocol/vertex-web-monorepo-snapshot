@@ -1,43 +1,15 @@
-import { TextButton } from '@vertex-protocol/web-ui';
 import { KeyFeatures } from 'client/components/KeyFeatures';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { VertexReferralLinkBar } from 'client/modules/referrals/components/VertexReferralLinkBar';
 import { ReferralsCard } from 'client/pages/VertexReferrals/components/ReferralsCard';
-import { VertexReferralLinkBar } from 'client/pages/VertexReferrals/components/ReferralsReferTradersCard/VertexReferralLinkBar';
-import { Token } from 'common/productMetadata/types';
+import { ReferralsCustomizeLinkTextButton } from 'client/pages/VertexReferrals/components/ReferralsReferTradersCard/ReferralsCustomizeLinkTextButton';
 
-interface Props {
-  referralCode: string | undefined | null;
-  disableCustomizeLink: boolean;
-  payoutToken: Token;
-}
-
-export function ReferralsReferTradersCard({
-  referralCode,
-  disableCustomizeLink,
-  payoutToken,
-}: Props) {
-  const { show } = useDialog();
-
-  const customizeLinkButton = (
-    <TextButton
-      disabled={disableCustomizeLink}
-      onClick={() =>
-        show({
-          type: 'customize_referral_link',
-          params: {},
-        })
-      }
-    >
-      Customize
-    </TextButton>
-  );
-
+export function ReferralsReferTradersCard() {
   return (
-    <ReferralsCard title="Refer Traders" titleEndElement={customizeLinkButton}>
-      <VertexReferralLinkBar
-        referralCode={referralCode}
-        payoutToken={payoutToken}
-      />
+    <ReferralsCard
+      title="Refer Traders"
+      titleEndElement={<ReferralsCustomizeLinkTextButton />}
+    >
+      <VertexReferralLinkBar />
       <KeyFeatures />
     </ReferralsCard>
   );

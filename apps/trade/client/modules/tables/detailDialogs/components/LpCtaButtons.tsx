@@ -1,7 +1,7 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 
 interface Props {
   productId: number;
@@ -10,9 +10,9 @@ interface Props {
 
 export function LpCtaButtons({ productId, lpAmount }: Props) {
   const showDialogForProduct = useShowDialogForProduct();
-  const userActionState = useUserActionState();
-  const disableProvide = userActionState !== 'allow_all';
-  const disableWithdraw = userActionState === 'block_all' || lpAmount?.lte(0);
+  const isConnected = useIsConnected();
+  const disableProvide = !isConnected;
+  const disableWithdraw = !isConnected || lpAmount?.lte(0);
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -23,6 +23,7 @@ export function LpCtaButtons({ productId, lpAmount }: Props) {
           showDialogForProduct({
             dialogType: 'provide_liquidity',
             productId,
+            navBehavior: 'push',
           });
         }}
       >
@@ -35,6 +36,7 @@ export function LpCtaButtons({ productId, lpAmount }: Props) {
           showDialogForProduct({
             dialogType: 'withdraw_liquidity',
             productId,
+            navBehavior: 'push',
           });
         }}
       >

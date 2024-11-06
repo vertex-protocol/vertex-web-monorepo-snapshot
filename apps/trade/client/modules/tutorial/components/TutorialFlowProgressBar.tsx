@@ -1,4 +1,5 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
+import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 import { range } from 'lodash';
 
 export function TutorialFlowProgressBar({
@@ -25,7 +26,7 @@ function ProgressBarSegment({ isCompleted }: { isCompleted: boolean }) {
     <div
       className={joinClassNames(
         'h-2 flex-1 first:rounded-l-md last:rounded-r-md',
-        isCompleted ? 'bg-accent' : 'bg-overlay-accent/10',
+        isCompleted ? 'bg-accent' : COMMON_TRANSPARENCY_COLORS.bgAccent,
       )}
     />
   );

@@ -1,29 +1,35 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import {
   joinClassNames,
+  mergeClassNames,
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
 import { Button, Icons } from '@vertex-protocol/web-ui';
 import { useShouldFlash } from 'client/hooks/ui/useShouldFlash';
+import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
+import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import { range } from 'lodash';
 import React from 'react';
 
-interface ContainerProps {
+interface ContainerProps extends WithClassnames, WithChildren {
   onClick: () => void;
   highlightWidthFraction: BigDecimal;
   isSell: boolean;
   flashKey?: string;
   flashOnMount?: boolean;
+  definitionId?: DefinitionTooltipID;
 }
 
 function Container({
   children,
+  className,
   onClick,
   highlightWidthFraction,
   isSell,
   flashKey,
   flashOnMount,
+  definitionId,
 }: WithChildren<ContainerProps>) {
   const shouldFlash = useShouldFlash({ flashKey, flashOnMount });
 
@@ -36,27 +42,35 @@ function Container({
   })();
 
   return (
-    <Button
-      onClick={onClick}
-      className={joinClassNames(
-        'group relative flex-1',
-        'px-4 py-0.5 lg:py-0',
-        'text-2xs text-text-secondary',
-        isSell ? 'hover:bg-negative/5' : 'hover:bg-positive/5',
-        flashClassName,
-      )}
+    <DefinitionTooltip
+      definitionId={definitionId}
+      decoration="none"
+      noHelpCursor
+      asChild
     >
-      <div
-        className={joinClassNames(
-          'absolute inset-0',
-          isSell ? 'bg-negative/10' : 'bg-positive/10',
+      <Button
+        onClick={onClick}
+        className={mergeClassNames(
+          'group relative flex gap-x-1',
+          'px-4 py-0.5 lg:py-0',
+          'text-2xs text-text-secondary',
+          isSell ? 'hover:bg-negative/5' : 'hover:bg-positive/5',
+          flashClassName,
+          className,
         )}
-        style={{
-          width: `${highlightWidthFraction.times(100).toFixed()}%`,
-        }}
-      />
-      {children}
-    </Button>
+      >
+        <div
+          className={joinClassNames(
+            'absolute inset-0',
+            isSell ? 'bg-negative/10' : 'bg-positive/10',
+          )}
+          style={{
+            width: `${highlightWidthFraction.times(100).toFixed()}%`,
+          }}
+        />
+        {children}
+      </Button>
+    </DefinitionTooltip>
   );
 }
 
@@ -94,10 +108,10 @@ const Skeleton = ({
   className,
   numCols,
 }: WithClassnames<{ numCols: number }>) => (
-  <div className={joinClassNames('flex flex-1 px-4 py-0.5', className)}>
+  <div className={mergeClassNames('flex flex-1 px-4 py-0.5', className)}>
     {range(numCols).map((_, index) => (
       <Item key={index} className="text-text-primary animate-pulse text-xs">
-        <Icons.BsDashLg />
+        <Icons.Minus />
       </Item>
     ))}
   </div>

@@ -2,15 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import { toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
+  useEVMContext,
   useIsChainType,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { ChainEnv } from '@vertex-protocol/client';
 
-export function tokenClaimDeadlinesQueryKey(chainId?: PrimaryChainID) {
-  return createQueryKey('tokenClaimDeadlines', chainId);
+export function tokenClaimDeadlinesQueryKey(chainEnv?: ChainEnv) {
+  return createQueryKey('tokenClaimDeadlines', chainEnv);
 }
 
 /**
@@ -21,12 +21,12 @@ export function tokenClaimDeadlinesQueryKey(chainId?: PrimaryChainID) {
 export function useTokenClaimDeadlines() {
   const { isArb } = useIsChainType();
   const vertexClient = usePrimaryChainVertexClient();
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
 
   const disabled = !vertexClient || !isArb;
 
   return useQuery({
-    queryKey: tokenClaimDeadlinesQueryKey(primaryChainId),
+    queryKey: tokenClaimDeadlinesQueryKey(primaryChainEnv),
     queryFn: async () => {
       if (disabled) {
         throw new QueryDisabledError();

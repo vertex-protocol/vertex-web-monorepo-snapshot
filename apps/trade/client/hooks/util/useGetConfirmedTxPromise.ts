@@ -1,13 +1,15 @@
 import {
   useEthersProvider,
-  usePrimaryChainId,
+  useEVMContext,
 } from '@vertex-protocol/react-client';
 import { TxResponse } from 'client/types/TxResponse';
 import { useCallback } from 'react';
 
 export function useGetConfirmedTxPromise() {
-  const primaryChainId = usePrimaryChainId();
-  const provider = useEthersProvider({ chainId: primaryChainId });
+  const {
+    chainStatus: { connectedChain },
+  } = useEVMContext();
+  const provider = useEthersProvider({ chainId: connectedChain?.id });
 
   return useCallback(
     async (

@@ -1,8 +1,8 @@
-import { useEVMContext } from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { IdentityIcon } from 'client/components/Icons/IdentityIcon';
 import { Toast } from 'client/components/Toast/Toast';
 import { ToastProps } from 'client/components/Toast/types';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { formatReferralCode } from 'client/modules/referrals/utils/formatReferralCode';
@@ -18,27 +18,26 @@ export function AcceptReferralNotification({
   ttl,
   onDismiss,
 }: Props) {
-  const { connectionStatus } = useEVMContext();
+  const isConnected = useIsConnected();
   const { show } = useDialog();
 
-  const ctaButton =
-    connectionStatus.type === 'connected' ? (
-      <SecondaryButton
-        size="sm"
-        as={Link}
-        href={ROUTES.referrals}
-        onClick={onDismiss}
-      >
-        Go to Referrals
-      </SecondaryButton>
-    ) : (
-      <SecondaryButton
-        size="sm"
-        onClick={() => show({ type: 'connect', params: {} })}
-      >
-        Connect Wallet
-      </SecondaryButton>
-    );
+  const ctaButton = isConnected ? (
+    <SecondaryButton
+      size="sm"
+      as={Link}
+      href={ROUTES.referrals}
+      onClick={onDismiss}
+    >
+      Go to Referrals
+    </SecondaryButton>
+  ) : (
+    <SecondaryButton
+      size="sm"
+      onClick={() => show({ type: 'connect', params: {} })}
+    >
+      Connect Wallet
+    </SecondaryButton>
+  );
 
   return (
     <Toast.Container visible={visible}>

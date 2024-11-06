@@ -1,0 +1,49 @@
+.react-datepicker {
+  background-color: theme('colors.surface.2');
+  font-size: theme('fontSize.xs');
+  font-family: inherit;
+  border: none;
+}
+
+.react-datepicker__day-names > *,
+.react-datepicker__week > * {
+  /* Add spacing between date buttons */
+  margin: 0 theme('spacing.1');
+}
+
+/* Header includes the Mon/Tues/Wed/etc. headers */
+.react-datepicker__header {
+  /*Use the bg color of the root class*/
+  background-color: transparent;
+  color: theme('colors.text.primary');
+  border: none;
+  padding-bottom: 0;
+}
+
+/* Default style for buttons */
+.react-datepicker__day-name,
+.react-datepicker__day {
+  color: theme('colors.text.secondary');
+}
+
+/* Selected date, use !important to override any hover styles as well */
+.react-datepicker__day--selected {
+  background-color: theme('colors.primary.DEFAULT') !important;
+  color: theme('colors.text.primary') !important;
+}
+
+/* Days outside of the month / outside of allowable range */
+.react-datepicker__day--outside-month,
+.react-datepicker__day--disabled {
+  color: theme('colors.disabled.DEFAULT') !important;
+}
+
+/* Hover selection effect */
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__day:not(
+    .react-datepicker__day--disabled,
+    .react-datepicker__day--selected
+  ):hover {
+  background-color: theme('colors.surface.3');
+  filter: brightness(1.25);
+}

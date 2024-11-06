@@ -1,9 +1,9 @@
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { CompactInput, CompactInputProps } from '@vertex-protocol/web-ui';
 import { InputProductSymbolWithIcon } from 'client/components/InputProductSymbolWithIcon';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import React, { ReactNode } from 'react';
 
 interface Props extends CompactInputProps {
@@ -14,10 +14,7 @@ interface Props extends CompactInputProps {
 export const StakingDialogInput = React.forwardRef<
   HTMLInputElement,
   WithClassnames<Props>
->(function StakingDialogInput(
-  { className, error, estimatedStakeValueUsd, ...rest },
-  ref,
-) {
+>(function StakingDialogInput({ error, estimatedStakeValueUsd, ...rest }, ref) {
   return (
     <CompactInput
       type="number"

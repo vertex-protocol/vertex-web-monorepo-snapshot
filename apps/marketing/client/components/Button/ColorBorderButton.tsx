@@ -1,7 +1,7 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
 
-import { HomePageButton } from './HomePageButton';
-import { ButtonElement, ButtonProps } from './types';
+import { HomePageButton } from 'client/components/Button/HomePageButton';
+import { ButtonElement, ButtonProps } from 'client/components/Button/types';
 
 type ColorBorderButtonProps<E extends ButtonElement = 'button'> =
   ButtonProps<E> & {

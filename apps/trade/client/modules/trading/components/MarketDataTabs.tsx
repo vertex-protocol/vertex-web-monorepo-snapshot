@@ -4,20 +4,31 @@ import {
   Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
+import { ProductEngineType } from '@vertex-protocol/client';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { SegmentedControl } from '@vertex-protocol/web-ui';
+import {
+  ScrollShadowsContainer,
+  SegmentedControl,
+} from '@vertex-protocol/web-ui';
+import { useMarket } from 'client/hooks/markets/useMarket';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
+import { DepthChart } from 'client/modules/trading/chart/depth/DepthChart';
+import { FundingChart } from 'client/modules/trading/chart/funding/FundingChart';
+import { TradingViewChart } from 'client/modules/trading/chart/TradingViewChart';
+import { LatestMarketTrades } from 'client/modules/trading/marketOrders/latestMarketTrades/LatestMarketTrades';
+import { Orderbook } from 'client/modules/trading/marketOrders/orderbook/Orderbook';
 import { useMemo } from 'react';
-import { TradingViewChart } from '../chart/TradingViewChart';
-import { LatestMarketTrades } from '../marketOrders/latestMarketTrades/LatestMarketTrades';
-import { Orderbook } from '../marketOrders/orderbook/Orderbook';
 
 interface Props extends WithClassnames {
   productId?: number;
-  withChartTab?: boolean;
+  withChartTabs?: boolean;
 }
 
-export function MarketDataTabs({ className, productId, withChartTab }: Props) {
+export function MarketDataTabs({ className, productId, withChartTabs }: Props) {
+  const { data: market } = useMarket({ productId });
+
+  const isPerpProduct = market?.type === ProductEngineType.PERP;
+
   const marketDataTabs = useMemo(() => {
     const defaultTabs = [
       {
@@ -32,7 +43,7 @@ export function MarketDataTabs({ className, productId, withChartTab }: Props) {
       },
     ];
 
-    return withChartTab
+    return withChartTabs
       ? [
           {
             id: 'chart',
@@ -41,9 +52,23 @@ export function MarketDataTabs({ className, productId, withChartTab }: Props) {
             ),
           },
           ...defaultTabs,
+          {
+            id: 'depth',
+            content: <DepthChart productId={productId} className="h-full" />,
+          },
+          ...(isPerpProduct
+            ? [
+                {
+                  id: 'funding',
+                  content: (
+                    <FundingChart productId={productId} className="h-full" />
+                  ),
+                },
+              ]
+            : []),
         ]
       : defaultTabs;
-  }, [productId, withChartTab]);
+  }, [productId, withChartTabs, isPerpProduct]);
 
   const { selectedTabId, setSelectedUntypedTabId, tabs } =
     useTabs(marketDataTabs);
@@ -55,21 +80,23 @@ export function MarketDataTabs({ className, productId, withChartTab }: Props) {
       value={selectedTabId}
     >
       <TabsList className="px-3 py-2">
-        <SegmentedControl.Container className="flex items-center justify-between">
-          {tabs.map(({ id }) => {
-            return (
-              <TabsTrigger asChild value={id} key={id}>
-                <SegmentedControl.Button
-                  size="xs"
-                  active={selectedTabId === id}
-                  className="flex-1 capitalize"
-                >
-                  {id}
-                </SegmentedControl.Button>
-              </TabsTrigger>
-            );
-          })}
-        </SegmentedControl.Container>
+        <ScrollShadowsContainer asChild orientation="horizontal">
+          <SegmentedControl.Container className="flex items-center justify-between">
+            {tabs.map(({ id }) => {
+              return (
+                <TabsTrigger asChild value={id} key={id}>
+                  <SegmentedControl.Button
+                    size="xs"
+                    active={selectedTabId === id}
+                    className="flex-1 capitalize"
+                  >
+                    {id}
+                  </SegmentedControl.Button>
+                </TabsTrigger>
+              );
+            })}
+          </SegmentedControl.Container>
+        </ScrollShadowsContainer>
       </TabsList>
       {tabs.map(({ id, content }) => (
         // "overflow-hidden" allows the scrolling of content to be handled internally

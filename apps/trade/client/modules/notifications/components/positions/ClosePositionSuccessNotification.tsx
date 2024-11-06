@@ -1,14 +1,14 @@
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { ActionToast } from 'client/components/Toast/ActionToast/ActionToast';
 import { ToastProps } from 'client/components/Toast/types';
+import { OrderSuccessIcon } from 'client/modules/notifications/components/OrderSuccessIcon';
 import { ClosePositionNotificationData } from 'client/modules/notifications/types';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
-import { OrderSuccessIcon } from '../OrderSuccessIcon';
 
 interface ClosePositionNotificationProps extends ToastProps {
   data: ClosePositionNotificationData['closePositionParams'];

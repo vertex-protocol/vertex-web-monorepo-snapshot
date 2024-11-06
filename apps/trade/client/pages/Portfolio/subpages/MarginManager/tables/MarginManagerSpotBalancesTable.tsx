@@ -1,4 +1,7 @@
+'use client';
+
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
@@ -10,19 +13,18 @@ import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlacehold
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { signDependentValue } from 'client/utils/signDependentValue';
-import { useMemo } from 'react';
-import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
-import { MarginManagerActionsCell } from './cells/MarginManagerActionsCell';
-import { MarginWeightCell } from './cells/MarginWeightCell';
-import { MarginWeightHeaderCell } from './cells/MarginWeightHeaderCell';
-import { SpotBalanceInfoCell } from './cells/SpotBalanceInfoCell';
-import { MarginManagerPopoverAction } from './components/MarginManagerTableActionsPopover';
+import { CalculatorIconHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/CalculatorIconHeaderCell';
+import { MarginManagerActionsCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginManagerActionsCell';
+import { MarginWeightCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginWeightCell';
+import { MarginWeightHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginWeightHeaderCell';
+import { SpotBalanceInfoCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/SpotBalanceInfoCell';
+import { MarginManagerDropdownAction } from 'client/pages/Portfolio/subpages/MarginManager/tables//components/MarginManagerTableActionsDropdown';
 import {
   MarginManagerSpotBalanceTableItem,
   useMarginManagerSpotBalancesTable,
-} from './hooks/useMarginManagerSpotBalancesTable';
+} from 'client/pages/Portfolio/subpages/MarginManager/tables//hooks/useMarginManagerSpotBalancesTable';
+import { signDependentValue } from 'client/utils/signDependentValue';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarginManagerSpotBalanceTableItem>();
 
@@ -129,7 +131,7 @@ export function MarginManagerSpotBalancesTable({ className }: WithClassnames) {
           cell: (context) => {
             const { productId, balanceAmount } = context.row.original;
 
-            const actions: MarginManagerPopoverAction[] = signDependentValue(
+            const actions: MarginManagerDropdownAction[] = signDependentValue(
               balanceAmount,
               {
                 positive: [

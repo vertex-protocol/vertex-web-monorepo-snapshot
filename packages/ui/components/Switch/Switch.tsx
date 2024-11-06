@@ -1,8 +1,9 @@
 import * as BaseSwitch from '@radix-ui/react-switch';
 import {
+  joinClassNames,
+  mergeClassNames,
   WithChildren,
   WithClassnames,
-  joinClassNames,
 } from '@vertex-protocol/web-common';
 
 interface SwitchToggleProps {
@@ -57,7 +58,7 @@ interface SwitchRowProps extends WithChildren, WithClassnames {
 function SwitchRow({ disabled, children, className }: SwitchRowProps) {
   return (
     <div
-      className={joinClassNames(
+      className={mergeClassNames(
         'flex items-center justify-between text-sm',
         disabled && 'pointer-events-none cursor-not-allowed opacity-50',
         className,

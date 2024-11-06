@@ -2,8 +2,8 @@ import {
   TriggerOrderInfo,
   parseRawExpirationTimestamp,
 } from '@vertex-protocol/client';
-import { TriggerOrderType } from '../types';
-import { getIsTriggerPriceAbove } from '../tpsl/triggerCriteriaUtils';
+import { getIsTriggerPriceAbove } from 'client/modules/trading/tpsl/triggerCriteriaUtils';
+import { TriggerOrderType } from 'client/modules/trading/types';
 
 export function getTriggerOrderType(order: TriggerOrderInfo): TriggerOrderType {
   const { reduceOnly } = parseRawExpirationTimestamp(

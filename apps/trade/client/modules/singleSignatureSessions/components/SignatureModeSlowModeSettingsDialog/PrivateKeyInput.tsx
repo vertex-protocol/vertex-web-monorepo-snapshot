@@ -34,7 +34,7 @@ export function PrivateKeyInput({
 }: Props) {
   // Copy button
   const { isCopied, copy } = useCopyText();
-  const CopyButton = isCopied ? Icons.MdCheck : Icons.MdContentCopy;
+  const CopyButton = isCopied ? Icons.Check : Icons.Copy;
   const onCopyClick = () => {
     copy(form.getValues('privateKey'));
   };
@@ -43,7 +43,10 @@ export function PrivateKeyInput({
   const [isPrivateKeyHidden, { toggle: toggleIsPrivateKeyHidden }] =
     useToggle(true);
 
-  const ShowHideButton = isPrivateKeyHidden ? Icons.BsEyeSlash : Icons.BsEye;
+  const ShowHideIcon = isPrivateKeyHidden ? Icons.EyeSlash : Icons.Eye;
+  const hideIconMessage = isPrivateKeyHidden
+    ? 'Show private key'
+    : 'Hide private key';
 
   const register = form.register('privateKey', {
     validate: validatePrivateKey,
@@ -59,7 +62,7 @@ export function PrivateKeyInput({
         <SecondaryButton
           size="sm"
           onClick={setRandomPrivateKey}
-          startIcon={<Icons.MdOutlineRefresh />}
+          startIcon={<Icons.ArrowClockwise />}
           disabled={disabled}
         >
           Generate
@@ -77,12 +80,14 @@ export function PrivateKeyInput({
           disabled={disabled}
         />
         <IconButton
+          tooltipLabel={hideIconMessage}
           size="sm"
-          icon={ShowHideButton}
+          icon={ShowHideIcon}
           onClick={toggleIsPrivateKeyHidden}
           disabled={disabled}
         />
         <IconButton
+          tooltipLabel="Copy private key"
           size="sm"
           icon={CopyButton}
           onClick={onCopyClick}

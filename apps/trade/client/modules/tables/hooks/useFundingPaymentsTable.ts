@@ -5,14 +5,14 @@ import {
 } from '@vertex-protocol/client';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedPaymentEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedPaymentEvents';
+import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
-import { MarketInfoCellData } from '../types/MarketInfoCellData';
 
 export interface FundingPaymentsTableItem {
   timestampMillis: number;
@@ -40,30 +40,38 @@ export function useFundingPaymentsTable({
     primaryQuoteToken: { symbol: primaryQuoteSymbol },
   } = useVertexMetadataContext();
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const {
     data: fundingPaymentsData,
     isLoading,
-    isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
   } = useSubaccountPaginatedPaymentEvents({
     productIds: allMarketsStaticData?.perpMarketsProductIds,
     pageSize,
   });
 
-  const { getPageData, pageCount, paginationState, setPaginationState } =
-    useDataTablePagination<
-      GetIndexerInterestFundingPaymentsResponse,
-      IndexerProductPayment
-    >({
-      pageSize,
-      numPagesFromQuery: fundingPaymentsData?.pages.length,
-      hasNextPage,
-      fetchNextPage,
-      extractItems,
-    });
+  const {
+    getPageData,
+    pageCount,
+    paginationState,
+    setPaginationState,
+    isFetchingCurrPage,
+  } = useDataTablePagination<
+    GetIndexerInterestFundingPaymentsResponse,
+    IndexerProductPayment
+  >({
+    pageSize,
+    numPagesFromQuery: fundingPaymentsData?.pages.length,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    extractItems,
+  });
 
   const mappedData: FundingPaymentsTableItem[] | undefined = useMemo(() => {
     if (!fundingPaymentsData || !allMarketsStaticData) {
@@ -85,7 +93,7 @@ export function useFundingPaymentsTable({
           }
 
           const {
-            metadata: { name: marketName, icon, symbol },
+            metadata: { marketName, icon, symbol },
             type: productType,
             sizeIncrement,
             priceIncrement,
@@ -112,7 +120,7 @@ export function useFundingPaymentsTable({
             positionSize,
             notionalValueUsd: positionSize
               .times(item.oraclePrice)
-              .times(quotePriceUsd),
+              .times(primaryQuotePriceUsd),
             fundingRateFrac: hourlyFundingRateFrac,
             fundingPaymentQuote: removeDecimals(item.paymentAmount),
           };
@@ -127,12 +135,12 @@ export function useFundingPaymentsTable({
     enablePagination,
     getPageData,
     primaryQuoteSymbol,
-    quotePriceUsd,
+    primaryQuotePriceUsd,
   ]);
 
   return {
     mappedData,
-    isLoading: isFetchingNextPage || isLoading,
+    isLoading: isLoading || isFetchingCurrPage,
     pageCount,
     paginationState,
     setPaginationState,

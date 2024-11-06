@@ -5,16 +5,18 @@ import {
   isPerpBalance,
 } from '@vertex-protocol/contracts';
 import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import {
   BigDecimal,
   BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
-import {
-  createQueryKey,
-  QueryDisabledError,
-} from '@vertex-protocol/react-client';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
+import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
 import { QueryState } from 'client/types/QueryState';
 import { calcEstimatedLiquidationPrice } from 'client/utils/calcs/calcEstimatedLiquidationPrice';
@@ -33,9 +35,7 @@ import { safeDiv } from 'client/utils/safeDiv';
 import {
   AnnotatedPerpBalanceWithProduct,
   PerpProductMetadata,
-} from 'common/productMetadata/types';
-import { useAllMarketsLatestPrices } from '../query/markets/useAllMarketsLatestPrices';
-import { useLatestOraclePrices } from '../query/markets/useLatestOraclePrices';
+} from '@vertex-protocol/metadata';
 
 export interface PerpPositionItem {
   metadata: PerpProductMetadata;
@@ -77,7 +77,7 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
     data: subaccountSummary,
     dataUpdatedAt,
     ...rest
-  } = useCurrentSubaccountSummary();
+  } = useSubaccountSummary();
   const { data: latestOraclePrices } = useLatestOraclePrices();
   const { data: latestMarketPrices } = useAllMarketsLatestPrices();
 
@@ -85,7 +85,7 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
   const { data: indexerSnapshot, dataUpdatedAt: indexerSnapshotUpdatedAt } =
     useSubaccountIndexerSnapshot();
 
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const disabled = !subaccountSummary;
 
@@ -175,14 +175,16 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
           metadata,
           netFunding,
           notionalValueUsd:
-            removeDecimals(balanceNotionalValue).multipliedBy(quotePrice),
+            removeDecimals(balanceNotionalValue).multipliedBy(
+              primaryQuotePriceUsd,
+            ),
           amount: decimalAdjustedSize,
           unsettledQuoteAmount: removeDecimals(balanceValue),
-          estimatedPnlUsd: unrealizedPnl.multipliedBy(quotePrice),
+          estimatedPnlUsd: unrealizedPnl.multipliedBy(primaryQuotePriceUsd),
           estimatedPnlFrac: unrealizedPnlFrac,
           productId: balance.productId,
           price: {
-            fastOraclePriceUsd: oraclePrice.multipliedBy(quotePrice),
+            fastOraclePriceUsd: oraclePrice.multipliedBy(primaryQuotePriceUsd),
             fastOraclePrice: oraclePrice,
             averageEntryPrice,
           },
@@ -192,7 +194,7 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
           ),
           marginUsedUsd: removeDecimals(
             calcPositionMarginWithoutPnl(balanceWithProduct),
-          ).multipliedBy(quotePrice),
+          ).multipliedBy(primaryQuotePriceUsd),
           healthMetrics: {
             initial: removeDecimals(healthMetrics.initial),
             maintenance: removeDecimals(healthMetrics.maintenance),

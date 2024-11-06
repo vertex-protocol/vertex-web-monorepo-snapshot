@@ -24,7 +24,7 @@ export function MinimumInitialDepositAmount({ amount, symbol }: Props) {
     <ValueWithLabel.Horizontal
       fitWidth
       sizeVariant="xs"
-      labelStartIcon={Icons.AiOutlineDollarCircle}
+      labelStartIcon={Icons.CurrencyCircleDollar}
       label="Minimum initial deposit:"
       valueContent={`${formattedAmount} ${symbol}`}
     />

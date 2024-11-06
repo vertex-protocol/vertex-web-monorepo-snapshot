@@ -1,26 +1,27 @@
 import { useQuery } from '@tanstack/react-query';
-import { TriggerOrderInfo } from '@vertex-protocol/trigger-client';
-import { toBigDecimal } from '@vertex-protocol/utils';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { TriggerOrderInfo } from '@vertex-protocol/trigger-client';
+import { toBigDecimal } from '@vertex-protocol/utils';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useGetRecvTime } from 'client/hooks/util/useGetRecvTime';
 import {
   getVertexClientHasLinkedSigner,
   useVertexClientHasLinkedSigner,
 } from 'client/hooks/util/useVertexClientHasLinkedSigner';
-import { QueryState } from 'client/types/QueryState';
 
 // Product ID -> TriggerOrder[]
-type Data = Record<number, TriggerOrderInfo[]>;
+export type SubaccountOpenTriggerOrdersData = Record<
+  number,
+  TriggerOrderInfo[]
+>;
 
 export function subaccountOpenTriggerOrdersQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   sender?: string,
   subaccountName?: string,
   // Without this in the query key, the query will be disabled but data will not be reset, resulting in "stale"
@@ -29,7 +30,7 @@ export function subaccountOpenTriggerOrdersQueryKey(
 ) {
   return createQueryKey(
     'currentSubaccountOpenTriggerOrders',
-    chainId,
+    chainEnv,
     sender,
     subaccountName,
     hasLinkedSigner,
@@ -39,25 +40,24 @@ export function subaccountOpenTriggerOrdersQueryKey(
 /**
  * All open trigger orders for the current subaccount
  */
-export function useSubaccountOpenTriggerOrders(): QueryState<Data> {
-  const primaryChainId = usePrimaryChainId();
+export function useSubaccountOpenTriggerOrders() {
   const vertexClient = usePrimaryChainVertexClient();
   const hasLinkedSigner = useVertexClientHasLinkedSigner();
   const getRecvTime = useGetRecvTime();
   const {
-    currentSubaccount: { name, address },
+    currentSubaccount: { name, address, chainEnv, chainId },
   } = useSubaccountContext();
 
   const disabled = !vertexClient || !address || !hasLinkedSigner;
 
   return useQuery({
     queryKey: subaccountOpenTriggerOrdersQueryKey(
-      primaryChainId,
+      chainEnv,
       address,
       name,
       hasLinkedSigner,
     ),
-    queryFn: async (): Promise<Data> => {
+    queryFn: async (): Promise<SubaccountOpenTriggerOrdersData> => {
       if (disabled || !getVertexClientHasLinkedSigner(vertexClient)) {
         throw new QueryDisabledError();
       }
@@ -67,7 +67,7 @@ export function useSubaccountOpenTriggerOrders(): QueryState<Data> {
       const allTriggerOrders = await vertexClient.market.getTriggerOrders({
         subaccountOwner: address,
         subaccountName: name,
-        chainId: primaryChainId,
+        chainId,
         pending: true,
         recvTime,
       });

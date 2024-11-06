@@ -1,5 +1,5 @@
 import { BigDecimal, calcLpTokenValue } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAccountLbaState } from 'client/hooks/query/vrtxToken/useAccountLbaState';
@@ -39,7 +39,7 @@ export function useLbaPositionTable() {
   const { data: vrtxMarket } = useMarket({
     productId: protocolTokenMetadata.productId,
   });
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const data = useMemo((): LbaPositionTableItem[] | undefined => {
     if (
@@ -70,7 +70,7 @@ export function useLbaPositionTable() {
 
     const lpBalanceValuesUsd = (() => {
       const lpTokenValueUsd = calcLpTokenValue(vrtxMarket.product).multipliedBy(
-        quotePriceUsd,
+        primaryQuotePriceUsd,
       );
       return {
         locked: lpTokenValueUsd.multipliedBy(lockedLpBalance),
@@ -115,7 +115,7 @@ export function useLbaPositionTable() {
     accountState,
     vrtxMarket,
     tokenLaunchStageData,
-    quotePriceUsd,
+    primaryQuotePriceUsd,
     tokenClaimState,
     primaryQuoteToken,
     protocolTokenMetadata,

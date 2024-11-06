@@ -1,25 +1,22 @@
 import { GradientButton } from 'client/components/Button/GradientButton';
 import { EXTERNAL_LINKS } from 'client/consts';
+import { CommunitySocialButton } from 'client/sections/Community/components/SocialLinks/CommunitySocialButton';
+import { MobileCommunitySocialLinks } from 'client/sections/Community/components/SocialLinks/MobileCommunitySocialLinks';
+import { SOCIAL_LINKS } from 'client/sections/Community/data';
 import Link from 'next/link';
-import { SiPrisma } from 'react-icons/si';
-import { SOCIAL_LINKS } from '../../data';
-import { CommunitySocialButton } from './CommunitySocialButton';
-import { MobileCommunitySocialLinks } from './MobileCommunitySocialLinks';
 
 export function SocialLinks() {
   return (
     <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:flex-wrap lg:justify-start">
       {/* Hidden on mobile */}
-      {SOCIAL_LINKS.map(({ label, href, startIcon }) => {
+      {SOCIAL_LINKS.map(({ href, startIcon }, index) => {
         return (
           <CommunitySocialButton
             className="hidden md:flex lg:flex-none"
-            key={label}
+            key={index}
             href={href}
             startIcon={startIcon}
-          >
-            {label}
-          </CommunitySocialButton>
+          />
         );
       })}
       <CommunitySocialButton
@@ -27,7 +24,6 @@ export function SocialLinks() {
         as={Link}
         external
         href={EXTERNAL_LINKS.ambassadors}
-        startIcon={<SiPrisma size={16} />}
       >
         Ambassadors
       </CommunitySocialButton>

@@ -1,9 +1,10 @@
 import {
   calcLpTokenValue,
   ProductEngineType,
+  QUOTE_PRODUCT_ID,
 } from '@vertex-protocol/contracts';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
@@ -13,17 +14,14 @@ import { useLpBalances } from 'client/hooks/subaccount/useLpBalances';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
 import { QueryState } from 'client/types/QueryState';
 import { calcIndexerSummaryUnrealizedLpPnl } from 'client/utils/calcs/pnlCalcs';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
-import { BaseProductMetadata, Token } from 'common/productMetadata/types';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { useMemo } from 'react';
+import { PairMetadata } from 'client/modules/pools/types';
 
 export interface LpTableItem {
   marketType: ProductEngineType;
   productId: number;
-  metadata: {
-    base: BaseProductMetadata;
-    quote: Token;
-  };
+  metadata: PairMetadata;
   yieldFraction: BigDecimal | undefined;
   tvlUsd: BigDecimal;
   // 24hr
@@ -45,14 +43,14 @@ export function useLpTable({
   const { getIsHiddenMarket } = useVertexMetadataContext();
   const { data: staticMarketData } = useAllMarketsStaticData();
   const { filteredMarkets, isLoading: loadingMarkets } = useFilteredMarkets({
-    marketType: ProductEngineType.SPOT,
+    marketCategory: 'spot',
   });
   const { balances } = useLpBalances();
   // Default these to zero when not available
   const { data: marketMetrics } = useAllMarketsHistoricalMetrics();
   const { data: lpYields } = useLpYields();
   const { data: indexerSnapshot } = useSubaccountIndexerSnapshot();
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const quoteMetadata = staticMarketData?.primaryQuote;
 
@@ -65,15 +63,16 @@ export function useLpTable({
     return Object.values(filteredMarkets)
       .filter((market) => {
         const isHidden = getIsHiddenMarket(market.productId);
+        const hasLpPool = market.metadata.quoteProductId === QUOTE_PRODUCT_ID;
 
-        return !isHidden && market.metadata.hasLpPool;
+        return !isHidden && hasLpPool;
       })
       .map((market) => {
         const yieldFraction = lpYields?.[market.productId];
         const volume =
           marketMetrics?.metricsByMarket[market.productId]
             ?.pastDayVolumeInPrimaryQuote;
-        const baseProductMetadata = getBaseProductMetadata(market.metadata);
+        const baseMetadata = getSharedProductMetadata(market.metadata);
         const indexerBalance = indexerSnapshot?.balances.find(
           (bal) => bal.productId === market.productId,
         );
@@ -82,7 +81,7 @@ export function useLpTable({
         );
         const tvlUsd = calcLpTokenValue(market.product)
           .multipliedBy(market.product.totalLpSupply)
-          .multipliedBy(quotePriceUsd);
+          .multipliedBy(primaryQuotePriceUsd);
         const unrealizedPnl = indexerBalance
           ? calcIndexerSummaryUnrealizedLpPnl(indexerBalance)
           : undefined;
@@ -91,7 +90,7 @@ export function useLpTable({
           marketType: market.type,
           productId: market.productId,
           metadata: {
-            base: baseProductMetadata,
+            base: baseMetadata,
             quote: quoteMetadata.metadata.token,
           },
           amounts: {
@@ -112,7 +111,7 @@ export function useLpTable({
     lpYields,
     marketMetrics,
     indexerSnapshot,
-    quotePriceUsd,
+    primaryQuotePriceUsd,
     balances,
     getIsHiddenMarket,
   ]);

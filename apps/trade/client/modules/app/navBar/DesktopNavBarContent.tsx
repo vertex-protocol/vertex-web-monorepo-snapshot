@@ -1,42 +1,42 @@
-import { useEVMContext } from '@vertex-protocol/react-client';
+import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { NavBarCardButton, PrimaryButton } from '@vertex-protocol/web-ui';
 import { useUserStateError } from 'client/hooks/subaccount/useUserStateError';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
+import { AccountCenterWalletDisplayName } from 'client/modules/accountCenter/components/AccountCenterWalletDisplayName';
 import { AccountCenterWalletIcon } from 'client/modules/accountCenter/components/AccountCenterWalletIcon';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { NavAccountInfoPinsPopover } from 'client/modules/app/navBar/accountInfo/NavAccountInfoPinsPopover';
-import { ChainSwitcherPopover } from 'client/modules/app/navBar/chainSwitcher/ChainSwitcherPopover';
+import { NavAccountInfoPinsDropdown } from 'client/modules/app/navBar/accountInfo/NavAccountInfoPinsDropdown';
+import { ChainEnvSwitcherDropdown } from 'client/modules/app/navBar/chainEnvSwitcher/ChainEnvSwitcherDropdown';
 import { AppNavItemButton } from 'client/modules/app/navBar/components/AppNavItemButton';
+import { AppNavLogo } from 'client/modules/app/navBar/components/AppNavLogo/AppNavLogo';
 import { useAppNavItems } from 'client/modules/app/navBar/hooks/useAppNavItems';
 import { useGetIsActiveRoute } from 'client/modules/app/navBar/hooks/useGetIsActiveRoute';
 import { CommandCenterNavButton } from 'client/modules/commandCenter/components/CommandCenterNavButton';
 import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
-import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
-import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
-import { getTruncatedAddress } from 'client/utils/getTruncatedAddress';
 import Link from 'next/link';
-import { AppNavLogo } from './components/AppNavLogo/AppNavLogo';
 
 export function DesktopNavBarContent() {
   const { show } = useDialog();
-  const { connectionStatus } = useEVMContext();
   const getIsActiveRoute = useGetIsActiveRoute();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
   const userStateError = useUserStateError();
-  const [isAddressPrivate] = usePrivacySetting('isAddressPrivate');
   const appNavItems = useAppNavItems();
 
   const navButtons = appNavItems.map((navItem) => {
     if (navItem.type === 'link') {
       return (
-        <AppNavItemButton
-          as={Link}
-          key={navItem.id}
-          disabled={navItem.disabled}
-          href={navItem.href}
-          active={getIsActiveRoute(navItem.basePath)}
-        >
-          {navItem.label}
-        </AppNavItemButton>
+        <NavigationMenu.Item key={navItem.id}>
+          <NavigationMenu.Link asChild>
+            <AppNavItemButton
+              as={Link}
+              disabled={navItem.disabled}
+              href={navItem.href}
+              active={getIsActiveRoute(navItem.basePath)}
+            >
+              {navItem.label}
+            </AppNavItemButton>
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
       );
     } else {
       const { Desktop } = navItem.content;
@@ -60,48 +60,47 @@ export function DesktopNavBarContent() {
 
     return (
       <NavBarCardButton
-        className="text-text-primary flex-1 gap-x-2 text-xs"
+        className="text-text-primary flex-1 justify-start gap-x-2 text-xs"
         startIcon={
           <AccountCenterWalletIcon userStateError={userStateError} size={18} />
         }
         onClick={() =>
           show({
             type: 'account_center',
-            params: { initialShowSettingsContent: false },
+            params: {},
           })
         }
       >
-        <PrivateContent
-          isPrivate={isAddressPrivate}
-          className="flex-1 text-left"
-        >
-          {getTruncatedAddress(connectionStatus?.address ?? '', 4)}
-        </PrivateContent>
+        <AccountCenterWalletDisplayName />
       </NavBarCardButton>
     );
   })();
 
-  const chainSwitcher = (
+  const chainEnvSwitcher = (
     <BrandSpecificContent enabledBrands={['vertex']}>
-      <ChainSwitcherPopover />
+      <ChainEnvSwitcherDropdown />
     </BrandSpecificContent>
   );
 
   return (
-    <nav className="h-navbar flex w-full items-center gap-x-3 pl-6 pr-3">
-      <div className="flex items-center gap-x-2 text-sm">
+    <div className="h-navbar flex w-full items-center gap-x-3 pl-6 pr-3">
+      <div className="flex items-center">
         <div className="pr-4">
           <AppNavLogo />
         </div>
-        {navButtons}
+        <NavigationMenu.Root delayDuration={100}>
+          <NavigationMenu.List className="flex items-center text-sm">
+            {navButtons}
+          </NavigationMenu.List>
+        </NavigationMenu.Root>
       </div>
       <div className="flex-1" />
-      {isConnected && <NavAccountInfoPinsPopover />}
+      {isConnected && <NavAccountInfoPinsDropdown />}
       <div className="h-desktop-navbar-item flex w-80 gap-x-3">
         <CommandCenterNavButton />
         {accountButton}
-        {chainSwitcher}
+        {chainEnvSwitcher}
       </div>
-    </nav>
+    </div>
   );
 }

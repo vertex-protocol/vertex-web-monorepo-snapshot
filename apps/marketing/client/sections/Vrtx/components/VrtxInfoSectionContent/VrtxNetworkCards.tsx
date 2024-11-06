@@ -1,5 +1,8 @@
-import { VrtxInfoSectionContainer } from './VrtxInfoSectionContainer';
-import { NetworkMetadata, VrtxNetworkCard } from './VrtxNetworkCard';
+import { VrtxInfoSectionContainer } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxInfoSectionContainer';
+import {
+  NetworkMetadata,
+  VrtxNetworkCard,
+} from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxNetworkCard/VrtxNetworkCard';
 
 import arbIcon from 'client/sections/Vrtx/assets/arb-token.svg';
 import ethIcon from 'client/sections/Vrtx/assets/eth-token.svg';

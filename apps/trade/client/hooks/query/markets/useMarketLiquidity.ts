@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import { GetEngineMarketLiquidityResponse } from '@vertex-protocol/engine-client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { QueryState } from 'client/types/QueryState';
@@ -18,12 +18,12 @@ export type MarketLiquidityData = GetEngineMarketLiquidityResponse;
 
 export function marketLiquidityQueryKey(
   includeWebsocketUpdates: boolean,
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   productId?: number,
 ) {
   return createQueryKey(
     includeWebsocketUpdates ? 'marketLiquidityWs' : 'marketLiquidity',
-    chainId,
+    chainEnv,
     productId,
   );
 }
@@ -40,13 +40,13 @@ export function useMarketLiquidity({
   productId,
   includeWebsocketUpdates,
 }: Params): QueryState<MarketLiquidityData> {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient || !productId;
   return useQuery({
     queryKey: marketLiquidityQueryKey(
       includeWebsocketUpdates,
-      primaryChainId,
+      primaryChainEnv,
       productId,
     ),
     queryFn: async () => {
@@ -54,7 +54,7 @@ export function useMarketLiquidity({
         throw new QueryDisabledError();
       }
       return vertexClient?.market.getMarketLiquidity({
-        productId: productId ?? 0,
+        productId,
         // Backend returns a max depth of 100, to prevent excessive queries from different depths, we hardcode it here
         depth: 100,
       });

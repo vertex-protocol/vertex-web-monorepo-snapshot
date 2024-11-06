@@ -8,11 +8,14 @@ import { useAllMarkets24hrSnapshots } from 'client/hooks/markets/useAllMarkets24
  * We want to show this value in terms of USD
  */
 export function useTvlUsd() {
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { data: marketSnapshots } = useAllMarkets24hrSnapshots();
 
   return useMemo(
-    () => removeDecimals(marketSnapshots?.latest?.tvl.multipliedBy(quotePrice)),
-    [marketSnapshots?.latest?.tvl, quotePrice],
+    () =>
+      removeDecimals(
+        marketSnapshots?.latest?.tvl.multipliedBy(primaryQuotePriceUsd),
+      ),
+    [marketSnapshots?.latest?.tvl, primaryQuotePriceUsd],
   );
 }

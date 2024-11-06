@@ -1,13 +1,12 @@
-import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { WithClassnames } from '@vertex-protocol/web-common';
-import { ActionSummary } from 'client/components/ActionSummary';
-
 import { BigDecimal } from '@vertex-protocol/client';
+import { SubaccountTx } from '@vertex-protocol/engine-client';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
   formatNumber,
 } from '@vertex-protocol/react-client';
+import { WithClassnames } from '@vertex-protocol/web-common';
+import { ActionSummary } from 'client/components/ActionSummary';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
@@ -17,7 +16,7 @@ interface Props extends WithClassnames {
   estimateStateTxs: SubaccountTx[];
   productId?: number;
   feeAmount: BigDecimal | undefined;
-  triggerOpen?: boolean;
+  isHighlighted?: boolean;
   enableBorrows?: boolean;
   symbol?: string;
 }
@@ -26,7 +25,7 @@ export function WithdrawSummaryDisclosure({
   className,
   estimateStateTxs,
   productId,
-  triggerOpen,
+  isHighlighted,
   enableBorrows,
   feeAmount,
   symbol,
@@ -65,7 +64,8 @@ export function WithdrawSummaryDisclosure({
         numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
       },
       {
-        label: 'Fee',
+        label: 'Gas Fee',
+        tooltip: { id: 'gasFee' },
         value: feeAmount,
         numberFormatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
         valueEndElement: symbol,
@@ -95,25 +95,16 @@ export function WithdrawSummaryDisclosure({
     return items;
   }, [currentState, estimatedState, feeAmount, symbol, enableBorrows]);
 
-  const content = (
-    <div className="flex w-full flex-col gap-y-2 px-3 pb-3">
-      {metricItems.map((itemProps, index) => (
-        <ValueWithLabel.Horizontal
-          sizeVariant="xs"
-          key={index}
-          {...itemProps}
-        />
-      ))}
-    </div>
-  );
+  const content = metricItems.map((itemProps, index) => (
+    <ValueWithLabel.Horizontal sizeVariant="xs" key={index} {...itemProps} />
+  ));
 
   return (
     <ActionSummary.Disclosure
       className={className}
       expandableContent={content}
       labelContent="Summary"
-      triggerOpen={triggerOpen}
-      isHighlighted={triggerOpen}
+      isHighlighted={isHighlighted}
     />
   );
 }

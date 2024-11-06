@@ -1,22 +1,22 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import {
   BigDecimal,
   BigDecimals,
   removeDecimals,
   sumBigDecimalBy,
 } from '@vertex-protocol/utils';
-import {
-  createQueryKey,
-  QueryDisabledError,
-} from '@vertex-protocol/react-client';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import {
   StaticMarketData,
   useAllMarketsStaticData,
-} from './useAllMarketsStaticData';
+} from 'client/hooks/markets/useAllMarketsStaticData';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 
 interface MarketsOverviewData {
   totalCumulativeVolumeUsd: BigDecimal;

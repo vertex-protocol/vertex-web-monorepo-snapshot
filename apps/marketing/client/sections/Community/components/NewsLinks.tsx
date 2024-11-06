@@ -1,8 +1,8 @@
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import { formatDate } from 'client/utils/formatDate';
 import Link from 'next/link';
-import { NEWS_LINKS } from '../data';
-import { CommunityGradientPill } from './CommunityGradientPill';
+import { NEWS_LINKS } from 'client/sections/Community/data';
+import { CommunityGradientPill } from 'client/sections/Community/components/CommunityGradientPill';
 import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function NewsLinks() {

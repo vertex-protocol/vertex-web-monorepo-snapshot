@@ -1,18 +1,20 @@
-import { DesktopHomePageContent } from './DesktopHomePageContent';
-import { MobileHomePageContent } from './MobileHomePageContent';
+'use client';
+
+import { ReactNode } from 'react';
 import { useIsClient, useWindowSize } from '@vertex-protocol/web-common';
 
-export function HomePage() {
+interface Props {
+  desktopContent: ReactNode;
+  mobileContent: ReactNode;
+}
+
+export function HomePage({ desktopContent, mobileContent }: Props) {
   const isClient = useIsClient();
   const { width } = useWindowSize();
 
-  const content = (() => {
-    if (isClient && width < 834) {
-      return <MobileHomePageContent />;
-    }
+  if (isClient && width < 834) {
+    return mobileContent;
+  }
 
-    return <DesktopHomePageContent />;
-  })();
-
-  return <div className="font-sans">{content}</div>;
+  return desktopContent;
 }

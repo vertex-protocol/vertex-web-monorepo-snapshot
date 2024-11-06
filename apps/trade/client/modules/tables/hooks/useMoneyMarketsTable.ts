@@ -1,14 +1,14 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { useEVMContext } from '@vertex-protocol/react-client';
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
-import { calcBorrowAPR, calcDepositAPR } from 'client/utils/calcs/calcSpotApr';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { SpotProductMetadata } from 'common/productMetadata/types';
+import { SpotProductMetadata } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface MoneyMarketsTableItem {
@@ -16,91 +16,89 @@ export interface MoneyMarketsTableItem {
   productId: number;
   totalDeposited: {
     amount: BigDecimal;
-    valueUsd?: BigDecimal;
+    valueUsd: BigDecimal;
   };
   totalBorrowed: {
     amount: BigDecimal;
-    valueUsd?: BigDecimal;
+    valueUsd: BigDecimal;
   };
   spotBalance: {
-    amount?: BigDecimal;
-    valueUsd?: BigDecimal;
+    amount: BigDecimal;
+    valueUsd: BigDecimal;
   };
-  depositAPR: BigDecimal;
-  borrowAPR: BigDecimal;
-  volume24h?: BigDecimal;
+  depositAPR: BigDecimal | undefined;
+  borrowAPR: BigDecimal | undefined;
+  volume24h: BigDecimal | undefined;
   isNewMarket: boolean;
   isFavorited: boolean;
 }
 
 export function useMoneyMarketsTable() {
   const { getIsNewMarket } = useVertexMetadataContext();
-  const { connectionStatus } = useEVMContext();
+  const isConnected = useIsConnected();
 
-  const { balances: balancesData } = useSpotBalances();
-  const { data: allMarketData, isLoading: allMarketsDataLoading } =
-    useAllMarkets();
+  const { balances, isLoading: isLoadingBalances } = useSpotBalances();
+  const { data: allMarketsData, isLoading: isLoadingMarkets } = useAllMarkets();
   const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
 
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
 
   const mappedData: MoneyMarketsTableItem[] | undefined = useMemo(() => {
-    if (!allMarketData) {
+    if (!balances || !allMarketsData) {
       return;
     }
 
-    const allSpotMarkets = [
-      allMarketData.primaryQuoteProduct,
-      ...Object.values(allMarketData.spotMarkets),
-    ];
-
-    return allSpotMarkets
-      .map((market) => {
+    return balances
+      .map((balance) => {
         const marketMetrics =
-          marketMetricsData?.metricsByMarket[market.productId];
+          marketMetricsData?.metricsByMarket[balance.productId];
 
-        const spotBalance = balancesData?.find(
-          (balance) => balance.productId === market.productId,
-        );
+        const market =
+          balance.productId === QUOTE_PRODUCT_ID
+            ? allMarketsData.primaryQuoteProduct
+            : allMarketsData.spotMarkets[balance.productId];
+
+        if (!market) {
+          return;
+        }
 
         const decimalAdjustedTotalDepositedAmount = removeDecimals(
           market.product.totalDeposited,
         );
-
         const decimalAdjustedTotalBorrowedAmount = removeDecimals(
           market.product.totalBorrowed,
         );
 
         return {
-          metadata: market.metadata,
-          productId: market.productId,
+          metadata: balance.metadata,
+          productId: balance.productId,
           totalDeposited: {
             amount: decimalAdjustedTotalDepositedAmount,
-            valueUsd: spotBalance?.oraclePriceUsd.multipliedBy(
-              decimalAdjustedTotalDepositedAmount,
+            valueUsd: decimalAdjustedTotalDepositedAmount.multipliedBy(
+              balance.oraclePriceUsd,
             ),
           },
           totalBorrowed: {
             amount: decimalAdjustedTotalBorrowedAmount,
-            valueUsd: spotBalance?.oraclePriceUsd.multipliedBy(
-              decimalAdjustedTotalBorrowedAmount,
+            valueUsd: decimalAdjustedTotalBorrowedAmount.multipliedBy(
+              balance.oraclePriceUsd,
             ),
           },
           spotBalance: {
-            amount: spotBalance?.amount,
-            valueUsd: spotBalance?.valueUsd,
+            amount: balance.amount,
+            valueUsd: balance.valueUsd,
           },
-          depositAPR: calcDepositAPR(market.product),
-          borrowAPR: calcBorrowAPR(market.product),
+          depositAPR: balance.depositAPR,
+          borrowAPR: balance.borrowAPR,
           volume24h: removeDecimals(marketMetrics?.pastDayVolumeInPrimaryQuote),
-          isNewMarket: getIsNewMarket(market.productId),
-          isFavorited: favoritedMarketIds.has(market.productId),
+          isNewMarket: getIsNewMarket(balance.productId),
+          isFavorited: favoritedMarketIds.has(balance.productId),
         };
       })
       .filter(nonNullFilter);
   }, [
-    allMarketData,
-    balancesData,
+    balances,
+    allMarketsData,
     marketMetricsData?.metricsByMarket,
     getIsNewMarket,
     favoritedMarketIds,
@@ -108,8 +106,8 @@ export function useMoneyMarketsTable() {
 
   return {
     moneyMarkets: mappedData,
-    isLoading: allMarketsDataLoading,
+    isLoading: isLoadingBalances || isLoadingMarkets,
     toggleIsFavoritedMarket,
-    disableFavoriteButton: connectionStatus.type !== 'connected',
+    disableFavoriteButton: !isConnected,
   };
 }

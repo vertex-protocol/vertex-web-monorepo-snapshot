@@ -1,4 +1,12 @@
+import { useIsClient } from '@vertex-protocol/web-common';
+import {
+  SizeClass,
+  useSizeClass,
+} from 'client/hooks/ui/breakpoints/useSizeClass';
+import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import { TradingViewSymbolInfo } from 'client/modules/trading/chart/config/datafeedConfig';
+import { WIDGET_CONFIG } from 'client/modules/trading/chart/config/widgetConfig';
+import { cloneDeep } from 'lodash';
 import {
   ChartingLibraryWidgetConstructor,
   IBasicDataFeed,
@@ -6,14 +14,6 @@ import {
   Timezone,
 } from 'public/charting_library';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { WIDGET_CONFIG } from '../config/widgetConfig';
-import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
-import {
-  SizeClass,
-  useSizeClass,
-} from 'client/hooks/ui/breakpoints/useSizeClass';
-import { useIsClient } from '@vertex-protocol/web-common';
-import { cloneDeep } from 'lodash';
 
 interface UseTradingViewWidget {
   tvWidget: IChartingLibraryWidget | undefined;

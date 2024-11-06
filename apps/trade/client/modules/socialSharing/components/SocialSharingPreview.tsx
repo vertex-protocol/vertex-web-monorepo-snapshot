@@ -1,12 +1,13 @@
 // We can't use Image element from nextjs here. It won't generate images properly.
 /* eslint-disable @next/next/no-img-element */
-import { BigDecimal } from '@vertex-protocol/utils';
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
+import { NextImageSrc } from '@vertex-protocol/web-common';
+import { SocialSharingMarketInfo } from 'client/modules/socialSharing/components/SocialSharingMarketInfo';
+import { SocialSharingMetric } from 'client/modules/socialSharing/components/SocialSharingMetric';
+import { SocialSharingPnlInfo } from 'client/modules/socialSharing/components/SocialSharingPnlInfo';
+import { SocialSharingTheme } from 'client/modules/socialSharing/hooks/socialSharingConfig';
 import { signDependentValue } from 'client/utils/signDependentValue';
-import { SocialSharingTheme } from '../hooks/socialSharingConfig';
-import { SocialSharingMarketInfo } from './SocialSharingMarketInfo';
-import { SocialSharingMetric } from './SocialSharingMetric';
-import { SocialSharingPnlInfo } from './SocialSharingPnlInfo';
 
 type Props = {
   isRealized: boolean;
@@ -14,7 +15,7 @@ type Props = {
   onTokenIconLoad: () => void;
   priceIncrement: BigDecimal;
   marketName: string;
-  iconUrl: string;
+  iconSrc: NextImageSrc;
   amountForSide: BigDecimal;
   pnlFrac: BigDecimal;
   entryPrice: BigDecimal;
@@ -28,7 +29,7 @@ export function SocialSharingPreview({
   onTokenIconLoad,
   priceIncrement,
   marketName,
-  iconUrl,
+  iconSrc,
   amountForSide,
   pnlFrac,
   entryPrice,
@@ -52,19 +53,17 @@ export function SocialSharingPreview({
           <SocialSharingMarketInfo
             onLoad={onTokenIconLoad}
             marketName={marketName}
-            iconUrl={iconUrl}
+            iconSrc={iconSrc}
             amount={amountForSide}
           />
           <SocialSharingPnlInfo estimatedPnlFrac={pnlFrac} />
         </div>
-
         <div className="flex gap-x-3">
           <SocialSharingMetric
             label="Entry price"
             value={entryPrice}
             formatSpecifier={priceFormatSpecifier}
           />
-
           <SocialSharingMetric
             label={isRealized ? 'Exit price' : 'Oracle price'}
             value={referencePrice}

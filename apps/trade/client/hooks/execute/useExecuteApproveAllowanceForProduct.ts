@@ -28,7 +28,7 @@ export function useExecuteApproveAllowanceForProduct() {
 
         refetchQueryKeysRef.current = [
           tokenAllowanceQueryKey(
-            context.subaccount.chainId,
+            context.subaccount.chainEnv,
             context.subaccount.address,
             context.vertexClient.context.contractAddresses.endpoint,
             // Omit the token address as `params` contains a product ID, and it's a separate async call / query to retrieve the token address

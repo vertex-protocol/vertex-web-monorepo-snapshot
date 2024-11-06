@@ -29,7 +29,7 @@ export function TpSlCancelOrderButton({ order }: Props) {
 
   return (
     <SecondaryButton
-      size="sm"
+      size="xs"
       destructive
       title="Cancel"
       disabled={userActionState === 'block_all'}

@@ -5,7 +5,7 @@ import {
   SECTION_IDS,
 } from 'client/consts';
 import { InvestorCards } from 'client/sections/Investors/components/InvestorCards';
-import { INVESTOR_CARD_DATA } from './data';
+import { INVESTOR_CARD_DATA } from 'client/sections/Investors/data';
 import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function Investors() {

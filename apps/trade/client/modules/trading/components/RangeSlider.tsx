@@ -53,19 +53,21 @@ export function RangeSlider({
         onChange={(values) => {
           onValueChange(values[0]);
         }}
-        renderMark={({ props }) => <SliderMark key={props.key} props={props} />}
+        renderMark={({ props: { key, ...rest } }) => (
+          <SliderMark key={key} props={rest} />
+        )}
         renderTrack={({ props, children }) => (
           <SliderTrack sliderValue={sliderValue} props={props}>
             {children}
           </SliderTrack>
         )}
-        renderThumb={({ props }) => (
+        renderThumb={({ props: { key, ...rest } }) => (
           <SliderThumb
-            props={props}
+            key={key}
+            props={rest}
             disabled={disabled}
             sliderValue={sliderValue}
             renderValue={renderValue}
-            key="slider-thumb"
           />
         )}
       />
@@ -89,12 +91,12 @@ function SliderTrack({ props, children }: WithChildren<SliderTrackProps>) {
   );
 }
 
-function SliderMark({ props }: { props: IMarkProps }) {
+function SliderMark({ props }: { props: Omit<IMarkProps, 'key'> }) {
   return <div {...props} className="bg-surface-card h-1.5 w-px rounded" />;
 }
 
 interface SliderThumbProps {
-  props: IThumbProps;
+  props: Omit<IThumbProps, 'key'>;
   sliderValue: number;
   disabled?: boolean;
   renderValue: (val?: number) => ReactNode;

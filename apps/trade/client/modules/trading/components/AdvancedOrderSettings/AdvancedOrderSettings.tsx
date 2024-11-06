@@ -1,17 +1,18 @@
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { Button, Checkbox, CompactInput, Input } from '@vertex-protocol/web-ui';
+import { Button, Checkbox } from '@vertex-protocol/web-ui';
 import { CheckboxLabelWithTooltip } from 'client/components/CheckboxLabelWithTooltip';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { useState } from 'react';
-import { useOrderFormTimeInForceInDaysErrorTooltipContent } from '../../hooks/useOrderFormTimeInForceInDaysErrorTooltipContent';
+import { useAdvancedOrderSettings } from 'client/modules/trading/components/AdvancedOrderSettings/hooks/useAdvancedOrderSettings';
+import { TimeInForceTypeSelect } from 'client/modules/trading/components/AdvancedOrderSettings/TimeInForceTypeSelect';
+import { TradeInput } from 'client/modules/trading/components/TradeInput';
+import { useOrderFormTimeInForceInDaysErrorTooltipContent } from 'client/modules/trading/hooks/useOrderFormTimeInForceInDaysErrorTooltipContent';
 import {
   OrderFormError,
   OrderFormValidators,
   PlaceOrderPriceType,
-} from '../../types';
-import { TimeInForceTypeSelect } from './TimeInForceTypeSelect';
-import { useAdvancedOrderSettings } from './hooks/useAdvancedOrderSettings';
+} from 'client/modules/trading/types';
+import { useState } from 'react';
 
 interface Props {
   validators: OrderFormValidators;
@@ -60,7 +61,7 @@ export function AdvancedOrderSettings({
         </div>
       )}
       {showGoodUntilInput && (
-        <CompactInput
+        <TradeInput
           {...timeInForceRegister}
           className="max-w-40"
           type="number"
@@ -68,12 +69,9 @@ export function AdvancedOrderSettings({
           min={1}
           max={365}
           id={timeInForceRegister.name}
-          textAreaClassName="text-right"
-          startElement={
-            <Input.Label htmlFor={timeInForceRegister.name}>Time</Input.Label>
-          }
-          errorTooltipContent={timeInForceInDaysErrorTooltipContent}
-          endElement="Days"
+          label="Time"
+          symbol="Days"
+          error={timeInForceInDaysErrorTooltipContent}
         />
       )}
       {showPostOnly && (

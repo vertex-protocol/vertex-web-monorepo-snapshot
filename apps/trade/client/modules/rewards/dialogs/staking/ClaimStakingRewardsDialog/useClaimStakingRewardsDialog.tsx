@@ -1,5 +1,5 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useExecuteClaimAndStakeStakingRewards } from 'client/hooks/execute/vrtxToken/useExecuteClaimAndStakeStakingRewards';
 import { useExecuteClaimStakingRewards } from 'client/hooks/execute/vrtxToken/useExecuteClaimStakingRewards';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
@@ -8,12 +8,11 @@ import { useEstimatedSwapAmountFromStakingRewards } from 'client/hooks/query/vrt
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
+import { ClaimAndStakeRadioID } from 'client/modules/rewards/dialogs/staking/components/StakingRadioGroup';
+import { BaseClaimAndStakeHookReturn } from 'client/modules/rewards/dialogs/staking/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { removeDecimals } from '@vertex-protocol/utils';
 import { safeDiv } from 'client/utils/safeDiv';
 import { useCallback, useMemo, useState } from 'react';
-import { ClaimAndStakeRadioID } from '../components/StakingRadioGroup';
-import { BaseClaimAndStakeHookReturn } from '../types';
 
 interface UseClaimStakingRewardsDialog extends BaseClaimAndStakeHookReturn {
   claimableStakingRewards: BigDecimal | undefined;

@@ -1,12 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { BalanceSide } from '@vertex-protocol/contracts';
+import { BalanceSide, ChainEnv } from '@vertex-protocol/contracts';
 import { GetEngineMaxOrderSizeParams } from '@vertex-protocol/engine-client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -20,7 +18,7 @@ export type UseMaxOrderSizeParams = Omit<
 };
 
 export function maxOrderSizeQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   sender?: string,
   subaccountName?: string,
   productId?: number,
@@ -30,7 +28,7 @@ export function maxOrderSizeQueryKey(
 ) {
   return createQueryKey(
     'maxOrderSize',
-    chainId,
+    chainEnv,
     sender,
     subaccountName,
     productId,
@@ -41,7 +39,6 @@ export function maxOrderSizeQueryKey(
 }
 
 export function useMaxOrderSize(params?: UseMaxOrderSizeParams) {
-  const primaryChainId = usePrimaryChainId();
   const { currentSubaccount } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 
@@ -62,7 +59,7 @@ export function useMaxOrderSize(params?: UseMaxOrderSizeParams) {
 
   return useQuery({
     queryKey: maxOrderSizeQueryKey(
-      primaryChainId,
+      currentSubaccount.chainEnv,
       queryParams?.subaccountOwner,
       queryParams?.subaccountName,
       queryParams?.productId,

@@ -3,8 +3,8 @@ import {
   RadioGroupCardProps,
   RadioGroupRootProps,
 } from '@vertex-protocol/web-ui';
-import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ReactNode } from 'react';
 
 export type ClaimAndStakeRadioID = 'claim' | 'claim_and_stake';
@@ -27,7 +27,7 @@ function Card({
 }: CardProps) {
   return (
     <RadioGroup.Card value={value} active={active} {...radioItemProps}>
-      <div className="flex flex-col gap-y-6">
+      <div className="flex flex-col gap-y-4">
         <p className="whitespace-normal">{description}</p>
         {active && <div className="empty:hidden">{expandableContent}</div>}
       </div>
@@ -35,11 +35,7 @@ function Card({
   );
 }
 
-function LineItem({
-  valueClassName,
-  labelClassName,
-  ...itemProps
-}: ValueWithLabelProps) {
+function LineItem({ ...itemProps }: ValueWithLabelProps) {
   return <ValueWithLabel.Horizontal sizeVariant="xs" {...itemProps} />;
 }
 

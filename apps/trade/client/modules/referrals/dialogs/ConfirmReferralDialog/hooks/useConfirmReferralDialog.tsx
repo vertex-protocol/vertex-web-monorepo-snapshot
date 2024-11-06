@@ -7,7 +7,7 @@ import { useCallback, useMemo } from 'react';
 
 export function useConfirmReferralDialog() {
   const { dispatchNotification } = useNotificationManagerContext();
-  const { referralCodeForSession, setReferralCodeForSession, payoutToken } =
+  const { referralCodeForSession, setReferralCodeForSession } =
     useFuulReferralsContext();
 
   const { data: addressReferralCodeData } = useAddressReferralCode();
@@ -62,6 +62,5 @@ export function useConfirmReferralDialog() {
     confirmButtonState,
     referralCodeForSession,
     referralCodeForCurrentUser: addressReferralCodeData?.referralCode,
-    payoutToken,
   };
 }

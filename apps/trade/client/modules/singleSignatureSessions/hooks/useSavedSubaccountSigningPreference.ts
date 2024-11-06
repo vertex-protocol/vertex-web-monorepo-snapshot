@@ -1,16 +1,13 @@
-import {
-  PrimaryChainID,
-  usePrimaryChainId,
-} from '@vertex-protocol/react-client';
-import { Subaccount } from 'client/context/subaccount/types';
+import { usePrimaryChainId } from '@vertex-protocol/react-client';
 import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
-import { Wallet } from 'ethers';
-import { omit } from 'lodash';
-import { useCallback, useMemo } from 'react';
 import {
   SavedSubaccountSigningPreference,
   SubaccountSigningPreference,
-} from '../types';
+} from 'client/modules/singleSignatureSessions/types';
+import { getSubaccountKey } from 'client/modules/subaccounts/utils/getSubaccountKey';
+import { Wallet } from 'ethers';
+import { omit } from 'lodash';
+import { useCallback, useMemo } from 'react';
 
 interface UseSubaccountSigningPreference {
   didLoadPersistedValue: boolean;
@@ -29,15 +26,15 @@ interface UseSubaccountSigningPreference {
  * Hook to access & modify the persisted subaccount signing preference
  */
 export function useSavedSubaccountSigningPreference(
-  subaccount: Subaccount,
+  subaccountName: string,
 ): UseSubaccountSigningPreference {
   const primaryChainId = usePrimaryChainId();
   const { savedUserSettings, setSavedUserSettings, didLoadPersistedValue } =
     useSavedUserSettings();
 
   const subaccountKey = useMemo(() => {
-    return createSubaccountKey(primaryChainId, subaccount.name);
-  }, [primaryChainId, subaccount.name]);
+    return getSubaccountKey(primaryChainId, subaccountName);
+  }, [primaryChainId, subaccountName]);
 
   const signingPreference = useMemo(():
     | SubaccountSigningPreference
@@ -135,8 +132,4 @@ export function useSavedSubaccountSigningPreference(
     clearSigningPreference,
     clearPrivateKeyIfSaved,
   };
-}
-
-function createSubaccountKey(chainId: PrimaryChainID, subaccountName: string) {
-  return `${chainId}_${subaccountName}`;
 }

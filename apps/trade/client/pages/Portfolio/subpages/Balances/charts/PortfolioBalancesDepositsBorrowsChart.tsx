@@ -1,8 +1,12 @@
 import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import { ChartTooltip } from 'client/components/ChartTooltip';
+import {
   PortfolioChartTooltip,
   PortfolioChartTooltipBodyRenderFn,
-} from 'client/pages/Portfolio/charts/components/PortfolioChartTooltip/PortfolioChartTooltip';
-import { PortfolioChartTooltipContent } from 'client/pages/Portfolio/charts/components/PortfolioChartTooltipContent/PortfolioChartTooltipContent';
+} from 'client/pages/Portfolio/charts/components/PortfolioChartTooltip';
 import {
   AREA_CHART_DEFAULTS,
   PORTFOLIO_CHART_GRADIENT_URLS,
@@ -11,12 +15,10 @@ import {
   PORTFOLIO_CHART_XAXIS_DEFAULTS,
   PORTFOLIO_CHART_YAXIS_DEFAULTS,
 } from 'client/pages/Portfolio/charts/consts';
-import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartData/usePortfolioChartData';
+import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
 import { usePortfolioChartXAxisFormatter } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartXAxisFormatter';
 import { ChartComponentProps } from 'client/pages/Portfolio/charts/types';
 import { currencyAxisFormatter } from 'client/pages/Portfolio/charts/utils/axisFormatters';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
 import { COLORS } from 'common/theme/colors';
 import {
   Area,
@@ -42,14 +44,14 @@ const renderTooltipContent: PortfolioChartTooltipBodyRenderFn = ({
 }: PortfolioChartDataItem) => {
   return (
     <>
-      <PortfolioChartTooltipContent.Item
+      <ChartTooltip.Item
         title="Deposits"
         legendColorClassName="bg-positive"
         content={formatNumber(totalDepositsValueUsd, {
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         })}
       />
-      <PortfolioChartTooltipContent.Item
+      <ChartTooltip.Item
         title="Borrows"
         legendColorClassName="bg-accent"
         content={formatNumber(totalAbsBorrowsValueUsd, {

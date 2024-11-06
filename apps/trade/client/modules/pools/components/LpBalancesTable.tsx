@@ -1,17 +1,18 @@
+'use client';
+
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
-import {
-  CustomNumberFormatSpecifier,
-  useEVMContext,
-} from '@vertex-protocol/react-client';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { LpActionsCell } from 'client/modules/pools/components/LpActionsCell';
+import { LpTableItem, useLpTable } from 'client/modules/pools/hooks/useLpTable';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { PercentageCell } from 'client/modules/tables/cells/PercentageCell';
@@ -19,7 +20,6 @@ import { PnlCell } from 'client/modules/tables/cells/PnlCell';
 import { StackedTokenPairCell } from 'client/modules/tables/cells/StackedTokenPairCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { useMemo } from 'react';
-import { LpTableItem, useLpTable } from '../hooks/useLpTable';
 
 const columnHelper = createColumnHelper<LpTableItem>();
 
@@ -30,9 +30,8 @@ export function LpBalancesTable({
   const { data: pools, isLoading } = useLpTable({ showZeroBalances });
 
   const { show } = useDialog();
-  const { connectionStatus } = useEVMContext();
   const isDesktop = useIsDesktop();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
 
   const columns: ColumnDef<LpTableItem, any>[] = useMemo(() => {
     return [

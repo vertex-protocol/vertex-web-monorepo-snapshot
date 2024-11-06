@@ -1,6 +1,8 @@
 import { DiscList } from '@vertex-protocol/web-ui';
 import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
+import { MARKET_SENTIMENT_PROVIDER } from 'common/environment/integrations/marketSentimentProvider';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
 
 const lpMarketsTooltips = {
   lpMarkets24hVolume: {
@@ -17,6 +19,14 @@ const lbaPositionTooltips = {
   lbaPositionLiquidityStatus: {
     title: `Locked / UnLocked Liq.`,
     content: `LBA liquidity unlocks according to the vesting schedule. Unlocked liquidity can be withdrawn.`,
+  },
+} as const satisfies Record<string, DefinitionTooltipConfig>;
+
+const spotBalancesTooltips = {
+  spotBalancesBlastNativeYield: {
+    title: 'Native Yield',
+    content:
+      'USDB and wETH deposits automatically earn Blast’s auto-rebasing native yield.',
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
@@ -50,6 +60,7 @@ const perpPositionsTooltips = {
     title: `Take Profit & Stop Loss`,
     content: (
       <DiscList.Container>
+        <DiscList.Item>1CT must be enabled to use TP/SL.</DiscList.Item>
         <DiscList.Item>
           TP/SL are <span className="text-text-primary">reduce-only</span>,
           which means that they can only close an existing position.
@@ -62,7 +73,6 @@ const perpPositionsTooltips = {
           where execution is not guaranteed. If the order cannot be filled
           within slippage limits, then the order will not execute.
         </DiscList.Item>
-        <DiscList.Item>1CT must be enabled to use TP/SL.</DiscList.Item>
       </DiscList.Container>
     ),
   },
@@ -171,9 +181,18 @@ const realizedPnlEventsTooltips = {
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const historicalWithdrawalsTooltips = {
-  historicalWithdrawalsStatus: {
-    title: `Status`,
-    content: `We minimize user fees by sending withdrawal transactions on-chain when gas fees are low. All actions still happen instantaneously, but withdrawals can take longer during high gas periods. If your withdrawal appears here, it was successfully placed and will settle on-chain once the target gas threshold is reached.`,
+  historicalWithdrawalsProcessing: {
+    title: `Processing Withdrawals`,
+    content: (
+      <div>
+        Withdrawals may be delayed due to high on-chain gas costs.
+        <BrandSpecificContent enabledBrands={['vertex']}>
+          If <span className="text-text-primary">Fast Withdraw</span> is
+          available for this asset, you can execute processing withdrawals
+          instantly.
+        </BrandSpecificContent>
+      </div>
+    ),
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
@@ -252,8 +271,20 @@ const historicalLiquidationTooltips = {
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
+const sentimentTooltips = {
+  sentimentLabel: {
+    title: `Sentiment`,
+    content: `Sentiment is a quantified representation of how positive or negative users on X are about a particular asset.\nData provided by ${MARKET_SENTIMENT_PROVIDER.name}.`,
+  },
+  sentimentTweetVolumeChange: {
+    title: `Hype 🔥`,
+    content: `24h tweet volume vs. 30d daily average.\nData provided by ${MARKET_SENTIMENT_PROVIDER.name}.`,
+  },
+} as const satisfies Record<string, DefinitionTooltipConfig>;
+
 export const tableTooltips = {
   ...lpMarketsTooltips,
+  ...spotBalancesTooltips,
   ...perpPositionsTooltips,
   ...openEngineOrdersTooltips,
   ...openTriggerOrdersTooltips,
@@ -267,4 +298,5 @@ export const tableTooltips = {
   ...fundingRateMarketsTooltips,
   ...perpMarketsTooltips,
   ...lbaPositionTooltips,
+  ...sentimentTooltips,
 } as const satisfies Record<string, DefinitionTooltipConfig>;

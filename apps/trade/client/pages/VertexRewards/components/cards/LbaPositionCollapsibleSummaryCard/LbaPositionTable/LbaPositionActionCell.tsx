@@ -5,7 +5,7 @@ import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 
 interface Props extends TableCellProps {
@@ -17,12 +17,10 @@ export function LbaPositionActionCell({
   className,
   ...rest
 }: Props) {
-  const userActionState = useUserActionState();
+  const isConnected = useIsConnected();
   const { show } = useDialog();
   const isDisabled =
-    userActionState === 'block_all' ||
-    !unlockedValueUsd ||
-    unlockedValueUsd?.isZero();
+    !isConnected || !unlockedValueUsd || unlockedValueUsd?.isZero();
 
   return (
     <TableCell

@@ -1,47 +1,56 @@
+'use client';
+
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { Button, Icons } from '@vertex-protocol/web-ui';
-import { LinkButton } from 'client/components/LinkButton';
-import { ROUTES } from 'client/modules/app/consts/routes';
-import { IMAGES } from 'common/brandMetadata/images';
+import { LinkButton, Pill } from '@vertex-protocol/web-ui';
+import { AppPromoBanner } from 'client/modules/app/components/AppPromoBanner';
 import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
-import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
+import { BLITZ_SPECIFIC_IMAGES } from 'common/brandMetadata/images';
+import { BLITZ_SPECIFIC_LINKS } from 'common/brandMetadata/links/blitzLinks';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export function BlitzPointsBanner({ className }: WithClassnames) {
   const isBlitz = useIsEnabledForBrand(['blitz']);
-  const { shouldShow, dismiss } = useShowUserDisclosure('blitz_points_banner');
 
-  if (!isBlitz || !shouldShow) {
+  if (!isBlitz) {
     return null;
   }
 
   return (
-    // bg darkens the background image
-    <div className={joinClassNames('relative', className)}>
-      <div className="flex flex-col items-center gap-y-1.5 px-5 py-3 backdrop-blur-sm">
-        <div className="relative w-full text-sm">
-          <h2 className="text-text-primary text-center">
-            Blitz Farming Frenzy
-          </h2>
-          <Button className="absolute right-0 top-1/2 -translate-y-1/2">
-            <Icons.MdClose size={20} onClick={dismiss} />
-          </Button>
-        </div>
-        <div className="flex flex-col gap-1.5 text-xs sm:flex-row">
-          Earn your share of Blitz Points, Blast Points and Gold. Deposit and
-          trade to start earning.
-          <LinkButton as={Link} href={ROUTES.points} colorVariant="primary">
-            Visit Points Page
-          </LinkButton>
-        </div>
+    <AppPromoBanner
+      disclosureKey="blitz_points_banner_phase_2"
+      className={joinClassNames('bg-surface-1 gap-x-12', className)}
+    >
+      <div className="flex flex-row items-center gap-3 sm:flex-col">
+        <Image
+          src={BLITZ_SPECIFIC_IMAGES.blastLogo}
+          priority
+          alt="blast"
+          className="h-4 w-auto"
+        />
+        <Pill
+          className="text-accent-blast"
+          sizeVariant="xs"
+          colorVariant="primary"
+          borderRadiusVariant="base"
+        >
+          Phase 2 now live
+        </Pill>
       </div>
-      <Image
-        src={IMAGES.brandBg}
-        alt="blitz background"
-        fill
-        className="-z-10 object-cover"
-      />
-    </div>
+      <p className="text-text-secondary text-xs sm:text-sm">
+        Phase 2 of Blast Incentives has started. Your Blast points and Gold will
+        restart. You can still view and claim Phase 1 Blast rewards via the{' '}
+        <LinkButton
+          className="text-accent-blast"
+          colorVariant="accent"
+          external
+          as={Link}
+          href={BLITZ_SPECIFIC_LINKS.blastAirdropPoints}
+        >
+          Blast
+        </LinkButton>{' '}
+        app.
+      </p>
+    </AppPromoBanner>
   );
 }

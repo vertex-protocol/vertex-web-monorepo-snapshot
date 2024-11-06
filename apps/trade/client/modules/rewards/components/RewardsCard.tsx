@@ -4,8 +4,7 @@ import {
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { Card } from '@vertex-protocol/web-ui';
-import { LinkButton, LinkButtonProps } from 'client/components/LinkButton';
+import { Card, LinkButton, LinkButtonProps } from '@vertex-protocol/web-ui';
 import { ReactNode } from 'react';
 
 function Container({ children, className }: WithClassnames<WithChildren>) {
@@ -49,7 +48,7 @@ function Header({
   );
 }
 
-function HeaderLinkButton({ endIcon, className, ...rest }: LinkButtonProps) {
+function HeaderLinkButton({ className, ...rest }: LinkButtonProps) {
   return (
     <LinkButton
       className={mergeClassNames('gap-x-1.5 text-xs sm:text-sm', className)}

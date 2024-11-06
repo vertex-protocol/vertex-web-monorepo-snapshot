@@ -2,12 +2,13 @@ import {
   PresetNumberFormatSpecifier,
   formatNumber,
 } from '@vertex-protocol/react-client';
-import { joinClassNames } from '@vertex-protocol/web-common';
-import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
+import { Divider } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { RewardsSummaryCard } from '../RewardsSummaryCard';
-import { useMantleRewardsSummaryCard } from './useMantleRewardsSummaryCard';
+import { useMantleRewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/MantleRewardsSummaryCard/useMantleRewardsSummaryCard';
+import { RewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/RewardsSummaryCard';
 
 export function MantleRewardsSummaryCard() {
   const {
@@ -22,6 +23,7 @@ export function MantleRewardsSummaryCard() {
     isClaimSuccess,
     isClaiming,
     mantleToken,
+    isCompleted,
   } = useMantleRewardsSummaryCard();
 
   const claimButtonLabel = (() => {
@@ -54,24 +56,21 @@ export function MantleRewardsSummaryCard() {
           valueEndElement={mantleToken.symbol}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
-        <ValueWithLabel.Vertical
-          label="Est. New"
-          tooltip={{ id: 'rewardsFoundationEstNew' }}
-          value={estimatedWeekRewards}
-          valueEndElement={mantleToken.symbol}
-          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-        />
+        {!isCompleted && (
+          <ValueWithLabel.Vertical
+            label="Est. New"
+            tooltip={{ id: 'rewardsFoundationEstNew' }}
+            value={estimatedWeekRewards}
+            valueEndElement={mantleToken.symbol}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          />
+        )}
       </>
     );
   })();
 
   return (
-    <RewardsSummaryCard.Container
-      className={joinClassNames(
-        'to-surface-card from-surface-3 bg-gradient-to-r',
-        'ring-stroke',
-      )}
-    >
+    <RewardsSummaryCard.Container className="to-surface-card from-surface-3 bg-gradient-to-r">
       <RewardsSummaryCard.Content
         header={
           <RewardsSummaryCard.IconHeader
@@ -92,28 +91,35 @@ export function MantleRewardsSummaryCard() {
         }
         action={
           <RewardsSummaryCard.ActionWithHelperText helperText="Rewards are distributed as wMNT, the wrapped version of MNT. Rewards are claimable a few days after each week ends.">
-            <PrimaryButton
+            <ValidUserStatePrimaryButton
               onClick={onClaimClick}
               isLoading={isClaiming}
               disabled={disableClaimButton}
+              handledErrors={
+                HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+              }
             >
               {claimButtonLabel}
-            </PrimaryButton>
+            </ValidUserStatePrimaryButton>
           </RewardsSummaryCard.ActionWithHelperText>
         }
         footer={
-          <RewardsSummaryCard.FooterCountdown
-            label={
-              <div className="flex items-center gap-x-2.5">
-                <span className="text-text-primary font-medium">
-                  Week {formattedCurrentWeek}
-                </span>
-                <Divider className="h-3" vertical />
-                <span>Week {formattedCurrentWeek} ends in:</span>
-              </div>
-            }
-            countdownTimeMillis={currentWeekEndTimeMillis}
-          />
+          isCompleted ? (
+            <div className="text-sm">MNT Incentives Completed</div>
+          ) : (
+            <RewardsSummaryCard.FooterCountdown
+              label={
+                <div className="flex items-center gap-x-2.5">
+                  <span className="text-text-primary font-medium">
+                    Week {formattedCurrentWeek}
+                  </span>
+                  <Divider className="h-3" vertical />
+                  <span>Week {formattedCurrentWeek} ends in:</span>
+                </div>
+              }
+              countdownTimeMillis={currentWeekEndTimeMillis}
+            />
+          )
         }
       />
     </RewardsSummaryCard.Container>

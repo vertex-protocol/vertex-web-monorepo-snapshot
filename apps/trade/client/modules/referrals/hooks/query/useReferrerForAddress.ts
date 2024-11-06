@@ -2,7 +2,7 @@ import { Fuul } from '@fuul/sdk';
 import { useQuery } from '@tanstack/react-query';
 import { createQueryKey } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
+import { NOT_CONNECTED_ALT_QUERY_ADDRESS } from 'client/hooks/query/consts/notConnectedAltQueryAddress';
 import { first } from 'lodash';
 
 export function referrerForAddressQueryKey(address?: string) {
@@ -17,7 +17,7 @@ export function useReferrerForAddress() {
     currentSubaccount: { address },
   } = useSubaccountContext();
 
-  const addressForQuery = address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
+  const addressForQuery = address ?? NOT_CONNECTED_ALT_QUERY_ADDRESS;
 
   return useQuery({
     queryKey: referrerForAddressQueryKey(addressForQuery),

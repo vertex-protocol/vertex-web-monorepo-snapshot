@@ -1,10 +1,9 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { CollateralSpotProduct } from 'client/modules/collateral/types';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
-import { CollateralSpotProduct } from '../types';
 
 export type WithdrawErrorType =
   | 'invalid_input' // Form input is not valid
-  | 'require_borrow' // Not enough deposits in Vertex, but user can borrow
   | 'max_exceeded' // user is trying to withdraw more than they can, even with borrows
   | 'vrtx_borrow' // user has borrows on and VRTX selected
   | 'under_min'; // user trying to withdraw less than min

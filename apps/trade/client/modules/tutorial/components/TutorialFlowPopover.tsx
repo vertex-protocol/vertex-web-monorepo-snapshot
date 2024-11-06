@@ -1,10 +1,16 @@
-import * as Popover from '@radix-ui/react-popover';
+'use client';
+
+import {
+  PopoverContent,
+  Root as PopoverRoot,
+  PopoverTrigger,
+} from '@radix-ui/react-popover';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Button, Icons } from '@vertex-protocol/web-ui';
-import { useUserTutorialFlow } from '../hooks/useUserTutorialFlow';
-import { TutorialFlowAccordion } from './TutorialFlowAccordion/TutorialFlowAccordion';
-import { TutorialFlowHeader } from './TutorialFlowHeader';
-import { TutorialFlowSuccessContent } from './TutorialFlowSuccessContent';
+import { TutorialFlowAccordion } from 'client/modules/tutorial/components/TutorialFlowAccordion/TutorialFlowAccordion';
+import { TutorialFlowHeader } from 'client/modules/tutorial/components/TutorialFlowHeader';
+import { TutorialFlowSuccessContent } from 'client/modules/tutorial/components/TutorialFlowSuccessContent';
+import { useUserTutorialFlow } from 'client/modules/tutorial/hooks/useUserTutorialFlow';
 
 export function TutorialFlowPopover() {
   const {
@@ -18,24 +24,57 @@ export function TutorialFlowPopover() {
     isCompleted,
     completedStepIds,
     activeStepId,
+    shouldShowTutorialFlow,
   } = useUserTutorialFlow();
+
+  if (!shouldShowTutorialFlow) {
+    return null;
+  }
+
+  const tutorialFlowContent = (() => {
+    if (isCompleted) {
+      return <TutorialFlowSuccessContent onClose={onDismissFlow} />;
+    }
+
+    return (
+      <>
+        <TutorialFlowAccordion
+          steps={steps}
+          performStep={performStep}
+          skipStep={skipStep}
+          setActiveStepId={setActiveStepId}
+          activeStepId={activeStepId}
+          completedStepIds={completedStepIds}
+        />
+        <Button
+          className={joinClassNames(
+            'flex justify-start px-2 py-1',
+            'text-text-secondary hover:text-text-primary text-xs',
+          )}
+          onClick={onDismissFlow}
+        >
+          Don&apos;t show me this again
+        </Button>
+      </>
+    );
+  })();
 
   // Omitting onOpenChange to avoid closing the Popover on an outside interaction or page navigation
   return (
-    <Popover.Root open={isExpanded}>
-      <Popover.Trigger asChild>
+    <PopoverRoot open={isExpanded}>
+      <PopoverTrigger asChild>
         <Button
           className={joinClassNames(
             'text-text-secondary hover:text-text-primary',
             'flex items-center gap-x-1.5',
           )}
           onClick={() => setIsExpanded(!isExpanded)}
-          startIcon={<Icons.AiOutlineCheckCircle size={12} />}
+          startIcon={<Icons.CheckCircle size={12} />}
         >
           Get started
         </Button>
-      </Popover.Trigger>
-      <Popover.Content
+      </PopoverTrigger>
+      <PopoverContent
         align="end"
         sideOffset={20}
         className={joinClassNames(
@@ -56,30 +95,8 @@ export function TutorialFlowPopover() {
           numCompletedSteps={completedStepIds.length}
           setIsExpanded={setIsExpanded}
         />
-        {isCompleted ? (
-          <TutorialFlowSuccessContent onClose={onDismissFlow} />
-        ) : (
-          <>
-            <TutorialFlowAccordion
-              steps={steps}
-              performStep={performStep}
-              skipStep={skipStep}
-              setActiveStepId={setActiveStepId}
-              activeStepId={activeStepId}
-              completedStepIds={completedStepIds}
-            />
-            <Button
-              className={joinClassNames(
-                'flex justify-start px-2 py-1',
-                'text-text-secondary hover:text-text-primary text-xs',
-              )}
-              onClick={onDismissFlow}
-            >
-              Don&apos;t show me this again
-            </Button>
-          </>
-        )}
-      </Popover.Content>
-    </Popover.Root>
+        {tutorialFlowContent}
+      </PopoverContent>
+    </PopoverRoot>
   );
 }

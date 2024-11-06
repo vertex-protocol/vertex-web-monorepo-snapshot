@@ -4,11 +4,11 @@ import { Icons, SecondaryButton } from '@vertex-protocol/web-ui';
 import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
-import { RealizedPnlEventItem } from '../types/RealizedPnlEventItem';
+import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
+import { RealizedPnlEventsTableItem } from 'client/modules/tables/types/RealizedPnlEventsTableItem';
 
-export type RealizedPnlDetailsDialogParams = RealizedPnlEventItem;
+export type RealizedPnlDetailsDialogParams = RealizedPnlEventsTableItem;
 
 export function RealizedPnlDetailsDialog({
   marketInfo,
@@ -18,7 +18,7 @@ export function RealizedPnlDetailsDialog({
   filledAmountAbs,
   marketPriceFormatSpecifier,
 }: RealizedPnlDetailsDialogParams) {
-  const { show } = useDialog();
+  const { push } = useDialog();
 
   const { marketName, icon, amountForSide, symbol, sizeIncrement } = marketInfo;
 
@@ -69,10 +69,9 @@ export function RealizedPnlDetailsDialog({
 
   const actions = (
     <SecondaryButton
-      className="w-full"
-      startIcon={<Icons.RiShareForwardFill size={12} />}
+      startIcon={<Icons.ShareFatFill size={12} />}
       onClick={() => {
-        show({
+        push({
           type: 'perp_pnl_social_sharing',
           params: {
             marketInfo,

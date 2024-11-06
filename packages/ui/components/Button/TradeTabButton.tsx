@@ -25,7 +25,7 @@ export const TradeTabButton = forwardRef<
   return (
     <Button
       className={mergeClassNames(
-        'bg-surface-1 rounded py-2.5 text-xs uppercase',
+        'bg-surface-1 rounded py-1.5 text-xs uppercase',
         active ? sideClassNames : 'text-text-tertiary',
         stateOverlayClassNames,
         className,

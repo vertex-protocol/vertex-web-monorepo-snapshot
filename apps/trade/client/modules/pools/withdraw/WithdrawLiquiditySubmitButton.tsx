@@ -1,6 +1,8 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { ButtonHelperInfo, PrimaryButton } from '@vertex-protocol/web-ui';
+import { ButtonHelperInfo } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 
 interface Props extends WithClassnames {
@@ -25,14 +27,17 @@ export function WithdrawLiquiditySubmitButton({ className, state }: Props) {
 
   return (
     <ButtonHelperInfo.Container>
-      <PrimaryButton
+      <ValidUserStatePrimaryButton
         type="submit"
         className={className}
         isLoading={state === 'loading'}
         disabled={state === 'disabled'}
+        handledErrors={
+          HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+        }
       >
         {labelContent}
-      </PrimaryButton>
+      </ValidUserStatePrimaryButton>
       {state === 'success' && (
         <ButtonHelperInfo.Content>
           You will receive the tokens in your Vertex account.

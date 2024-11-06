@@ -4,11 +4,9 @@ import {
   joinClassNames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { Button } from '@vertex-protocol/web-ui';
+import { Button, UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import { useToggle } from 'ahooks';
 import { ReactNode } from 'react';
-import { useRunOnceOnCondition } from '../hooks/util/useRunOnceOnCondition';
-import { UpDownChevronIcon } from './Icons/UpDownChevronIcon';
 
 function Header({
   className,
@@ -42,18 +40,14 @@ function Disclosure({
   className,
   labelContent,
   expandableContent,
-  triggerOpen,
   isHighlighted,
 }: WithClassnames<{
   labelContent: ReactNode;
   expandableContent: ReactNode;
-  // When triggerOpen switches from false to true for the first time, the disclosure will be opened
-  triggerOpen?: boolean;
   // Often used to increase contrast on the header to indicate that data has populated
   isHighlighted?: boolean;
 }>) {
-  const [open, { toggle: toggleOpen, set: setOpen }] = useToggle();
-  useRunOnceOnCondition(!!triggerOpen, () => setOpen(true));
+  const [open, { toggle: toggleOpen }] = useToggle();
   return (
     <div className={className}>
       <Header
@@ -62,7 +56,11 @@ function Disclosure({
         toggleOpen={toggleOpen}
         isHighlighted={isHighlighted}
       />
-      {open && expandableContent}
+      {open && (
+        <div className="flex flex-col gap-y-2 px-3 pb-3 pt-1">
+          {expandableContent}
+        </div>
+      )}
     </div>
   );
 }

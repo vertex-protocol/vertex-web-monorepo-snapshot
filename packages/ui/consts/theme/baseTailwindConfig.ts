@@ -1,4 +1,4 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
+import { utilitiesPlugin } from '../../tailwindPlugins';
 import { TailwindPreset } from './types';
 
 export const BASE_TAILWIND_CONFIG = {
@@ -17,10 +17,6 @@ export const BASE_TAILWIND_CONFIG = {
       animation: {
         'toast-timer': 'horizontally-shrink linear forwards',
       },
-      fontFamily: {
-        default: ['var(--font-default)', ...defaultTheme.fontFamily.sans],
-        title: ['var(--font-title)', ...defaultTheme.fontFamily.mono],
-      },
       fontSize: {
         '3xs': '.625rem',
         '2xs': '.6875rem',
@@ -36,5 +32,5 @@ export const BASE_TAILWIND_CONFIG = {
       },
     },
   },
-  plugins: [],
+  plugins: [utilitiesPlugin],
 } satisfies TailwindPreset;

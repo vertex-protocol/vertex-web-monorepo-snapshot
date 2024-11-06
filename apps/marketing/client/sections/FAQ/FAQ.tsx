@@ -5,7 +5,7 @@ import {
   DEFAULT_SECTION_WIDTH,
   SECTION_IDS,
 } from 'client/consts';
-import { FAQSlides } from './components/FAQSlides';
+import { FAQSlides } from 'client/sections/FAQ/components/FAQSlides';
 import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function FAQ() {

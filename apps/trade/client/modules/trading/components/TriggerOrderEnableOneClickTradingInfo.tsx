@@ -1,14 +1,15 @@
 import { TextButton } from '@vertex-protocol/web-ui/components/Button/TextButton';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
 
 export function TriggerOrderEnableOneClickTradingInfo() {
   const { show } = useDialog();
-  const userActionState = useUserActionState();
-  const isSingleSignatureSession = useIsSingleSignatureSession();
 
-  if (userActionState !== 'allow_all' || isSingleSignatureSession) {
+  const isSingleSignatureSession = useIsSingleSignatureSession();
+  const isConnected = useIsConnected();
+
+  if (!isConnected || isSingleSignatureSession) {
     return null;
   }
 

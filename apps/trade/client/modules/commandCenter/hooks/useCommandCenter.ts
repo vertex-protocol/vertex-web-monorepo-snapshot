@@ -1,4 +1,3 @@
-import { ProductEngineType } from '@vertex-protocol/client';
 import { useTextSearch } from 'client/hooks/ui/useTextSearch';
 import {
   BalanceTableItem,
@@ -16,6 +15,7 @@ import {
   PositionsTableItem,
   useCommandCenterPositionsItems,
 } from 'client/modules/commandCenter/hooks/useCommandCenterPositionItems';
+import { MarketCategory } from '@vertex-protocol/metadata';
 import { useMemo, useState } from 'react';
 
 interface ItemsByGroupType {
@@ -26,17 +26,17 @@ interface ItemsByGroupType {
 }
 
 /**
- * Sets up the base state getters / setters for the command center (`query`, `marketType`)
+ * Sets up the base state getters / setters for the command center (e.g. `query`)
  * and fetches all the items to show, grouping them by their type (e.g. `markets`, `positions`, etc.)
  */
 export function useCommandCenter() {
   const [query, setQuery] = useState('');
 
-  const [marketType, setMarketType] = useState<ProductEngineType | undefined>();
+  const [marketCategory, setMarketCategory] = useState<MarketCategory>();
 
-  const { markets } = useCommandCenterMarketItems({ marketType });
-  const { positions } = useCommandCenterPositionsItems({ marketType });
-  const { balances } = useCommandCenterBalanceItems({ marketType });
+  const { markets } = useCommandCenterMarketItems({ marketCategory });
+  const { positions } = useCommandCenterPositionsItems({ marketCategory });
+  const { balances } = useCommandCenterBalanceItems({ marketCategory });
   const { navItems } = useCommandCenterNavItems();
 
   const allItems = useMemo(
@@ -84,8 +84,8 @@ export function useCommandCenter() {
   return {
     query,
     setQuery,
-    marketType,
-    setMarketType,
+    marketCategory,
+    setMarketCategory,
     shouldShowMarkets,
     shouldShowPositions,
     shouldShowBalances,

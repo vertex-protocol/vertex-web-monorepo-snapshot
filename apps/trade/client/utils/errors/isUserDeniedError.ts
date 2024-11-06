@@ -4,12 +4,17 @@ import { UserRejectedRequestError } from 'viem';
  * Checks if the error is the result of user rejecting the transaction
  */
 export function isUserDeniedError(err?: any): boolean {
-  // Viem wraps RPC errors under a `cause` property, check that first
-  // This condition is hit if we call `useWriteContract`
-  if (err?.['cause'] instanceof UserRejectedRequestError) {
+  if (
+    // Viem wraps RPC errors under a `cause` property,
+    // this condition is hit if we call `useWriteContract`.
+    err?.cause instanceof UserRejectedRequestError ||
+    // Wagmi clients returned from `useWalletClient` / `usePublicClient`
+    // wrap under a nested `cause.cause`.
+    err?.cause?.cause instanceof UserRejectedRequestError
+  ) {
     return true;
   }
-  
+
   // Provider errors usually have a `code` property, this is hit if we use contract methods through the SDK
   if (!err?.code) {
     return false;

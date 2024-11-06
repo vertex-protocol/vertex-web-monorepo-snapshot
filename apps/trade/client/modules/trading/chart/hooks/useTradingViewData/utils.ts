@@ -35,7 +35,7 @@ export function toTVCandlestick(candlestick: Candlestick): Bar {
  * preventing invalid bars and gaps between candles. Properties set include:
  *   - Open, set unconditionally.
  *   - High, set if the given value is greater than the bar's high.
- *   - Low, set if the given value is greater than the bar's low.
+ *   - Low, set if the given value is lower than the bar's low.
  */
 export function syncBarOpenWithValue(bar: Bar, value: number): Bar {
   const syncedBar = { ...bar };

@@ -14,7 +14,7 @@ export const TextButton = forwardRef(function TextButton(
       ref={ref}
       className={mergeClassNames(
         'text-text-secondary hover:text-text-primary transition-colors',
-        rest.disabled && 'text-disabled hover:text-disabled',
+        'disabled:text-disabled disabled:hover:text-disabled',
         'gap-x-1.5',
         className,
       )}

@@ -22,21 +22,21 @@ import {
 import { usePrimaryQuoteBalance } from 'client/hooks/subaccount/usePrimaryQuoteBalance';
 import { OnFractionSelectedHandler } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { provideLiquidityProductIdAtom } from 'client/store/collateralStore';
+import { useProvideLiquidityValidators } from 'client/modules/pools/provide/hooks/useProvideLiquidityValidators';
+import {
+  PairMetadata,
+  ProvideLiquidityErrorType,
+} from 'client/modules/pools/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { toSafeFormPercentage } from 'client/utils/form/toSafeFormPercentage';
 import { watchFormError } from 'client/utils/form/watchFormError';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { roundToString } from 'client/utils/rounding';
 import { safeDiv } from 'client/utils/safeDiv';
-import { useAtom } from 'jotai';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
-import { PairMetadata, ProvideLiquidityErrorType } from '../../types';
-import { useProvideLiquidityValidators } from './useProvideLiquidityValidators';
 
 export interface ProvideLiquidityFormValues {
   baseAmount: string;
@@ -83,29 +83,31 @@ const SLIPPAGE = 0.01;
 // Currently LPs are limited to no leverage spot
 const spotLeverage = false;
 
-export function useProvideLiquidityForm(): UseProvideLiquidityForm {
+export function useProvideLiquidityForm({
+  productId,
+}: {
+  productId: number;
+}): UseProvideLiquidityForm {
   const { dispatchNotification } = useNotificationManagerContext();
-  const [productIdAtomValue] = useAtom(provideLiquidityProductIdAtom);
 
-  const { data: marketData } = useMarket({ productId: productIdAtomValue });
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const { data: marketData } = useMarket({ productId });
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { data: lpYields } = useLpYields();
 
   const { balances } = useLpBalances();
   const { data: primaryQuoteBalance } = usePrimaryQuoteBalance();
 
   const { data: maxMintLpAmount } = useMaxMintLpAmount({
-    productId: productIdAtomValue ?? 0,
+    productId: productId ?? 0,
     spotLeverage,
   });
-  const { hide } = useDialog();
 
   // Mutation to mint LP tokens
   const executeMintLp = useExecuteMintLp();
 
   useRunWithDelayOnCondition({
     condition: executeMintLp.isSuccess,
-    fn: hide,
+    fn: executeMintLp.reset,
   });
 
   /**
@@ -135,18 +137,13 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
 
   // Current subaccount LP balance
   const currentLpBalance = useMemo(() => {
-    return balances?.find(
-      (balance) => balance.productId === productIdAtomValue,
-    );
-  }, [balances, productIdAtomValue]);
+    return balances?.find((balance) => balance.productId === productId);
+  }, [balances, productId]);
 
   // Current subaccount LP yield
   const currentYield = useMemo(() => {
-    if (!productIdAtomValue || !lpYields) {
-      return BigDecimals.ZERO;
-    }
-    return lpYields[productIdAtomValue] ?? BigDecimals.ZERO;
-  }, [lpYields, productIdAtomValue]);
+    return lpYields?.[productId] ?? BigDecimals.ZERO;
+  }, [productId, lpYields]);
 
   // Metadata for the current pair
   const pairMetadata = useMemo((): PairMetadata | undefined => {
@@ -154,7 +151,7 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
       return undefined;
     }
     return {
-      base: getBaseProductMetadata(currentLpBalance.product.metadata),
+      base: getSharedProductMetadata(currentLpBalance.product.metadata),
       quote: primaryQuoteBalance.metadata.token,
     };
   }, [currentLpBalance, primaryQuoteBalance]);
@@ -351,10 +348,10 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
     ) {
       return undefined;
     }
-    const quoteValueUsd = validQuoteAmount.multipliedBy(quotePrice);
+    const quoteValueUsd = validQuoteAmount.multipliedBy(primaryQuotePriceUsd);
     const baseValueUsd = validBaseAmount
       .multipliedBy(currentLpBalance.oraclePrice)
-      .multipliedBy(quotePrice);
+      .multipliedBy(primaryQuotePriceUsd);
     return {
       base: validBaseAmount,
       quote: validQuoteAmount,
@@ -372,7 +369,7 @@ export function useProvideLiquidityForm(): UseProvideLiquidityForm {
     currentLpBalance,
     marketData,
     primaryQuoteBalance,
-    quotePrice,
+    primaryQuotePriceUsd,
   ]);
 
   // Set the amount source to percentage when a fraction button is clicked

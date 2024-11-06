@@ -21,6 +21,7 @@ const REFETCH_QUERY_KEYS_WITHOUT_ALLOWANCE: string[][] = [
 
 /**
  * Stakes VRTX for rewards
+ * @deprecated This is being phased out in favor of the v2 staking contract
  */
 export function useExecuteStakeVrtx() {
   const refetchQueryKeysRef = useRef<string[][]>([
@@ -36,7 +37,7 @@ export function useExecuteStakeVrtx() {
         refetchQueryKeysRef.current = [
           ...REFETCH_QUERY_KEYS_WITHOUT_ALLOWANCE,
           tokenAllowanceQueryKey(
-            context.subaccount.chainId,
+            context.subaccount.chainEnv,
             context.subaccount.address,
             context.vertexClient.context.contractAddresses.vrtxStaking,
             context.vertexClient.context.contractAddresses.vrtxToken,

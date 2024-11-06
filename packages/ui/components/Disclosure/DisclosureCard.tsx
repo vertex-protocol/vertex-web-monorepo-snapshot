@@ -22,7 +22,11 @@ export function DisclosureCard({
       )}
     >
       <div
-        className={mergeClassNames('text-sm', 'text-accent', titleClassName)}
+        className={mergeClassNames(
+          'text-sm',
+          'text-text-primary',
+          titleClassName,
+        )}
       >
         {title}
       </div>

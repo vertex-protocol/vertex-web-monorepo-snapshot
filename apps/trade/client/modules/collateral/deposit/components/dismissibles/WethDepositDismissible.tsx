@@ -1,8 +1,8 @@
 import { useEVMContext } from '@vertex-protocol/react-client';
+import { LinkButton } from '@vertex-protocol/web-ui';
 import { UserDisclosureDismissibleCard } from 'client/components/Disclosure/UserDisclosureDismissibleCard';
-import { LinkButton } from 'client/components/LinkButton';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { DepositInfoCardType } from '../../types';
+import { DepositInfoCardType } from 'client/modules/collateral/deposit/types';
 
 export function WethDepositDismissible({
   displayedInfoCardType,

@@ -1,8 +1,7 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
 import Image from 'next/image';
 import { ComponentProps } from 'react';
-import { IconType } from 'react-icons';
-import { IconBaseProps } from './types';
+import { IconBaseProps, IconComponent } from './types';
 
 /**
  * A utility function to convert an image to an icon component. This is useful for having custom icons.
@@ -17,7 +16,7 @@ export function imageToIconComponent({
   width,
   alt,
   ...imgProps
-}: ComponentProps<typeof Image>): IconType {
+}: ComponentProps<typeof Image>): IconComponent {
   return function ImageIcon({
     className: classnameOverrides,
     size,

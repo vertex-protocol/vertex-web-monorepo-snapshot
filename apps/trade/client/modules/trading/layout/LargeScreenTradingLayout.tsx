@@ -1,22 +1,20 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Card, CARD_ROUNDED_CLASSNAMES } from '@vertex-protocol/web-ui';
-import { MarketDetailsPromptEntrypoint } from 'client/modules/trading/components/MarketDetailsPromptEntrypoint';
+import { MarketDataTabs } from 'client/modules/trading/components/MarketDataTabs';
 import { LargeScreenTradingTableTabs } from 'client/modules/trading/components/TradingTableTabs/LargeScreenTradingTableTabs';
 import { useTradingConsolePosition } from 'client/modules/trading/hooks/useTradingConsolePosition';
 import { TradingLayoutProps } from 'client/modules/trading/layout/types';
-import { MarketWatchlist } from 'client/modules/trading/marketWatchlist/MarketWatchlist';
-import { MarketDataTabs } from 'client/modules/trading/components/MarketDataTabs';
+import { TradingSidebar } from 'client/modules/trading/tradingSidebar/TradingSidebar';
 import { ReactNode } from 'react';
 
 interface Props {
-  productId?: number;
+  productId: number | undefined;
   showMarketOrderSideBar?: boolean;
   heroComponent: ReactNode;
   tradingTabs: TradingLayoutProps['desktopTradingTabs'];
   MarketSwitcher: TradingLayoutProps['MarketSwitcher'];
   InfoCards: TradingLayoutProps['InfoCards'];
   OrderPlacement: TradingLayoutProps['OrderPlacement'];
-  AccountHealth: TradingLayoutProps['AccountHealth'];
 }
 
 export function LargeScreenTradingLayout({
@@ -27,7 +25,6 @@ export function LargeScreenTradingLayout({
   MarketSwitcher,
   InfoCards,
   OrderPlacement,
-  AccountHealth,
 }: Props) {
   const { consolePosition } = useTradingConsolePosition();
 
@@ -50,64 +47,59 @@ export function LargeScreenTradingLayout({
           // `overflow-hidden` to allow scrolling when screen size shrinks instead of overflowing the page.
           className="flex-1 overflow-hidden"
         >
-          <InfoCards className="no-scrollbar h-full w-full overflow-x-auto" />
+          <InfoCards className="h-full w-full" />
         </Card>
       </div>
-      {/* Order placement and charts area */}
-      {/* This is where main layout height is set. */}
+      {/* Order placement, charts and table area */}
       <div
         className={joinClassNames(
-          // "isolate" needed here so this section doesn't stack on top of `TradingMarketSwitcher` & `TradingMarketSwitcherOverlay`
-          'isolate flex h-[max(610px,70vh)] gap-x-2.5',
+          'flex gap-x-2.5',
           flexDirectionByConsolePosition,
         )}
       >
         {/* Order placement */}
         <Card className="w-trade-sidebar">
-          <OrderPlacement className="no-scrollbar h-full overflow-y-auto" />
+          {/* Set min-h to be slightly higher then (orderbook, chart, watchlist) section. */}
+          <OrderPlacement className="min-h-[652px]" />
         </Card>
-
-        {/* Orderbook */}
-        {showMarketOrderSideBar && (
-          <Card className="w-market-orders">
-            <MarketDataTabs className="h-full" productId={productId} />
+        <div className="flex flex-1 flex-col gap-y-2.5 overflow-hidden">
+          <div
+            className={joinClassNames(
+              'flex gap-x-2.5',
+              // Use height that is at least 580px or 65vh. Which ever is larger is used to prevent the elements from being too small on large screens and fit smaller screens.
+              'h-[max(580px,65vh)]',
+              flexDirectionByConsolePosition,
+            )}
+          >
+            {/* Orderbook */}
+            {showMarketOrderSideBar && (
+              <Card className="w-market-orders">
+                <MarketDataTabs className="h-full" productId={productId} />
+              </Card>
+            )}
+            {/*Chart area*/}
+            <Card
+              // 'overflow-hidden' to prevent the unrounded corners from escaping the card
+              className="flex-1 overflow-hidden"
+            >
+              {heroComponent}
+            </Card>
+            {/* Market watchlist */}
+            <Card className="max-w-trade-sidebar">
+              <TradingSidebar
+                flexDirectionByConsolePosition={flexDirectionByConsolePosition}
+                className="h-full"
+              />
+            </Card>
+          </div>
+          {/* Table */}
+          <Card
+            // `overflow-hidden` prevents the component from extending itself off-screen on certain tables
+            className="flex-1 overflow-hidden"
+          >
+            <LargeScreenTradingTableTabs tradingTabs={tradingTabs} />
           </Card>
-        )}
-
-        {/*Chart area*/}
-        <Card
-          // 'overflow-hidden' to prevent the unrounded corners from escaping the card
-          className="flex-1 overflow-hidden"
-        >
-          {heroComponent}
-        </Card>
-
-        {/* Market watchlist */}
-        <Card>
-          <MarketWatchlist
-            flexDirectionByConsolePosition={flexDirectionByConsolePosition}
-            productId={productId}
-            className="h-full"
-          />
-        </Card>
-      </div>
-      {/* Bottom section account health, and tables */}
-      <div
-        className={joinClassNames(
-          'flex flex-1 gap-x-2.5',
-          flexDirectionByConsolePosition,
-        )}
-      >
-        <Card className="w-trade-sidebar flex flex-col gap-y-8 p-4">
-          <AccountHealth />
-          <MarketDetailsPromptEntrypoint productId={productId} />
-        </Card>
-        <Card
-          // `overflow-hidden` prevents the component from extending itself off-screen on certain tables
-          className="flex-1 overflow-hidden"
-        >
-          <LargeScreenTradingTableTabs tradingTabs={tradingTabs} />
-        </Card>
+        </div>
       </div>
     </div>
   );

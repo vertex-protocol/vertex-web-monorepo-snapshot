@@ -6,12 +6,17 @@ export function CommandCenterDialog() {
   const { hide } = useDialog();
 
   return (
-    <BaseAppDialog
+    <BaseAppDialog.Container
       onClose={hide}
       // Max width is handled by `BaseDialog` (used by `BaseAppDialog`).
       className="w-[650px]"
     >
+      {/* Necessary for a11y. */}
+      <BaseAppDialog.Title className="sr-only">
+        Command Center
+      </BaseAppDialog.Title>
+
       <CommandCenter className="w-full" />
-    </BaseAppDialog>
+    </BaseAppDialog.Container>
   );
 }

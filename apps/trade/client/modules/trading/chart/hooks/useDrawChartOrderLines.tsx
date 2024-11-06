@@ -1,9 +1,9 @@
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/client';
-import { asyncResult, removeDecimals } from '@vertex-protocol/utils';
 import {
   formatNumber,
   getMarketSizeFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { asyncResult, removeDecimals } from '@vertex-protocol/utils';
 import {
   CancelOrdersResult,
   CancelOrdersWithNotificationParams,
@@ -17,6 +17,16 @@ import {
 import { useSubaccountOpenEngineOrders } from 'client/hooks/query/subaccount/useSubaccountOpenEngineOrders';
 import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { DialogParams } from 'client/modules/app/dialogs/types';
+import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
+import { DispatchNotificationParams } from 'client/modules/notifications/types';
+import { TradingViewSymbolInfo } from 'client/modules/trading/chart/config/datafeedConfig';
+import { isChartSyncedToSymbolInfo } from 'client/modules/trading/chart/utils/isChartSyncedToSymbolInfo';
+import { useEnableTradingOrderLines } from 'client/modules/trading/hooks/useEnableTradingOrderLines';
+import { OrderType } from 'client/modules/trading/types';
+import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
+import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
 import { COLORS } from 'common/theme/colors';
 import { FONTS } from 'common/theme/fonts';
 import { debounce, random } from 'lodash';
@@ -26,20 +36,10 @@ import {
   IOrderLineAdapter,
 } from 'public/charting_library/charting_library';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useEnableTradingOrderLines } from '../../hooks/useEnableTradingOrderLines';
-import { OrderType } from '../../types';
-import { getOrderTypeLabel } from '../../utils/getOrderTypeLabel';
-import { getTriggerOrderType } from '../../utils/getTriggerOrderType';
-import { TradingViewSymbolInfo } from '../config/datafeedConfig';
-import { isChartSyncedToSymbolInfo } from '../utils/isChartSyncedToSymbolInfo';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { DialogParams } from 'client/modules/app/dialogs/types';
-import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { DispatchNotificationParams } from 'client/modules/notifications/types';
 
 interface Params {
-  tvWidget?: IChartingLibraryWidget;
-  selectedSymbolInfo?: TradingViewSymbolInfo;
+  tvWidget: IChartingLibraryWidget | undefined;
+  loadedSymbolInfo: TradingViewSymbolInfo | undefined;
 }
 
 interface OrderInfo {
@@ -63,11 +63,8 @@ const orderLinePositionByDigest = new Map<string, number>();
 // Debounce delay when dragging to edit order
 const MODIFY_DEBOUNCE_DELAY = 500;
 
-export function useDrawChartOrderLines({
-  tvWidget,
-  selectedSymbolInfo,
-}: Params) {
-  const productId = selectedSymbolInfo?.productId;
+export function useDrawChartOrderLines({ tvWidget, loadedSymbolInfo }: Params) {
+  const productId = loadedSymbolInfo?.productId;
   const existingLinesByProductId = useRef<OrderLinesByProductId>(new Map());
 
   const { enableTradingOrderLines } = useEnableTradingOrderLines();
@@ -160,7 +157,7 @@ export function useDrawChartOrderLines({
   const { show } = useDialog();
 
   return useCallback(() => {
-    const selectedProductId = selectedSymbolInfo?.productId;
+    const selectedProductId = loadedSymbolInfo?.productId;
 
     if (
       !tvWidget ||
@@ -173,7 +170,7 @@ export function useDrawChartOrderLines({
     const activeChart = tvWidget.activeChart();
     const activeChartSymbol = activeChart.symbol();
 
-    if (!isChartSyncedToSymbolInfo(activeChartSymbol, selectedSymbolInfo)) {
+    if (!isChartSyncedToSymbolInfo(activeChartSymbol, loadedSymbolInfo)) {
       return;
     }
 
@@ -245,7 +242,7 @@ export function useDrawChartOrderLines({
     marketsStaticData?.all,
     relevantOrders,
     disableTradingOrderLineActions,
-    selectedSymbolInfo,
+    loadedSymbolInfo,
     tvWidget,
     show,
     dispatchNotification,
@@ -261,13 +258,17 @@ function createOrderLine(
   const price = order.price.toNumber();
   const amount = order.totalAmount;
 
-  const decimalAdjustedAmount = removeDecimals(amount);
+  // To be rendered in orderbox - ie) 0.1 wETH, 0.4 BTC-PERP.
+  // Don't show for TP/SL as they use a max amount.
+  const isTpSl = orderType === 'take_profit' || orderType === 'stop_loss';
+  const amountText = isTpSl
+    ? ''
+    : formatNumber(removeDecimals(amount).abs(), {
+        formatSpecifier: getMarketSizeFormatSpecifier(market.sizeIncrement),
+      });
 
-  // To be rendered in orderbox - ie) 0.1 wETH, 0.4 BTC-PERP
-  const amountText = formatNumber(decimalAdjustedAmount.abs(), {
-    formatSpecifier: getMarketSizeFormatSpecifier(market.sizeIncrement),
-  });
   const contentText = getOrderTypeLabel(orderType);
+
   const sideColor = amount.gt(0)
     ? COLORS.positive.DEFAULT
     : COLORS.negative.DEFAULT;

@@ -1,7 +1,9 @@
+'use client';
+
 import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
-import { InitialMarginUsagePane } from './InitialMarginUsagePane';
-import { MaintenanceMarginUsagePane } from './MaintenanceMarginUsagePane';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
+import { InitialMarginUsagePane } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerHeader/InitialMarginUsagePane';
+import { MaintenanceMarginUsagePane } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerHeader/MaintenanceMarginUsagePane';
 
 export function MarginManagerHeader() {
   const { data: derivedOverview } = useDerivedSubaccountOverview();

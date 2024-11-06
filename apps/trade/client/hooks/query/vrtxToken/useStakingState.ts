@@ -1,13 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { IStaking__factory } from '@vertex-protocol/client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   QueryDisabledError,
-  useIsChainType,
-  usePrimaryChainPublicClient,
-  usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { useProtocolTokenQueryClients } from 'client/hooks/query/useProtocolTokenQueryClients';
 import { Address } from 'viem';
 
 export function stakingStateQueryKey() {
@@ -32,11 +30,9 @@ interface Data {
  * A multicall query that returns a summary of the staking contract state
  */
 export function useStakingState() {
-  const { isArb } = useIsChainType();
-  const vertexClient = usePrimaryChainVertexClient();
-  const publicClient = usePrimaryChainPublicClient();
+  const { publicClient, vertexClient } = useProtocolTokenQueryClients();
 
-  const disabled = !vertexClient || !publicClient || !isArb;
+  const disabled = !vertexClient || !publicClient;
 
   const queryFn = async (): Promise<Data> => {
     if (disabled) {

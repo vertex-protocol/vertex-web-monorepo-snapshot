@@ -13,7 +13,10 @@ import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import {
+  KNOWN_PRODUCT_IDS,
+  useVertexMetadataContext,
+} from '@vertex-protocol/metadata';
 import { useExecuteApproveAllowanceForProduct } from 'client/hooks/execute/useExecuteApproveAllowanceForProduct';
 import { useExecuteDepositCollateral } from 'client/hooks/execute/useExecuteDepositCollateral';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
@@ -23,7 +26,6 @@ import {
   useOnFractionSelectedHandler,
 } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useDepositFormData } from 'client/modules/collateral/deposit/hooks/useDepositFormData';
 import { useDepositFormOnChangeSideEffects } from 'client/modules/collateral/deposit/hooks/useDepositFormOnChangeSideEffects';
 import { useDepositFormSubmitHandler } from 'client/modules/collateral/deposit/hooks/useDepositFormSubmitHandler';
@@ -34,6 +36,7 @@ import {
   DepositInfoCardType,
   DepositProduct,
 } from 'client/modules/collateral/deposit/types';
+
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { isRoughlyZero } from 'client/utils/isRoughlyZero';
@@ -64,17 +67,20 @@ export interface UseDepositForm {
   onSubmit: () => void;
 }
 
-export function useDepositForm(): UseDepositForm {
+export function useDepositForm({
+  initialProductId,
+}: {
+  initialProductId: number | undefined;
+}): UseDepositForm {
   const {
     protocolTokenMetadata: { productId: protocolTokenProductId },
   } = useVertexMetadataContext();
-  const { hide } = useDialog();
   const isInitialDeposit = useRequiresInitialDeposit();
-  const { isArb, isBlast, isMantle } = useIsChainType();
+  const { isArb, isBase, isBlast, isMantle, isSei } = useIsChainType();
 
   const useDepositForm = useForm<DepositFormValues>({
     defaultValues: {
-      productId: QUOTE_PRODUCT_ID,
+      productId: initialProductId ?? QUOTE_PRODUCT_ID,
       amount: '',
       amountSource: 'absolute',
     },
@@ -169,7 +175,7 @@ export function useDepositForm(): UseDepositForm {
 
   useRunWithDelayOnCondition({
     condition: isDepositTxSuccess,
-    fn: hide,
+    fn: executeDepositCollateral.reset,
   });
 
   // Whether the user has near-zero (or zero) balance of the selected product
@@ -265,40 +271,63 @@ export function useDepositForm(): UseDepositForm {
   });
 
   const displayedInfoCardType = useMemo((): DepositInfoCardType | undefined => {
+    if (!selectedProduct) {
+      return;
+    }
+
     if (
       isArb &&
-      selectedProduct?.productId === 3 &&
+      selectedProduct.productId === KNOWN_PRODUCT_IDS.wethArb &&
+      isNegligibleWalletBalance
+    ) {
+      return 'weth';
+    }
+
+    if (
+      isBase &&
+      selectedProduct.productId === KNOWN_PRODUCT_IDS.wethBase &&
       isNegligibleWalletBalance
     ) {
       return 'weth';
     }
 
     // wETH on blast mainnet is 91 and 3 on testnet
-    if (
-      isBlast &&
-      (selectedProduct?.productId === 91 || selectedProduct?.productId === 3) &&
-      isNegligibleWalletBalance
-    ) {
+    const isBlastWethProductId =
+      selectedProduct.productId === KNOWN_PRODUCT_IDS.wethBlast ||
+      selectedProduct.productId === KNOWN_PRODUCT_IDS.wethBlastSepolia;
+
+    if (isBlast && isBlastWethProductId && isNegligibleWalletBalance) {
       return 'weth';
     }
+    // Note: no need for `weth` dismissible on Mantle as MNT is the native token, not ETH
 
-    if (isMantle && selectedProduct?.productId === 109) {
+    if (isMantle && selectedProduct.productId === KNOWN_PRODUCT_IDS.wmnt) {
       return 'wmnt';
     }
 
-    if (isArb && selectedProduct?.productId === protocolTokenProductId) {
+    if (isSei && selectedProduct.productId === KNOWN_PRODUCT_IDS.wsei) {
+      return 'wsei';
+    }
+
+    if (isArb && selectedProduct.productId === protocolTokenProductId) {
       return 'vrtx';
     }
 
-    if (isBlast && selectedProduct?.productId === QUOTE_PRODUCT_ID) {
-      return 'usdb';
+    // wETH & USDB are eligible for blast native yield
+    const isEligibleForBlastNativeYield =
+      isBlastWethProductId || selectedProduct.productId === QUOTE_PRODUCT_ID;
+
+    if (isBlast && isEligibleForBlastNativeYield) {
+      return 'blast_native_yield';
     }
   }, [
-    isArb,
-    selectedProduct?.productId,
+    selectedProduct,
     isNegligibleWalletBalance,
+    isArb,
+    isBase,
     isBlast,
     isMantle,
+    isSei,
     protocolTokenProductId,
   ]);
 

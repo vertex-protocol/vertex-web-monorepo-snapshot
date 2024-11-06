@@ -1,10 +1,7 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import {
-  getMarketPriceFormatSpecifier,
-  useEVMContext,
-} from '@vertex-protocol/react-client';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
@@ -12,8 +9,10 @@ import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAll
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
 import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
+import { useTextSearch } from 'client/hooks/ui/useTextSearch';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
-import { PerpProductMetadata } from 'common/productMetadata/types';
+import { PerpProductMetadata } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface PerpMarketTableItem {
@@ -32,7 +31,7 @@ export interface PerpMarketTableItem {
   marketPriceFormatSpecifier: string;
 }
 
-export function usePerpMarketsTable() {
+export function usePerpMarketsTable({ query }: { query: string }) {
   const { getIsHiddenMarket, getIsNewMarket } = useVertexMetadataContext();
   const { data: allMarketData, isLoading: isAllMarketDataLoading } =
     useAllMarkets();
@@ -42,7 +41,7 @@ export function usePerpMarketsTable() {
   const { data: latestMarketPricesData } = useAllMarketsLatestPrices();
   const { data: fundingRateData } = useAllMarkets24HrFundingRates();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
-  const { connectionStatus } = useEVMContext();
+  const isConnected = useIsConnected();
   const perpMarkets = allMarketData?.perpMarkets;
 
   const mappedData: PerpMarketTableItem[] | undefined = useMemo(() => {
@@ -87,21 +86,31 @@ export function usePerpMarketsTable() {
         };
       });
   }, [
-    latestMarketPricesData,
-    latestOraclePricesData,
-    latestPerpPricesData,
-    marketMetricsData,
-    favoritedMarketIds,
-    fundingRateData,
     perpMarkets,
     getIsHiddenMarket,
+    marketMetricsData?.metricsByMarket,
+    latestMarketPricesData,
+    latestPerpPricesData,
+    latestOraclePricesData,
+    fundingRateData,
     getIsNewMarket,
+    favoritedMarketIds,
   ]);
+
+  const { results } = useTextSearch({
+    query,
+    items: mappedData,
+    getSearchString,
+  });
 
   return {
     isLoading: isAllMarketDataLoading,
-    perpProducts: mappedData,
+    perpProducts: results,
     toggleIsFavoritedMarket,
-    disableFavoriteButton: connectionStatus.type !== 'connected',
+    disableFavoriteButton: !isConnected,
   };
+}
+
+function getSearchString(item: PerpMarketTableItem) {
+  return item.metadata.marketName;
 }

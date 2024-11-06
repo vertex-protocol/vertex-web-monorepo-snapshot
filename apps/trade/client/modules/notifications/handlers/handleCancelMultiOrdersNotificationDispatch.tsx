@@ -3,14 +3,14 @@ import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
 import { CancelMultiOrdersErrorNotification } from 'client/modules/notifications/components/orders/CancelMultiOrdersErrorNotification';
 import { CancelMultiOrdersSuccessNotification } from 'client/modules/notifications/components/orders/CancelMultiOrdersSuccessNotification';
 import { SignaturePendingNotification } from 'client/modules/notifications/components/SignaturePendingNotification';
+import {
+  CancelMultiOrdersNotificationData,
+  NotificationDispatchContext,
+} from 'client/modules/notifications/types';
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import toast from 'react-hot-toast';
-import {
-  CancelMultiOrdersNotificationData,
-  NotificationDispatchContext,
-} from '../types';
 
 export async function handleCancelMultiOrdersNotificationDispatch(
   { serverExecutionResult, numOrders }: CancelMultiOrdersNotificationData,

@@ -2,9 +2,9 @@ import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
 import { usePrimaryQuoteBalance } from 'client/hooks/subaccount/usePrimaryQuoteBalance';
-import { SpotProductMetadata } from 'common/productMetadata/types';
+import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
+import { SpotProductMetadata } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
-import { MarginWeightMetrics } from '../../types';
 
 export interface MarginManagerQuoteBalanceTableItem {
   productId: number;
@@ -22,7 +22,7 @@ export function useMarginManagerQuoteBalanceTable() {
     useDerivedSubaccountOverview();
   const { data: primaryQuoteBalance, isLoading: isPrimaryQuoteBalanceLoading } =
     usePrimaryQuoteBalance();
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const mappedData: MarginManagerQuoteBalanceTableItem[] | undefined =
     useMemo(() => {
@@ -32,7 +32,9 @@ export function useMarginManagerQuoteBalanceTable() {
 
       const quoteTableItem = (() => {
         const unsettledQuoteUsd =
-          derivedOverview.perp.totalUnsettledQuote.multipliedBy(quotePrice);
+          derivedOverview.perp.totalUnsettledQuote.multipliedBy(
+            primaryQuotePriceUsd,
+          );
 
         const balanceValueUsd = primaryQuoteBalance.amount.multipliedBy(
           primaryQuoteBalance.oraclePriceUsd,
@@ -67,7 +69,7 @@ export function useMarginManagerQuoteBalanceTable() {
       })();
 
       return quoteTableItem ? [quoteTableItem] : undefined;
-    }, [derivedOverview, primaryQuoteBalance, quotePrice]);
+    }, [derivedOverview, primaryQuoteBalance, primaryQuotePriceUsd]);
 
   return {
     balances: mappedData,

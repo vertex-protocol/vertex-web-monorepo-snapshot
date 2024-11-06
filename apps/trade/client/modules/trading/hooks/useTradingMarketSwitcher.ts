@@ -1,10 +1,10 @@
-import { ProductEngineType } from '@vertex-protocol/client';
-import { useMemo, useState } from 'react';
-import { MarketSwitcherItem } from './useMarketSwitcher/types';
+import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
 import {
   useMarketSwitcher,
   UseMarketSwitcher,
-} from './useMarketSwitcher/useMarketSwitcher';
+} from 'client/modules/trading/hooks/useMarketSwitcher/useMarketSwitcher';
+import { MarketCategory } from '@vertex-protocol/metadata';
+import { useMemo, useState } from 'react';
 
 interface UseTradingMarketSwitcher extends UseMarketSwitcher {
   selectedMarket: MarketSwitcherItem | undefined;
@@ -15,10 +15,11 @@ interface UseTradingMarketSwitcher extends UseMarketSwitcher {
 
 export function useTradingMarketSwitcher(
   productId: number | undefined,
-  defaultMarketType: ProductEngineType,
+  defaultMarketCategory: MarketCategory,
 ): UseTradingMarketSwitcher {
-  const { allMarkets, displayedMarkets, ...rest } =
-    useMarketSwitcher(defaultMarketType);
+  const { allMarkets, displayedMarkets, ...rest } = useMarketSwitcher(
+    defaultMarketCategory,
+  );
 
   const [isMarketSwitcherOpen, setIsMarketSwitcherOpen] = useState(false);
 

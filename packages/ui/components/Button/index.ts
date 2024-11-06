@@ -1,7 +1,9 @@
 export * from './Button';
 export * from './ButtonHelperInfo';
 export * from './CardButton';
+export * from './consts';
 export * from './IconButton';
+export * from './LinkButton';
 export * from './PrimaryButton';
 export * from './SecondaryButton';
 export * from './SegmentedControl';
@@ -9,5 +11,4 @@ export * from './TabButton';
 export * from './TabTextButton';
 export * from './TextButton';
 export * from './TradeTabButton';
-export * from './consts';
 export * from './types';

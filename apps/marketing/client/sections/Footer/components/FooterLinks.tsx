@@ -1,7 +1,6 @@
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import Link from 'next/link';
-import { FOOTER_LINKS, FooterLinkProps } from '../data';
-import { EmailSignUp } from './EmailSignup';
+import { FOOTER_LINKS, FooterLinkProps } from 'client/sections/Footer/data';
 import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function FooterLinks() {
@@ -19,8 +18,6 @@ export function FooterLinks() {
           return <FooterLink key={index} href={href} label={label} />;
         })}
       </div>
-      {/* Mobile Email Sign-up */}
-      <EmailSignUp className="flex flex-col items-start gap-y-2.5 sm:hidden" />
     </div>
   );
 }

@@ -24,7 +24,7 @@ export function CookieNoticeBanner({ className }: WithClassnames) {
         className,
       )}
     >
-      <div className="flex flex-col gap-y-2 ">
+      <div className="flex flex-col gap-y-2">
         <p className="text-sm font-bold text-white">Manage Cookies</p>
         <p className="text-white-dark text-xs">
           Blitz may collect and disclose cookie and other data collection

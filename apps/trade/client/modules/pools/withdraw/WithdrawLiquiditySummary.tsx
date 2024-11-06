@@ -8,9 +8,9 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { NextImageSrc, WithClassnames } from '@vertex-protocol/web-common';
 import { Summary } from 'client/components/Summary';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { PairMetadata } from 'client/modules/pools/types';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import Image from 'next/image';
-import { PairMetadata } from '../types';
 
 interface Props extends WithClassnames {
   metadata: PairMetadata;
@@ -56,15 +56,16 @@ export function WithdrawLiquiditySummary({
         />
         {feeAmount !== null && (
           <Summary.Item
-            label="Fee:"
+            label="Gas Fee:"
             valueEndElement={quoteSymbol}
             numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
             value={feeAmount}
+            definitionTooltipId="gasFee"
           />
         )}
         <DefinitionTooltip
           definitionId="lpEstimatedConversionPrice"
-          contentWrapperClassName="text-xs text-text-secondary"
+          contentWrapperClassName="text-xs"
         >
           1 {metadata.base.symbol} ≈{' '}
           {formatNumber(baseOraclePrice, {

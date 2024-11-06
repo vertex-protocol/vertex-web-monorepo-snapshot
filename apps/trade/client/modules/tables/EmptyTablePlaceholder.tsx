@@ -1,15 +1,16 @@
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { WithClassnames } from '@vertex-protocol/web-common';
+import { LinkButton } from '@vertex-protocol/web-ui';
 import { TablePlaceholder } from 'client/components/DataTable/TablePlaceholder';
-import { LinkButton } from 'client/components/LinkButton';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { ROUTES } from 'client/modules/app/consts/routes';
+import { TriggerOrderEnableOneClickTradingInfo } from 'client/modules/trading/components/TriggerOrderEnableOneClickTradingInfo';
 import Link from 'next/link';
-import { TriggerOrderEnableOneClickTradingInfo } from '../trading/components/TriggerOrderEnableOneClickTradingInfo';
 
 type TableType =
   | 'trades_history'
   | 'deposits_history'
   | 'withdrawals_history'
+  | 'transfers_history'
   | 'liquidations_history'
   | 'settlements_history'
   | 'trigger_orders_history'
@@ -28,7 +29,8 @@ type TableType =
   | 'quote_balance'
   | 'deposits_and_borrows'
   | 'lba_positions'
-  | 'trading_competition';
+  | 'trading_competition'
+  | 'no_search_results';
 
 export function EmptyTablePlaceholder({
   type,
@@ -47,6 +49,8 @@ export function EmptyTablePlaceholder({
         return 'Your deposits will appear here.';
       case 'withdrawals_history':
         return 'Your withdrawals will appear here.';
+      case 'transfers_history':
+        return 'Your transfers will appear here.';
       case 'liquidations_history':
         return 'Your liquidations will appear here.';
       case 'settlements_history':
@@ -97,10 +101,10 @@ export function EmptyTablePlaceholder({
         return `Your ${primaryQuoteToken.symbol} balance will appear here.`;
       case 'deposits_and_borrows':
         return 'Your deposits & borrows will appear here.';
-
-      // Trading comp
       case 'trading_competition':
         return 'No rankings for this competition';
+      case 'no_search_results':
+        return 'No search results found. Please ensure that you have typed the search term correctly.';
     }
   })();
 

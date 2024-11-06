@@ -1,61 +1,33 @@
-import { ChainEnv } from '@vertex-protocol/client';
-import { getPrimaryChain, useEVMContext } from '@vertex-protocol/react-client';
-import { PrimaryButton, SecondaryButton } from '@vertex-protocol/web-ui';
-import { LinkButton } from 'client/components/LinkButton';
+import { PrimaryChain } from '@vertex-protocol/react-client';
+import {
+  LinkButton,
+  PrimaryButton,
+  SecondaryButton,
+} from '@vertex-protocol/web-ui';
+import {
+  HANDLED_BUTTON_USER_STATE_ERRORS,
+  useButtonUserStateErrorProps,
+} from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import Link from 'next/link';
 
 interface Props {
   disableClaim: boolean;
-  rewardsChainEnv: ChainEnv;
+  rewardsChain: PrimaryChain;
 }
 
-export function ClaimEarnings({ disableClaim, rewardsChainEnv }: Props) {
+export function ClaimEarnings({ disableClaim, rewardsChain }: Props) {
   const { show } = useDialog();
-  const {
-    primaryChainEnv,
-    setPrimaryChainEnv,
-    chainStatus: { isIncorrectChain },
-    switchChain,
-  } = useEVMContext();
 
-  const requiresAppChainSwitch = rewardsChainEnv !== primaryChainEnv;
-  const requiresWalletChainSwitch = isIncorrectChain;
+  const userStateErrorButtonProps = useButtonUserStateErrorProps({
+    handledErrors: HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain,
+    requiredConnectedChain: rewardsChain,
+  });
 
-  if (requiresAppChainSwitch || requiresWalletChainSwitch) {
-    const primaryChain = getPrimaryChain(rewardsChainEnv);
-
-    return (
-      <div className="flex flex-col gap-y-3">
-        <PrimaryButton
-          onClick={() => {
-            if (requiresAppChainSwitch) {
-              setPrimaryChainEnv(rewardsChainEnv);
-            } else if (requiresWalletChainSwitch) {
-              switchChain(primaryChain.id);
-            }
-          }}
-        >
-          Switch to {primaryChain.name}
-        </PrimaryButton>
-        <div className="text-text-tertiary text-sm">
-          Referral commissions and rebates are tracked across chains, but
-          claiming happens on {primaryChain.name}.{' '}
-          <LinkButton
-            as={Link}
-            colorVariant="primary"
-            href={VERTEX_SPECIFIC_LINKS.fuulReferralsDocs}
-            external
-          >
-            Learn more
-          </LinkButton>
-        </div>
-      </div>
-    );
-  }
-
-  return (
+  const ctaButton = userStateErrorButtonProps ? (
+    <PrimaryButton {...userStateErrorButtonProps} />
+  ) : (
     <SecondaryButton
       disabled={disableClaim}
       onClick={() => {
@@ -64,5 +36,23 @@ export function ClaimEarnings({ disableClaim, rewardsChainEnv }: Props) {
     >
       Claim Earnings
     </SecondaryButton>
+  );
+
+  return (
+    <div className="flex flex-col gap-y-3">
+      {ctaButton}
+      <div className="text-text-tertiary text-sm">
+        Referral commissions and rebates are only tracked across Arbitrum and
+        Mantle. Rewards can be claimed on Arbitrum.{' '}
+        <LinkButton
+          as={Link}
+          colorVariant="primary"
+          href={VERTEX_SPECIFIC_LINKS.fuulReferralsDocs}
+          external
+        >
+          Learn more
+        </LinkButton>
+      </div>
+    </div>
   );
 }

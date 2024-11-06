@@ -5,7 +5,7 @@ import {
   LBA_AIRDROP_EPOCH,
 } from '@vertex-protocol/client';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAddressPaginatedRewards } from 'client/hooks/query/rewards/useAddressPaginatedRewards';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import { useTokenClaimDeadlines } from 'client/hooks/query/vrtxToken/useTokenClaimDeadlines';
@@ -51,8 +51,9 @@ export function useEpochRewardsTable() {
   const {
     data: paginatedRewardsData,
     isLoading: isLoadingPaginatedData,
-    isFetchingNextPage,
     fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
     hasNextPage,
   } = useAddressPaginatedRewards({
     pageSize: PAGE_SIZE,
@@ -64,17 +65,24 @@ export function useEpochRewardsTable() {
   const { data: tokenClaimDeadlines, isLoading: isLoadingTokenClaimDeadlines } =
     useTokenClaimDeadlines();
 
-  const { pageCount, paginationState, setPaginationState, getPageData } =
-    useDataTablePagination<
-      GetIndexerPaginatedRewardsResponse,
-      IndexerRewardsEpoch
-    >({
-      numPagesFromQuery: paginatedRewardsData?.pages.length,
-      pageSize: PAGE_SIZE,
-      hasNextPage,
-      fetchNextPage,
-      extractItems,
-    });
+  const {
+    pageCount,
+    paginationState,
+    setPaginationState,
+    getPageData,
+    isFetchingCurrPage,
+  } = useDataTablePagination<
+    GetIndexerPaginatedRewardsResponse,
+    IndexerRewardsEpoch
+  >({
+    numPagesFromQuery: paginatedRewardsData?.pages.length,
+    pageSize: PAGE_SIZE,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    extractItems,
+  });
 
   const mappedEpochs = useMemo((): EpochRewardsTableData[] | undefined => {
     if (!paginatedRewardsData) {
@@ -157,9 +165,9 @@ export function useEpochRewardsTable() {
     data: mappedEpochs,
     isLoading:
       isLoadingPaginatedData ||
-      isFetchingNextPage ||
       isLoadingAccountTokenClaimState ||
-      isLoadingTokenClaimDeadlines,
+      isLoadingTokenClaimDeadlines ||
+      isFetchingCurrPage,
     pageCount,
     paginationState,
     setPaginationState,

@@ -37,7 +37,7 @@ export function PerpStackedPnlCell({
       className={className}
       top={<div className={color}>{formattedPnl}</div>}
       bottom={
-        <div className={joinClassNames(color, 'text-3xs')}>
+        <div className={joinClassNames(color, 'text-2xs')}>
           ({formattedPnlFrac})
         </div>
       }

@@ -1,18 +1,28 @@
+import { ProductEngineType } from '@vertex-protocol/contracts';
 import {
   GetIndexerSubaccountMatchEventsResponse,
   IndexerMatchEvent,
 } from '@vertex-protocol/indexer-client';
-import { toBigDecimal } from '@vertex-protocol/utils';
-import { removeDecimals } from '@vertex-protocol/utils';
+import {
+  CustomNumberFormatSpecifier,
+  getMarketPriceFormatSpecifier,
+  getMarketQuoteSizeFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import { removeDecimals, toBigDecimal } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import {
+  StaticMarketData,
+  StaticMarketQuoteData,
+  useAllMarketsStaticData,
+} from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useSubaccountPaginatedHistoricalTrades } from 'client/hooks/query/subaccount/useSubaccountPaginatedHistoricalTrades';
-import { HistoricalTradeItem } from 'client/modules/tables/types/HistoricalTradeItem';
+import { HistoricalTradesTableItem } from 'client/modules/tables/types/HistoricalTradesTableItem';
 import { getOrderType } from 'client/modules/trading/utils/getOrderType';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { calcOrderFillPrice } from 'client/utils/calcs/calcOrderFillPrice';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
@@ -32,37 +42,42 @@ export function useHistoricalTradesTable({
   enablePagination,
   marketFilter,
 }: Params) {
-  const {
-    filteredMarkets,
-    filteredProductIds,
-    isLoading: loadingFilteredMarkets,
-  } = useFilteredMarkets(marketFilter);
+  const { filteredProductIds, isLoading: loadingFilteredMarkets } =
+    useFilteredMarkets(marketFilter);
   const {
     data: historicalTrades,
     isLoading: historicalOrdersLoading,
-    isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
   } = useSubaccountPaginatedHistoricalTrades({
     pageSize,
     productIds: filteredProductIds,
   });
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
 
-  const { getPageData, pageCount, paginationState, setPaginationState } =
-    useDataTablePagination<
-      GetIndexerSubaccountMatchEventsResponse,
-      IndexerMatchEvent
-    >({
-      pageSize,
-      numPagesFromQuery: historicalTrades?.pages.length,
-      hasNextPage,
-      fetchNextPage,
-      extractItems,
-    });
+  const {
+    getPageData,
+    pageCount,
+    paginationState,
+    setPaginationState,
+    isFetchingCurrPage,
+  } = useDataTablePagination<
+    GetIndexerSubaccountMatchEventsResponse,
+    IndexerMatchEvent
+  >({
+    pageSize,
+    numPagesFromQuery: historicalTrades?.pages.length,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    extractItems,
+  });
 
-  const mappedData: HistoricalTradeItem[] | undefined = useMemo(() => {
-    if (!historicalTrades || !filteredMarkets || !allMarketsStaticData) {
+  const mappedData: HistoricalTradesTableItem[] | undefined = useMemo(() => {
+    if (!historicalTrades || !allMarketsStaticData) {
       return undefined;
     }
 
@@ -72,72 +87,88 @@ export function useHistoricalTradesTable({
       : historicalTrades.pages[0]?.events;
 
     return pageData
-      .map((item): HistoricalTradeItem | undefined => {
-        const {
-          timestamp,
-          quoteFilled,
-          baseFilled,
-          totalFee,
-          sequencerFee,
-          productId,
-        } = item;
+      .map((event): HistoricalTradesTableItem | undefined => {
+        const staticMarketData = allMarketsStaticData.all[event.productId];
+        const staticQuoteData = allMarketsStaticData.quotes[event.productId];
 
-        const marketData = filteredMarkets[productId];
-        const quoteData = allMarketsStaticData.quotes[productId];
-
-        if (!marketData || !quoteData) {
+        if (!staticMarketData || !staticQuoteData) {
           return;
         }
 
-        const { icon, symbol } = getBaseProductMetadata(marketData.metadata);
-        const orderType = getOrderType(item);
-
-        const decimalAdjustedTotalFee = removeDecimals(totalFee);
-
-        // Inclusive of fee
-        const quoteAmount = removeDecimals(toBigDecimal(quoteFilled));
-        const filledAmount = removeDecimals(toBigDecimal(baseFilled));
-
-        return {
-          marketInfo: {
-            marketName: marketData.metadata.marketName,
-            icon,
-            symbol,
-            quoteSymbol: quoteData.symbol,
-            isPrimaryQuote: quoteData.isPrimaryQuote,
-            amountForSide: filledAmount,
-            productType: marketData.type,
-            sizeIncrement: marketData.sizeIncrement,
-            priceIncrement: marketData.priceIncrement,
-          },
-          orderType,
-          timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
-          tradeFeeQuote: decimalAdjustedTotalFee,
-          filledPrice: calcOrderFillPrice(
-            quoteAmount,
-            decimalAdjustedTotalFee,
-            filledAmount,
-          ),
-          filledAmount: filledAmount,
-          filledAmountAbs: filledAmount.abs(),
-          tradeTotalCost: quoteAmount.abs(),
-        };
+        return getHistoricalTradesTableItem({
+          event: event,
+          staticMarketData,
+          staticQuoteData,
+        });
       })
       .filter(nonNullFilter);
-  }, [
-    historicalTrades,
-    filteredMarkets,
-    allMarketsStaticData,
-    enablePagination,
-    getPageData,
-  ]);
+  }, [historicalTrades, allMarketsStaticData, enablePagination, getPageData]);
 
   return {
     isLoading:
-      historicalOrdersLoading || loadingFilteredMarkets || isFetchingNextPage,
+      historicalOrdersLoading || loadingFilteredMarkets || isFetchingCurrPage,
     mappedData,
     pageCount,
     paginationState,
     setPaginationState,
+  };
+}
+
+interface GetHistoricalTradesTableItemParams {
+  event: IndexerMatchEvent;
+  staticMarketData: StaticMarketData;
+  staticQuoteData: StaticMarketQuoteData;
+}
+
+export function getHistoricalTradesTableItem({
+  event,
+  staticMarketData,
+  staticQuoteData,
+}: GetHistoricalTradesTableItemParams): HistoricalTradesTableItem {
+  const { timestamp, quoteFilled, baseFilled, totalFee } = event;
+
+  const { icon, symbol } = getSharedProductMetadata(staticMarketData.metadata);
+  const orderType = getOrderType(event);
+
+  const decimalAdjustedTotalFee = removeDecimals(totalFee);
+
+  // Inclusive of fee
+  const quoteAmount = removeDecimals(toBigDecimal(quoteFilled));
+  const filledAmount = removeDecimals(toBigDecimal(baseFilled));
+
+  return {
+    marketInfo: {
+      marketName: staticMarketData.metadata.marketName,
+      icon,
+      symbol,
+      quoteSymbol: staticQuoteData.symbol,
+      isPrimaryQuote: staticQuoteData.isPrimaryQuote,
+      amountForSide: filledAmount,
+      productType: staticMarketData.type,
+      sizeIncrement: staticMarketData.sizeIncrement,
+      priceIncrement: staticMarketData.priceIncrement,
+    },
+    orderType,
+    timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
+    tradeFeeQuote: decimalAdjustedTotalFee,
+    filledPrice: calcOrderFillPrice(
+      quoteAmount,
+      decimalAdjustedTotalFee,
+      filledAmount,
+    ),
+    filledAmount: filledAmount,
+    filledAmountAbs: filledAmount.abs(),
+    tradeTotalCost: quoteAmount.abs(),
+    marketPriceFormatSpecifier: getMarketPriceFormatSpecifier(
+      staticMarketData.priceIncrement,
+    ),
+    // Spot market orders can be of arbitrary size, so we show as much precision as possible
+    marketSizeFormatSpecifier:
+      staticMarketData.type === ProductEngineType.SPOT
+        ? CustomNumberFormatSpecifier.NUMBER_PRECISE
+        : getMarketSizeFormatSpecifier(staticMarketData.sizeIncrement),
+    quoteSizeFormatSpecifier: getMarketQuoteSizeFormatSpecifier(
+      staticQuoteData.isPrimaryQuote,
+    ),
   };
 }

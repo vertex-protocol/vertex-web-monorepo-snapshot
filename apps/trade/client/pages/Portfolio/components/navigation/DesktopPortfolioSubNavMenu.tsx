@@ -1,61 +1,45 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
-import { Button, Divider, Icons } from '@vertex-protocol/web-ui';
-import { useToggle } from 'ahooks';
+'use client';
+
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { Card, Divider } from '@vertex-protocol/web-ui';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { PortfolioSubNavButton } from 'client/pages/Portfolio/components/navigation/PortfolioSubNavButton';
+import { PortfolioSubNavSubaccountSwitcher } from 'client/pages/Portfolio/components/navigation/PortfolioSubNavSubaccountSwitcher';
 import { usePortfolioNavItems } from 'client/pages/Portfolio/hooks/usePortfolioNavItems';
 import { Fragment } from 'react';
 
-export function DesktopPortfolioSubNavMenu() {
-  const [sidebarHidden, { toggle: toggleSidebarHidden }] = useToggle(false);
+export function DesktopPortfolioSubNavMenu({ className }: WithClassnames) {
   const navItems = usePortfolioNavItems();
 
-  const ChevronIcon = sidebarHidden
-    ? Icons.FiChevronRight
-    : Icons.FiChevronLeft;
+  const isConnected = useIsConnected();
 
   return (
-    <div className="relative hidden lg:flex">
-      <Button
-        className={joinClassNames(
-          'bg-surface-1 absolute left-full top-12 z-10',
-          'h-6 w-3 -translate-x-1/2 -translate-y-1/2 rounded',
-          'hover:border-accent hover:text-text-primary',
-          'border-stroke border p-0',
-        )}
-        onClick={toggleSidebarHidden}
-        startIcon={<ChevronIcon size={16} />}
-      />
-      {/*Desktop Sidebar*/}
-      <div
-        className={joinClassNames(
-          'flex h-full flex-col overflow-hidden',
-          'bg-background',
-          'border-stroke border-r',
-          sidebarHidden ? 'w-4' : 'w-subnav-menu',
-        )}
-      >
-        <div
-          className={joinClassNames(
-            'w-full min-w-max',
-            sidebarHidden ? '-translate-x-full' : 'translate-x-0',
-          )}
-        >
-          {navItems.map(
-            ({ href, label, associatedCount, disabled, selected }) => (
-              <Fragment key={label}>
-                <PortfolioSubNavButton
-                  href={href}
-                  label={label}
-                  associatedCount={associatedCount}
-                  disabled={disabled}
-                  selected={selected}
-                />
-                <Divider className="bg-stroke" />
-              </Fragment>
-            ),
-          )}
-        </div>
-      </div>
-    </div>
+    <Card
+      className={joinClassNames(
+        'hidden w-48 flex-col overflow-hidden lg:flex',
+        className,
+      )}
+    >
+      {isConnected && (
+        <>
+          <div className="px-2 py-3">
+            <PortfolioSubNavSubaccountSwitcher className="w-full" />
+          </div>
+          <Divider />
+        </>
+      )}
+      {navItems.map(({ href, label, associatedCount, disabled, selected }) => (
+        <Fragment key={label}>
+          <PortfolioSubNavButton
+            href={href}
+            label={label}
+            associatedCount={associatedCount}
+            disabled={disabled}
+            selected={selected}
+          />
+          <Divider />
+        </Fragment>
+      ))}
+    </Card>
   );
 }

@@ -1,14 +1,19 @@
-import { MoneyMarketsTable } from 'client/modules/tables/MoneyMarketsTable';
-import { FundingRateMarketsTable } from '../tables/FundingRateMarketsTable';
-import { PerpMarketsTable } from '../tables/PerpMarketsTable';
-import { SpotMarketsTable } from '../tables/SpotMarketsTable';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
+import { MoneyMarketsTable } from 'client/modules/tables/MoneyMarketsTable';
+import { MarketsTableSearchWrapper } from 'client/pages/Markets/components/MarketsTableSearchWrapper';
+import { FundingRateMarketsTable } from 'client/pages/Markets/tables/FundingRateMarketsTable';
+import { PerpMarketsTable } from 'client/pages/Markets/tables/PerpMarketsTable';
+import { SpotMarketsTable } from 'client/pages/Markets/tables/SpotMarketsTable';
 
 const MARKETS_TABS = [
   {
     id: 'perps',
     label: 'Perps',
-    content: <PerpMarketsTable />,
+    content: (
+      <MarketsTableSearchWrapper
+        renderTable={({ query }) => <PerpMarketsTable query={query} />}
+      />
+    ),
   },
   {
     id: 'spot',
@@ -18,7 +23,11 @@ const MARKETS_TABS = [
   {
     id: 'funding_rates',
     label: 'Funding Rates',
-    content: <FundingRateMarketsTable />,
+    content: (
+      <MarketsTableSearchWrapper
+        renderTable={({ query }) => <FundingRateMarketsTable query={query} />}
+      />
+    ),
   },
   {
     id: 'money_market',

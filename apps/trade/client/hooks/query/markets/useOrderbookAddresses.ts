@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 
-export function orderbookAddressesQueryKey(chainId?: PrimaryChainID) {
-  return ['orderbookAddresses', chainId];
+export function orderbookAddressesQueryKey(chainEnv?: ChainEnv) {
+  return ['orderbookAddresses', chainEnv];
 }
 
 // Product ID -> Orderbook address
@@ -17,12 +17,12 @@ type Data = Record<number, string>;
  * Orderbook addresses for order signature verifyingAddr
  */
 export function useOrderbookAddresses() {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({
-    queryKey: orderbookAddressesQueryKey(primaryChainId),
+    queryKey: orderbookAddressesQueryKey(primaryChainEnv),
     queryFn: async () => {
       if (disabled) {
         throw new QueryDisabledError();

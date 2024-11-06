@@ -4,10 +4,10 @@ import {
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
+import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import { ReactNode } from 'react';
-import { ValueWithLabelProps } from './ValueWithLabel/types';
-import { ValueWithLabel } from './ValueWithLabel/ValueWithLabel';
 
 interface Params extends Omit<ValueWithLabelProps, 'tooltip'> {
   label: ReactNode;

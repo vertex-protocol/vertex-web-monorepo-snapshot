@@ -19,7 +19,7 @@ export function StackedTokenPairIcon({
         height={28}
         src={metadata.quote.icon.asset}
         alt={metadata.quote.symbol}
-        className="bg-surface-1 ring-stroke relative bottom-px rounded-full ring-2"
+        className="bg-surface-1 border-stroke relative bottom-px rounded-full border-2"
       />
       {/* This component is ordered last so we don't need to worry about z-index causing issues elsewhere */}
       <Image
@@ -27,7 +27,7 @@ export function StackedTokenPairIcon({
         height={28}
         src={metadata.base.icon.asset}
         alt={metadata.base.symbol}
-        className="bg-surface-1 ring-stroke absolute top-px rounded-full ring-2"
+        className="bg-surface-1 border-stroke absolute top-px rounded-full border-2"
       />
     </div>
   );

@@ -6,7 +6,7 @@ import {
 import { EXTERNAL_LINKS } from 'client/consts';
 import Link from 'next/link';
 
-import { HomePageButton } from './Button/HomePageButton';
+import { HomePageButton } from 'client/components/Button/HomePageButton';
 
 export function LocationRestrictedDialog() {
   return (

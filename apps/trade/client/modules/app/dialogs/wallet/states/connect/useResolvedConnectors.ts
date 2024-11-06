@@ -1,3 +1,4 @@
+import { KNOWN_CONNECTOR_IDS } from 'client/consts/knownConnectorIds';
 import {
   ConnectorMetadata,
   CUSTOM_CONNECTOR_METADATA_BY_ID,
@@ -5,14 +6,29 @@ import {
 import { get, partition, remove } from 'lodash';
 import { useMemo } from 'react';
 import { Connector } from 'wagmi';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
+
+interface ConnectorWithMetadata {
+  connector: Connector;
+  metadata: ConnectorMetadata;
+}
 
 /**
  * A hook to reorder connectors that are given by wagmi, and overrides metadata for known connectors when needed
  */
 export function useResolvedConnectors(connectors: readonly Connector[]) {
+  const { isExodusEnabled } = useEnabledFeatures();
+
   return useMemo(() => {
+    // Exodus passkeys is only available on Arbitrum and Mantle
+    const filteredConnectors = isExodusEnabled
+      ? connectors
+      : connectors.filter(
+          (connector) => connector.id !== KNOWN_CONNECTOR_IDS.passKeys,
+        );
+
     const [injectedConnectors, otherConnectors] = partition(
-      connectors,
+      filteredConnectors,
       (connector) => {
         return connector.type === 'injected';
       },
@@ -27,7 +43,12 @@ export function useResolvedConnectors(connectors: readonly Connector[]) {
       injectedConnectors.push(...genericInjectedConnectors);
     }
 
-    return [...injectedConnectors, ...otherConnectors].map((connector) => {
+    let coinbaseConnector: ConnectorWithMetadata | undefined;
+
+    const connectorsWithMetadata = [
+      ...injectedConnectors,
+      ...otherConnectors,
+    ].map((connector): ConnectorWithMetadata => {
       const metadata: ConnectorMetadata = get(
         CUSTOM_CONNECTOR_METADATA_BY_ID,
         connector.id,
@@ -37,10 +58,22 @@ export function useResolvedConnectors(connectors: readonly Connector[]) {
         },
       );
 
-      return {
+      const connectorWithMetadata: ConnectorWithMetadata = {
         connector,
         metadata,
       };
+
+      // Assign known connector IDs in the `map` to avoid additional loops
+      if (connector.id === KNOWN_CONNECTOR_IDS.coinbaseWalletSDK) {
+        coinbaseConnector = connectorWithMetadata;
+      }
+
+      return connectorWithMetadata;
     });
-  }, [connectors]);
+
+    return {
+      connectorsWithMetadata,
+      coinbaseConnector,
+    };
+  }, [connectors, isExodusEnabled]);
 }

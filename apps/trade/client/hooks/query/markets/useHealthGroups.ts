@@ -1,16 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { HealthGroup } from '@vertex-protocol/contracts';
+import { ChainEnv, HealthGroup } from '@vertex-protocol/contracts';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 
-export function healthGroupsQueryKey(chainId?: PrimaryChainID) {
-  return createQueryKey('healthGroups', chainId);
+export function healthGroupsQueryKey(chainEnv?: ChainEnv) {
+  return createQueryKey('healthGroups', chainEnv);
 }
 
 interface Data {
@@ -23,12 +22,12 @@ interface Data {
 }
 
 export function useHealthGroups() {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({
-    queryKey: healthGroupsQueryKey(primaryChainId),
+    queryKey: healthGroupsQueryKey(primaryChainEnv),
     queryFn: async (): Promise<Data> => {
       if (disabled) {
         throw new QueryDisabledError();

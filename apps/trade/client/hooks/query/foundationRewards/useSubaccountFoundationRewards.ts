@@ -1,35 +1,31 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
-  PrimaryChainID,
   QueryDisabledError,
   createQueryKey,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
+import { NOT_CONNECTED_ALT_QUERY_ADDRESS } from 'client/hooks/query/consts/notConnectedAltQueryAddress';
 
 export function subaccountFoundationRewardsQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   sender?: string,
 ) {
-  return createQueryKey('subaccountFoundationRewards', chainId, sender);
+  return createQueryKey('subaccountFoundationRewards', chainEnv, sender);
 }
 
 export function useSubaccountFoundationRewards() {
-  const primaryChainId = usePrimaryChainId();
-  const { currentSubaccount } = useSubaccountContext();
+  const {
+    currentSubaccount: { address, chainEnv },
+  } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 
   const disabled = !vertexClient;
-  const addressForQuery =
-    currentSubaccount.address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
+  const addressForQuery = address ?? NOT_CONNECTED_ALT_QUERY_ADDRESS;
 
   return useQuery({
-    queryKey: subaccountFoundationRewardsQueryKey(
-      primaryChainId,
-      addressForQuery,
-    ),
+    queryKey: subaccountFoundationRewardsQueryKey(chainEnv, addressForQuery),
     queryFn: async () => {
       if (disabled) {
         throw new QueryDisabledError();

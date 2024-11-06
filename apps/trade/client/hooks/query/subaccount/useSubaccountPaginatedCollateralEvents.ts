@@ -1,17 +1,18 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { GetIndexerSubaccountCollateralEventsParams } from '@vertex-protocol/client';
+import {
+  ChainEnv,
+  GetIndexerSubaccountCollateralEventsParams,
+} from '@vertex-protocol/client';
 import { CollateralEventType } from '@vertex-protocol/indexer-client/dist/types/collateralEventType';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 
 export function subaccountPaginatedCollateralEventsQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   subaccountOwner?: string,
   subaccountName?: string,
   eventTypes?: CollateralEventType[],
@@ -19,7 +20,7 @@ export function subaccountPaginatedCollateralEventsQueryKey(
 ) {
   return createQueryKey(
     'subaccountPaginatedCollateralEvents',
-    chainId,
+    chainEnv,
     subaccountOwner,
     subaccountName,
     eventTypes,
@@ -39,16 +40,19 @@ export function useSubaccountPaginatedCollateralEvents({
   eventTypes,
   pageSize = 10,
 }: Params) {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const {
-    currentSubaccount: { address: subaccountOwner, name: subaccountName },
+    currentSubaccount: {
+      address: subaccountOwner,
+      name: subaccountName,
+      chainEnv,
+    },
   } = useSubaccountContext();
   const disabled = !vertexClient || !subaccountOwner;
 
   return useInfiniteQuery({
     queryKey: subaccountPaginatedCollateralEventsQueryKey(
-      primaryChainId,
+      chainEnv,
       subaccountOwner,
       subaccountName,
       eventTypes,

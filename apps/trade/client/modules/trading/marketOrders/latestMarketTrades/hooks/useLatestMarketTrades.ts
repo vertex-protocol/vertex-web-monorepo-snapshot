@@ -10,7 +10,7 @@ import {
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { useLatestOrderFillsForProduct } from 'client/hooks/query/markets/useLatestOrderFillsForProduct';
 import { useSetPriceInput } from 'client/modules/trading/hooks/useSetPriceInput';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
@@ -54,7 +54,7 @@ export function useLatestMarketTrades({ productId }: Params) {
       return;
     }
 
-    const { symbol } = getBaseProductMetadata(market.metadata);
+    const { symbol } = getSharedProductMetadata(market.metadata);
 
     let maxTradeSize = BigDecimals.ZERO;
 

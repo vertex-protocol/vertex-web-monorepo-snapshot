@@ -1,6 +1,6 @@
 import { DiscList } from '@vertex-protocol/web-ui';
 import { LiquidationRiskBars } from 'client/pages/Portfolio/components/LiquidationRiskBars';
-import { MarginManagerDefinition } from './MarginManagerDefinition';
+import { MarginManagerDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/MarginManagerDefinition';
 
 const {
   ContentContainer,

@@ -38,7 +38,7 @@ export function BridgeSummaryDisclosure({
   });
 
   const disclosureContent = (
-    <div className="flex w-full flex-col gap-y-2 px-3 pb-3">
+    <>
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         labelClassName="gap-x-2"
@@ -52,7 +52,7 @@ export function BridgeSummaryDisclosure({
                 <img
                   src={selectedSourceChain.externalIconUrl}
                   alt={selectedSourceChain.chainName}
-                  className="h-4 w-4"
+                  className="size-4 rounded-full"
                 />
                 <span>{selectedSourceChain.chainName}</span>
               </div>
@@ -71,18 +71,19 @@ export function BridgeSummaryDisclosure({
               {/*Rendering external img*/}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={selectedSourceToken.externalIconUrl ?? ''}
+                src={selectedSourceToken.externalIconUrl}
                 alt={selectedSourceToken.symbol}
                 className="size-4"
               />
             </>
           )
         }
+        valueClassName="items-center"
       />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Est. Receive"
-        valueClassName="gap-x-1.5"
+        valueClassName="gap-x-1.5 items-center"
         valueContent={
           selectedDestinationToken && (
             <>
@@ -98,8 +99,7 @@ export function BridgeSummaryDisclosure({
                     .asset
                 }
                 alt={selectedDestinationToken.symbol}
-                width={16}
-                height={16}
+                className="size-4"
               />
             </>
           )
@@ -111,13 +111,12 @@ export function BridgeSummaryDisclosure({
         label="Est. Time"
         tooltip={{ id: 'bridgeEstimatedTime' }}
         value={bridgeRouteSummary?.bridgeTime}
-        valueContent={
-          <>
-            {`${formatNumber(bridgeRouteSummary?.bridgeTime, {
-              formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
-            })}s `}
-            <Icons.BsLightningChargeFill size={12} className="text-warning" />
-          </>
+        valueContent={`${formatNumber(bridgeRouteSummary?.bridgeTime, {
+          formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
+        })}s`}
+        valueClassName="items-center"
+        valueEndElement={
+          <Icons.LightningFill size={12} className="text-warning" />
         }
       />
       <ValueWithLabel.Horizontal
@@ -163,7 +162,7 @@ export function BridgeSummaryDisclosure({
         numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         changeArrowClassName="text-positive"
       />
-    </div>
+    </>
   );
 
   const hasEstimation = !!bridgeRouteSummary;
@@ -172,7 +171,6 @@ export function BridgeSummaryDisclosure({
     <ActionSummary.Disclosure
       expandableContent={disclosureContent}
       labelContent="Summary"
-      triggerOpen={hasEstimation}
       isHighlighted={hasEstimation}
     />
   );

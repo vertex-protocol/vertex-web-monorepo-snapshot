@@ -1,10 +1,10 @@
+import { ChartTooltip } from 'client/components/ChartTooltip';
 import {
   PortfolioChartTooltip,
   PortfolioChartTooltipBodyRenderFn,
-} from 'client/pages/Portfolio/charts/components/PortfolioChartTooltip/PortfolioChartTooltip';
-import { PortfolioChartTooltipContent } from 'client/pages/Portfolio/charts/components/PortfolioChartTooltipContent/PortfolioChartTooltipContent';
-import { SignedCurrencyChangeMetric } from 'client/pages/Portfolio/charts/components/PortfolioChartTooltipContent/SignedCurrencyChangeMetric';
+} from 'client/pages/Portfolio/charts/components/PortfolioChartTooltip';
 import { PortfolioDynamicGradientDefinitions } from 'client/pages/Portfolio/charts/components/PortfolioDynamicGradientDefinitions';
+import { SignedCurrencyChangeMetric } from 'client/pages/Portfolio/charts/components/SignedCurrencyChangeMetric';
 import {
   AREA_CHART_DEFAULTS,
   PORTFOLIO_CHART_GRADIENT_URLS,
@@ -14,7 +14,7 @@ import {
   PORTFOLIO_CHART_YAXIS_DEFAULTS,
   PORTFOLIO_DYNAMIC_GRADIENT_CONFIGS,
 } from 'client/pages/Portfolio/charts/consts';
-import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartData/usePortfolioChartData';
+import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
 import { usePortfolioChartXAxisFormatter } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartXAxisFormatter';
 import { ChartComponentProps } from 'client/pages/Portfolio/charts/types';
 import { currencyAxisFormatter } from 'client/pages/Portfolio/charts/utils/axisFormatters';
@@ -42,14 +42,14 @@ const renderTooltipContent: PortfolioChartTooltipBodyRenderFn = ({
 }: PortfolioChartDataItem) => {
   return (
     <>
-      <PortfolioChartTooltipContent.Item
+      <ChartTooltip.Item
         title="Net Funding"
         legendColorClassName="bg-warning"
         content={
           <SignedCurrencyChangeMetric value={cumulativePerpFundingUsd} />
         }
       />
-      <PortfolioChartTooltipContent.Item
+      <ChartTooltip.Item
         title="Period Change"
         content={
           <SignedCurrencyChangeMetric

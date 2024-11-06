@@ -1,20 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
-  createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
+  createQueryKey,
   useEVMContext,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
+import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { NOT_CONNECTED_ALT_QUERY_ADDRESS } from 'client/hooks/query/consts/notConnectedAltQueryAddress';
 
 export function accountFoundationRewardsClaimStateQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   address?: string,
 ) {
-  return createQueryKey('accountFoundationRewardsClaimState', chainId, address);
+  return createQueryKey(
+    'accountFoundationRewardsClaimState',
+    chainEnv,
+    address,
+  );
 }
 
 export interface AccountFoundationRewardsClaimState {
@@ -27,14 +30,14 @@ export interface AccountFoundationRewardsClaimState {
  * A multicall query that returns a summary of an address claim state for foundation rewards
  */
 export function useAccountFoundationRewardsClaimState() {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const {
     connectionStatus: { address },
+    primaryChainEnv,
   } = useEVMContext();
 
   const disabled = !vertexClient;
-  const addressForQuery = address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
+  const addressForQuery = address ?? NOT_CONNECTED_ALT_QUERY_ADDRESS;
 
   const queryFn = async (): Promise<AccountFoundationRewardsClaimState> => {
     if (disabled) {
@@ -63,7 +66,7 @@ export function useAccountFoundationRewardsClaimState() {
 
   return useQuery({
     queryKey: accountFoundationRewardsClaimStateQueryKey(
-      primaryChainId,
+      primaryChainEnv,
       addressForQuery,
     ),
     queryFn,

@@ -1,14 +1,17 @@
-import { BigDecimal } from '@vertex-protocol/utils';
 import {
   getMarketSizeFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { useLatestPriceChange } from 'client/hooks/markets/useLatestPriceChange';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { useMarketLiquidity } from 'client/hooks/query/markets/useMarketLiquidity';
+import { useSubaccountOpenEngineOrders } from 'client/hooks/query/subaccount/useSubaccountOpenEngineOrders';
+import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
 import { useSetPriceInput } from 'client/modules/trading/hooks/useSetPriceInput';
+import { mapOrderbookDataFromQueries } from 'client/modules/trading/marketOrders/orderbook/hooks/mapOrderbookDataFromQueries';
 import {
   OrderbookData,
   OrderbookParams,
@@ -18,7 +21,6 @@ import { useSelectedTickSpacingMultiplier } from 'client/modules/trading/marketO
 import { useShowOrderbookTotalInQuote } from 'client/modules/trading/marketOrders/orderbook/hooks/useShowOrderbookTotalInQuote';
 import { precisionFixed } from 'd3-format';
 import { useMemo } from 'react';
-import { mapOrderbookDataFromQueries } from './mapOrderbookDataFromQueries';
 
 export function useOrderbook({
   productId,
@@ -28,6 +30,9 @@ export function useOrderbook({
     useSelectedTickSpacingMultiplier(productId);
   const { showOrderbookTotalInQuote, setShowOrderbookTotalInQuote } =
     useShowOrderbookTotalInQuote();
+
+  const { data: openEngineOrdersData } = useSubaccountOpenEngineOrders();
+  const { data: openTriggerOrdersData } = useSubaccountOpenTriggerOrders();
 
   // Market data
   const { data: marketData } = useMarket({
@@ -72,6 +77,26 @@ export function useOrderbook({
     tickSpacingMultiplier,
   ]);
 
+  const openOrderPrices = useMemo(() => {
+    // Use string instead of BigDecimal for proper comparison.
+    const orderPrices = new Set<string>();
+
+    if (!marketData) {
+      return;
+    }
+
+    // Add open engine order prices to the set
+    openEngineOrdersData?.[marketData.productId]?.forEach((order) => {
+      orderPrices.add(order.price.toString());
+    });
+
+    openTriggerOrdersData?.[marketData.productId]?.forEach((order) => {
+      orderPrices.add(order.order.triggerCriteria.triggerPrice.toString());
+    });
+
+    return orderPrices;
+  }, [marketData, openEngineOrdersData, openTriggerOrdersData]);
+
   const currentTickSpacing =
     orderbookData?.priceIncrement
       .multipliedBy(tickSpacingMultiplier)
@@ -109,6 +134,7 @@ export function useOrderbook({
     lastPriceChange,
     lastPrice,
     amountSymbol,
+    openOrderPrices,
     // We don't use `getMarketPriceFormatSpecifier` because we want to format depending on the selected tick spacing
     priceFormatSpecifier: `.${precisionFixed(currentTickSpacing).toFixed()}f`,
     amountFormatSpecifier,

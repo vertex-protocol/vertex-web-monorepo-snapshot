@@ -22,8 +22,7 @@ const REFETCH_QUERY_KEYS: string[][] = [
  */
 export function useExecuteClaimStakingRewards() {
   const mutationFn = useExecuteInValidContext(
-    useCallback(async (params: EmptyObject, context: ValidExecuteContext) => {
-      console.log('Claiming Staking Rewards', params);
+    useCallback(async (_: EmptyObject, context: ValidExecuteContext) => {
       return context.vertexClient.rewards.claimStakingRewards();
     }, []),
   );

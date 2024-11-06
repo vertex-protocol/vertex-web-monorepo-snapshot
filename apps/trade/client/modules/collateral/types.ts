@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
+import { TokenIconMetadata } from '@vertex-protocol/metadata';
 
 export interface CollateralSpotProduct {
   icon: TokenIconMetadata;

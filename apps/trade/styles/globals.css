@@ -3,14 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    @apply overscroll-none;
-  }
-
-  body {
-    @apply bg-background text-text-secondary;
-  }
-
   /*Remove default outline that occurs on focus of different elements*/
   input,
   button,
@@ -68,19 +60,8 @@
 }
 
 @layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-    @apply hidden;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-
   .title-text {
     /*tracking-normal to override tighter letter-spacing applied to Blitz*/
-    @apply font-title tracking-normal;
+    @apply font-title font-medium tracking-normal;
   }
 }

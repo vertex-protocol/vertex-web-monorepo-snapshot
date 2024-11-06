@@ -1,10 +1,10 @@
-import { ProductEngineType } from '@vertex-protocol/contracts';
+import { MarketCategory } from '@vertex-protocol/metadata';
 
 export type BalanceAmountMarketFilter = 'nonzero' | 'positive' | 'negative';
 
 export interface MarketFilter {
   // If not given, all markets will be included
-  marketType?: ProductEngineType;
+  marketCategory?: MarketCategory;
   // If true, returns only favorited markets
   isFavorited?: boolean;
   // If provided, only markets with balances matching the given amount filter will be included

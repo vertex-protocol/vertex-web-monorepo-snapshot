@@ -12,7 +12,7 @@ export function EdgeDescription() {
         Synchronous Liquidity
       </h2>
       <p className="text-gray text-md max-w-[380px] text-balance leading-tight sm:text-lg">
-        Vertex Edge’s composable orderbook solves the problems of liquidity
+        Vertex Edge&apos;s composable orderbook solves the problems of liquidity
         fragmentation and creates economic alliances across chains.
       </p>
 

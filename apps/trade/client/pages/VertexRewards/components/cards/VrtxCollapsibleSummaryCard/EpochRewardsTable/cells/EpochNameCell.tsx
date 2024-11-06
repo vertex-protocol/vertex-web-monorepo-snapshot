@@ -3,7 +3,7 @@ import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { EpochRewardsTableData } from '../useEpochRewardsTable';
+import { EpochRewardsTableData } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/useEpochRewardsTable';
 
 type Props = TableCellProps &
   Pick<EpochRewardsTableData, 'epochNumber' | 'isCurrent' | 'isInitialPhase'>;

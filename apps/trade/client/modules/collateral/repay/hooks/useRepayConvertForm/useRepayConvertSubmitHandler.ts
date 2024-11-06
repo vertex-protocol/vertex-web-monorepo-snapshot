@@ -2,13 +2,12 @@ import { ProductEngineType } from '@vertex-protocol/contracts';
 import { addDecimals, BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import { ExecutePlaceEngineOrderParams } from 'client/hooks/execute/placeOrder/types';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import {
   RepayConvertFormValues,
   RepayConvertProduct,
 } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { AnnotatedSpotMarket } from 'common/productMetadata/types';
+import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
 import { useCallback } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -19,6 +18,7 @@ interface Params {
   market: AnnotatedSpotMarket | undefined;
   executionConversionPrice: BigDecimal | undefined;
   isSellOrder: boolean;
+  allowAnyOrderSizeIncrement: boolean;
 }
 
 export function useRepayConvertSubmitHandler({
@@ -28,9 +28,9 @@ export function useRepayConvertSubmitHandler({
   market,
   executionConversionPrice,
   isSellOrder,
+  allowAnyOrderSizeIncrement,
 }: Params) {
   const { dispatchNotification } = useNotificationManagerContext();
-  const { trackEvent } = useAnalyticsContext();
 
   return useCallback(
     (data: RepayConvertFormValues) => {
@@ -50,18 +50,13 @@ export function useRepayConvertSubmitHandler({
         amount: decimalAdjustedAmount,
         priceType: 'market',
         spotLeverage: false,
-        // Allow small balances
-        allowAnyOrderSizeIncrement: true,
+        allowAnyOrderSizeIncrement,
       };
       const executeResult = executePlaceOrder.mutateAsync(mutationParams, {
         onSuccess: () => {
           form.resetField('repayAmount');
           form.setValue('sourceProductId', undefined);
         },
-      });
-      trackEvent({
-        type: 'repay_convert_placed',
-        data: {},
       });
 
       dispatchNotification({
@@ -84,8 +79,8 @@ export function useRepayConvertSubmitHandler({
       marketProduct,
       executionConversionPrice,
       isSellOrder,
+      allowAnyOrderSizeIncrement,
       executePlaceOrder,
-      trackEvent,
       dispatchNotification,
       market?.priceIncrement,
       form,

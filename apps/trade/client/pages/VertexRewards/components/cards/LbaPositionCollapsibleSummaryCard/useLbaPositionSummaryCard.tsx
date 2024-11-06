@@ -1,18 +1,18 @@
 import { calcLpTokenValue } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAccountLbaState } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useClaimLbaRewards } from 'client/modules/rewards/hooks/useClaimLbaRewards';
 import { useTokenLaunchStage } from 'client/modules/rewards/hooks/useTokenLaunchStage';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 
 export function useLbaPositionSummaryCard() {
   const { protocolTokenMetadata } = useVertexMetadataContext();
-  const userActionState = useUserActionState();
+  const isConnected = useIsConnected();
   const {
     claim,
     isLoading: isClaiming,
@@ -24,7 +24,7 @@ export function useLbaPositionSummaryCard() {
   const { data: vrtxMarket } = useMarket({
     productId: protocolTokenMetadata.productId,
   });
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const mappedData = useMemo(() => {
     const totalRewardsEarned = removeDecimals(
@@ -50,7 +50,7 @@ export function useLbaPositionSummaryCard() {
       );
       return lpTokenValue
         .multipliedBy(totalLpTokens)
-        .multipliedBy(quotePriceUsd);
+        .multipliedBy(primaryQuotePriceUsd);
     })();
 
     return {
@@ -62,7 +62,7 @@ export function useLbaPositionSummaryCard() {
     };
   }, [
     lbaAccountState,
-    quotePriceUsd,
+    primaryQuotePriceUsd,
     vrtxMarket,
     tokenLaunchStageData,
     protocolTokenMetadata,
@@ -77,11 +77,11 @@ export function useLbaPositionSummaryCard() {
     disableClaimButton:
       !mappedData.claimableLbaRewards ||
       mappedData.claimableLbaRewards.isZero() ||
-      userActionState === 'block_all',
+      !isConnected,
     disableWithdrawUnlockedButton:
-      userActionState === 'block_all' ||
       !lbaAccountState?.withdrawableLpBalance ||
-      lbaAccountState.withdrawableLpBalance.isZero(),
+      lbaAccountState.withdrawableLpBalance.isZero() ||
+      !isConnected,
     vrtxToken: protocolTokenMetadata,
   };
 }

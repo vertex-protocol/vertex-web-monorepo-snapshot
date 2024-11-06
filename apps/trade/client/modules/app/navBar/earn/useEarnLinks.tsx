@@ -1,21 +1,16 @@
-import { Icons, IconType, imageToIconComponent } from '@vertex-protocol/web-ui';
+import { PRIMARY_QUOTE_SYMBOLS } from '@vertex-protocol/metadata';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { LINKS } from 'common/brandMetadata/links/links';
-import {
-  ARB_CHAIN_IDS,
-  MANTLE_CHAIN_IDS,
-} from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
-import { PRIMARY_QUOTE_SYMBOLS } from 'common/productMetadata/primaryQuoteSymbols';
-import { useMemo } from 'react';
-import elixirIcon from './assets/elixir-logo.svg';
-
-import stakeIcon from './assets/stake-logo.svg';
+import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
+import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
+import { BLITZ_SPECIFIC_IMAGES } from 'common/brandMetadata/images';
+import { clientEnv } from 'common/environment/clientEnv';
+import Image from 'next/image';
+import { ReactNode, useMemo } from 'react';
 
 interface EarnLink {
-  label: string;
+  label: ReactNode;
   description: string;
-  icon: IconType;
   href: string;
   external?: boolean;
 }
@@ -28,70 +23,65 @@ interface UseEarnLinks {
 const STAKE_LINK: EarnLink = {
   label: 'Stake',
   description: 'Staking Rewards',
-  icon: imageToIconComponent({
-    src: stakeIcon,
-    alt: '',
-  }),
   href: ROUTES.vrtx,
 };
 
-const REWARDS_LINK: EarnLink = {
-  label: 'Rewards',
-  description: 'Trading Rewards',
-  icon: Icons.MdDiamond,
-  href: ROUTES.rewards,
+const VAULTS_LINK: EarnLink = {
+  label: (
+    <div className="flex items-center gap-x-2">
+      Vaults
+      <BrandSpecificContent enabledBrands={['blitz']}>
+        <Image
+          src={BLITZ_SPECIFIC_IMAGES.blastGoldIcon}
+          alt=""
+          className="h-3 w-auto"
+        />
+      </BrandSpecificContent>
+    </div>
+  ),
+  description:
+    clientEnv.base.brandName === 'blitz'
+      ? 'Earn yield + Blast Gold'
+      : 'Deposit liquidity and earn',
+  href: ROUTES.vaults,
 };
 
 const REFERRALS_LINK: EarnLink = {
   label: 'Referrals',
   description: `Earn ${PRIMARY_QUOTE_SYMBOLS.usdc}`,
-  icon: Icons.IoPeopleSharp,
   href: ROUTES.referrals,
 };
 
-const ELIXIR_LINK: EarnLink = {
-  label: 'Elixir Vaults',
-  description: 'Fusion Vaults',
-  icon: imageToIconComponent({
-    src: elixirIcon,
-    alt: '',
-  }),
-  href: LINKS.elixir,
-  external: true,
+const REWARDS_LINK: EarnLink = {
+  label: 'Rewards',
+  description: 'Trading Rewards',
+  href: ROUTES.rewards,
 };
 
 export function useEarnLinks(): UseEarnLinks {
-  const showStakeLink = useIsEnabledForChainIds(ARB_CHAIN_IDS);
-  const showRewardsLink = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-  ]);
-  const showReferralsLink = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-  ]);
-  const showElixirLink = useIsEnabledForChainIds(ARB_CHAIN_IDS);
+  const { isStakePageEnabled, isFuulEnabled, isVaultsEnabled } =
+    useEnabledFeatures();
+
+  const showVertexRewards = useIsEnabledForBrand(['vertex']);
 
   return useMemo(() => {
     return {
       products: [
-        ...(showStakeLink ? [STAKE_LINK] : []),
-        ...(showRewardsLink ? [REWARDS_LINK] : []),
+        ...(isStakePageEnabled ? [STAKE_LINK] : []),
+        ...(showVertexRewards ? [REWARDS_LINK] : []),
         {
           label: 'Lend & Borrow',
           description: 'Money Markets',
-          icon: Icons.HiArrowsRightLeft,
           href: ROUTES.moneyMarkets,
         },
-        ...(showReferralsLink ? [REFERRALS_LINK] : []),
+        ...(isFuulEnabled ? [REFERRALS_LINK] : []),
         {
           label: 'Pools',
           description: 'Provide Liquidity',
-          icon: Icons.PiIntersectLight,
           href: ROUTES.pools,
         },
       ],
-      ecosystem: showElixirLink ? [ELIXIR_LINK] : [],
+      ecosystem: [...(isVaultsEnabled ? [VAULTS_LINK] : [])],
     };
-  }, [showElixirLink, showReferralsLink, showRewardsLink, showStakeLink]);
+  }, [isFuulEnabled, isStakePageEnabled, isVaultsEnabled, showVertexRewards]);
 }

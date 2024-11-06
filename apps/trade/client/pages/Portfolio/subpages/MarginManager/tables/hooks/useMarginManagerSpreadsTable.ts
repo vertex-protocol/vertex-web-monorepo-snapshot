@@ -1,12 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useMemo } from 'react';
-import { useSpreadBalances } from './useSpreadBalances';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { MarginWeightMetrics } from '../../types';
-import { SpotProductMetadata } from 'common/productMetadata/types';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { useSpreadBalances } from 'client/pages/Portfolio/subpages/MarginManager/tables/hooks/useSpreadBalances';
+import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
+import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
+import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { SpotProductMetadata } from '@vertex-protocol/metadata';
+import { useMemo } from 'react';
 
 export interface MarginManagerSpreadTableItem {
   spotProductId: number;
@@ -25,7 +25,7 @@ export function useMarginManagerSpreadsTable() {
   const { data: marketsStaticData, isLoading: marketStaticDataLoading } =
     useAllMarketsStaticData();
 
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const mappedData: MarginManagerSpreadTableItem[] | undefined = useMemo(() => {
     if (!spreadBalances || !marketsStaticData) {
@@ -54,18 +54,22 @@ export function useMarginManagerSpreadsTable() {
           perpSpreadAmount: spread.basisAmount.multipliedBy(-1),
           initialHealth: {
             marginUsd:
-              spread.healthIncreaseMetrics.initial.multipliedBy(quotePrice),
+              spread.healthIncreaseMetrics.initial.multipliedBy(
+                primaryQuotePriceUsd,
+              ),
             weight: healthWeights.initial,
           },
           maintenanceHealth: {
             marginUsd:
-              spread.healthIncreaseMetrics.maintenance.multipliedBy(quotePrice),
+              spread.healthIncreaseMetrics.maintenance.multipliedBy(
+                primaryQuotePriceUsd,
+              ),
             weight: healthWeights.maintenance,
           },
         };
       })
       .filter(nonNullFilter);
-  }, [marketsStaticData, quotePrice, spreadBalances]);
+  }, [marketsStaticData, primaryQuotePriceUsd, spreadBalances]);
 
   return {
     data: mappedData,

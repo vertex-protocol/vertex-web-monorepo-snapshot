@@ -1,13 +1,13 @@
 import { formatNumber } from '@vertex-protocol/react-client';
-import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
+import { mergeClassNames } from '@vertex-protocol/web-common';
 import { Label, Value, ValueWithChange } from '@vertex-protocol/web-ui';
-import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import {
   HorizontalValueWithLabelProps,
   ValueContentProps,
   ValueWithLabelProps,
   ValueWithLabelSizeVariants,
-} from './types';
+} from 'client/components/ValueWithLabel/types';
+import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 
 /**
  * Base value with label component to be used in `ValueWithLabel`.
@@ -32,7 +32,7 @@ function Base({
   }[sizeVariant];
 
   return (
-    <div className={joinClassNames('flex', gapClassName, className)}>
+    <div className={mergeClassNames('flex', gapClassName, className)}>
       <DefinitionTooltip
         definitionId={tooltip?.id}
         decoration={tooltip?.infoIcon ? { icon: true } : undefined}
@@ -65,7 +65,7 @@ function Base({
  * If `newValue` is provided, the `ValueWithChange` component will render the change arrow alongside the `newValueContent`.
  */
 function ValueContent({
-  sizeVariant,
+  sizeVariant = 'base',
   sizeVariantOverrides,
   valueClassName,
   valueEndElement,
@@ -93,7 +93,6 @@ function ValueContent({
     numberFormatSpecifier,
     changeArrowClassName,
     defaultValue,
-    outerValueClassName,
   } = unionProps;
 
   const newValueContent = (() => {
@@ -109,7 +108,6 @@ function ValueContent({
 
   return (
     <ValueWithChange
-      className={outerValueClassName}
       valueClassName={valueClassName}
       sizeVariant={valueSizeVariant}
       currentValue={formatNumber(value, {

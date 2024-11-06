@@ -1,4 +1,4 @@
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { UserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
 import {
@@ -22,7 +22,7 @@ export function useOrderFormError({
   enableMaxSizeLogic,
   userStateError,
 }: Params): OrderFormError | undefined {
-  const { data: subaccountSummary } = useCurrentSubaccountSummary();
+  const { data: subaccountSummary } = useSubaccountSummary();
   const hasNoFundsAvailable = subaccountSummary?.health.initial.health.lte(0);
   const isSingleSignatureEnabled = useIsSingleSignatureSession();
 

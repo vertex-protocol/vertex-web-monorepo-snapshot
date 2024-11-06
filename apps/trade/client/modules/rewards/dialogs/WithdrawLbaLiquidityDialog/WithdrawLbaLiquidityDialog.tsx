@@ -1,7 +1,6 @@
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { WithdrawLiquidityInput } from 'client/modules/pools/withdraw/WithdrawLiquidityInput';
@@ -9,8 +8,8 @@ import { WithdrawLiquiditySummary } from 'client/modules/pools/withdraw/Withdraw
 import { WithdrawLbaLiquidityDismissible } from 'client/modules/rewards/dialogs/WithdrawLbaLiquidityDialog/components/WithdrawLbaLiquidityDismissible';
 import { WithdrawLbaLiquidityInfoPanel } from 'client/modules/rewards/dialogs/WithdrawLbaLiquidityDialog/components/WithdrawLbaLiquidityInfoPanel';
 import { WithdrawLbaLiquiditySubmitButton } from 'client/modules/rewards/dialogs/WithdrawLbaLiquidityDialog/components/WithdrawLbaLiquiditySubmitButton';
+import { useWithdrawLbaLiquidityAmountErrorTooltipContent } from 'client/modules/rewards/dialogs/WithdrawLbaLiquidityDialog/hooks/useWithdrawLbaLiquidityAmountErrorTooltipContent';
 import { useWithdrawLbaLiquidityForm } from 'client/modules/rewards/dialogs/WithdrawLbaLiquidityDialog/hooks/useWithdrawLbaLiquidityForm';
-import { useWithdrawLbaLiquidityAmountErrorTooltipContent } from './hooks/useWithdrawLbaLiquidityAmountErrorTooltipContent';
 
 export function WithdrawLbaLiquidityDialog() {
   const {
@@ -23,7 +22,6 @@ export function WithdrawLbaLiquidityDialog() {
     onFractionSelected,
     accountState,
     estimatedReceiveAmounts,
-    marketState,
     pairMetadata,
     priceIncrement,
   } = useWithdrawLbaLiquidityForm();
@@ -33,10 +31,12 @@ export function WithdrawLbaLiquidityDialog() {
     useWithdrawLbaLiquidityAmountErrorTooltipContent({ formError });
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Withdraw Liquidity</BaseDialog.Title>
-      <BaseDialog.Body>
-        <Form onSubmit={onSubmit} className="flex w-full flex-col gap-y-6">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>
+        Withdraw Liquidity
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body asChild>
+        <Form onSubmit={onSubmit}>
           <WithdrawLbaLiquidityDismissible />
           <WithdrawLbaLiquidityInfoPanel
             metadata={pairMetadata}
@@ -80,7 +80,7 @@ export function WithdrawLbaLiquidityDialog() {
             <WithdrawLbaLiquiditySubmitButton state={buttonState} />
           </div>
         </Form>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

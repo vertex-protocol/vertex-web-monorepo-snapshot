@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://edge-mm-dashboard.vertexprotocol.com
+
+# Sitemaps
+Sitemap: https://edge-mm-dashboard.vertexprotocol.com/sitemap.xml

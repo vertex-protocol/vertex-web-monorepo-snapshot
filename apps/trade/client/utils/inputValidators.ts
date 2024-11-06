@@ -1,6 +1,14 @@
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import { z } from 'zod';
 
+export const finiteBigDecimalValidator = z
+  .string()
+  .refine((val) => {
+    const parsed = toBigDecimal(val);
+    return parsed.isFinite();
+  })
+  .transform((val) => toBigDecimal(val));
+
 export const positiveBigDecimalValidator = z
   .string()
   .refine((val) => {

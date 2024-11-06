@@ -1,6 +1,5 @@
-import { Button } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
-import { TutorialFlowProgressBar } from './TutorialFlowProgressBar';
+import { Button, UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { TutorialFlowProgressBar } from 'client/modules/tutorial/components/TutorialFlowProgressBar';
 
 interface Props {
   numTotalSteps: number;

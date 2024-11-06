@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import GhostContentAPI from '@tryghost/content-api';
+import GhostContentAPI, { Nullable } from '@tryghost/content-api';
 
 export interface BlogPost {
   title: string;
-  image: string;
+  image: Nullable<string> | undefined;
   description: string;
   url: string;
   date: string;
@@ -25,7 +25,7 @@ export function useLatestBlogPosts(limit: number = 5) {
           title: post.title ?? '',
           description:
             post.excerpt ?? post.meta_description ?? post.og_description ?? '',
-          image: post.feature_image ?? '',
+          image: post.feature_image,
           url: post.url ?? '',
           date: post.updated_at ?? '0',
         };

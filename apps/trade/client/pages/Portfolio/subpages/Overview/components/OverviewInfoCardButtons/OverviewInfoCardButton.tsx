@@ -35,7 +35,7 @@ export function OverviewInfoCardButton({
       as={Link}
       href={href}
       className={joinClassNames(
-        'hover:ring-stroke flex flex-col items-start',
+        'flex flex-col items-start',
         'gap-y-2 p-4',
         className,
       )}

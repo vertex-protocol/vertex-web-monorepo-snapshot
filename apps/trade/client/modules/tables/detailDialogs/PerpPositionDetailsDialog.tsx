@@ -1,3 +1,4 @@
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import {
   PresetNumberFormatSpecifier,
   getMarketPriceFormatSpecifier,
@@ -6,9 +7,8 @@ import {
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
@@ -27,9 +27,9 @@ export function PerpPositionDetailsDialog({
   estimatedLiquidationPrice,
 }: PerpPositionDetailsDialogParams) {
   const { primaryQuoteToken } = useVertexMetadataContext();
-  const { show, hide } = useDialog();
+  const { push, hide } = useDialog();
   const pushTradePage = usePushTradePage();
-  const userActionState = useUserActionState();
+  const isConnected = useIsConnected();
 
   const { marketName, icon, amountForSide } = marketInfo;
   const { position, notionalValueUsd, symbol } = amountInfo;
@@ -125,14 +125,14 @@ export function PerpPositionDetailsDialog({
       </SecondaryButton>
       <SecondaryButton
         onClick={() => {
-          show({
+          push({
             type: 'close_position',
             params: {
               productId,
             },
           });
         }}
-        disabled={userActionState === 'block_all' || position.eq(0)}
+        disabled={!isConnected || position.eq(0)}
       >
         Market Close
       </SecondaryButton>

@@ -1,28 +1,28 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
+import { CancelAllOrdersHeaderCell } from 'client/modules/tables/cells/CancelAllOrdersHeaderCell';
+import { CancelOrderCell } from 'client/modules/tables/cells/CancelOrderCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
+import { OrderTypeCell } from 'client/modules/tables/cells/OrderTypeCell';
+import { TriggerOrderAmountWithSymbolCell } from 'client/modules/tables/cells/TriggerOrderAmountWithSymbolCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { MarketFilter } from 'client/types/MarketFilter';
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
-import { useMemo } from 'react';
-import { CancelAllOrdersHeaderCell } from './cells/CancelAllOrdersHeaderCell';
-import { CancelOrderCell } from './cells/CancelOrderCell';
-import { OrderTypeCell } from './cells/OrderTypeCell';
 import {
   OpenTriggerOrderTableItem,
   useOpenTriggerOrdersTable,
-} from './hooks/useOpenTriggerOrdersTable';
+} from 'client/modules/tables/hooks/useOpenTriggerOrdersTable';
+import { MarketFilter } from 'client/types/MarketFilter';
+import { useMemo } from 'react';
 
 interface Props {
   marketFilter?: MarketFilter;
@@ -44,8 +44,7 @@ export function OpenTriggerOrdersTable({
   const isDesktop = useIsDesktop();
   const { show } = useDialog();
   const pushTradePage = usePushTradePage();
-  const { connectionStatus } = useEVMContext();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
 
   const columns: ColumnDef<OpenTriggerOrderTableItem, any>[] = useMemo(() => {
     return [
@@ -105,7 +104,7 @@ export function OpenTriggerOrdersTable({
       columnHelper.accessor('totalSize', {
         header: ({ header }) => <HeaderCell header={header}>Amount</HeaderCell>,
         cell: (context) => (
-          <AmountWithSymbolCell
+          <TriggerOrderAmountWithSymbolCell
             amount={context.getValue()}
             symbol={context.row.original.marketInfo.symbol}
             formatSpecifier={context.row.original.sizeFormatSpecifier}

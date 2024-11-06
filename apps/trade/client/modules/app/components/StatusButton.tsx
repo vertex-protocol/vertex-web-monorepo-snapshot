@@ -1,8 +1,10 @@
+'use client';
+
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Button, Icons } from '@vertex-protocol/web-ui';
+import { useIsEngineHealthy } from 'client/modules/app/hooks/useIsEngineHealthy';
 import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
-import { useIsEngineHealthy } from '../hooks/useIsEngineHealthy';
 
 export function StatusButton() {
   const isEngineHealthy = useIsEngineHealthy();
@@ -21,7 +23,7 @@ export function StatusButton() {
       )}
     >
       <div className="flex items-center gap-x-2">
-        <Icons.FaCircle size={6} />
+        <Icons.CircleFill size={6} />
         {isEngineHealthy ? 'Operational' : 'Maintenance'}
       </div>
     </Button>

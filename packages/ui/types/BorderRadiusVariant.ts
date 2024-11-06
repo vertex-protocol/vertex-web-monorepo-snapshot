@@ -1,1 +1,1 @@
-export type BorderRadiusVariant = 'base' | 'sm' | 'md' | 'lg';
+export type BorderRadiusVariant = 'base' | 'sm' | 'md' | 'lg' | 'full';

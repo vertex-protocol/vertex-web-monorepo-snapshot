@@ -14,7 +14,7 @@ export function CheckmarkIcon({ size, className }: Props) {
         height: size,
       }}
     >
-      <Icons.PiCheckBold className="h-full w-full" />
+      <Icons.CheckBold className="h-full w-full" />
     </div>
   );
 }

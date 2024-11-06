@@ -1,6 +1,6 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
+import { LinkButton } from '@vertex-protocol/web-ui';
 import { UserDisclosureDismissibleCard } from 'client/components/Disclosure/UserDisclosureDismissibleCard';
-import { LinkButton } from 'client/components/LinkButton';
 import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
 

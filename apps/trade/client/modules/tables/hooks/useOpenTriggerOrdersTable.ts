@@ -1,7 +1,7 @@
 import {
   BigDecimal,
-  removeDecimals,
   toBigDecimal,
+  removeDecimals,
 } from '@vertex-protocol/utils';
 import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
@@ -12,7 +12,7 @@ import { TriggerOrderType } from 'client/modules/trading/types';
 import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { QueryState } from 'client/types/QueryState';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
@@ -57,7 +57,7 @@ export function useOpenTriggerOrdersTable(
 
       return ordersForProduct.map(
         (openTriggerOrder): OpenTriggerOrderTableItem => {
-          const { icon, symbol } = getBaseProductMetadata(market.metadata);
+          const { icon, symbol } = getSharedProductMetadata(market.metadata);
           const totalAmount = openTriggerOrder.order.amount;
           const decimalAdjustedTotalAmount = removeDecimals(totalAmount);
 

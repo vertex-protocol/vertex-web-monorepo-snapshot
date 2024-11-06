@@ -1,8 +1,8 @@
 import { nowInSeconds, TimeInSeconds } from '@vertex-protocol/utils';
 import { useSubaccountCreationTime } from 'client/hooks/query/subaccount/useSubaccountCreationTime';
+import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
 import { rangeRight } from 'lodash';
 import { useMemo } from 'react';
-import { ChartTimespan } from '../types';
 
 interface ChartQueryTimes {
   secondsBeforeNow: number[];

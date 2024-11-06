@@ -1,7 +1,7 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { joinClassNames } from '@vertex-protocol/web-common';
 import { formatNumber } from '@vertex-protocol/react-client';
-import { TriggerCriteriaPriceType } from '../../types';
+import { joinClassNames } from '@vertex-protocol/web-common';
+import { TriggerCriteriaPriceType } from 'client/modules/trading/tpsl/tpslDialog/types';
 
 interface Props {
   isTakeProfit: boolean;

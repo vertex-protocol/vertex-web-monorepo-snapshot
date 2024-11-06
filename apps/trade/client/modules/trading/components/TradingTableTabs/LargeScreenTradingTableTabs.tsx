@@ -1,12 +1,12 @@
-import { TabsContent, TabsList, Root as TabsRoot } from '@radix-ui/react-tabs';
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
+import { Root as TabsRoot, TabsContent, TabsList } from '@radix-ui/react-tabs';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { COMMON_TRANSPARENCY_COLORS, Divider } from '@vertex-protocol/web-ui';
 import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
+import { TradingTabFilterSelect } from 'client/modules/trading/components/TradingTableTabs/TradingTabFilterSelect';
 import { TradingTableTabsTrigger } from 'client/modules/trading/components/TradingTableTabs/TradingTableTabsTrigger';
 import { TradingTab } from 'client/modules/trading/layout/types';
 import { Fragment } from 'react';
-import { TradingTabFilterSelect } from './TradingTabFilterSelect';
 
 export function LargeScreenTradingTableTabs({
   tradingTabs,
@@ -18,7 +18,11 @@ export function LargeScreenTradingTableTabs({
 
   return (
     <TabsRoot
-      className={joinClassNames('divide-overlay-divider/5 divide-y', className)}
+      className={joinClassNames(
+        'divide-y',
+        COMMON_TRANSPARENCY_COLORS.divide,
+        className,
+      )}
       value={selectedTabId}
       onValueChange={setSelectedTabId}
     >

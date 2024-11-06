@@ -4,10 +4,10 @@ import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { HistoricalLiquidationEvent } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
+import { HistoricalLiquidationsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 
 interface LiquidationTypeCellProps extends TableCellProps {
-  liquidatedBalanceTypes: HistoricalLiquidationEvent['liquidatedBalanceTypes'];
+  liquidatedBalanceTypes: HistoricalLiquidationsTableItem['liquidatedBalanceTypes'];
 }
 
 const liquidationTypeToLabel = {

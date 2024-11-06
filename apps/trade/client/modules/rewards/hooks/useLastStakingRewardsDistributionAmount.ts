@@ -1,4 +1,4 @@
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useStakingState } from 'client/hooks/query/vrtxToken/useStakingState';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { last } from 'lodash';

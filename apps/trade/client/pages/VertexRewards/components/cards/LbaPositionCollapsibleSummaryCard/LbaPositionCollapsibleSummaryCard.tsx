@@ -2,19 +2,20 @@ import {
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { Divider, Icons, PrimaryButton } from '@vertex-protocol/web-ui';
+import { Divider, Icons, LinkButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
-import { LinkButton } from 'client/components/LinkButton';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { LbaPositionTable } from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/LbaPositionTable/LbaPositionTable';
+import { useLbaPositionSummaryCard } from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/useLbaPositionSummaryCard';
 import poolIcon from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/vrtx-lba-pool-icon.svg';
+import { RewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/RewardsSummaryCard';
 import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import { isBefore } from 'date-fns';
 import { now } from 'lodash';
 import Link from 'next/link';
-import { RewardsSummaryCard } from '../RewardsSummaryCard';
-import { LbaPositionTable } from './LbaPositionTable/LbaPositionTable';
-import { useLbaPositionSummaryCard } from './useLbaPositionSummaryCard';
 
 export function LbaPositionCollapsibleSummaryCard() {
   const {
@@ -50,7 +51,7 @@ export function LbaPositionCollapsibleSummaryCard() {
         formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
       })}
       {isBeforeVesting && (
-        <Icons.MdLockOutline className="bg-surface-2 h-6 w-6 rounded-full p-1" />
+        <Icons.Lock className="bg-surface-2 h-6 w-6 rounded-full p-1" />
       )}
     </span>
   );
@@ -110,10 +111,7 @@ export function LbaPositionCollapsibleSummaryCard() {
   );
 
   return (
-    <RewardsSummaryCard.Container
-      collapsibleContent={collapsibleContent}
-      className="bg-surface-card ring-stroke"
-    >
+    <RewardsSummaryCard.Container collapsibleContent={collapsibleContent}>
       <RewardsSummaryCard.Content
         header={
           <RewardsSummaryCard.IconHeader
@@ -132,13 +130,16 @@ export function LbaPositionCollapsibleSummaryCard() {
         }
         metricItems={metricItems}
         action={
-          <PrimaryButton
+          <ValidUserStatePrimaryButton
             onClick={onClaimClick}
             isLoading={isClaiming}
             disabled={disableClaimButton}
+            handledErrors={
+              HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+            }
           >
             {claimButtonMessage}
-          </PrimaryButton>
+          </ValidUserStatePrimaryButton>
         }
         footer={footerContent}
       />

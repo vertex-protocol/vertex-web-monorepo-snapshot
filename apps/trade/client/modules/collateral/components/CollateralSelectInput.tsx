@@ -1,16 +1,19 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { CompactInput, CompactInputProps } from '@vertex-protocol/web-ui';
-import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
-import React, { ReactNode } from 'react';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import {
+  COMMON_TRANSPARENCY_COLORS,
+  CompactInput,
+  CompactInputProps,
+} from '@vertex-protocol/web-ui';
 import {
   AssetSelectProps,
   CollateralAssetSelect,
-} from './CollateralAssetSelect';
+} from 'client/modules/collateral/components/CollateralAssetSelect';
+import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
+import React, { ReactNode } from 'react';
 
 interface Props extends CompactInputProps {
-  inputClassName?: string;
-  dropdownProps: AssetSelectProps;
+  selectProps: AssetSelectProps;
   estimatedValueUsd: BigDecimal | undefined;
   error?: ReactNode;
 }
@@ -19,36 +22,31 @@ export const CollateralSelectInput = React.forwardRef<
   HTMLInputElement,
   WithClassnames<Props>
 >(function CollateralSelectInputBase(
-  {
-    className,
-    inputClassName,
-    dropdownProps,
-    estimatedValueUsd,
-    error,
-    ...rest
-  },
+  { className, selectProps, estimatedValueUsd, error, ...rest },
   ref,
 ) {
   const {
     availableProducts,
     selectedProduct,
     assetAmountTitle,
-    disabled,
+    disabled: disableSelect,
     optionsClassName,
     onProductSelected,
-  } = dropdownProps;
+  } = selectProps;
 
   return (
     <CompactInput
       type="number"
       min={0}
       errorTooltipContent={error}
-      disabled={disabled}
       inputContainerClassName={joinClassNames('pl-0', className)}
       startElement={
         <CollateralAssetSelect
-          className="border-overlay-divider/10 h-full w-24 min-w-24 border-r"
-          disabled={disabled}
+          className={joinClassNames(
+            'h-full w-max min-w-24 border-r',
+            COMMON_TRANSPARENCY_COLORS.border,
+          )}
+          disabled={disableSelect}
           availableProducts={availableProducts}
           selectedProduct={selectedProduct}
           assetAmountTitle={assetAmountTitle}

@@ -13,11 +13,8 @@ export function LpEventTypeCell({ amount, ...rest }: Props) {
   const isProvide = amount.gt(0);
   return (
     <TableCell {...rest}>
-      <Pill colorVariant="tertiary" sizeVariant="sm">
-        {/* Inner `span` to maintain bg color and gradient text */}
-        <span className={isProvide ? 'text-negative' : 'text-positive'}>
-          {isProvide ? 'Provide' : 'Withdraw'}
-        </span>
+      <Pill colorVariant="primary" sizeVariant="xs">
+        {isProvide ? 'Provide' : 'Withdraw'}
       </Pill>
     </TableCell>
   );

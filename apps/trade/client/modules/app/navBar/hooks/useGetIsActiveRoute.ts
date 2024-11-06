@@ -1,19 +1,19 @@
 import { startsWith } from 'lodash';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
 
 /**
  * Returns a function that checks if the current route is one of the provided routes.
  */
 export function useGetIsActiveRoute() {
-  const { asPath } = useRouter();
+  const pathname = usePathname();
 
   return useCallback(
     (...routes: string[]) => {
       return routes.some((route) =>
-        startsWith(asPath.toLowerCase(), route.toLowerCase()),
+        startsWith(pathname.toLowerCase(), route.toLowerCase()),
       );
     },
-    [asPath],
+    [pathname],
   );
 }

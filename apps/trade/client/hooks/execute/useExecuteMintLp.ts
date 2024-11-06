@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { EngineMintLpParams } from '@vertex-protocol/client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   MAX_SIZE_QUERY_KEYS,
   SUBACCOUNT_SUMMARY_QUERY_KEYS,
@@ -12,7 +13,6 @@ import {
 import { useRefetchQueries } from 'client/hooks/execute/util/useRefetchQueries';
 import { currentSubaccountPaginatedLpEventsQueryKey } from 'client/hooks/query/subaccount/useSubaccountPaginatedLpEvents';
 import { useCallback } from 'react';
-import { logExecuteError } from './util/logExecuteError';
 
 const REFETCH_QUERY_KEYS = [
   ...SUBACCOUNT_SUMMARY_QUERY_KEYS,

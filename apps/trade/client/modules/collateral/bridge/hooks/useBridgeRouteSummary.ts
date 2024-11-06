@@ -1,16 +1,16 @@
-import { EstimatedBridgeRoute } from 'client/modules/collateral/bridge/hooks/base/useEstimatedBridgeRoute';
 import {
   BigDecimal,
+  removeDecimals,
   sumBigDecimalBy,
   toBigDecimal,
 } from '@vertex-protocol/utils';
-import { useMemo } from 'react';
-import { removeDecimals } from '@vertex-protocol/utils';
+import { EstimatedBridgeRoute } from 'client/modules/collateral/bridge/hooks/query/useEstimatedBridgeRoute';
 import {
   BridgeChain,
   DestinationBridgeToken,
 } from 'client/modules/collateral/bridge/types';
 import { first } from 'lodash';
+import { useMemo } from 'react';
 
 interface Params {
   selectedSourceChain: BridgeChain | undefined;

@@ -1,18 +1,19 @@
-import { WithChildren } from '@vertex-protocol/web-common';
 import {
   ConnectionStatus,
   EVMContextProvider,
   useEVMContext,
   VertexClientContextProvider,
 } from '@vertex-protocol/react-client';
+import { WithChildren } from '@vertex-protocol/web-common';
+import { VertexMetadataContextProvider } from '@vertex-protocol/metadata';
 import { useTimeout } from 'ahooks';
-import { BrandIconLoadingIndicator } from 'client/components/BrandIconLoadingIndicator';
+import { BrandLoadingWrapper } from 'client/components/BrandIconLoadingWrapper/BrandLoadingWrapper';
 import { getEVMContextParams } from 'client/context/appData/getEVMContextParams';
 import { useChainEnvQueryParam } from 'client/context/appData/hooks/useChainEnvQueryParam';
 import { useSavedPrimaryChainEnv } from 'client/context/appData/hooks/useSavedPrimaryChainEnv';
-import { SubaccountContextProvider } from 'client/context/subaccount/SubaccountContext';
-import { VertexMetadataContextProvider } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useEffect, useRef, useState } from 'react';
+import { SubaccountContextProvider } from 'client/context/subaccount/SubaccountContextProvider';
+import { AppVersion } from 'client/modules/app/components/AppVersion';
+import { useEffect, useState } from 'react';
 
 const evmContextParams = getEVMContextParams();
 
@@ -34,27 +35,30 @@ export function AppDataProviders({ children }: WithChildren) {
   const chainEnvQueryParam = useChainEnvQueryParam({
     supportedChainEnvs: evmContextParams.supportedChainEnvs,
   });
-  const didHandleChainQueryParam = useRef(false);
+  const [didDetermineChainEnv, setDidDetermineChainEnv] = useState(false);
 
   useEffect(() => {
-    if (didHandleChainQueryParam.current || !chainEnvQueryParam) {
+    if (didDetermineChainEnv || !didLoadPersistedValue) {
       return;
     }
 
     // Out of sync - set the saved chain env
-    if (didLoadPersistedValue && savedPrimaryChainEnv !== chainEnvQueryParam) {
+    if (chainEnvQueryParam && savedPrimaryChainEnv !== chainEnvQueryParam) {
       console.debug(
         '[AppDataProviders] Setting saved chain env from query param',
         chainEnvQueryParam,
       );
       setSavedPrimaryChainEnv(chainEnvQueryParam);
-      didHandleChainQueryParam.current = true;
     }
+
+    setDidDetermineChainEnv(true);
   }, [
     chainEnvQueryParam,
     didLoadPersistedValue,
     savedPrimaryChainEnv,
     setSavedPrimaryChainEnv,
+    didDetermineChainEnv,
+    setDidDetermineChainEnv,
   ]);
 
   return (
@@ -63,7 +67,7 @@ export function AppDataProviders({ children }: WithChildren) {
       primaryChainEnv={savedPrimaryChainEnv}
       setPrimaryChainEnv={setSavedPrimaryChainEnv}
     >
-      <InitialLoadOverlay didLoadChainEnv={didLoadPersistedValue}>
+      <InitialLoadOverlay didDetermineChainEnv={didDetermineChainEnv}>
         <VertexClientContextProvider>
           <SubaccountContextProvider>
             <VertexMetadataContextProvider>
@@ -86,19 +90,19 @@ const INITIAL_LOAD_CONNECTION_STATUSES: Set<ConnectionStatus['type']> = new Set(
  */
 function InitialLoadOverlay({
   children,
-  didLoadChainEnv,
-}: WithChildren<{ didLoadChainEnv: boolean }>) {
+  didDetermineChainEnv,
+}: WithChildren<{ didDetermineChainEnv: boolean }>) {
   const { connectionStatus } = useEVMContext();
   const isLoadingWalletConnection = INITIAL_LOAD_CONNECTION_STATUSES.has(
     connectionStatus.type,
   );
 
-  const showOverlay = !didLoadChainEnv || isLoadingWalletConnection;
+  const showOverlay = !didDetermineChainEnv || isLoadingWalletConnection;
 
   // Timeout to show the app in case of some weird case where we're stuck in a loading state
   const [isTimedOut, setIsTimedOut] = useState(false);
   useTimeout(() => {
-    if (!showOverlay) {
+    if (showOverlay) {
       console.warn(
         '[InitialLoadOverlay] Timed out waiting for initial load to complete',
       );
@@ -106,15 +110,15 @@ function InitialLoadOverlay({
     setIsTimedOut(true);
   }, 7500);
 
-  const overlay = (
-    <div className="bg-background absolute inset-0 z-50 flex h-full w-full items-center justify-center">
-      <BrandIconLoadingIndicator size={72} />
-    </div>
+  return (
+    <BrandLoadingWrapper
+      indicatorContainerClassName="bg-background absolute inset-0 z-50 h-full w-full"
+      isLoading={showOverlay && !isTimedOut}
+      extraContent={
+        <AppVersion className="absolute bottom-2 right-2 text-xs" />
+      }
+    >
+      {children}
+    </BrandLoadingWrapper>
   );
-
-  if (showOverlay && !isTimedOut) {
-    return overlay;
-  }
-
-  return <>{children}</>;
 }

@@ -21,9 +21,9 @@ export function SignOfValuePill({ value, className }: WithClassnames<Props>) {
       )}
     >
       {signDependentValue(value, {
-        positive: <Icons.BiPlus />,
-        negative: <Icons.BiMinus />,
-        zero: <Icons.BsDot />,
+        positive: <Icons.Plus />,
+        negative: <Icons.Minus />,
+        zero: <Icons.Dot />,
       })}
     </div>
   );

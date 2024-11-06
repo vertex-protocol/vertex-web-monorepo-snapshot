@@ -1,40 +1,22 @@
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
-import { LinkButton } from 'client/components/LinkButton';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { LINKS } from 'common/brandMetadata/links/links';
-import Link from 'next/link';
-import { BridgeDismissible } from './BridgeDismissible';
-import { BridgeFormContent } from './BridgeFormContent';
-import { BridgePoweredBy } from './BridgePoweredBy';
+import { BridgeDismissible } from 'client/modules/collateral/bridge/components/BridgeDismissible';
+import { BridgeFormContent } from 'client/modules/collateral/bridge/components/BridgeFormContent';
+import { BridgePoweredBy } from 'client/modules/collateral/bridge/components/BridgePoweredBy';
 
 export function BridgeDialog() {
   const { hide } = useDialog();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title
-        onClose={hide}
-        endElement={
-          <LinkButton
-            as={Link}
-            colorVariant="primary"
-            className="text-xs"
-            href={LINKS.crossChainDocs}
-            external
-            withExternalIcon
-          >
-            Tutorial
-          </LinkButton>
-        }
-      >
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>
         Cross-Chain Deposit
-      </BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-4">
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <BridgeDismissible />
         <BridgeFormContent />
         <BridgePoweredBy />
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

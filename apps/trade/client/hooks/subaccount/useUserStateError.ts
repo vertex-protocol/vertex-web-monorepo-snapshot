@@ -1,20 +1,28 @@
 import { useRequiresDeposit } from 'client/hooks/subaccount/useRequiresDeposit';
 import { useRequiresApproveSignOnce } from 'client/modules/singleSignatureSessions/hooks/useRequiresApproveSignOnce';
 import { useMemo } from 'react';
-import { useEVMContext } from '@vertex-protocol/react-client';
+import { PrimaryChain, useEVMContext } from '@vertex-protocol/react-client';
 import { useIsClient } from '@vertex-protocol/web-common';
 import { useRequiresSingleSignatureSetup } from 'client/modules/singleSignatureSessions/hooks/useRequiresSingleSignatureSetup';
+import { ChainEnv } from '@vertex-protocol/client';
 
 export type UserStateError =
   | 'not_connected'
-  | 'incorrect_chain'
+  | 'incorrect_connected_chain'
+  | 'incorrect_chain_env'
   | 'requires_deposit'
   | 'requires_sign_once_approval'
   | 'requires_single_signature_setup';
 
-export function useUserStateError(): UserStateError | undefined {
+interface Params {
+  requiredConnectedChain?: PrimaryChain;
+  requiredChainEnv?: ChainEnv;
+}
+
+export function useUserStateError(params?: Params): UserStateError | undefined {
   const isClient = useIsClient();
-  const { connectionStatus, chainStatus } = useEVMContext();
+  const { connectionStatus, chainStatus, primaryChainEnv, primaryChain } =
+    useEVMContext();
   const requiresDeposit = useRequiresDeposit();
   const requiresApproveSignOnce = useRequiresApproveSignOnce();
   const requiresSingleSignatureSetup = useRequiresSingleSignatureSetup();
@@ -26,8 +34,20 @@ export function useUserStateError(): UserStateError | undefined {
     if (connectionStatus.type !== 'connected') {
       return 'not_connected';
     }
-    if (chainStatus.isIncorrectChain) {
-      return 'incorrect_chain';
+
+    if (
+      params?.requiredChainEnv &&
+      params.requiredChainEnv !== primaryChainEnv
+    ) {
+      return 'incorrect_chain_env';
+    }
+
+    // If a specific chain is required, handle for required chain otherwise handle for primary chain
+    if (
+      chainStatus.connectedChain?.id !==
+      (params?.requiredConnectedChain?.id ?? primaryChain.id)
+    ) {
+      return 'incorrect_connected_chain';
     }
     if (requiresDeposit) {
       return 'requires_deposit';
@@ -41,9 +61,13 @@ export function useUserStateError(): UserStateError | undefined {
   }, [
     isClient,
     connectionStatus.type,
-    chainStatus.isIncorrectChain,
-    requiresSingleSignatureSetup,
-    requiresApproveSignOnce,
+    params?.requiredChainEnv,
+    params?.requiredConnectedChain,
+    primaryChainEnv,
+    primaryChain.id,
     requiresDeposit,
+    requiresApproveSignOnce,
+    requiresSingleSignatureSetup,
+    chainStatus.connectedChain?.id,
   ]);
 }

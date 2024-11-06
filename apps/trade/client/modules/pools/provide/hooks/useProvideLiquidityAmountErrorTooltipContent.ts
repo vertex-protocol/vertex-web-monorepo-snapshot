@@ -1,5 +1,5 @@
+import { ProvideLiquidityErrorType } from 'client/modules/pools/types';
 import { useMemo } from 'react';
-import { ProvideLiquidityErrorType } from '../../types';
 
 export function useProvideLiquidityAmountErrorTooltipContent({
   formError,

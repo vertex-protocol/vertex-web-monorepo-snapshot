@@ -1,5 +1,4 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { useExecuteCancelReduceOnlyOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelReduceOnlyOrdersWithNotification';
 import { useExecuteClosePosition } from 'client/hooks/execute/placeOrder/useExecuteClosePosition';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import {
@@ -44,8 +43,6 @@ export function useClosePositionForm({
   const executeClosePosition = useExecuteClosePosition();
   const { data: positionsData } = usePerpPositions();
   const { data: staticMarketsData } = useAllMarketsStaticData();
-  const { cancelReduceOnlyOrdersWithNotification } =
-    useExecuteCancelReduceOnlyOrdersWithNotification();
 
   const [fractionToClose, setFractionToClose] = useState<number>(1); // 100% as default
 
@@ -110,9 +107,6 @@ export function useClosePositionForm({
       fractionToClose,
     });
 
-    // Cancel all reduce only orders for product
-    cancelReduceOnlyOrdersWithNotification([productId]);
-
     dispatchNotification({
       type: 'close_position',
       data: {
@@ -132,7 +126,6 @@ export function useClosePositionForm({
     fractionToClose,
     executeClosePosition,
     productId,
-    cancelReduceOnlyOrdersWithNotification,
     dispatchNotification,
     priceIncrement,
   ]);

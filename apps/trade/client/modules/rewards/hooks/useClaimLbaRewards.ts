@@ -5,7 +5,7 @@ import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPro
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import { useCallback } from 'react';
 
 /**

@@ -4,9 +4,7 @@ import { LpMarketDetailsDialog } from 'client/modules/tables/detailDialogs/LpMar
 import { OpenEngineOrderDetailsDialog } from 'client/modules/tables/detailDialogs/OpenEngineOrderDetailsDialog';
 import { OpenTriggerOrderDetailsDialog } from 'client/modules/tables/detailDialogs/OpenTriggerOrderDetailsDialog';
 import { PerpPositionDetailsDialog } from 'client/modules/tables/detailDialogs/PerpPositionDetailsDialog';
-import {
-  PreLiquidationDetailsDialog
-} from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/PreLiquidationDetailsDialog';
+import { PreLiquidationDetailsDialog } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/PreLiquidationDetailsDialog';
 import { RealizedPnlDetailsDialog } from 'client/modules/tables/detailDialogs/RealizedPnlDetailsDialog';
 import { SpotBalanceDetailsDialog } from 'client/modules/tables/detailDialogs/SpotBalanceDetailsDialog';
 import { MarketDetailsDialog } from 'client/pages/Markets/components/MarketDetailsDialog/MarketDetailsDialog';

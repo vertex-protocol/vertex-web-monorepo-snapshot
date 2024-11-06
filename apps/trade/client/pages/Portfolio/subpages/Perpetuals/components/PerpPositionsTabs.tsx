@@ -1,23 +1,34 @@
+'use client';
+
 import {
-  Root as TabsRoot,
   TabsContent,
   TabsList,
+  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { UnderlinedTabs } from '@vertex-protocol/web-ui';
-import { usePerpPositionsTabs } from '../hooks/usePerpPositionsTabs';
-import { CounterPill } from '@vertex-protocol/web-ui';
+import { CounterPill, UnderlinedTabs } from '@vertex-protocol/web-ui';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { usePerpPositionsTabs } from 'client/pages/Portfolio/subpages/Perpetuals/hooks/usePerpPositionsTabs';
 
 export function PerpPositionsTabs({ className }: WithClassnames) {
   const { selectedTabId, tabs, setSelectedUntypedTabId } =
     usePerpPositionsTabs();
+  const { trackEvent } = useAnalyticsContext();
 
   return (
     <TabsRoot
       className={joinClassNames('flex w-full flex-col gap-y-3', className)}
       value={selectedTabId}
-      onValueChange={setSelectedUntypedTabId}
+      onValueChange={(value) => {
+        setSelectedUntypedTabId(value);
+        trackEvent({
+          type: 'positions_tabs_clicked',
+          data: {
+            positionsTab: value,
+          },
+        });
+      }}
     >
       <TabsList asChild>
         <UnderlinedTabs.Container>

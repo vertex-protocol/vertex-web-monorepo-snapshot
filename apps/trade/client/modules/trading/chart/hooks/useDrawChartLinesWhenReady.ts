@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
+import { IChartingLibraryWidget } from 'public/charting_library/charting_library';
+import { TradingViewSymbolInfo } from 'client/modules/trading/chart/config/datafeedConfig';
 
 interface Params {
+  tvWidget: IChartingLibraryWidget | undefined;
+  loadedSymbolInfo: TradingViewSymbolInfo | undefined;
   drawOrderLines: () => void;
   drawEntryLine: () => void;
 }
@@ -10,13 +14,14 @@ interface Params {
  * never really bulletproof. For the sake of simplicity, we just `try/catch` all draw attempts and ignore errors.
  */
 export function useDrawChartLinesWhenReady({
+  tvWidget,
+  loadedSymbolInfo,
   drawOrderLines,
   drawEntryLine,
 }: Params) {
   // Draw chart lines on reload of the callback - the individual draw functions will reload on data changes, so having
   // this effect ensures that data is always brought up to date
   useEffect(() => {
-    // Wrap in try-catch as this is prone to errors, especially on initial chart load / symbol switches
     try {
       drawOrderLines();
     } catch (err) {
@@ -25,7 +30,7 @@ export function useDrawChartLinesWhenReady({
         err,
       );
     }
-  }, [drawOrderLines]);
+  }, [drawOrderLines, tvWidget, loadedSymbolInfo]);
 
   useEffect(() => {
     try {
@@ -36,5 +41,5 @@ export function useDrawChartLinesWhenReady({
         err,
       );
     }
-  }, [drawEntryLine]);
+  }, [drawEntryLine, tvWidget, loadedSymbolInfo]);
 }

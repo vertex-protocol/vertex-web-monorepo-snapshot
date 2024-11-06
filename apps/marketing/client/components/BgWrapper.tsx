@@ -21,7 +21,7 @@ export function BgWrapper({
   return (
     <div
       className={joinClassNames(
-        'relative isolate flex h-max w-full flex-col items-center',
+        'relative flex h-max w-full flex-col items-center',
         className,
       )}
     >

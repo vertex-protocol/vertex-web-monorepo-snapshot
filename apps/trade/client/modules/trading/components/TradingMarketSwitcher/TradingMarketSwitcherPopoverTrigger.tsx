@@ -1,7 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { Button, getStateOverlayClassNames } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
 import Image from 'next/image';
 
@@ -32,7 +32,7 @@ export function TradingMarketSwitcherPopoverTrigger({
               className="h-6 w-auto"
             />
           )}
-          {selectedMarket?.market.name ?? ''}
+          {selectedMarket?.market.marketName ?? ''}
         </>
       );
     })();

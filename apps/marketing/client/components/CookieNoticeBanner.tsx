@@ -1,8 +1,10 @@
-import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
-import { useVertexCookiePreference } from 'client/hooks/useVertexCookiePreference';
+'use client';
+
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { EXTERNAL_LINKS } from 'client/consts';
+import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
+import { EXTERNAL_LINKS } from 'client/consts';
+import { useVertexCookiePreference } from 'client/hooks/useVertexCookiePreference';
 import Link from 'next/link';
 
 export function CookieNoticeBanner() {
@@ -20,14 +22,14 @@ export function CookieNoticeBanner() {
   }
 
   return (
-    <div className="fixed bottom-0 z-30 flex w-full justify-center px-6 py-7 sm:px-16 xl:px-28">
+    <div className="fixed bottom-0 z-10 flex w-full justify-center px-6 py-7 sm:px-16 xl:px-28">
       <div
         className={joinClassNames(
           'flex flex-col gap-x-8 gap-y-4 rounded-2xl px-6 py-3 sm:flex-row',
           'backdrop-blur-nav bg-black-800 shadow-black-900/30 shadow-lg',
         )}
       >
-        <div className="flex flex-col gap-y-2 ">
+        <div className="flex flex-col gap-y-2">
           <p className="text-sm font-bold text-white">Manage Cookies</p>
           <p className="text-white-700 text-xs">
             Vertex may collect and disclose cookie and other data collection

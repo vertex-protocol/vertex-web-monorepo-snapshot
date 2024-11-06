@@ -1,4 +1,8 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
+import {
+  formatNumber,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import {
   PerpPositionItem,
@@ -6,10 +10,7 @@ import {
 } from 'client/hooks/subaccount/usePerpPositions';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { TradingViewSymbolInfo } from 'client/modules/trading/chart/config/datafeedConfig';
-import {
-  formatNumber,
-  getMarketSizeFormatSpecifier,
-} from '@vertex-protocol/react-client';
+import { isChartSyncedToSymbolInfo } from 'client/modules/trading/chart/utils/isChartSyncedToSymbolInfo';
 import { COLORS } from 'common/theme/colors';
 import { FONTS } from 'common/theme/fonts';
 import {
@@ -18,20 +19,16 @@ import {
   IPositionLineAdapter,
 } from 'public/charting_library';
 import { useCallback, useEffect, useRef } from 'react';
-import { isChartSyncedToSymbolInfo } from '../utils/isChartSyncedToSymbolInfo';
 
 interface Params {
-  tvWidget?: IChartingLibraryWidget;
-  selectedSymbolInfo?: TradingViewSymbolInfo;
+  tvWidget: IChartingLibraryWidget | undefined;
+  loadedSymbolInfo: TradingViewSymbolInfo | undefined;
 }
 
 // Mapping from product ID to the average entry line for that product
 type EntryLineByProductId = Map<number, IPositionLineAdapter>;
 
-export function useDrawChartEntryLines({
-  tvWidget,
-  selectedSymbolInfo,
-}: Params) {
+export function useDrawChartEntryLines({ tvWidget, loadedSymbolInfo }: Params) {
   const existingLinesByProductId = useRef<EntryLineByProductId>(new Map());
   const { data: perpPositionsData } = usePerpPositions();
   const { data: marketStaticData } = useAllMarketsStaticData();
@@ -51,13 +48,13 @@ export function useDrawChartEntryLines({
    */
   return useCallback(() => {
     if (
-      !selectedSymbolInfo ||
-      selectedSymbolInfo.productType === ProductEngineType.SPOT
+      !loadedSymbolInfo ||
+      loadedSymbolInfo.productType === ProductEngineType.SPOT
     ) {
       return;
     }
 
-    const selectedProductId = selectedSymbolInfo.productId;
+    const selectedProductId = loadedSymbolInfo.productId;
     const selectedPosition = perpPositionsData?.find(
       (position) => position.productId === selectedProductId,
     );
@@ -70,7 +67,7 @@ export function useDrawChartEntryLines({
     const activeChart = tvWidget.activeChart();
     const activeChartSymbol = activeChart.symbol();
 
-    if (!isChartSyncedToSymbolInfo(activeChartSymbol, selectedSymbolInfo)) {
+    if (!isChartSyncedToSymbolInfo(activeChartSymbol, loadedSymbolInfo)) {
       return;
     }
 
@@ -130,7 +127,7 @@ export function useDrawChartEntryLines({
       ),
     );
   }, [
-    selectedSymbolInfo,
+    loadedSymbolInfo,
     perpPositionsData,
     marketStaticData?.all,
     tvWidget,

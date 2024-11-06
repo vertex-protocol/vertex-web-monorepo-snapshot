@@ -1,10 +1,13 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { WithClassnames } from '@vertex-protocol/web-common';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 import { RiskWarningIcon } from 'client/components/Icons/RiskWarningIcon';
 import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { MarginManagerHeaderInfo } from './MarginManagerHeaderInfo';
+import { MarginManagerHeaderInfo } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerHeader/MarginManagerHeaderInfo';
 
 interface Props {
   marginUsageFraction: BigDecimal | undefined;
@@ -19,7 +22,12 @@ export function InitialMarginUsagePane({
   return (
     <MarginManagerHeaderInfo.Card className={className}>
       <MarginManagerHeaderInfo.Title title="Initial Margin" />
-      <div className="divide-overlay-divider/10 grid grid-cols-2 divide-x">
+      <div
+        className={joinClassNames(
+          'grid grid-cols-2 divide-x',
+          COMMON_TRANSPARENCY_COLORS.divide,
+        )}
+      >
         <MarginManagerHeaderInfo.Metric
           label="Margin Usage"
           content={formatNumber(marginUsageFraction, {

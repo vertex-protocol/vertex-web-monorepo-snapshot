@@ -1,8 +1,8 @@
 import { InputValidatorFn } from '@vertex-protocol/web-common';
-import { BaseProductMetadata, Token } from 'common/productMetadata/types';
+import { SharedProductMetadata, Token } from '@vertex-protocol/metadata';
 
 export type PairMetadata = {
-  base: BaseProductMetadata;
+  base: SharedProductMetadata;
   quote: Token;
 };
 

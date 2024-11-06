@@ -11,6 +11,7 @@ import {
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { allDepositableTokenBalancesQueryKey } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
+import { listSubaccountsQueryKey } from 'client/hooks/query/subaccount/useListSubaccounts';
 import { subaccountCreationTimeQueryKey } from 'client/hooks/query/subaccount/useSubaccountCreationTime';
 import { subaccountPaginatedCollateralEventsQueryKey } from 'client/hooks/query/subaccount/useSubaccountPaginatedCollateralEvents';
 import { subaccountReferralCodeQueryKey } from 'client/hooks/query/subaccount/useSubaccountReferralCode';
@@ -23,6 +24,7 @@ const REFETCH_QUERY_KEYS = [
   allDepositableTokenBalancesQueryKey(),
   tokenAllowanceQueryKey(),
   subaccountPaginatedCollateralEventsQueryKey(),
+  listSubaccountsQueryKey(),
   ...SUBACCOUNT_SUMMARY_QUERY_KEYS,
   ...MAX_SIZE_QUERY_KEYS,
 ];

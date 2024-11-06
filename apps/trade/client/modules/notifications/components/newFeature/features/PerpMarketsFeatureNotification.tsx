@@ -3,7 +3,7 @@ import { NewFeatureDisclosureKey } from 'client/modules/localstorage/userState/t
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
 import { TOAST_MARKET_ICON_CLASSNAME } from 'client/modules/notifications/components/consts';
 import { NewFeatureNotification } from 'client/modules/notifications/components/newFeature/NewFeatureNotification';
-import { PerpProductMetadata } from 'common/productMetadata/types';
+import { PerpProductMetadata } from '@vertex-protocol/metadata';
 import Image from 'next/image';
 
 interface Props extends ToastProps {
@@ -36,13 +36,13 @@ export function PerpMarketsFeatureNotification({
       <div className="grid max-w-[80%] grid-cols-2 justify-items-start gap-2">
         {markets.map((market) => {
           return (
-            <div className="flex items-center gap-x-2" key={market.name}>
+            <div className="flex items-center gap-x-2" key={market.marketName}>
               <Image
                 className={TOAST_MARKET_ICON_CLASSNAME}
                 src={market.icon.asset}
-                alt={market.name}
+                alt={market.marketName}
               />
-              <div className="text-text-primary">{market.name}</div>
+              <div className="text-text-primary">{market.marketName}</div>
             </div>
           );
         })}

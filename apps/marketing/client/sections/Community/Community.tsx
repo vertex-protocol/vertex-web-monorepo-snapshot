@@ -4,9 +4,9 @@ import {
   DEFAULT_SECTION_WIDTH,
   SECTION_IDS,
 } from 'client/consts';
-import { BlogLinks } from './components/BlogLinks/BlogLinks';
-import { NewsLinks } from './components/NewsLinks';
-import { SocialLinks } from './components/SocialLinks/SocialLinks';
+import { BlogLinks } from 'client/sections/Community/components/BlogLinks/BlogLinks';
+import { NewsLinks } from 'client/sections/Community/components/NewsLinks';
+import { SocialLinks } from 'client/sections/Community/components/SocialLinks/SocialLinks';
 import { joinClassNames } from '@vertex-protocol/web-common';
 
 export const Community = () => {

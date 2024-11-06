@@ -13,7 +13,6 @@ function HeaderInfoCard({ className, children }: WithChildren<WithClassnames>) {
         'flex flex-col gap-y-6 py-4 lg:gap-y-4 lg:py-6',
         className,
       )}
-      insetRing
     >
       {children}
     </Card>

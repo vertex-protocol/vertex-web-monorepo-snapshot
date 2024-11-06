@@ -5,6 +5,10 @@ import {
 } from '@vertex-protocol/client';
 import { getOrderNonce } from '@vertex-protocol/contracts';
 import {
+  ModifyOrderParams,
+  ModifyOrderResult,
+} from 'client/hooks/execute/modifyOrder/types';
+import {
   validateModifiedLimitOrderPrice,
   validateModifiedTriggerOrderPrice,
 } from 'client/hooks/execute/modifyOrder/validateModifiedOrderPrice';
@@ -19,7 +23,6 @@ import { OrderSlippageSettings } from 'client/modules/localstorage/userSettings/
 import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
 import { roundToIncrement } from 'client/utils/rounding';
 import { useCallback } from 'react';
-import { ModifyOrderParams, ModifyOrderResult } from './types';
 
 export function useModifyOrderMutationFn() {
   const getRecvTime = useGetRecvTime();
@@ -184,8 +187,11 @@ async function cancelThenPlaceTriggerOrder({
         return slippageSettings.takeProfit;
       case 'stop_loss':
         return slippageSettings.stopLoss;
+      default:
+        throw new Error(
+          `Unsupported order type ${modifyOrderParams.orderType}`,
+        );
     }
-    throw new Error(`Unsupported order type ${modifyOrderParams.orderType}`);
   })();
 
   // Validate the new trigger price.

@@ -1,7 +1,7 @@
+import { List } from '@phosphor-icons/react/dist/ssr/List';
+import { X } from '@phosphor-icons/react/dist/ssr/X';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
-import { FiMenu } from 'react-icons/fi';
-import { IoMdClose } from 'react-icons/io';
 
 export function NavHamburgerButton({
   toggleShowNav,
@@ -11,7 +11,7 @@ export function NavHamburgerButton({
   toggleShowNav: () => void;
   showNav: boolean;
 }>) {
-  const Icon = showNav ? IoMdClose : FiMenu;
+  const Icon = showNav ? X : List;
   return (
     <HomePageButton
       className={joinClassNames(

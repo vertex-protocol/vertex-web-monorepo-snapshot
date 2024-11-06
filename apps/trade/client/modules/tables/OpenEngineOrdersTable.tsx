@@ -1,11 +1,10 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
-import { WithClassnames } from '@vertex-protocol/web-common';
 import {
   getMarketPriceFormatSpecifier,
   getMarketQuoteSizeFormatSpecifier,
-  useEVMContext,
 } from '@vertex-protocol/react-client';
+import { WithClassnames } from '@vertex-protocol/web-common';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import {
@@ -14,22 +13,23 @@ import {
 } from 'client/components/DataTable/utils/sortingFns';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { AmountFilledCell } from 'client/modules/tables/cells/AmountFilledCell';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
+import { CancelAllOrdersHeaderCell } from 'client/modules/tables/cells/CancelAllOrdersHeaderCell';
+import { CancelOrderCell } from 'client/modules/tables/cells/CancelOrderCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
+import { OrderTypeCell } from 'client/modules/tables/cells/OrderTypeCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { MarketFilter } from 'client/types/MarketFilter';
-import { useMemo } from 'react';
-import { CancelAllOrdersHeaderCell } from './cells/CancelAllOrdersHeaderCell';
-import { CancelOrderCell } from './cells/CancelOrderCell';
-import { OrderTypeCell } from './cells/OrderTypeCell';
 import {
   OpenEngineOrderTableItem,
   useOpenEngineOrdersTable,
-} from './hooks/useOpenEngineOrdersTable';
+} from 'client/modules/tables/hooks/useOpenEngineOrdersTable';
+import { MarketFilter } from 'client/types/MarketFilter';
+import { useMemo } from 'react';
 
 interface Props {
   marketFilter?: MarketFilter;
@@ -51,8 +51,7 @@ export function OpenEngineOrdersTable({
   const isDesktop = useIsDesktop();
   const { show } = useDialog();
   const pushTradePage = usePushTradePage();
-  const { connectionStatus } = useEVMContext();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
 
   const columns: ColumnDef<OpenEngineOrderTableItem, any>[] = useMemo(() => {
     return [

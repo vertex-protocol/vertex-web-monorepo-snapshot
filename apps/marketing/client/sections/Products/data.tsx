@@ -1,5 +1,8 @@
-import { IconType } from 'react-icons';
-import { MdAltRoute, MdBolt, MdCode, MdSwapHoriz } from 'react-icons/md';
+import { ArrowsLeftRight } from '@phosphor-icons/react/dist/ssr/ArrowsLeftRight';
+import { ArrowsSplit } from '@phosphor-icons/react/dist/ssr/ArrowsSplit';
+import { BracketsAngle } from '@phosphor-icons/react/dist/ssr/BracketsAngle';
+import { Lightning } from '@phosphor-icons/react/dist/ssr/Lightning';
+import { IconType } from 'client/sections/Developer/data';
 
 export type BGVariant = 'pink' | 'purple';
 
@@ -17,7 +20,7 @@ export const PRODUCT_DATA: ProductData[] = [
   {
     title: 'Trade',
     variant: 'pink',
-    icon: MdCode,
+    icon: BracketsAngle,
     subTabs: [
       {
         id: 'spot',
@@ -34,7 +37,7 @@ export const PRODUCT_DATA: ProductData[] = [
   {
     title: 'Universal Margin',
     variant: 'purple',
-    icon: MdAltRoute,
+    icon: ArrowsSplit,
     subTabs: [
       {
         id: 'flexible',
@@ -51,7 +54,7 @@ export const PRODUCT_DATA: ProductData[] = [
   {
     title: 'Earn & Borrow',
     variant: 'pink',
-    icon: MdSwapHoriz,
+    icon: ArrowsLeftRight,
     subTabs: [
       {
         id: 'earn',
@@ -68,7 +71,7 @@ export const PRODUCT_DATA: ProductData[] = [
   {
     title: 'Orderbook + AMM',
     variant: 'purple',
-    icon: MdBolt,
+    icon: Lightning,
     subTabs: [
       {
         id: 'lightning fast',

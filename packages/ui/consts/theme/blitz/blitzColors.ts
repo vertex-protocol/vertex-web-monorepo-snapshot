@@ -21,7 +21,7 @@ export const BLITZ_COLORS = {
   },
   accent: {
     DEFAULT: '#FF036D',
-    blast: '#FAFF1B',
+    blast: '#FCFC03',
   },
   primary: {
     DEFAULT: '#DB036A',

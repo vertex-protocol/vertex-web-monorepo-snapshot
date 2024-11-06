@@ -1,40 +1,29 @@
-import { BigDecimal, ChainEnv } from '@vertex-protocol/client';
+'use client';
+
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ClaimEarnings } from 'client/pages/VertexReferrals/components/ReferralEarningsCard/ClaimEarnings';
+import { ConfirmReferral } from 'client/pages/VertexReferrals/components/ReferralEarningsCard/ConfirmReferral';
+import { useReferralEarningsCard } from 'client/pages/VertexReferrals/components/ReferralEarningsCard/useReferralEarningsCard';
 import { ReferralsCard } from 'client/pages/VertexReferrals/components/ReferralsCard';
-import { Token } from 'common/productMetadata/types';
-import { ConfirmReferral } from './ConfirmReferral';
 
-interface Props {
-  referralCodeForSession: string | undefined;
-  referrerForAddress: string | null | undefined;
-  totalRewardsEarnedUsdc: BigDecimal | undefined;
-  commissionsEarnedUsdc: BigDecimal | undefined;
-  rebatesEarnedUsdc: BigDecimal | undefined;
-  claimableRewardsUsdc: BigDecimal | undefined;
-  claimedRewardsUsdc: BigDecimal | undefined;
-  payoutToken: Token;
-  disableClaim: boolean;
-  disableConfirmReferral: boolean;
-  rewardsChainEnv: ChainEnv;
-}
+export function ReferralEarningsCard() {
+  const {
+    claimableRewardsUsdc,
+    claimedRewardsUsdc,
+    disableClaim,
+    disableConfirmReferral,
+    referrerForAddress,
+    payoutToken,
+    referralCodeForSession,
+    rewardsChain,
+    commissionsEarnedUsdc,
+    rebatesEarnedUsdc,
+    totalRewardsEarnedUsdc,
+  } = useReferralEarningsCard();
 
-export function ReferralEarningsCard({
-  referrerForAddress,
-  referralCodeForSession,
-  totalRewardsEarnedUsdc,
-  commissionsEarnedUsdc,
-  rebatesEarnedUsdc,
-  claimableRewardsUsdc,
-  claimedRewardsUsdc,
-  payoutToken,
-  disableClaim,
-  disableConfirmReferral,
-  rewardsChainEnv,
-}: Props) {
   return (
     <ReferralsCard title="Earnings">
       <div
@@ -88,10 +77,7 @@ export function ReferralEarningsCard({
           valueEndElement={payoutToken.symbol}
         />
       </div>
-      <ClaimEarnings
-        disableClaim={disableClaim}
-        rewardsChainEnv={rewardsChainEnv}
-      />
+      <ClaimEarnings disableClaim={disableClaim} rewardsChain={rewardsChain} />
       <ConfirmReferral
         className="mt-auto"
         referrerForAddress={referrerForAddress}

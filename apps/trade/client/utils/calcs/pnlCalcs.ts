@@ -14,9 +14,11 @@ export function calcIndexerSummaryUnrealizedPnl(
     return BigDecimals.ZERO;
   }
 
-  const unrealizedPnl = indexerBalance.state.postBalance.amount
-    .multipliedBy(oraclePrice)
-    .minus(indexerBalance.trackedVars.netEntryUnrealized);
+  const unrealizedPnl = calcUnrealizedPnl(
+    indexerBalance.state.postBalance.amount,
+    oraclePrice,
+    indexerBalance.trackedVars.netEntryUnrealized,
+  );
 
   return unrealizedPnl;
 }
@@ -27,9 +29,11 @@ export function calcIndexerSummaryCumulativePnl(
   if (indexerBalance.productId === QUOTE_PRODUCT_ID) {
     return BigDecimals.ZERO;
   }
-  const cumulativePnl = indexerBalance.state.postBalance.amount
-    .multipliedBy(indexerBalance.state.market.product.oraclePrice)
-    .minus(indexerBalance.trackedVars.netEntryCumulative);
+  const cumulativePnl = calcUnrealizedPnl(
+    indexerBalance.state.postBalance.amount,
+    indexerBalance.state.market.product.oraclePrice,
+    indexerBalance.trackedVars.netEntryCumulative,
+  );
 
   return cumulativePnl;
 }
@@ -87,4 +91,12 @@ export function calcPnlFracForNonZeroDenom(
     return pnl.div(fallbackDenom.abs());
   }
   return undefined;
+}
+
+export function calcUnrealizedPnl(
+  positionAmount: BigDecimal,
+  oraclePrice: BigDecimal,
+  netEntryUnrealized: BigDecimal,
+) {
+  return positionAmount.multipliedBy(oraclePrice).minus(netEntryUnrealized);
 }

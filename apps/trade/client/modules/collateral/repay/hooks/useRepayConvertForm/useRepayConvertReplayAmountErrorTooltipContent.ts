@@ -1,24 +1,24 @@
-import { RepayConvertErrorType } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
+import { BigDecimal } from '@vertex-protocol/client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { useMemo } from 'react';
+import { RepayConvertAmountInputErrorType } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
+
+interface Params extends WithClassnames {
+  amountInputError: RepayConvertAmountInputErrorType | undefined;
+  sizeIncrement: BigDecimal | undefined;
+}
 
 export function useRepayConvertReplayAmountErrorTooltipContent({
-  formError,
-}: WithClassnames<{
-  formError: RepayConvertErrorType | undefined;
-}>) {
-  return useMemo(() => {
-    switch (formError) {
-      case 'max_exceeded':
-        return "You've exceeded the max convert order size. Please enter a valid amount.";
-      case 'not_borrowing':
-        return "You aren't borrowing this asset.";
-      case 'no_available_source':
-        return 'No available balances to convert.';
-      case 'invalid_input':
-        return 'Please enter a valid amount.';
-      default:
-        return null;
-    }
-  }, [formError]);
+  amountInputError,
+  sizeIncrement,
+}: Params) {
+  if (!amountInputError) {
+    return null;
+  }
+
+  return {
+    max_exceeded:
+      "You've exceeded the max convert order size. Please enter a valid amount.",
+    invalid_input: 'Please enter a valid amount.',
+    invalid_size_increment: `Amount must be in a multiple of ${sizeIncrement?.toString() ?? ''}`,
+  }[amountInputError];
 }

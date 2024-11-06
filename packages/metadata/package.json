@@ -1,0 +1,27 @@
+{
+  "name": "@vertex-protocol/metadata",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"**/*.ts*\""
+  },
+  "private": true,
+  "dependencies": {
+    "react": "*",
+    "wagmi": "*",
+    "viem": "*",
+    "ethers": "*",
+    "@vertex-protocol/client": "*",
+    "@vertex-protocol/react-client": "*",
+    "@vertex-protocol/web-common": "*"
+  },
+  "devDependencies": {
+    "eslint": "*",
+    "eslint-config-custom": "*",
+    "ts-config": "*",
+    "typescript": "*"
+  }
+}

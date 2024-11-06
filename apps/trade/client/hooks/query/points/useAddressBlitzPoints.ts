@@ -6,7 +6,7 @@ import {
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
+import { NOT_CONNECTED_ALT_QUERY_ADDRESS } from 'client/hooks/query/consts/notConnectedAltQueryAddress';
 
 export function addressBlitzPointsQueryKey(sender?: string) {
   return createQueryKey('addressBlitzPoints', sender);
@@ -19,7 +19,7 @@ export function useAddressBlitzPoints() {
 
   const disabled = !vertexClient || !isBlast;
   const addressForQuery =
-    currentSubaccount.address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
+    currentSubaccount.address ?? NOT_CONNECTED_ALT_QUERY_ADDRESS;
 
   return useQuery({
     queryKey: addressBlitzPointsQueryKey(addressForQuery),

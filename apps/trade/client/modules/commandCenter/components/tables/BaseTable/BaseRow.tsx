@@ -1,5 +1,8 @@
 import { WithClassnames, mergeClassNames } from '@vertex-protocol/web-common';
-import { getStateOverlayClassNames } from '@vertex-protocol/web-ui';
+import {
+  COMMON_TRANSPARENCY_COLORS,
+  getStateOverlayClassNames,
+} from '@vertex-protocol/web-ui';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { Command } from 'cmdk';
 import { ReactNode } from 'react';
@@ -26,7 +29,11 @@ export function BaseRow({ id, className, children, onSelect, ...rest }: Props) {
     <Command.Item
       className={mergeClassNames(
         'flex min-h-11 cursor-pointer items-center rounded px-1.5 py-2',
-        ['border-overlay-divider/10 bg-surface-card', stateOverlayClassnames],
+        [
+          'bg-surface-card',
+          COMMON_TRANSPARENCY_COLORS.border,
+          stateOverlayClassnames,
+        ],
         className,
       )}
       onSelect={() => {

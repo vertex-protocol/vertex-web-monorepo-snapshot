@@ -1,8 +1,8 @@
+import { PORTFOLIO_CHART_GRADIENT_URLS } from 'client/pages/Portfolio/charts/consts';
+import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
 import { COLORS } from 'common/theme/colors';
 import { first, last } from 'lodash';
 import { useMemo } from 'react';
-import { PORTFOLIO_CHART_GRADIENT_URLS } from '../consts';
-import { PortfolioChartDataItem } from './usePortfolioChartData/usePortfolioChartData';
 
 export function usePnlChartColors({
   data,

@@ -2,13 +2,14 @@ import {
   EVMContextParams,
   WagmiConnectorOptions,
 } from '@vertex-protocol/react-client';
-import { arbitrumSepolia, mantleSepoliaTestnet } from '@wagmi/core/chains';
 import { CONNECTOR_OPTIONS_METADATA } from 'common/brandMetadata/connectorMetadata';
 import { clientEnv } from 'common/environment/clientEnv';
 import {
   arbitrum,
+  arbitrumSepolia,
   avalanche,
   base,
+  baseSepolia,
   blast,
   blastSepolia,
   bsc,
@@ -17,10 +18,13 @@ import {
   localhost,
   mainnet,
   mantle,
+  mantleSepoliaTestnet,
   optimism,
   polygon,
+  sei,
+  seiTestnet,
   sepolia,
-} from 'wagmi/chains';
+} from 'viem/chains';
 
 export function getEVMContextParams(): EVMContextParams {
   const connectorOptions: WagmiConnectorOptions = {
@@ -41,10 +45,17 @@ export function getEVMContextParams(): EVMContextParams {
       };
     case 'vertexTestnet':
       return {
-        supportedChainEnvs: ['arbitrumTestnet', 'mantleTestnet'],
+        supportedChainEnvs: [
+          'arbitrumTestnet',
+          'baseTestnet',
+          'mantleTestnet',
+          'seiTestnet',
+        ],
         supportedChains: [
           arbitrumSepolia,
+          baseSepolia,
           mantleSepoliaTestnet,
+          seiTestnet,
           sepolia,
           mainnet,
         ],
@@ -52,18 +63,19 @@ export function getEVMContextParams(): EVMContextParams {
       };
     case 'vertexMainnet':
       return {
-        supportedChainEnvs: ['arbitrum', 'mantle'],
+        supportedChainEnvs: ['arbitrum', 'base', 'mantle', 'sei'],
         supportedChains: [
           arbitrum,
+          base,
+          mantle,
+          sei,
           mainnet,
           // Additional chains for bridging
           optimism,
           bsc,
           polygon,
-          base,
           avalanche,
           fantom,
-          mantle,
           blast,
         ],
         connectorOptions,

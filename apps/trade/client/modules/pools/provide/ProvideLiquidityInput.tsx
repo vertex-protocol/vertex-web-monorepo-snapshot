@@ -3,7 +3,7 @@ import { WithClassnames } from '@vertex-protocol/web-common';
 import { CompactInput } from '@vertex-protocol/web-ui';
 import { InputProductSymbolWithIcon } from 'client/components/InputProductSymbolWithIcon';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
-import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
+import { TokenIconMetadata } from '@vertex-protocol/metadata';
 import { forwardRef, InputHTMLAttributes, ReactNode } from 'react';
 
 export interface ProvideLiquidityInputProps

@@ -14,11 +14,7 @@ export function DisclosureDismissibleCard({
   const titleContent = (
     <div className="flex justify-between">
       <span>{title}</span>
-      <Button
-        endIcon={<Icons.MdClose size={14} />}
-        onClick={onDismiss}
-        className="text-text-primary"
-      />
+      <Button endIcon={<Icons.X size={14} />} onClick={onDismiss} />
     </div>
   );
 

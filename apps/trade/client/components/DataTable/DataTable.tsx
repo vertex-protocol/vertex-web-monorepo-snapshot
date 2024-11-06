@@ -1,3 +1,5 @@
+'use client';
+
 import {
   getCoreRowModel,
   getPaginationRowModel,
@@ -14,11 +16,12 @@ import {
   TableOptions,
 } from '@tanstack/table-core';
 import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
-import { CARD_CLASSNAMES, Spinner } from '@vertex-protocol/web-ui';
+import { CARD_CLASSNAMES } from '@vertex-protocol/web-ui';
+import { SpinnerContainer } from 'client/components/SpinnerContainer';
+import { DataTableHeaderGroup } from 'client/components/DataTable/components/DataTableHeaderGroup';
+import { DataTableRowGroup } from 'client/components/DataTable/components/DataTableRowGroup';
+import { Pagination } from 'client/components/DataTable/Pagination';
 import { ReactNode, useMemo, useState } from 'react';
-import { DataTableHeaderGroup } from './components/DataTableHeaderGroup';
-import { DataTableRowGroup } from './components/DataTableRowGroup';
-import { Pagination } from './Pagination';
 
 // General
 export type DataTableProps<TData> = {
@@ -145,11 +148,7 @@ export function DataTable<TData>({
 
   const content = (() => {
     if (tableState === 'loading') {
-      return (
-        <div className="flex h-full w-full items-center justify-center py-16">
-          <Spinner className="text-text-tertiary w-10" />
-        </div>
-      );
+      return <SpinnerContainer />;
     }
 
     return (

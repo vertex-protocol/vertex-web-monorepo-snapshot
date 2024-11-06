@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
 import { BigDecimal } from '@vertex-protocol/utils';
+import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { SpotProductMetadata } from 'common/productMetadata/types';
-import { MarginWeightMetrics } from '../../types';
+import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { SpotProductMetadata } from '@vertex-protocol/metadata';
+import { useMemo } from 'react';
 
 export interface MarginManagerSpotBalanceTableItem {
   productId: number;
@@ -23,7 +23,7 @@ export function useMarginManagerSpotBalancesTable() {
     useSpotBalances();
   const { data: marketsStaticData, isLoading: marketStaticDataLoading } =
     useAllMarketsStaticData();
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const mappedData: MarginManagerSpotBalanceTableItem[] | undefined =
     useMemo(() => {
@@ -57,19 +57,24 @@ export function useMarginManagerSpotBalancesTable() {
               balance.oraclePriceUsd,
             ),
             initialHealth: {
-              marginUsd: balance.healthMetrics.initial.multipliedBy(quotePrice),
+              marginUsd:
+                balance.healthMetrics.initial.multipliedBy(
+                  primaryQuotePriceUsd,
+                ),
               weight: healthWeights.initial,
             },
             maintenanceHealth: {
               marginUsd:
-                balance.healthMetrics.maintenance.multipliedBy(quotePrice),
+                balance.healthMetrics.maintenance.multipliedBy(
+                  primaryQuotePriceUsd,
+                ),
               weight: healthWeights.maintenance,
             },
           };
         })
 
         .filter(nonNullFilter);
-    }, [marketsStaticData, quotePrice, spotBalances]);
+    }, [marketsStaticData, primaryQuotePriceUsd, spotBalances]);
 
   return {
     balances: mappedData,

@@ -1,20 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import {
+  ChainEnv,
   ProductEngineType,
   QUOTE_PRODUCT_ID,
 } from '@vertex-protocol/contracts';
-import { BigDecimal } from '@vertex-protocol/utils';
 import {
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
 } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import {
   PerpProductMetadata,
   SpotProductMetadata,
-} from 'common/productMetadata/types';
+} from '@vertex-protocol/metadata';
 
 interface CommonStaticMarketData {
   productId: number;
@@ -50,7 +50,7 @@ export interface StaticMarketQuoteData {
   symbol: string;
 }
 
-interface AllMarketsStaticData {
+export interface AllMarketsStaticData {
   /**
    * Primary quote is extracted for special treatment
    */
@@ -70,13 +70,13 @@ interface AllMarketsStaticData {
   perpMarketsProductIds: number[];
 }
 
-function allStaticMarketsDataQueryKey(chainId: PrimaryChainID) {
-  return ['staticMarketDataByProductId', chainId];
+function allStaticMarketsDataQueryKey(chainEnv: ChainEnv) {
+  return ['staticMarketDataByProductId', chainEnv];
 }
 
 export function useAllMarketsStaticData() {
-  const primaryChainId = usePrimaryChainId();
-  const { data } = useAllMarkets();
+  const { primaryChainEnv } = useEVMContext();
+  const { data, isLoading: isLoadingMarkets } = useAllMarkets();
 
   const enabled = !!data;
 
@@ -166,7 +166,7 @@ export function useAllMarketsStaticData() {
           );
         }
 
-        const { symbol } = getBaseProductMetadata(quoteStaticData.metadata);
+        const { symbol } = getSharedProductMetadata(quoteStaticData.metadata);
         return {
           symbol,
           isPrimaryQuote: false,
@@ -183,8 +183,8 @@ export function useAllMarketsStaticData() {
     return staticMarketDataByProductId;
   };
 
-  return useQuery({
-    queryKey: allStaticMarketsDataQueryKey(primaryChainId),
+  const query = useQuery({
+    queryKey: allStaticMarketsDataQueryKey(primaryChainEnv),
     queryFn,
     enabled,
     staleTime: Infinity,
@@ -192,4 +192,8 @@ export function useAllMarketsStaticData() {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
+  return {
+    ...query,
+    isLoading: isLoadingMarkets || query.isLoading,
+  };
 }

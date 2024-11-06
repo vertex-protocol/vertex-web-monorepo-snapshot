@@ -1,16 +1,16 @@
+import { formatNumber } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons, SecondaryButton } from '@vertex-protocol/web-ui';
 import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useUserStateError } from 'client/hooks/subaccount/useUserStateError';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { PerpPositionsTableItem } from '../hooks/usePerpPositionsTable';
-import { getTableButtonOnClickHandler } from '../utils/getTableButtonOnClickHandler';
+import { PerpPositionsTableItem } from 'client/modules/tables/hooks/usePerpPositionsTable';
+import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 
 interface Props extends TableCellProps {
   productId: number;
@@ -27,8 +27,8 @@ export function PerpTpSlCell({
 }: Props) {
   const { show } = useDialog();
   const userStateError = useUserStateError();
-  const userActionState = useUserActionState();
   const isSingleSignatureSession = useIsSingleSignatureSession();
+  const isConnected = useIsConnected();
 
   const hasReduceOnlyOrders =
     !!reduceOnlyOrders?.stopLossTriggerPrice ||
@@ -39,7 +39,7 @@ export function PerpTpSlCell({
     if (hasReduceOnlyOrders) {
       return (
         <>
-          <div className="flex flex-col justify-center gap-y-1">
+          <div className="flex flex-col justify-center gap-y-0.5">
             <div className="text-positive">
               {formatNumber(reduceOnlyOrders?.takeProfitTriggerPrice, {
                 formatSpecifier,
@@ -53,9 +53,9 @@ export function PerpTpSlCell({
           </div>
           <SecondaryButton
             className="p-1"
-            disabled={userActionState === 'block_all'}
+            disabled={!isConnected}
             size="sm"
-            startIcon={<Icons.MdEdit size={14} />}
+            startIcon={<Icons.PencilSimple size={14} />}
             onClick={getTableButtonOnClickHandler(() =>
               show({ type: 'tp_sl', params: { productId } }),
             )}
@@ -81,7 +81,7 @@ export function PerpTpSlCell({
         };
       } else {
         return {
-          startIcon: <Icons.BiPlus size={14} />,
+          startIcon: <Icons.Plus size={14} />,
           message: `Add`,
           onClick: () => show({ type: 'tp_sl', params: { productId } }),
         };
@@ -91,7 +91,7 @@ export function PerpTpSlCell({
     return (
       <SecondaryButton
         className="gap-x-1 px-2 py-0.5"
-        disabled={userActionState === 'block_all'}
+        disabled={!isConnected}
         size="sm"
         startIcon={startIcon}
         onClick={getTableButtonOnClickHandler(onClick)}

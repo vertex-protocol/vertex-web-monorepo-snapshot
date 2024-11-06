@@ -1,6 +1,5 @@
 import { useEVMContext } from '@vertex-protocol/react-client';
 import { CompactInput, Input, PrimaryButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useRepeatedClickCountHandler } from 'client/hooks/ui/useRepeatedClickCountHandler';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
@@ -52,7 +51,7 @@ export function ChangeSubaccountDialog() {
     hide();
   };
 
-  const addressField = (
+  const addressField = showAddressInput ? (
     <div className="flex flex-col gap-y-2">
       <Input.Label className="text-xs" htmlFor="subaccountAddress">
         Address Override
@@ -70,7 +69,7 @@ export function ChangeSubaccountDialog() {
         </p>
       </div>
     </div>
-  );
+  ) : null;
 
   const subaccountField = (
     <div className="flex flex-col gap-y-2">
@@ -87,17 +86,17 @@ export function ChangeSubaccountDialog() {
   );
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>
         <div onClick={onTitleClick}>Subaccount</div>
-      </BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-6">
-        {showAddressInput && addressField}
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body>
+        {addressField}
         {subaccountField}
         <PrimaryButton disabled={saveButtonDisabled} onClick={onSaveClicked}>
           Save
         </PrimaryButton>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

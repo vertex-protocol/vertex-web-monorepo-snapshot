@@ -5,8 +5,11 @@ import { useCallback, useMemo } from 'react';
 import {
   arbitrum,
   arbitrumSepolia,
+  baseSepolia,
   mantle,
   mantleSepoliaTestnet,
+  seiTestnet,
+  sei,
 } from 'viem/chains';
 
 export function useTransak() {
@@ -30,6 +33,14 @@ export function useTransak() {
           defaultCryptoCurrency: 'usdc',
           walletAddress: connectionStatus.address,
         };
+      case baseSepolia.id:
+        return {
+          apiKey: SENSITIVE_DATA.transakApiKey.staging,
+          environment: Transak.ENVIRONMENTS.STAGING,
+          defaultNetwork: 'base',
+          defaultCryptoCurrency: 'usdc',
+          walletAddress: connectionStatus.address,
+        };
       case mantle.id:
         return {
           apiKey: SENSITIVE_DATA.transakApiKey.prod,
@@ -44,6 +55,22 @@ export function useTransak() {
           environment: Transak.ENVIRONMENTS.STAGING,
           defaultNetwork: 'mantle',
           defaultCryptoCurrency: 'usdt',
+          walletAddress: connectionStatus.address,
+        };
+      case seiTestnet.id:
+        return {
+          apiKey: SENSITIVE_DATA.transakApiKey.staging,
+          environment: Transak.ENVIRONMENTS.STAGING,
+          defaultNetwork: 'sei',
+          defaultCryptoCurrency: 'sei',
+          walletAddress: connectionStatus.address,
+        };
+      case sei.id:
+        return {
+          apiKey: SENSITIVE_DATA.transakApiKey.prod,
+          environment: Transak.ENVIRONMENTS.PRODUCTION,
+          defaultNetwork: 'sei',
+          defaultCryptoCurrency: 'sei',
           walletAddress: connectionStatus.address,
         };
       default:

@@ -3,10 +3,9 @@ import { TabIdentifiable } from 'client/hooks/ui/tabs/types';
 import { useAtomControlledTabs } from 'client/hooks/ui/tabs/useAtomControlledTabs';
 import { OpenEngineOrdersTable } from 'client/modules/tables/OpenEngineOrdersTable';
 import { OpenTriggerOrdersTable } from 'client/modules/tables/OpenTriggerOrdersTable';
+import { PortfolioOpenOrdersTabID } from 'client/pages/Portfolio/subpages/OpenOrders/types';
 import { portfolioOpenOrdersTabIdAtom } from 'client/store/portfolioStore';
 import { ReactNode, useMemo } from 'react';
-
-export type PortfolioOpenOrdersTabID = 'engine_orders' | 'trigger_orders';
 
 interface PortfolioOpenOrderTab
   extends TabIdentifiable<PortfolioOpenOrdersTabID> {

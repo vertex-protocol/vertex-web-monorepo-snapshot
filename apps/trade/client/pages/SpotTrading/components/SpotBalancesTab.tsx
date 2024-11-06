@@ -1,15 +1,12 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { SpotBalancesTable } from 'client/modules/tables/SpotBalancesTable';
+import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
+import { BalancesFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
   TradingTabFilterOption,
   TradingTabFilters,
 } from 'client/modules/trading/layout/types';
-import {
-  BalancesFilterOptionID,
-  balancesSelectedFilterIdAtom,
-} from 'client/store/trading/spotTradingStore';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { useAtom } from 'jotai';
 import { useMemo } from 'react';
 
 const balancesFilterOptions: TradingTabFilterOption<BalancesFilterOptionID>[] =
@@ -30,7 +27,7 @@ const balancesFilterOptions: TradingTabFilterOption<BalancesFilterOptionID>[] =
 
 export const balancesTableFilters: TradingTabFilters<BalancesFilterOptionID> = {
   options: balancesFilterOptions,
-  valueAtom: balancesSelectedFilterIdAtom,
+  tradingTableTab: 'balances',
 };
 
 export function SpotBalancesTab({
@@ -42,10 +39,13 @@ export function SpotBalancesTab({
   defaultFilter: MarketFilter | undefined;
   productId: number | undefined;
 }) {
-  const [balancesSelectedFilterId] = useAtom(balancesSelectedFilterIdAtom);
+  const { selectedFilter } =
+    useSelectedFilterByTradingTableTabSetting<BalancesFilterOptionID>({
+      tradingTableTab: 'balances',
+    });
 
   const userFilter = useMemo((): MarketFilter | undefined => {
-    switch (balancesSelectedFilterId) {
+    switch (selectedFilter) {
       case 'all':
         return;
       case 'nonzero':
@@ -55,7 +55,7 @@ export function SpotBalancesTab({
           ? { productIds: [productId, QUOTE_PRODUCT_ID] }
           : undefined;
     }
-  }, [balancesSelectedFilterId, productId]);
+  }, [selectedFilter, productId]);
 
   return (
     <SpotBalancesTable

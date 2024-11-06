@@ -2,15 +2,14 @@ import { useMutation } from '@tanstack/react-query';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { addDecimals } from '@vertex-protocol/utils';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
+import {
+  useExecuteInValidContext,
+  ValidExecuteContext,
+} from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { allDepositableTokenBalancesQueryKey } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
 import { roundToString } from 'client/utils/rounding';
 import { useCallback } from 'react';
-
-import {
-  useExecuteInValidContext,
-  ValidExecuteContext,
-} from './util/useExecuteInValidContext';
 
 const REFETCH_QUERY_KEYS = [allDepositableTokenBalancesQueryKey()];
 

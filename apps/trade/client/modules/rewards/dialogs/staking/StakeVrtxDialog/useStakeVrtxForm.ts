@@ -1,4 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
 import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import {
@@ -6,7 +7,6 @@ import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useExecuteStakeVrtx } from 'client/hooks/execute/vrtxToken/useExecuteStakeVrtx';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
@@ -19,7 +19,7 @@ import {
   useOnFractionSelectedHandler,
 } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
 import { OnChainActionButtonStateWithApproval } from 'client/types/OnChainActionButtonStateWithApproval';
@@ -62,8 +62,9 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
   const { data: vrtxSpotMarket } = useMarket({
     productId: protocolTokenProductId,
   });
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
-  const { hide } = useDialog();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
+
+  const { trackEvent } = useAnalyticsContext();
 
   const vrtxWalletBalance = removeDecimals(
     lbaTokenWalletBalances?.vrtx.balanceAmount,
@@ -119,8 +120,8 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
     }
     return validAmount
       .multipliedBy(vrtxSpotMarket.product.oraclePrice)
-      .multipliedBy(quotePriceUsd);
-  }, [validAmount, vrtxSpotMarket, quotePriceUsd]);
+      .multipliedBy(primaryQuotePriceUsd);
+  }, [validAmount, vrtxSpotMarket, primaryQuotePriceUsd]);
 
   // Token allowance
   const primaryChainVertexClient = usePrimaryChainVertexClient();
@@ -141,7 +142,7 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
     });
   useRunWithDelayOnCondition({
     condition: isStakeTxSuccess,
-    fn: hide,
+    fn: stakeVrtxMutation.reset,
   });
 
   // Linked inputs
@@ -175,17 +176,17 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
 
   // Action button state
   const buttonState = useMemo((): StakeVrtxActionButtonState => {
-    if (formError || !amountInput) {
-      return 'disabled';
-    }
     if (approvalButtonState) {
       return approvalButtonState;
+    }
+    if (isStakeTxLoading) {
+      return 'loading';
     }
     if (isStakeTxSuccess) {
       return 'success';
     }
-    if (isStakeTxLoading) {
-      return 'loading';
+    if (!amountInput || formError) {
+      return 'disabled';
     }
     return 'idle';
   }, [
@@ -228,6 +229,7 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
           },
           {
             onSuccess: () => {
+              trackEvent({ type: 'stake_vrtx', data: {} });
               useStakeVrtxForm.resetField('amount');
               useStakeVrtxForm.setValue('percentageAmount', 0);
             },
@@ -247,6 +249,7 @@ export function useStakeVrtxForm(): UseStakeVrtxForm {
       protocolToken.tokenDecimals,
       requiresApproval,
       approve,
+      trackEvent,
       stakeVrtxMutation,
       dispatchNotification,
       useStakeVrtxForm,

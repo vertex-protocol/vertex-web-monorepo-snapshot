@@ -1,4 +1,4 @@
-import { currentSubaccountSummaryQueryKey } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { subaccountSummaryQueryKey } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { maxMintLpAmountQueryKey } from 'client/hooks/query/subaccount/useMaxMintLpAmount';
 import { maxOrderSizeQueryKey } from 'client/hooks/query/subaccount/useMaxOrderSize';
 import { maxWithdrawableQueryKey } from 'client/hooks/query/subaccount/useMaxWithdrawableAmount';
@@ -9,7 +9,7 @@ import { subaccountPaginatedHistoricalTradesQueryKey } from 'client/hooks/query/
 import { subaccountPaginatedRealizedPnlEventsQueryKey } from 'client/hooks/query/subaccount/useSubaccountPaginatedRealizedPnlEvents';
 
 export const SUBACCOUNT_SUMMARY_QUERY_KEYS = [
-  currentSubaccountSummaryQueryKey(),
+  subaccountSummaryQueryKey(),
   subaccountIndexerSnapshotsQueryKey(),
 ];
 

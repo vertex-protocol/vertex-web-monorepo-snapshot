@@ -21,7 +21,7 @@ export function CalculatorIconHeaderCell<T>({
         tooltipOptions={{ interactive: true, delayHide: 300 }}
         contentWrapperClassName="text-disabled hover:text-text-tertiary"
       >
-        <Icons.PiMathOperationsBold size={16} />
+        <Icons.MathOperationsBold size={16} />
       </DefinitionTooltip>
     </HeaderCell>
   );

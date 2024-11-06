@@ -20,6 +20,10 @@ export interface CancelOrdersParams {
   orders: CancellableOrder[];
 }
 
+export interface CancelPendingOrdersParams {
+  digests: string[];
+}
+
 export interface CancelOrdersWithNotificationParams {
   orders: CancellableOrderWithNotificationInfo[];
 }

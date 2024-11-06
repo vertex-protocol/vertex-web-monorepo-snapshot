@@ -1,24 +1,24 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
-import { WithClassnames } from '@vertex-protocol/web-common';
 import {
   CustomNumberFormatSpecifier,
   getMarketSizeFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { WithClassnames } from '@vertex-protocol/web-common';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
+import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
+import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
+import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
+import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
+import { PercentageCell } from 'client/modules/tables/cells/PercentageCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { useMemo } from 'react';
-import { AmountWithSymbolCell } from './cells/AmountWithSymbolCell';
-import { CurrencyCell } from './cells/CurrencyCell';
-import { DateTimeCell } from './cells/DateTimeCell';
-import { MarketInfoWithSideCell } from './cells/MarketInfoWithSideCell';
-import { PercentageCell } from './cells/PercentageCell';
 import {
   FundingPaymentsTableItem,
   useFundingPaymentsTable,
-} from './hooks/useFundingPaymentsTable';
+} from 'client/modules/tables/hooks/useFundingPaymentsTable';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<FundingPaymentsTableItem>();
 

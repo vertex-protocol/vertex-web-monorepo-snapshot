@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
 } from '@vertex-protocol/react-client';
+import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
 import { TxResponse } from 'client/types/TxResponse';
 import { TransactionReceipt } from 'ethers';
 import { useMemo } from 'react';
-import { useGetConfirmedTxPromise } from '../util/useGetConfirmedTxPromise';
 
 interface Params {
   txResponse: TxResponse | undefined;
@@ -37,12 +37,14 @@ type UseOnChainTransactionState =
 export function useOnChainTransactionState({
   txResponse,
 }: Params): UseOnChainTransactionState {
-  const primaryChainId = usePrimaryChainId();
+  const {
+    chainStatus: { connectedChain },
+  } = useEVMContext();
   const getConfirmedTxPromise = useGetConfirmedTxPromise();
 
-  const disabled = !txResponse;
+  const disabled = !txResponse || !connectedChain;
   const { data, error, isLoading } = useQuery({
-    queryKey: ['onChainTransactionState', primaryChainId, txResponse?.hash],
+    queryKey: ['onChainTransactionState', connectedChain?.id, txResponse?.hash],
     queryFn: async () => {
       if (disabled) {
         throw new QueryDisabledError();

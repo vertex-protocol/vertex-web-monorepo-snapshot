@@ -1,18 +1,19 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { TOAST_HEADER_ICON_SIZE } from '../consts';
-import { Toast } from '../Toast';
+import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 import {
   ACTION_TOAST_ICON_FILL_BY_VARIANT,
   ACTION_TOAST_ICONS_BY_VARIANT,
   ACTION_TOAST_LEFT_SECTION_WIDTH,
-} from './consts';
+} from 'client/components/Toast/ActionToast/consts';
 import {
   ActionToastBodyProps,
   ActionToastHeaderProps,
   ActionToastSectionedBodyProps,
   ActionToastSeparatorProps,
   SectionedHeaderProps,
-} from './types';
+} from 'client/components/Toast/ActionToast/types';
+import { TOAST_HEADER_ICON_SIZE } from 'client/components/Toast/consts';
+import { Toast } from 'client/components/Toast/Toast';
 
 function TextHeader({
   className,
@@ -51,7 +52,8 @@ function SectionedHeader({
     <Toast.Header
       onDismiss={onDismiss}
       className={joinClassNames(
-        'divide-overlay-divider/10 divide-x',
+        'divide-x',
+        COMMON_TRANSPARENCY_COLORS.divide,
         className,
       )}
     >
@@ -106,7 +108,8 @@ function SectionedBody({
   return (
     <Toast.Body
       className={joinClassNames(
-        'divide-overlay-divider/10 flex divide-x',
+        'flex divide-x',
+        COMMON_TRANSPARENCY_COLORS.divide,
         className,
       )}
     >

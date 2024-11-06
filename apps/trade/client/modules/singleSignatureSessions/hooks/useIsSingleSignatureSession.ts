@@ -1,5 +1,5 @@
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { useRequiresApproveSignOnce } from './useRequiresApproveSignOnce';
+import { useRequiresApproveSignOnce } from 'client/modules/singleSignatureSessions/hooks/useRequiresApproveSignOnce';
 
 export function useIsSingleSignatureSession({
   requireActive,

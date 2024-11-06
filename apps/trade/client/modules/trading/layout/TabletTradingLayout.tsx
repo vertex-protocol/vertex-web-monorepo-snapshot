@@ -1,7 +1,6 @@
+import { MarketDataTabs } from 'client/modules/trading/components/MarketDataTabs';
+import { LargeScreenTradingLayout } from 'client/modules/trading/layout/LargeScreenTradingLayout';
 import { TradingLayoutProps } from 'client/modules/trading/layout/types';
-
-import { MarketDataTabs } from '../components/MarketDataTabs';
-import { LargeScreenTradingLayout } from './LargeScreenTradingLayout';
 
 export function TabletTradingLayout({
   productId,
@@ -9,14 +8,16 @@ export function TabletTradingLayout({
   MarketSwitcher,
   InfoCards,
   OrderPlacement,
-  AccountHealth,
 }: TradingLayoutProps) {
   return (
     <LargeScreenTradingLayout
       heroComponent={
-        <MarketDataTabs className="h-full" productId={productId} withChartTab />
+        <MarketDataTabs
+          className="h-full"
+          productId={productId}
+          withChartTabs
+        />
       }
-      AccountHealth={AccountHealth}
       productId={productId}
       tradingTabs={tradingTabs}
       MarketSwitcher={MarketSwitcher}

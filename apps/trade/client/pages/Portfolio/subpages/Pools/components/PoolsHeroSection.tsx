@@ -1,11 +1,13 @@
+'use client';
+
 import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
 import { usePortfolioCharts } from 'client/pages/Portfolio/charts/hooks/usePortfolioCharts';
 import { PortfolioChartTab } from 'client/pages/Portfolio/charts/types';
 import { PortfolioHeroSection } from 'client/pages/Portfolio/components/PortfolioHeroSection';
-import { PortfolioPoolsPnlChart } from '../charts/PortfolioPoolsPnlChart';
-import { PortfolioPoolsPositionChart } from '../charts/PortfolioPoolsPositionChart';
-import { PoolsHeroMetricsHeader } from './PoolsHeroMetricsHeader';
-import { PoolsHeroMetricsItems } from './PoolsHeroMetricsItems';
+import { PortfolioPoolsPnlChart } from 'client/pages/Portfolio/subpages/Pools/charts/PortfolioPoolsPnlChart';
+import { PortfolioPoolsPositionChart } from 'client/pages/Portfolio/subpages/Pools/charts/PortfolioPoolsPositionChart';
+import { PoolsHeroMetricsHeader } from 'client/pages/Portfolio/subpages/Pools/components/PoolsHeroMetricsHeader';
+import { PoolsHeroMetricsItems } from 'client/pages/Portfolio/subpages/Pools/components/PoolsHeroMetricsItems';
 
 type PoolsChartTabID = 'pnl' | 'position';
 

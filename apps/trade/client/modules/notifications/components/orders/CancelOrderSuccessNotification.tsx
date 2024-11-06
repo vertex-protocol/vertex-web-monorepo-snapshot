@@ -9,6 +9,7 @@ import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabe
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { formatNumber } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
+import { isTpSlOrderSize } from 'client/modules/trading/tpsl/utils/isTpSlOrderSize';
 
 interface CancelOrderNotificationProps extends ToastProps {
   data: CancelOrderNotificationData['cancelOrderParams'];
@@ -22,10 +23,22 @@ export function CancelOrderSuccessNotification({
 }: CancelOrderNotificationProps) {
   const { decimalAdjustedAmount, metadata, type, orderType } = data;
   const isPerp = type === ProductEngineType.PERP;
-  const decimalAdjustedAmountAbs = toBigDecimal(decimalAdjustedAmount).abs();
-  const amount = formatNumber(decimalAdjustedAmountAbs, {
-    formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
-  });
+
+  const orderDetails = (() => {
+    // If this is for a TP/SL order, the amount is a very large number only
+    // meant for internal use, so we just show the market name.
+    if (isTpSlOrderSize(decimalAdjustedAmount)) {
+      return metadata.marketName;
+    }
+
+    const decimalAdjustedAmountAbs = toBigDecimal(decimalAdjustedAmount).abs();
+    const amount = formatNumber(decimalAdjustedAmountAbs, {
+      formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
+    });
+
+    return `${amount} ${metadata.marketName}`;
+  })();
+
   const side = getOrderSideLabel({
     alwaysShowOrderDirection: false,
     amountForSide: decimalAdjustedAmount,
@@ -35,9 +48,7 @@ export function CancelOrderSuccessNotification({
   const bodyContent = (
     <>
       You have successfully cancelled your{' '}
-      <span className="text-text-primary">
-        {amount} {metadata.marketName}
-      </span>{' '}
+      <span className="text-text-primary">{orderDetails}</span>{' '}
       <span
         className={joinClassNames(
           'uppercase',

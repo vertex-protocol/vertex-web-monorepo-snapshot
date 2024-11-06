@@ -1,13 +1,19 @@
-import { useDebounce } from 'ahooks';
+import { useCreation, useDebounce } from 'ahooks';
 import { useMemo } from 'react';
 
 interface Params<TItem> {
-  // The query to search for
+  /**
+   * The query to search for.
+   */
   query: string;
-  // Items to search through
-  items: TItem[];
-  // Given the item, return a string to match against the query. Case insensitive.
-  // The function should be a stable reference, either a top level function or a useCallback.
+  /**
+   * The items to search. It should be a stable reference, memoized if necessary.
+   */
+  items: TItem[] | undefined;
+  /**
+   * Given the item, return a string to match against the query. Case insensitive.
+   * The function should be a stable reference, either a top level function or a useCallback.
+   */
   getSearchString: (item: TItem) => string;
 }
 
@@ -17,46 +23,45 @@ interface UseTextSearch<TItem> {
 }
 
 /**
- * A simple implementation of text search. Given a query and a list of items, returns a list of items that match the query.
+ * Given a query and a list of items, returns a list of items that match the query.
  * Adds debouncing internally for performance optimization.
- * This is NOT optimized for large lists of items.
- *
- * @param params
+ * Should be able to handle relatively large lists. Tested with ~50k items.
  */
 export function useTextSearch<TItem>({
   query,
   items,
   getSearchString,
 }: Params<TItem>): UseTextSearch<TItem> {
+  const emptyItems = useCreation<TItem[]>(() => [], []);
+
   const itemsToSearch = useMemo(() => {
-    return items.map((item) => {
+    return (items ?? emptyItems).map((item) => {
       return {
         item,
         searchString: getSearchString(item).toLowerCase(),
       };
     });
-  }, [getSearchString, items]);
+  }, [getSearchString, items, emptyItems]);
 
   const debouncedQuery = useDebounce(query, { wait: 200 });
 
   const { results, normalizedQuery } = useMemo(() => {
     const normalizedQuery = debouncedQuery.toLowerCase().trim();
 
-    const filteredResults = (() => {
-      if (!normalizedQuery) {
-        return itemsToSearch;
+    if (!normalizedQuery) {
+      return { results: items ?? emptyItems, normalizedQuery };
+    }
+
+    const results: TItem[] = [];
+
+    itemsToSearch.forEach(({ item, searchString }) => {
+      if (searchString.includes(normalizedQuery)) {
+        results.push(item);
       }
+    });
 
-      return itemsToSearch.filter(({ searchString }) =>
-        searchString.includes(normalizedQuery),
-      );
-    })();
-
-    return {
-      results: filteredResults.map(({ item }) => item),
-      normalizedQuery,
-    };
-  }, [debouncedQuery, itemsToSearch]);
+    return { results, normalizedQuery };
+  }, [debouncedQuery, items, emptyItems, itemsToSearch]);
 
   return {
     results,

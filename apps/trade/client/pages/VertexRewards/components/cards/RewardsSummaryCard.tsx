@@ -10,8 +10,11 @@ import {
   joinClassNames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { Button, getStateOverlayClassNames } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import {
+  Button,
+  getStateOverlayClassNames,
+  UpDownChevronIcon,
+} from '@vertex-protocol/web-ui';
 import { Countdown } from 'client/components/Countdown';
 import { RewardsCard } from 'client/modules/rewards/components/RewardsCard';
 import Image from 'next/image';

@@ -1,32 +1,31 @@
 import { useQuery } from '@tanstack/react-query';
-import { ProductEngineType } from '@vertex-protocol/contracts';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 
 export function latestPerpPricesQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   productIds?: number[],
 ) {
-  return createQueryKey('latestPerpPrices', chainId, productIds);
+  return createQueryKey('latestPerpPrices', chainEnv, productIds);
 }
 
 export function useLatestPerpPrices() {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const vertexClient = usePrimaryChainVertexClient();
   const { filteredProductIds: allPerpProductIds } = useFilteredMarkets({
-    marketType: ProductEngineType.PERP,
+    marketCategory: 'perp',
   });
 
   const disabled = !vertexClient || !allPerpProductIds.length;
 
   return useQuery({
-    queryKey: latestPerpPricesQueryKey(primaryChainId, allPerpProductIds),
+    queryKey: latestPerpPricesQueryKey(primaryChainEnv, allPerpProductIds),
     queryFn: async () => {
       if (disabled) {
         throw new QueryDisabledError();

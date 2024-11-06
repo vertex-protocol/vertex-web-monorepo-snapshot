@@ -1,10 +1,10 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
   formatNumber,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons, Pill } from '@vertex-protocol/web-ui';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import {
@@ -13,10 +13,10 @@ import {
 } from 'client/modules/envSpecificContent/consts/chainIds';
 import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
-import { OverviewInfoPointsCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoPointsCardButton';
+import { OverviewInfoCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoCardButton';
+import { OverviewInfoBlitzRewardsCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoBlitzRewardsCardButton';
+import { OverviewInfoVrtxCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoVrtxCardButton';
 import { signDependentValue } from 'client/utils/signDependentValue';
-import { OverviewInfoCardButton } from './OverviewInfoCardButton';
-import { OverviewInfoVrtxCardButton } from './OverviewInfoVrtxCardButton';
 
 export interface Props {
   totalEstimatedPerpPnlUsd: BigDecimal | undefined;
@@ -55,7 +55,7 @@ export function OverviewInfoCardButtons({
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         })}
         pill={
-          <Pill colorVariant="tertiary" sizeVariant="sm">
+          <Pill colorVariant="tertiary" sizeVariant="xs">
             APR:
             <span className="text-text-primary">
               {formatNumber(averageSpotAPRFraction, {
@@ -85,11 +85,11 @@ export function OverviewInfoCardButtons({
               negative: 'negative',
               zero: 'tertiary',
             })}
-            sizeVariant="sm"
+            sizeVariant="xs"
           >
             {signDependentValue(totalEstimatedPerpPnlFrac, {
-              positive: <Icons.MdArrowUpward size={12} />,
-              negative: <Icons.MdArrowDownward size={12} />,
+              positive: <Icons.ArrowUp size={12} />,
+              negative: <Icons.ArrowDown size={12} />,
               zero: undefined,
             })}
             {formatNumber(totalEstimatedPerpPnlFrac?.abs(), {
@@ -106,7 +106,7 @@ export function OverviewInfoCardButtons({
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         })}
         pill={
-          <Pill colorVariant="tertiary" sizeVariant="sm">
+          <Pill colorVariant="tertiary" sizeVariant="xs">
             APR:
             <span className="text-text-primary">
               {formatNumber(lpAverageYieldFraction, {
@@ -121,7 +121,9 @@ export function OverviewInfoCardButtons({
         <OverviewInfoVrtxCardButton isPrivate={areAccountValuesPrivate} />
       )}
       {showBlitzCard && (
-        <OverviewInfoPointsCardButton isPrivate={areAccountValuesPrivate} />
+        <OverviewInfoBlitzRewardsCardButton
+          isPrivate={areAccountValuesPrivate}
+        />
       )}
     </div>
   );

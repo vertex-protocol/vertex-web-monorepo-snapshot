@@ -1,22 +1,33 @@
+'use client';
+
 import {
-  Root as TabsRoot,
   TabsContent,
   TabsList,
+  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
-import { WithClassnames } from '@vertex-protocol/web-common';
-import { joinClassNames } from '@vertex-protocol/web-common';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { UnderlinedTabs } from '@vertex-protocol/web-ui';
-import { useBalancesTabs } from '../hooks/useBalancesTabs';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { useBalancesTabs } from 'client/pages/Portfolio/subpages/Balances/hooks/useBalancesTabs';
 
 export function BalancesTabs({ className }: WithClassnames) {
   const { selectedTabId, tabs, setSelectedUntypedTabId } = useBalancesTabs();
+  const { trackEvent } = useAnalyticsContext();
 
   return (
     <TabsRoot
       className={joinClassNames('flex w-full flex-col gap-y-3', className)}
       value={selectedTabId}
-      onValueChange={setSelectedUntypedTabId}
+      onValueChange={(value) => {
+        setSelectedUntypedTabId(value);
+        trackEvent({
+          type: 'balances_tabs_clicked',
+          data: {
+            balancesTab: value,
+          },
+        });
+      }}
     >
       <TabsList asChild>
         <UnderlinedTabs.Container>

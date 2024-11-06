@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Content as TabsContent,
   TabsList,
@@ -5,7 +7,7 @@ import {
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import { UnderlinedTabs } from '@vertex-protocol/web-ui';
-import { useMarketsTabs } from '../hooks/useMarketsTabs';
+import { useMarketsTabs } from 'client/pages/Markets/hooks/useMarketsTabs';
 
 export function MarketsTableTabs() {
   const { tabs, selectedTabId, setSelectedUntypedTabId } = useMarketsTabs();

@@ -1,30 +1,21 @@
-import { ProductEngineType } from '@vertex-protocol/client';
 import { TabIdentifiable } from 'client/hooks/ui/tabs/types';
 import { useAtomControlledTabs } from 'client/hooks/ui/tabs/useAtomControlledTabs';
 import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 import { PaginatedHistoricalTradesTable } from 'client/modules/tables/PaginatedHistoricalTradesTable';
 import { PaginatedRealizedPnlEventsTable } from 'client/modules/tables/PaginatedRealizedPnlEventsTable';
+import { HistoricalDepositsTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalDepositsTable';
 import { HistoricalLiquidationsTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalLiquidationsTable';
+import { HistoricalLpEventsTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalLpEventsTable';
+import { HistoricalPnlAccountingTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalPnlAccountingTable';
+import { HistoricalSettlementsTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalSettlementsTable';
+import { HistoricalTransfersTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalTransfersTable';
 import { HistoricalTriggerOrdersTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalTriggerOrdersTable';
+import { HistoricalWithdrawalsTable } from 'client/pages/Portfolio/subpages/History/components/HistoricalWithdrawalsTable';
+import { PortfolioHistoryTabID } from 'client/pages/Portfolio/subpages/History/types';
 import { portfolioHistoryTabIdAtom } from 'client/store/portfolioStore';
+import { MarketFilter } from 'client/types/MarketFilter';
 import { xor } from 'lodash';
 import { ReactNode, useCallback, useMemo } from 'react';
-import { HistoricalDepositsTable } from '../components/HistoricalDepositsTable';
-import { HistoricalLpEventsTable } from '../components/HistoricalLpEventsTable';
-import { HistoricalPnlAccountingTable } from '../components/HistoricalPnlAccountingTable';
-import { HistoricalSettlementsTable } from '../components/HistoricalSettlementsTable';
-import { HistoricalWithdrawalsTable } from '../components/HistoricalWithdrawalsTable';
-
-export type PortfolioHistoryTabID =
-  | 'trades'
-  | 'deposits'
-  | 'withdrawals'
-  | 'pools'
-  | 'liquidations'
-  | 'settlements'
-  | 'trigger_orders'
-  | 'realized_pnl_events'
-  | 'pnl_accounting_events';
 
 export interface PortfolioHistoryTab
   extends TabIdentifiable<PortfolioHistoryTabID> {
@@ -41,8 +32,8 @@ interface UsePortfolioHistoryTabs {
   enabledOptionalTabIds: PortfolioHistoryTabID[];
 }
 
-const PERP_ONLY_FILTER = {
-  marketType: ProductEngineType.PERP,
+const PERP_ONLY_FILTER: MarketFilter = {
+  marketCategory: 'perp',
 };
 
 export const OPTIONAL_HISTORY_TABS: PortfolioHistoryTab[] = [
@@ -123,6 +114,11 @@ export function usePortfolioHistoryTabs(): UsePortfolioHistoryTabs {
         id: 'withdrawals',
         label: 'Withdrawals',
         content: <HistoricalWithdrawalsTable />,
+      },
+      {
+        id: 'transfers',
+        label: 'Transfers',
+        content: <HistoricalTransfersTable />,
       },
       {
         id: 'pools',

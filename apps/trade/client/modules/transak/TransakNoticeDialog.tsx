@@ -1,10 +1,10 @@
 import { PrimaryButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useTransak } from 'client/modules/transak/hooks/useTransak';
 import Image from 'next/image';
-import transakLogo from './transak-logo.svg';
+
+import transakLogo from 'client/modules/transak/transak-logo.svg';
 
 export function TransakNoticeDialog() {
   const { showTransakDialog } = useTransak();
@@ -12,9 +12,9 @@ export function TransakNoticeDialog() {
   const { hide } = useDialog();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Please Note</BaseDialog.Title>
-      <BaseDialog.Body className="text-text-secondary flex flex-col gap-y-6 text-sm">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>Please Note</BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <div className="flex flex-col gap-y-4">
           <p>
             Crypto purchased via Transak will arrive in your wallet, not your
@@ -27,12 +27,12 @@ export function TransakNoticeDialog() {
         </div>
         <div className="flex flex-col gap-y-3">
           <PrimaryButton onClick={showTransakDialog}>Buy Crypto</PrimaryButton>
-          <div className="text-2xs flex justify-center gap-x-1">
-            <span className="text-text-tertiary">Powered by</span>
+          <div className="flex items-center justify-center gap-x-1">
+            <span className="text-text-tertiary text-2xs">Powered by</span>
             <Image src={transakLogo} alt="transak" />
           </div>
         </div>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

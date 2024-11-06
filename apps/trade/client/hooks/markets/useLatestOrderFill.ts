@@ -2,7 +2,7 @@ import {
   LatestOrderFill,
   LatestOrderFillsForProductParams,
   useLatestOrderFillsForProduct,
-} from '../query/markets/useLatestOrderFillsForProduct';
+} from 'client/hooks/query/markets/useLatestOrderFillsForProduct';
 import { first } from 'lodash';
 
 interface Params {

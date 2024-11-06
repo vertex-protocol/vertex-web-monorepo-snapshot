@@ -1,6 +1,6 @@
 import { DiscList } from '@vertex-protocol/web-ui';
 import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 
 const settingsTooltips = {
   settingsOrderNotifications: {
@@ -24,12 +24,12 @@ const settingsTooltips = {
 const singleSignatureTooltips = {
   octRememberMe: {
     title: 'Remember Me',
-    content: `When enabled, you will not be required to re-approve One-Click Trading unless you clear your browser cache or manually disconnect your wallet.`,
+    content: `When enabled, you will not be required to approve 1-Click Trading again unless you clear your browser cache or manually disconnect your wallet. Your 1-Click Trading key will be saved to your browser's storage and will not persist across devices. Do not enable this feature on shared or public devices.`,
   },
   octRemainingActivations: {
-    title: `Remaining Activations`,
+    title: `Weekly activations remaining`,
     content:
-      'You are allowed to enable 1CT 5 times max per week. You can switch back to Sign Every Transaction after that, but cannot enable 1CT until the following week.',
+      'You are allowed to enable 1-Click Trading up to 5 times per week. You can only disable 1CT after you have exceeded the quota, but cannot enable 1CT until the following week.',
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
@@ -85,19 +85,6 @@ const takeProfitStopLossTooltips = {
           </DiscList.Item>
         </DiscList.Container>
       </>
-    ),
-  },
-} as const satisfies Record<string, DefinitionTooltipConfig>;
-
-const depositTooltips = {
-  smartContractWalletSigningPrompt: {
-    title: `Using a smart contract wallet?`,
-    content: (
-      <p>
-        If you are using Safe or another smart contract wallet, please enable
-        1CT after depositing. This is so we can request signatures for
-        transactions.
-      </p>
     ),
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
@@ -162,13 +149,39 @@ const stakingTooltips = {
   }),
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
+const fastWithdrawTooltips = {
+  fastWithdrawalFee: {
+    title: `Fast Withdrawal Fee`,
+    content: `The fee deducted from the withdrawal amount for using fast withdraw.`,
+  },
+};
+
+const subaccountQuoteTransferTooltips = {
+  subaccountQuoteTransferEnableBorrowsSwitch: {
+    title: 'Borrows (on/off)',
+    content:
+      'Enables you to borrow assets against your existing collateral. Borrowing increases your margin usage and account risk.',
+  },
+  subaccountQuoteTransferMaxWithBorrow: {
+    title: 'Max with borrow',
+    content:
+      'The combination of your available balance and what you can borrow against your margin. Borrowing is done automatically once you submit the transfer.',
+  },
+  subaccountQuoteTransferMaxTransfer: {
+    title: 'Max transfer',
+    content:
+      "Your balance for the asset minus what's being held in open orders or required as margin.",
+  },
+} as const satisfies Record<string, DefinitionTooltipConfig>;
+
 export const dialogTooltips = {
   ...singleSignatureTooltips,
-  ...depositTooltips,
   ...withdrawTooltips,
   ...repayTooltips,
   ...takeProfitStopLossTooltips,
   ...stakingTooltips,
   ...bridgeTooltips,
   ...settingsTooltips,
+  ...fastWithdrawTooltips,
+  ...subaccountQuoteTransferTooltips,
 } as const satisfies Record<string, DefinitionTooltipConfig>;

@@ -1,14 +1,14 @@
 import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
 import { ActionErrorNotification } from 'client/modules/notifications/components/collateral/ActionErrorNotification';
+import {
+  ActionErrorHandlerNotificationData,
+  NotificationDispatchContext,
+} from 'client/modules/notifications/types';
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import toast from 'react-hot-toast';
-import {
-  ActionErrorHandlerNotificationData,
-  NotificationDispatchContext,
-} from '../types';
 
 export async function handleActionErrorHandlerNotificationDispatch(
   data: ActionErrorHandlerNotificationData,

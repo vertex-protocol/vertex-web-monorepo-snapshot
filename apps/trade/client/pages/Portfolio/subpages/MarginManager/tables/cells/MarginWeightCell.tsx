@@ -1,11 +1,13 @@
 import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { SignOfValuePill } from '../../components/SignOfValuePill';
-import { MarginWeightMetrics } from '../../types';
+import { SignOfValuePill } from 'client/pages/Portfolio/subpages/MarginManager/components/SignOfValuePill';
+import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 
 interface Props extends TableCellProps {
   marginWeightMetrics: MarginWeightMetrics;

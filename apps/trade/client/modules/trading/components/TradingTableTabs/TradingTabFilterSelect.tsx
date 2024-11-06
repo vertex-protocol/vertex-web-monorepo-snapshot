@@ -1,5 +1,5 @@
-import { Select } from '@vertex-protocol/web-ui';
-import { useAtomControlledSelect } from 'client/hooks/ui/select/useAtomControlledSelect';
+import { Select, useSelect } from '@vertex-protocol/web-ui';
+import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
 import { TradingTabFilters } from 'client/modules/trading/layout/types';
 import { useMemo } from 'react';
 
@@ -8,14 +8,19 @@ export function TradingTabFilterSelect({
 }: {
   filters: TradingTabFilters;
 }) {
-  const options = useMemo(
+  const { tradingTableTab, options } = filters;
+
+  const { selectedFilter, setSelectedFilter } =
+    useSelectedFilterByTradingTableTabSetting({ tradingTableTab });
+
+  const filterOptions = useMemo(
     () =>
-      filters.options.map(({ id, name }) => ({
+      options.map(({ id, name }) => ({
         label: name,
         value: id,
         id,
       })),
-    [filters.options],
+    [options],
   );
 
   const {
@@ -24,12 +29,11 @@ export function TradingTabFilterSelect({
     open,
     onValueChange,
     value,
-    defaultOpen,
     onOpenChange,
-  } = useAtomControlledSelect({
-    valueAtom: filters.valueAtom,
-    defaultOpen: false,
-    options,
+  } = useSelect({
+    selectedValue: selectedFilter,
+    onSelectedValueChange: setSelectedFilter,
+    options: filterOptions,
   });
 
   return (
@@ -37,7 +41,6 @@ export function TradingTabFilterSelect({
       open={open}
       onValueChange={onValueChange}
       value={value}
-      defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
       <Select.Trigger className="whitespace-nowrap">

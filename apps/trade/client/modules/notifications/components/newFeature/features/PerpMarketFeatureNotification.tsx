@@ -1,12 +1,14 @@
-import { LinkButton } from 'client/components/LinkButton';
 import { ToastProps } from 'client/components/Toast/types';
-import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { NewFeatureDisclosureKey } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
 import { TOAST_MARKET_ICON_CLASSNAME } from 'client/modules/notifications/components/consts';
 import { NewFeatureNotification } from 'client/modules/notifications/components/newFeature/NewFeatureNotification';
-import { PerpProductMetadata } from 'common/productMetadata/types';
+import { PerpProductMetadata } from '@vertex-protocol/metadata';
 import Image from 'next/image';
+import { LinkButton } from '@vertex-protocol/web-ui';
+import Link from 'next/link';
+import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
+import { get } from 'lodash';
 
 interface Props extends ToastProps {
   disclosureKey: NewFeatureDisclosureKey;
@@ -21,9 +23,9 @@ export function PerpMarketFeatureNotification({
   onDismiss: baseOnDismiss,
   ...rest
 }: Props) {
-  const pushTradePage = usePushTradePage();
   const { dismiss: dismissNewFeatureNotification } =
     useShowUserDisclosure(disclosureKey);
+  const productTradingLinks = useProductTradingLinks();
 
   const onDismiss = () => {
     baseOnDismiss();
@@ -31,12 +33,13 @@ export function PerpMarketFeatureNotification({
   };
 
   const onLinkClick = () => {
-    pushTradePage({ productId });
     onDismiss();
   };
 
   const marketName = metadata.marketName;
   const icon = metadata.icon;
+
+  const productTradingLink = get(productTradingLinks, productId, undefined);
 
   const content = (
     <div className="flex flex-col gap-y-3">
@@ -51,9 +54,16 @@ export function PerpMarketFeatureNotification({
           src={icon.asset}
           alt={marketName}
         />
-        <LinkButton colorVariant="primary" onClick={onLinkClick}>
-          Trade {marketName}
-        </LinkButton>
+        {productTradingLink && (
+          <LinkButton
+            as={Link}
+            colorVariant="primary"
+            href={productTradingLink.link}
+            onClick={onLinkClick}
+          >
+            Trade {marketName}
+          </LinkButton>
+        )}
       </div>
     </div>
   );

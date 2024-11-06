@@ -52,7 +52,7 @@ export function LiquidationProductInfo({
         className="px-0.5"
       />
       <div className="flex flex-col">
-        <p className="text-text-primary text-xs">{productLabel}</p>
+        <p className="text-text-primary text-xs font-medium">{productLabel}</p>
         {sideLabel}
       </div>
     </div>

@@ -1,15 +1,14 @@
 import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
-import { Button, Icons } from '@vertex-protocol/web-ui';
-import Link from 'next/link';
-import { LinkButton } from '../LinkButton';
-import { TOAST_HEADER_ICON_SIZE } from './consts';
+import { Button, Icons, LinkButton } from '@vertex-protocol/web-ui';
+import { TOAST_HEADER_ICON_SIZE } from 'client/components/Toast/consts';
 import {
   ToastBodyProps,
   ToastContainerProps,
   ToastFooterLinkProps,
   ToastHeaderProps,
   ToastSeparatorProps,
-} from './types';
+} from 'client/components/Toast/types';
+import Link from 'next/link';
 
 /**
  * Base Toast container component.
@@ -46,7 +45,7 @@ function Header({ className, children, onDismiss }: ToastHeaderProps) {
         {children}
       </div>
       <Button
-        endIcon={<Icons.MdOutlineCancel size={TOAST_HEADER_ICON_SIZE} />}
+        endIcon={<Icons.XCircle size={TOAST_HEADER_ICON_SIZE} />}
         className="text-text-tertiary"
         onClick={onDismiss}
       />

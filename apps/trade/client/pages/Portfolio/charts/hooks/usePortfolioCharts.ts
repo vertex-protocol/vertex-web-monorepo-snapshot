@@ -1,10 +1,9 @@
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
-
+import { usePortfolioChartData } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartData/usePortfolioChartData';
+import { PortfolioChartTab } from 'client/pages/Portfolio/charts/types';
 import { portfolioChartTimespanAtom } from 'client/store/portfolioStore';
 import { useAtom } from 'jotai';
-import { PortfolioChartTab } from '../types';
-import { usePortfolioChartData } from './usePortfolioChartData/usePortfolioChartData';
 
 export function usePortfolioCharts<TTabID extends string>(
   tabs: PortfolioChartTab<TTabID>[],

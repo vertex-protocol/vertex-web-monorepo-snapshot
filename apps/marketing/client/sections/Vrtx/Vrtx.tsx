@@ -1,10 +1,10 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { DEFAULT_SECTION_WIDTH } from 'client/consts';
 import Image from 'next/image';
-import { VrtxHeaderContent } from './components/VrtxHeaderContent';
-import { VrtxInfoSectionContent } from './components/VrtxInfoSectionContent/VrtxInfoSectionContent';
+import { VrtxHeaderContent } from 'client/sections/Vrtx/components/VrtxHeaderContent';
+import { VrtxInfoSectionContent } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxInfoSectionContent';
 
-import vovrtx from './assets/vovrtx-logo.png';
+import vovrtx from 'client/sections/Vrtx/assets/vovrtx-logo.png';
 
 export function Vrtx() {
   return (
@@ -21,7 +21,7 @@ export function Vrtx() {
           src={vovrtx}
           alt="voVRTX logo"
           // Using margin to properly align the mobile image
-          className="mx-auto -mt-20 h-auto w-full  max-w-96 md:hidden"
+          className="mx-auto -mt-20 h-auto w-full max-w-96 md:hidden"
         />
         <VrtxHeaderContent />
       </div>

@@ -1,4 +1,3 @@
-import { ProductEngineType } from '@vertex-protocol/client';
 import {
   HistoricalTradesTab,
   historicalTradesTableFilters,
@@ -20,12 +19,13 @@ import {
   SpotBalancesTab,
 } from 'client/pages/SpotTrading/components/SpotBalancesTab';
 import { SpotOrderPlacementSection } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/SpotOrderPlacementSection';
+import { MarketFilter } from 'client/types/MarketFilter';
 import { useMemo } from 'react';
 
 const SHOW_ALL_FILTER = undefined;
 
-const PERP_ONLY_FILTER = {
-  marketType: ProductEngineType.PERP,
+const PERP_ONLY_FILTER: MarketFilter = {
+  marketCategory: 'perp',
 };
 
 export function useSpotTradingTableTabs(productId: number | undefined) {
@@ -35,10 +35,7 @@ export function useSpotTradingTableTabs(productId: number | undefined) {
         id: 'trade',
         label: 'Trade',
         content: (
-          <MobileTradeTab
-            productId={productId}
-            OrderPlacementSection={SpotOrderPlacementSection}
-          />
+          <MobileTradeTab OrderPlacementSection={SpotOrderPlacementSection} />
         ),
       },
       {

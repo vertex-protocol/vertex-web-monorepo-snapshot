@@ -1,3 +1,4 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
 import { BASE_TAILWIND_CONFIG } from '../baseTailwindConfig';
 import { TailwindPreset } from '../types';
 import { BLITZ_BOX_SHADOWS } from './blitzBoxShadows';
@@ -9,6 +10,10 @@ export const BLITZ_TAILWIND_CONFIG = {
     extend: {
       colors: BLITZ_COLORS,
       boxShadow: BLITZ_BOX_SHADOWS,
+      fontFamily: {
+        default: ['var(--font-default)', ...defaultTheme.fontFamily.sans],
+        title: ['var(--font-title)', ...defaultTheme.fontFamily.mono],
+      },
     },
   },
   presets: [BASE_TAILWIND_CONFIG],

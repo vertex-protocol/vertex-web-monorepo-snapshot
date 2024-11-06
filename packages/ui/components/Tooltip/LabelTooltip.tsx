@@ -1,28 +1,30 @@
-import { WithChildren, WithClassnames } from '@vertex-protocol/web-common';
-import { Tooltip } from './Tooltip';
-import { BaseTooltipProps } from './BaseTooltip';
+import { joinClassNames, WithChildren } from '@vertex-protocol/web-common';
+import { ReactNode } from 'react';
+import { Tooltip, TooltipProps } from './Tooltip';
 
 interface Props
   extends WithChildren<
-    WithClassnames<Pick<BaseTooltipProps, 'asChild' | 'noHelpCursor'>>
+    Pick<TooltipProps, 'asChild' | 'noHelpCursor' | 'tooltipOptions'>
   > {
-  label: string;
+  label: ReactNode;
 }
 
 export function LabelTooltip({
   label,
   children,
-  className,
   asChild,
   noHelpCursor,
+  tooltipOptions,
 }: Props) {
   return (
     <Tooltip
       tooltipContent={label}
       hideArrow
-      tooltipOptions={{ placement: 'bottom' }}
-      tooltipContainerClassName="bg-surface-card text-text-primary px-2 py-1 text-xs"
-      contentWrapperClassName={className}
+      tooltipOptions={{ placement: 'bottom', ...tooltipOptions }}
+      tooltipContainerClassName={joinClassNames(
+        'max-w-72',
+        'bg-surface-3 text-text-primary px-2 py-1 text-xs',
+      )}
       asChild={asChild}
       noHelpCursor={noHelpCursor}
     >

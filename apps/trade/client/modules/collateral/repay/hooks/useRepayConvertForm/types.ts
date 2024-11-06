@@ -1,17 +1,21 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
+import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { InputValidatorFn } from '@vertex-protocol/web-common';
 import { LatestMarketPrice } from 'client/hooks/query/markets/types';
 import { CollateralSpotProduct } from 'client/modules/collateral/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { AnnotatedSpotMarket } from 'common/productMetadata/types';
 import { UseFormReturn } from 'react-hook-form';
 
-export type RepayConvertErrorType =
+export type RepayConvertAmountInputErrorType =
   | 'invalid_input' // Form input is not valid
+  | 'max_exceeded' // Trying to repay more than the max
+  | 'invalid_size_increment';
+
+export type RepayConvertFormErrorType =
+  | RepayConvertAmountInputErrorType
   | 'not_borrowing' // Invalid repay product (not borrowing this product)
-  | 'no_available_source' // There are no available source products to repay the balance
-  | 'max_exceeded'; // Trying to repay more than the max
+  | 'no_available_source'; // There are no available source products to repay the balance
 
 export interface RepayConvertFormValues {
   // For product being repaid
@@ -32,8 +36,9 @@ export interface RepayConvertProduct extends CollateralSpotProduct {
 
 export interface UseRepayConvertForm {
   form: UseFormReturn<RepayConvertFormValues>;
-  formError: RepayConvertErrorType | undefined;
-  validateRepayAmount: InputValidatorFn<string, RepayConvertErrorType>;
+  amountInputError: RepayConvertAmountInputErrorType | undefined;
+  formError: RepayConvertFormErrorType | undefined;
+  validateRepayAmount: InputValidatorFn<string, RepayConvertFormErrorType>;
   // Select
   selectedRepayProduct: RepayConvertProduct | undefined;
   selectedSourceProduct: RepayConvertProduct | undefined;
@@ -45,9 +50,9 @@ export interface UseRepayConvertForm {
   sourceAmountValueUsd: BigDecimal | undefined;
   // Repay Product UI
   repayAmountValueUsd: BigDecimal | undefined;
-  disableRepayAmountInput: boolean;
   disableMaxRepayButton: boolean;
   maxRepaySize: BigDecimal | undefined;
+  sizeIncrement: BigDecimal | undefined;
   // Misc UI
   oracleConversionPrice: BigDecimal | undefined;
   isMaxRepayDismissibleOpen: boolean | undefined;
@@ -56,5 +61,6 @@ export interface UseRepayConvertForm {
   market: AnnotatedSpotMarket | undefined;
   // Handlers
   onMaxRepayClicked: () => void;
+  onAmountBorrowingClicked: () => void;
   onSubmit: () => void;
 }

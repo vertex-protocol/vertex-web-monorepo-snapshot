@@ -1,12 +1,11 @@
 import { Divider, GradientPill, PrimaryButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RangeSlider } from 'client/modules/trading/components/RangeSlider';
+import { PerpLeverageInfoCollapsible } from 'client/pages/PerpTrading/components/PerpLeverageDialog/PerpLeverageInfoCollapsible';
 import { usePerpLeverageDialog } from 'client/pages/PerpTrading/hooks/usePerpLeverageDialog';
 import { useSelectedPerpLeverage } from 'client/pages/PerpTrading/hooks/useSelectedPerpLeverage';
 import Image from 'next/image';
-import { PerpLeverageInfoCollapsible } from './PerpLeverageInfoCollapsible';
 
 export interface PerpLeverageDialogParams {
   initialLeverage: number;
@@ -28,23 +27,23 @@ export function PerpLeverageDialog({
   );
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Adjust Leverage</BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-6">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>Adjust Leverage</BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <div className="flex flex-col gap-y-4">
           <PerpLeverageInfoCollapsible />
           <Divider />
           {currentMarket && (
-            <div className="text-text-primary flex items-center gap-x-2 ">
+            <div className="flex items-center gap-x-2">
               <Image
                 src={currentMarket.metadata.icon.asset}
                 alt={currentMarket.metadata.symbol}
                 width={18}
                 height={18}
               />
-              <div className="font-bold">
+              <span className="text-text-primary text-base">
                 {currentMarket.metadata.marketName}
-              </div>
+              </span>
               <GradientPill>MAX {maxLeverage}x</GradientPill>
             </div>
           )}
@@ -67,7 +66,7 @@ export function PerpLeverageDialog({
         >
           Confirm
         </PrimaryButton>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

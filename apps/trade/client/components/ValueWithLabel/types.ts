@@ -3,7 +3,7 @@ import {
   NumberFormatValue,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { IconType, SizeVariant } from '@vertex-protocol/web-ui';
+import { IconComponent, SizeVariant } from '@vertex-protocol/web-ui';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import { ReactNode } from 'react';
 
@@ -20,8 +20,8 @@ interface SizeVariantProps {
 interface LabelContentProps extends SizeVariantProps {
   label: ReactNode;
   labelClassName?: string;
-  labelStartIcon?: IconType;
-  labelEndIcon?: IconType;
+  labelStartIcon?: IconComponent;
+  labelEndIcon?: IconComponent;
   tooltip?: {
     id: DefinitionTooltipID;
     infoIcon?: true;
@@ -39,9 +39,9 @@ interface WithFormatValue {
   numberFormatSpecifier: NumberFormatSpecifier | string;
   defaultValue?: string | number;
   valueClassName?: string;
-  outerValueClassName?: string;
   valueEndElement?: ReactNode;
   newValue?: NumberFormatValue;
+  /** When overriding icon size use `size-` className. ex. `size-4`  */
   changeArrowClassName?: string;
 }
 

@@ -1,5 +1,7 @@
 import { SavedUserState } from 'client/modules/localstorage/userState/types/SavedUserState';
 import { cloneDeep } from 'lodash';
+import { stateSchema } from 'client/modules/localstorage/userState/userStateSchema';
+import { validateOrReset } from 'client/modules/localstorage/utils/zodValidators';
 
 const DEFAULT_USER_STATE: SavedUserState = Object.freeze<SavedUserState>({
   onboardingComplete: false,
@@ -8,9 +10,10 @@ const DEFAULT_USER_STATE: SavedUserState = Object.freeze<SavedUserState>({
     isDismissed: false,
     completedSteps: [],
   },
-  marketWatchlist: {
+  tradingSidebar: {
     isOpen: false,
-    selectedTabId: 'watchlist',
+    selectedWatchlistTabId: 'watchlist',
+    selectedTabId: 'market_info',
   },
 });
 
@@ -18,27 +21,48 @@ const DEFAULT_USER_STATE: SavedUserState = Object.freeze<SavedUserState>({
 export function getUserStateWithDefaults(
   currentSaved: Partial<SavedUserState> | undefined,
 ): SavedUserState {
+  const tutorialSchema = stateSchema.shape.tutorial;
+  const sidebarSchema = stateSchema.shape.tradingSidebar;
+
   const withDefaults: SavedUserState = {
-    onboardingComplete:
-      currentSaved?.onboardingComplete ?? DEFAULT_USER_STATE.onboardingComplete,
-    dismissedDisclosures:
-      currentSaved?.dismissedDisclosures ??
+    onboardingComplete: validateOrReset(
+      currentSaved?.onboardingComplete,
+      DEFAULT_USER_STATE.onboardingComplete,
+      stateSchema.shape.onboardingComplete,
+    ),
+    dismissedDisclosures: validateOrReset(
+      currentSaved?.dismissedDisclosures,
       DEFAULT_USER_STATE.dismissedDisclosures,
+      stateSchema.shape.dismissedDisclosures,
+    ),
     tutorial: {
-      isDismissed:
-        currentSaved?.tutorial?.isDismissed ??
+      isDismissed: validateOrReset(
+        currentSaved?.tutorial?.isDismissed,
         DEFAULT_USER_STATE.tutorial.isDismissed,
-      completedSteps:
-        currentSaved?.tutorial?.completedSteps ??
+        tutorialSchema.shape.isDismissed,
+      ),
+      completedSteps: validateOrReset(
+        currentSaved?.tutorial?.completedSteps,
         DEFAULT_USER_STATE.tutorial.completedSteps,
+        tutorialSchema.shape.completedSteps,
+      ),
     },
-    marketWatchlist: {
-      isOpen:
-        currentSaved?.marketWatchlist?.isOpen ??
-        DEFAULT_USER_STATE.marketWatchlist.isOpen,
-      selectedTabId:
-        currentSaved?.marketWatchlist?.selectedTabId ??
-        DEFAULT_USER_STATE.marketWatchlist.selectedTabId,
+    tradingSidebar: {
+      isOpen: validateOrReset(
+        currentSaved?.tradingSidebar?.isOpen,
+        DEFAULT_USER_STATE.tradingSidebar.isOpen,
+        sidebarSchema.shape.isOpen,
+      ),
+      selectedWatchlistTabId: validateOrReset(
+        currentSaved?.tradingSidebar?.selectedWatchlistTabId,
+        DEFAULT_USER_STATE.tradingSidebar.selectedWatchlistTabId,
+        sidebarSchema.shape.selectedWatchlistTabId,
+      ),
+      selectedTabId: validateOrReset(
+        currentSaved?.tradingSidebar?.selectedTabId,
+        DEFAULT_USER_STATE.tradingSidebar.selectedTabId,
+        sidebarSchema.shape.selectedTabId,
+      ),
     },
   };
 

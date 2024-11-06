@@ -1,30 +1,32 @@
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
+import {
+  Divider,
+  formatTimestamp,
+  TimeFormatSpecifier,
+} from '@vertex-protocol/web-ui';
 import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
-import { Divider } from '@vertex-protocol/web-ui';
+import {
+  useVertexMetadataContext,
+  VRTX_TOKEN_INFO,
+} from '@vertex-protocol/metadata';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
-import { useMemo } from 'react';
-import { LbaPositionActionCell } from './LbaPositionActionCell';
-import { LbaPositionUnlockTimeHeaderCell } from './LbaPositionUnlockTimeHeaderCell';
+import { LbaPositionActionCell } from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/LbaPositionTable/LbaPositionActionCell';
+import { LbaPositionUnlockTimeHeaderCell } from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/LbaPositionTable/LbaPositionUnlockTimeHeaderCell';
 import {
   LbaPositionTableItem,
   useLbaPositionTable,
-} from './useLbaPositionTable';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+} from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/LbaPositionTable/useLbaPositionTable';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<LbaPositionTableItem>();
 

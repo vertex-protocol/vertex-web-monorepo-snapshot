@@ -10,7 +10,6 @@ import {
   toBigDecimal,
   toPrintableObject,
 } from '@vertex-protocol/utils';
-import { useExecuteCancelReduceOnlyOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelReduceOnlyOrdersWithNotification';
 import {
   CommonOrderParams,
   ExecutePlaceEngineOrderParams,
@@ -37,6 +36,11 @@ interface Params {
   quoteProductId: number | undefined;
   // For spot
   spotLeverageEnabled?: boolean;
+  tpsl?: {
+    isTpSlEnabled: boolean;
+    takeProfitOrderFormOnSubmit: () => void;
+    stopLossOrderFormOnSubmit: () => void;
+  };
 }
 
 export function useOrderFormSubmitHandler({
@@ -47,12 +51,11 @@ export function useOrderFormSubmitHandler({
   mutateAsync,
   spotLeverageEnabled,
   allowAnyOrderSizeIncrement,
+  tpsl,
 }: Params) {
   const { dispatchNotification } = useNotificationManagerContext();
   const { data: latestOraclePrices } = useLatestOraclePrices();
   const latestOraclePricesRef = useSyncedRef(latestOraclePrices);
-  const { cancelReduceOnlyOrdersWithNotification } =
-    useExecuteCancelReduceOnlyOrdersWithNotification();
 
   return useCallback(
     (data: BaseOrderFormValues) => {
@@ -160,9 +163,13 @@ export function useOrderFormSubmitHandler({
       }
 
       const orderActionResult = mutateAsync(mutationParams, {
-        onSuccess: () => {
-          // Cancel all reduce only orders for product
-          cancelReduceOnlyOrdersWithNotification([currentMarket.productId]);
+        async onSuccess() {
+          if (!tpsl?.isTpSlEnabled) {
+            return;
+          }
+
+          tpsl.takeProfitOrderFormOnSubmit();
+          tpsl.stopLossOrderFormOnSubmit();
         },
       });
 
@@ -192,7 +199,7 @@ export function useOrderFormSubmitHandler({
       spotLeverageEnabled,
       quoteProductId,
       latestOraclePricesRef,
-      cancelReduceOnlyOrdersWithNotification,
+      tpsl,
     ],
   );
 }

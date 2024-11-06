@@ -41,3 +41,28 @@ export function getCustomGetterBigDecimalSortFn<T>(
   };
   return sortFn;
 }
+
+type SortablePrimitive = string | number | boolean | bigint;
+
+/**
+ * A sort fn factory that uses a nested value of `context.getValue()` for the current column.
+ * Should be used when sorting a primitive value (ie. string | number | boolean | bigint).
+ */
+export function getKeyedPrimitiveSortFn<T>(
+  keyOfColumnValue: string,
+): SortingFn<T> {
+  const sortFn: SortingFn<T> = (a, b, columnId) => {
+    // Column values can be nullable, so we need to handle that case with the "?." accessor.
+    const valueA =
+      a.getValue<Record<string, SortablePrimitive>>(columnId)?.[
+        keyOfColumnValue
+      ];
+    const valueB =
+      b.getValue<Record<string, SortablePrimitive>>(columnId)?.[
+        keyOfColumnValue
+      ];
+
+    return valueA == valueB ? 0 : valueA > valueB ? 1 : -1;
+  };
+  return sortFn;
+}

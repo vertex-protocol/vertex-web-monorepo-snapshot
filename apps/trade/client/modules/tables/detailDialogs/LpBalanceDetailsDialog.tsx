@@ -7,9 +7,9 @@ import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { LpTableItem } from 'client/modules/pools/hooks/useLpTable';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
+import { LpCtaButtons } from 'client/modules/tables/detailDialogs/components/LpCtaButtons';
+import { LpHeader } from 'client/modules/tables/detailDialogs/components/LpHeader';
 import { signDependentValue } from 'client/utils/signDependentValue';
-import { LpCtaButtons } from './components/LpCtaButtons';
-import { LpHeader } from './components/LpHeader';
 
 export type LpBalanceDetailsDialogParams = LpTableItem;
 

@@ -14,15 +14,15 @@ export type CardButtonBaseProps = Except<ButtonProps, 'isLoading'> & {
 export const CardButton = forwardRef(function CardButton(
   {
     className,
+    stateOverlayBorderRadiusVariant,
     children,
-    stateOverlayBorderRadiusVariant = 'lg',
     ...rest
   }: CardButtonBaseProps,
   ref,
 ) {
   const stateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: stateOverlayBorderRadiusVariant,
     disabled: rest.disabled,
+    borderRadiusVariant: stateOverlayBorderRadiusVariant,
   });
 
   return (
@@ -30,6 +30,8 @@ export const CardButton = forwardRef(function CardButton(
       className={mergeClassNames(
         'flex items-center gap-x-3 p-3',
         CARD_CLASSNAMES,
+        // `overflow-hidden` here to clip overlay border radius otherwise it will overflow the parent
+        'overflow-hidden',
         stateOverlayClassNames,
         className,
       )}

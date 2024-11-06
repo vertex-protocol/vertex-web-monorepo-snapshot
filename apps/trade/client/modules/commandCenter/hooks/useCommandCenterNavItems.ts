@@ -1,16 +1,14 @@
-import { useEVMContext } from '@vertex-protocol/react-client';
-import { IconType, Icons, imageToIconComponent } from '@vertex-protocol/web-ui';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import {
+  IconComponent,
+  Icons,
+  imageToIconComponent,
+} from '@vertex-protocol/web-ui';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { IMAGES } from 'common/brandMetadata/images';
-import {
-  ARB_CHAIN_IDS,
-  BLAST_CHAIN_IDS,
-  MANTLE_CHAIN_IDS,
-} from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 const VertexIcon = imageToIconComponent({
@@ -20,7 +18,7 @@ const VertexIcon = imageToIconComponent({
 
 export interface NavItem {
   label: string;
-  icon: IconType;
+  icon: IconComponent;
   action: () => void;
   actionText: string;
   searchKey: string;
@@ -30,29 +28,22 @@ export interface NavItem {
 export function useCommandCenterNavItems() {
   const { show } = useDialog();
   const router = useRouter();
-  const { connectionStatus } = useEVMContext();
+  const { isOnrampEnabled, isBridgeEnabled, isStakeActionEnabled } =
+    useEnabledFeatures();
+  const isConnected = useIsConnected();
 
-  const userActionState = useUserActionState();
-
-  const canShowDepositOrRepay = userActionState !== 'block_all';
-  const canShowWithdrawOrBorrow = userActionState === 'allow_all';
-  const canShowOnramp =
-    useIsEnabledForChainIds([...ARB_CHAIN_IDS, ...MANTLE_CHAIN_IDS]) &&
-    connectionStatus.type === 'connected';
-  const canShowBridge =
-    useIsEnabledForChainIds([
-      ...ARB_CHAIN_IDS,
-      ...MANTLE_CHAIN_IDS,
-      ...BLAST_CHAIN_IDS,
-    ]) && connectionStatus.type === 'connected';
-  const canShowStake =
-    useIsEnabledForChainIds(ARB_CHAIN_IDS) && userActionState !== 'block_all';
+  const canShowDepositOrRepay = isConnected;
+  const canShowTransfer = isConnected;
+  const canShowWithdrawOrBorrow = isConnected;
+  const canShowOnramp = isOnrampEnabled && isConnected;
+  const canShowBridge = isBridgeEnabled && isConnected;
+  const canShowStake = isStakeActionEnabled && isConnected;
 
   const navItems: NavItem[] = useMemo(
     () => [
       {
         label: 'Balances',
-        icon: Icons.PiCoins,
+        icon: Icons.Coins,
         action: () => router.push(ROUTES.portfolio.balances),
         actionText: 'Go To Page',
         searchKey: 'Balances',
@@ -60,7 +51,7 @@ export function useCommandCenterNavItems() {
       },
       {
         label: 'Perp Positions',
-        icon: Icons.PiPulse,
+        icon: Icons.Pulse,
         action: () => router.push(ROUTES.portfolio.positions),
         actionText: 'Go To Page',
         searchKey: 'Perp Positions',
@@ -68,7 +59,7 @@ export function useCommandCenterNavItems() {
       },
       {
         label: 'History',
-        icon: Icons.PiClockClockwise,
+        icon: Icons.ClockClockwise,
         action: () => router.push(ROUTES.portfolio.history),
         actionText: 'Go To Page',
         searchKey: 'History',
@@ -78,7 +69,7 @@ export function useCommandCenterNavItems() {
         ? [
             {
               label: 'Deposit',
-              icon: Icons.PiArrowDownLeft,
+              icon: Icons.ArrowDownLeft,
               action: () => show({ type: 'deposit', params: {} }),
               actionText: 'Open Dialog',
               searchKey: 'Deposit',
@@ -86,10 +77,23 @@ export function useCommandCenterNavItems() {
             },
             {
               label: 'Repay',
-              icon: Icons.PiArrowsClockwise,
+              icon: Icons.ArrowsClockwise,
               action: () => show({ type: 'repay', params: {} }),
               actionText: 'Open Dialog',
               searchKey: 'Repay',
+              type: 'navItems' as const,
+            },
+          ]
+        : []),
+      ...(canShowTransfer
+        ? [
+            {
+              label: 'Transfer funds',
+              icon: Icons.ArrowsLeftRight,
+              action: () =>
+                show({ type: 'subaccount_quote_transfer', params: {} }),
+              actionText: 'Open Dialog',
+              searchKey: 'Transfer funds',
               type: 'navItems' as const,
             },
           ]
@@ -98,7 +102,7 @@ export function useCommandCenterNavItems() {
         ? [
             {
               label: 'Withdraw',
-              icon: Icons.PiArrowUpRight,
+              icon: Icons.ArrowUpRight,
               action: () => show({ type: 'withdraw', params: {} }),
               actionText: 'Open Dialog',
               searchKey: 'Withdraw',
@@ -106,7 +110,7 @@ export function useCommandCenterNavItems() {
             },
             {
               label: 'Borrow',
-              icon: Icons.PiArrowsLeftRight,
+              icon: Icons.ArrowsLeftRight,
               action: () => show({ type: 'borrow', params: {} }),
               actionText: 'Open Dialog',
               searchKey: 'Borrow',
@@ -118,7 +122,7 @@ export function useCommandCenterNavItems() {
         ? [
             {
               label: 'Onramp',
-              icon: Icons.PiCurrencyCircleDollar,
+              icon: Icons.CurrencyCircleDollar,
               action: () => show({ type: 'transak_onramp_notice', params: {} }),
               actionText: 'Open Dialog',
               searchKey: 'Onramp',
@@ -130,7 +134,7 @@ export function useCommandCenterNavItems() {
         ? [
             {
               label: 'Bridge/Cross-Chain',
-              icon: Icons.PiShuffleSimple,
+              icon: Icons.ShuffleSimple,
               action: () => show({ type: 'bridge', params: {} }),
               actionText: 'Open Dialog',
               searchKey: 'Bridge/Cross-Chain',
@@ -152,13 +156,14 @@ export function useCommandCenterNavItems() {
         : []),
     ],
     [
-      show,
-      router,
+      canShowTransfer,
       canShowDepositOrRepay,
       canShowWithdrawOrBorrow,
       canShowOnramp,
       canShowBridge,
       canShowStake,
+      router,
+      show,
     ],
   );
 

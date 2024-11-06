@@ -1,5 +1,5 @@
+import { WithdrawLbaLiquidityErrorType } from 'client/modules/rewards/dialogs/WithdrawLbaLiquidityDialog/hooks/types';
 import { useMemo } from 'react';
-import { WithdrawLbaLiquidityErrorType } from '../hooks/types';
 
 export function useWithdrawLbaLiquidityAmountErrorTooltipContent({
   formError,

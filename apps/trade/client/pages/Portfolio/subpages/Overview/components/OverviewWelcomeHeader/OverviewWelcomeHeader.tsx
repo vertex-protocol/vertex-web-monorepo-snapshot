@@ -1,44 +1,16 @@
-import { useEVMContext } from '@vertex-protocol/react-client';
-import { ProfileAvatarIcon } from 'client/modules/userProfile/components/ProfileAvatarIcon';
-import { useSavedUserProfile } from 'client/modules/userProfile/hooks/useSavedUserProfile';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
-import { EditProfileAvatarIcon } from 'client/pages/Portfolio/subpages/Overview/components/OverviewWelcomeHeader/EditProfileAvatarIcon';
-import { OverviewCollateralButtons } from './OverviewCollateralButtons';
-
-import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
+import { OverviewCollateralButtons } from 'client/pages/Portfolio/subpages/Overview/components/OverviewWelcomeHeader/OverviewCollateralButtons';
 
 export function OverviewWelcomeHeader() {
-  const {
-    connectionStatus: { address },
-  } = useEVMContext();
-  const showEditProfileAvatarIcon = useIsEnabledForBrand(['vertex']);
-
-  const { savedUsername, savedAvatar } = useSavedUserProfile();
-  const username = !!savedUsername ? savedUsername : 'Welcome Back!';
-
-  const welcomeMessageContent = address ? (
-    <>
-      <div className="flex items-center gap-x-3">
-        {showEditProfileAvatarIcon ? (
-          <EditProfileAvatarIcon avatar={savedAvatar} size={40} />
-        ) : (
-          <ProfileAvatarIcon avatar={savedAvatar} size={40} />
-        )}
-        <div className="flex items-center gap-x-1.5">
-          <PortfolioHeader className="text-base sm:text-xl">
-            {username}
-          </PortfolioHeader>
-        </div>
-      </div>
-      <OverviewCollateralButtons className="w-full sm:w-64" />
-    </>
-  ) : (
-    <PortfolioHeader>Welcome</PortfolioHeader>
-  );
+  const isConnected = useIsConnected();
 
   return (
     <div className="flex flex-col gap-y-5 sm:flex-row sm:items-end sm:justify-between">
-      {welcomeMessageContent}
+      <PortfolioHeader>Welcome</PortfolioHeader>
+      {isConnected && (
+        <OverviewCollateralButtons className="w-full sm:w-[375px]" />
+      )}
     </div>
   );
 }

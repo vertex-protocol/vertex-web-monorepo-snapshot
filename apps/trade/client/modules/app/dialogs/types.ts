@@ -1,21 +1,29 @@
-import { AccountCenterDialogParams } from 'client/modules/accountCenter/components/AccountCenterDialog';
-import { ActionSuccessDialogParams } from 'client/modules/app/dialogs/ActionSuccessDialog';
-import { EditOrderViaChartDialogProps } from 'client/modules/app/dialogs/EditOrderViaChartDialog';
-import { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/types';
-import { PerpPnlSocialSharingDialogParams } from 'client/modules/socialSharing/PerpPnlSocialSharingDialog';
-import { LpBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/LpBalanceDetailsDialog';
-import { LpMarketDetailsDialogParams } from 'client/modules/tables/detailDialogs/LpMarketDetailsDialog';
-import { OpenEngineOrderDetailsDialogParams } from 'client/modules/tables/detailDialogs/OpenEngineOrderDetailsDialog';
-import { OpenTriggerOrderDetailsDialogParams } from 'client/modules/tables/detailDialogs/OpenTriggerOrderDetailsDialog';
-import { PerpPositionDetailsDialogParams } from 'client/modules/tables/detailDialogs/PerpPositionDetailsDialog';
-import { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
-import { RealizedPnlDetailsDialogParams } from 'client/modules/tables/detailDialogs/RealizedPnlDetailsDialog';
-import { SpotBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/SpotBalanceDetailsDialog';
-import { ClosePositionDialogParams } from 'client/modules/trading/closePosition/ClosePositionDialog';
-import { TpSlDialogParams } from 'client/modules/trading/tpsl/tpslDialog/TpSlDialog';
-import { MarketDetailsDialogParams } from 'client/pages/Markets/components/MarketDetailsDialog/MarketDetailsDialog';
-import { PerpLeverageDialogParams } from 'client/pages/PerpTrading/components/PerpLeverageDialog/PerpLeverageDialog';
-import { EmptyObject } from 'type-fest';
+import type { ActionSuccessDialogParams } from 'client/modules/app/dialogs/ActionSuccessDialog';
+import type { EditOrderViaChartDialogProps } from 'client/modules/app/dialogs/EditOrderViaChartDialog';
+import type { DepositDialogParams } from 'client/modules/collateral/deposit/components/DepositDialog';
+import type { FastWithdrawDialogParams } from 'client/modules/collateral/fastWithdraw/components/FastWithdrawDialog';
+import type { RepayDialogParams } from 'client/modules/collateral/repay/RepayDialog';
+import type { WithdrawDialogParams } from 'client/modules/collateral/withdraw/components/WithdrawDialog';
+import type { ProvideLiquidityDialogParams } from 'client/modules/pools/provide/ProvideLiquidityDialog';
+import type { WithdrawLiquidityDialogParams } from 'client/modules/pools/withdraw/WithdrawLiquidityDialog';
+import type { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/types';
+import type { PerpPnlSocialSharingDialogParams } from 'client/modules/socialSharing/PerpPnlSocialSharingDialog';
+import type { EditSubaccountProfileDialogParams } from 'client/modules/subaccounts/components/dialogs/EditSubaccountProfileDialog/EditSubaccountProfileDialog';
+import type { SubaccountQuoteTransferDialogParams } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferDialog';
+import type { LpBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/LpBalanceDetailsDialog';
+import type { LpMarketDetailsDialogParams } from 'client/modules/tables/detailDialogs/LpMarketDetailsDialog';
+import type { OpenEngineOrderDetailsDialogParams } from 'client/modules/tables/detailDialogs/OpenEngineOrderDetailsDialog';
+import type { OpenTriggerOrderDetailsDialogParams } from 'client/modules/tables/detailDialogs/OpenTriggerOrderDetailsDialog';
+import type { PerpPositionDetailsDialogParams } from 'client/modules/tables/detailDialogs/PerpPositionDetailsDialog';
+import type { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
+import type { RealizedPnlDetailsDialogParams } from 'client/modules/tables/detailDialogs/RealizedPnlDetailsDialog';
+import type { SpotBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/SpotBalanceDetailsDialog';
+import type { ClosePositionDialogParams } from 'client/modules/trading/closePosition/ClosePositionDialog';
+import type { TpSlDialogParams } from 'client/modules/trading/tpsl/tpslDialog/TpSlDialog';
+import type { SkateVaultDialogParams } from 'client/modules/vaults/dialogs/types';
+import type { MarketDetailsDialogParams } from 'client/pages/Markets/components/MarketDetailsDialog/MarketDetailsDialog';
+import type { PerpLeverageDialogParams } from 'client/pages/PerpTrading/components/PerpLeverageDialog/PerpLeverageDialog';
+import type { EmptyObject } from 'type-fest';
 
 export type DialogParams =
   | {
@@ -32,11 +40,15 @@ export type DialogParams =
     }
   | {
       type: 'edit_user_profile';
-      params: EmptyObject;
+      params: EditSubaccountProfileDialogParams;
     }
   | {
       type: 'account_center';
-      params: AccountCenterDialogParams;
+      params: EmptyObject;
+    }
+  | {
+      type: 'settings';
+      params: EmptyObject;
     }
   | {
       type: 'signature_mode_settings';
@@ -64,19 +76,23 @@ export type DialogParams =
     }
   | {
       type: 'deposit';
-      params: EmptyObject;
+      params: DepositDialogParams;
     }
   | {
       type: 'withdraw';
-      params: EmptyObject;
+      params: WithdrawDialogParams;
+    }
+  | {
+      type: 'fast_withdraw';
+      params: FastWithdrawDialogParams;
     }
   | {
       type: 'borrow';
-      params: EmptyObject;
+      params: WithdrawDialogParams;
     }
   | {
       type: 'repay';
-      params: EmptyObject;
+      params: RepayDialogParams;
     }
   | {
       type: 'close_position';
@@ -96,11 +112,11 @@ export type DialogParams =
     }
   | {
       type: 'provide_liquidity';
-      params: EmptyObject;
+      params: ProvideLiquidityDialogParams;
     }
   | {
       type: 'withdraw_liquidity';
-      params: EmptyObject;
+      params: WithdrawLiquidityDialogParams;
     }
   | {
       type: 'perp_position_details';
@@ -151,6 +167,14 @@ export type DialogParams =
       params: EmptyObject;
     }
   | {
+      type: 'stake_v2_vrtx';
+      params: EmptyObject;
+    }
+  | {
+      type: 'migrate_vrtx';
+      params: EmptyObject;
+    }
+  | {
       type: 'claim_vrtx_staking_rewards';
       params: EmptyObject;
     }
@@ -160,6 +184,14 @@ export type DialogParams =
     }
   | {
       type: 'unstake_vrtx';
+      params: EmptyObject;
+    }
+  | {
+      type: 'unstake_v1_vrtx';
+      params: EmptyObject;
+    }
+  | {
+      type: 'unstake_v2_vrtx';
       params: EmptyObject;
     }
   | {
@@ -193,6 +225,30 @@ export type DialogParams =
   | {
       type: 'edit_order_via_chart';
       params: EditOrderViaChartDialogProps;
+    }
+  | {
+      type: 'skate_vaults_deposit';
+      params: SkateVaultDialogParams;
+    }
+  | {
+      type: 'skate_vaults_withdraw';
+      params: SkateVaultDialogParams;
+    }
+  | {
+      type: 'manage_subaccounts';
+      params: EmptyObject;
+    }
+  | {
+      type: 'create_subaccount';
+      params: EmptyObject;
+    }
+  | {
+      type: 'subaccount_quote_transfer';
+      params: SubaccountQuoteTransferDialogParams;
+    }
+  | {
+      type: 'export_history';
+      params: EmptyObject;
     };
 
 export type DialogType = DialogParams['type'];

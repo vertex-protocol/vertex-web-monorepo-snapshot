@@ -1,10 +1,9 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { DEFAULT_SECTION_WIDTH } from 'client/consts';
 import Image from 'next/image';
-import { ContactLink } from './components/ContactLink';
-import { EmailSignUp } from './components/EmailSignup';
-import { FooterLinks } from './components/FooterLinks';
-import { LegalDisclaimer } from './components/LegalDisclaimer';
+import { ContactLink } from 'client/sections/Footer/components/ContactLink';
+import { FooterLinks } from 'client/sections/Footer/components/FooterLinks';
+import { LegalDisclaimer } from 'client/sections/Footer/components/LegalDisclaimer';
 
 // Images
 import logoWhite from 'client/sections/Footer/assets/logo-white.svg';
@@ -35,14 +34,6 @@ export function Footer() {
           )}
         >
           <Image src={logoWhite} alt="Vertex" className="w-28 py-1.5 lg:w-32" />
-          {/* Desktop Email Sign-up */}
-          <EmailSignUp
-            className={joinClassNames(
-              'hidden gap-x-4 gap-y-2.5',
-              'sm:flex sm:flex-col',
-              'md:flex-row md:items-center',
-            )}
-          />
         </div>
         <div
           className={joinClassNames(

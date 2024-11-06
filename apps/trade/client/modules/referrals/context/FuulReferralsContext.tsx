@@ -1,19 +1,16 @@
 import { Fuul } from '@fuul/sdk';
 import { useMutation } from '@tanstack/react-query';
-import { ChainEnv } from '@vertex-protocol/client';
-import { WithChildren } from '@vertex-protocol/web-common';
 import {
-  ARB_CHAIN_IDS,
-  MANTLE_CHAIN_IDS,
-} from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
+  PRIMARY_QUOTE_SYMBOLS,
+  Token,
+  USDC_ARB_ONE,
+} from '@vertex-protocol/metadata';
+import { WithChildren } from '@vertex-protocol/web-common';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { vertexReferralCodeAtom } from 'client/store/referralsStore';
 import { SENSITIVE_DATA } from 'common/environment/sensitiveData';
-import { USDC_ARB_ONE } from 'common/productMetadata/arbitrum/tokens';
-import { PRIMARY_QUOTE_SYMBOLS } from 'common/productMetadata/primaryQuoteSymbols';
-import { Token } from 'common/productMetadata/types';
 import { useAtom } from 'jotai';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import {
   createContext,
   Dispatch,
@@ -23,6 +20,8 @@ import {
   useMemo,
 } from 'react';
 import { Address } from 'viem';
+import { PrimaryChain } from '@vertex-protocol/react-client';
+import { arbitrum } from 'viem/chains';
 
 interface FuulReferralsContextData {
   /**
@@ -52,9 +51,9 @@ interface FuulReferralsContextData {
    */
   subgraphEndpoint: string;
   /**
-   * Chain env corresponding to the chain that rewards are claimed on
+   * The chain that rewards are claimed on
    */
-  rewardsChainEnv: ChainEnv;
+  rewardsChain: PrimaryChain;
 }
 
 const FuulReferralsContext = createContext<FuulReferralsContextData>(
@@ -64,14 +63,11 @@ const FuulReferralsContext = createContext<FuulReferralsContextData>(
 Fuul.init({ apiKey: SENSITIVE_DATA.fuulApiKey });
 
 export function FuulReferralsProvider({ children }: WithChildren) {
-  const isEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-  ]);
+  const { isFuulEnabled } = useEnabledFeatures();
   const { mutate: mutateSendPageView } = useMutation({
     mutationFn: ({ route }: { route: string }) => Fuul.sendPageview(route),
   });
-  const { asPath } = useRouter();
+  const pathname = usePathname();
 
   const [referralCodeForSession, setReferralCodeForSession] = useAtom(
     vertexReferralCodeAtom,
@@ -79,12 +75,12 @@ export function FuulReferralsProvider({ children }: WithChildren) {
 
   // Send page view on route change
   useEffect(() => {
-    if (!isEnabled) {
+    if (!isFuulEnabled) {
       return;
     }
 
-    mutateSendPageView({ route: asPath });
-  }, [asPath, isEnabled, mutateSendPageView]);
+    mutateSendPageView({ route: pathname });
+  }, [pathname, isFuulEnabled, mutateSendPageView]);
 
   const value = useMemo(
     (): FuulReferralsContextData =>
@@ -98,7 +94,7 @@ export function FuulReferralsProvider({ children }: WithChildren) {
         projectAddress: '0xc063390e478c5b230d4d06283d90930c0af9cc96',
         subgraphEndpoint:
           'https://subgraph.satsuma-prod.com/64a0e71a7397/fuul-team--611570/arbitrum/api',
-        rewardsChainEnv: 'arbitrum',
+        rewardsChain: arbitrum,
       }) as const,
     [referralCodeForSession, setReferralCodeForSession],
   );

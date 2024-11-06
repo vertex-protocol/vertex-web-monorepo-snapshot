@@ -1,6 +1,6 @@
+import { SharedProductMetadata } from '@vertex-protocol/metadata';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { OrderbookPriceTickSpacingMultiplier } from 'client/modules/trading/marketOrders/orderbook/types';
-import { BaseProductMetadata } from 'common/productMetadata/types';
 
 export interface OrderbookParams {
   productId: number | undefined;
@@ -12,14 +12,14 @@ export interface OrderbookRowItem {
   id: string;
   isAsk: boolean;
   price: BigDecimal;
-  // Asset = product for orderbook (ex. wETH), decimal adjusted
-  assetAmount: BigDecimal;
+  // Asset = product for orderbook (ex. wETH), decimal adjusted, undefined if there's no liquidity at this level
+  assetAmount: BigDecimal | undefined;
   // Cumulative amount in asset currency (ex. wETH) or quote currency (ex. USDC)
   cumulativeAmount: BigDecimal;
 }
 
 export interface OrderbookData {
-  productMetadata: BaseProductMetadata;
+  productMetadata: SharedProductMetadata;
   quoteSymbol: string;
   priceIncrement: BigDecimal;
   sizeIncrement: BigDecimal;
@@ -54,4 +54,6 @@ export interface UseOrderbook {
   setNewPriceInput: (val: BigDecimal) => void;
   lastPrice: BigDecimal | undefined;
   lastPriceChange: BigDecimal | undefined;
+  // Prices of open orders presented as string for proper comparison
+  openOrderPrices: Set<string> | undefined;
 }

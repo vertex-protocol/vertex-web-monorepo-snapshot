@@ -1,7 +1,7 @@
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 
 interface Props {
@@ -9,9 +9,9 @@ interface Props {
 }
 
 export function MoneyMarketActionsCell({ productId }: Props) {
-  const userActionState = useUserActionState();
-  const isDepositDisabled = userActionState === 'block_all';
-  const isBorrowDisabled = userActionState !== 'allow_all';
+  const isConnected = useIsConnected();
+  const isDepositDisabled = !isConnected;
+  const isBorrowDisabled = !isConnected;
   const showDialogForProduct = useShowDialogForProduct();
 
   return (

@@ -1,8 +1,8 @@
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
+import { TpSlPositionData } from 'client/modules/trading/tpsl/tpslDialog/types';
 import { useMemo } from 'react';
-import { TpSlPositionData } from '../types';
 
 export function useTpSlPositionData({
   productId,
@@ -17,6 +17,7 @@ export function useTpSlPositionData({
     const staticMarketData = staticMarketsData?.perp[productId];
     const sizeIncrement = staticMarketData?.sizeIncrement;
     const priceIncrement = staticMarketData?.priceIncrement;
+    const longWeightInitial = staticMarketData?.longWeightInitial;
 
     // Perp Position Item
     const perpPositionItem = positionsData?.find(
@@ -39,6 +40,7 @@ export function useTpSlPositionData({
       fastOraclePrice: perpPositionItem.price.fastOraclePrice,
       sizeIncrement,
       priceIncrement,
+      longWeightInitial,
     };
   }, [latestOrderFillPrice, positionsData, productId, staticMarketsData]);
 }

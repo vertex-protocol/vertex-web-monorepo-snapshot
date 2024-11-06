@@ -1,6 +1,6 @@
-import { PortfolioPageContentWrapper } from 'client/pages/Portfolio/components/PortfolioPageContentWrapper';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
-import { Faucet } from './components/Faucet';
+import { PortfolioPageContentWrapper } from 'client/pages/Portfolio/components/PortfolioPageContentWrapper';
+import { Faucet } from 'client/pages/Portfolio/subpages/Faucet/components/Faucet';
 
 export function PortfolioFaucetPage() {
   return (

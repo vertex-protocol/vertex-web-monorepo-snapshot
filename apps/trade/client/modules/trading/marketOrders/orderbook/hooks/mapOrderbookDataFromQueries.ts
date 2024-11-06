@@ -1,12 +1,15 @@
 import { BigDecimal, EnginePriceTickLiquidity } from '@vertex-protocol/client';
+import { AnnotatedMarket } from '@vertex-protocol/metadata';
 import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { MarketLiquidityData } from 'client/hooks/query/markets/useMarketLiquidity';
+import {
+  OrderbookData,
+  OrderbookRowItem,
+} from 'client/modules/trading/marketOrders/orderbook/hooks/types';
+import { OrderbookPriceTickSpacingMultiplier } from 'client/modules/trading/marketOrders/orderbook/types';
 import { isHighSpread } from 'client/modules/trading/utils/isHighSpread';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
-import { AnnotatedMarket } from 'common/productMetadata/types';
-import { first, last } from 'lodash';
-import { OrderbookPriceTickSpacingMultiplier } from '../types';
-import { OrderbookData, OrderbookRowItem } from './types';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
+import { first, get, last } from 'lodash';
 
 function getRowId(isAsk: boolean, price: BigDecimal) {
   return `${isAsk ? 'ask' : 'bid'}-${price.toString()}`;
@@ -82,25 +85,32 @@ function processTicks({
       // Add to existing level
       const lastItem = last(ticks);
       if (lastItem) {
-        lastItem.assetAmount = lastItem.assetAmount.plus(
-          decimalAdjustedAssetLiquidity,
-        );
+        lastItem.assetAmount = get(
+          lastItem,
+          'assetAmount',
+          BigDecimals.ZERO,
+        ).plus(decimalAdjustedAssetLiquidity);
         lastItem.cumulativeAmount = cumulativeAmount;
       }
     }
   }
 
-  // Populate the rest with zeros
+  // Populate the rest until we've hit depth
   while (ticks.length < depth) {
     currPrice = isAsk
       ? currPrice.plus(tickSpacing)
       : currPrice.minus(tickSpacing);
 
+    // For bids, we can create an invalid row if we go below zero
+    if (currPrice.isNegative()) {
+      break;
+    }
+
     ticks.push({
       id: getRowId(isAsk, currPrice),
       isAsk,
       price: currPrice,
-      assetAmount: BigDecimals.ZERO,
+      assetAmount: undefined,
       cumulativeAmount,
     });
   }
@@ -129,7 +139,7 @@ export function mapOrderbookDataFromQueries({
   marketData,
   liquidityQueryData,
 }: MapOrderbookDataFromQueriesParams): OrderbookData {
-  const baseProductMetadata = getBaseProductMetadata(marketData.metadata);
+  const sharedProductMetadata = getSharedProductMetadata(marketData.metadata);
 
   const currentTickSpacing = marketData.priceIncrement
     .multipliedBy(tickSpacingMultiplier)
@@ -172,7 +182,7 @@ export function mapOrderbookDataFromQueries({
   );
 
   return {
-    productMetadata: baseProductMetadata,
+    productMetadata: sharedProductMetadata,
     cumulativeTotalAmount,
     quoteSymbol,
     asks,

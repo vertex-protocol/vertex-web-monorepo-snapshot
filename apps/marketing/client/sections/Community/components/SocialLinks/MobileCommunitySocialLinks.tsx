@@ -1,28 +1,30 @@
+import { DiscordLogo } from '@phosphor-icons/react/dist/ssr/DiscordLogo';
+import { XLogo } from '@phosphor-icons/react/dist/ssr/XLogo';
+import { YoutubeLogo } from '@phosphor-icons/react/dist/ssr/YoutubeLogo';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
 import { EXTERNAL_LINKS } from 'client/consts';
 import Link from 'next/link';
-import { BsTwitterX, BsYoutube } from 'react-icons/bs';
-import { SiDiscord } from 'react-icons/si';
 
 export function MobileCommunitySocialLinks() {
   const links = [
     {
       id: 'discord',
-      icon: <SiDiscord size={20} />,
+      icon: <DiscordLogo weight="fill" size={24} />,
       href: EXTERNAL_LINKS.discord,
     },
     {
       id: 'youtube',
-      icon: <BsYoutube size={20} />,
+      icon: <YoutubeLogo weight="fill" size={24} />,
       href: EXTERNAL_LINKS.youtube,
     },
     {
-      id: 'twitter',
-      icon: <BsTwitterX size={20} />,
-      href: EXTERNAL_LINKS.twitter,
+      id: 'x',
+      icon: <XLogo weight="fill" size={24} />,
+      href: EXTERNAL_LINKS.x,
     },
   ];
+
   return (
     <div
       className={joinClassNames(

@@ -1,11 +1,11 @@
+import { useIsClient } from '@vertex-protocol/web-common';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import {
   USER_DISCLOSURE_KEYS,
   UserDisclosureKey,
 } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
-import { useCallback } from 'react';
 import { useSavedUserState } from 'client/modules/localstorage/userState/useSavedUserState';
-import { useEVMContext } from '@vertex-protocol/react-client';
-import { useIsClient } from '@vertex-protocol/web-common';
+import { useCallback } from 'react';
 
 /**
  * Hook for retrieving / setting state for user disclosures. A user disclosure is some message that must be presented
@@ -18,17 +18,15 @@ export function useShowUserDisclosure(key: UserDisclosureKey) {
   // Conscious decision to handle mounted state so that we can default to hiding the user disclosure before mount
   // This prevents a flash in case the user has dismissed the disclosure, but localstorage is not accessible
   const { savedUserState, setSavedUserState } = useSavedUserState();
-  const { connectionStatus } = useEVMContext();
+  const isConnected = useIsConnected();
 
   const shouldShow = (() => {
     if (!isClient) {
       return false;
     }
-    // Check if the user has already dismissed the disclosure
     const wasDismissed = savedUserState.dismissedDisclosures.includes(key);
-    // Check if connected (only show for connected users)
-    const isConnected = connectionStatus.type === 'connected';
 
+    // Only show for connected users and if it hasn't been dismissed
     return isConnected && !wasDismissed;
   })();
 

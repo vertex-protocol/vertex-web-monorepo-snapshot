@@ -1,9 +1,8 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Icons } from '@vertex-protocol/web-ui';
+import { COMMON_TRANSPARENCY_COLORS, Icons } from '@vertex-protocol/web-ui';
 import { UserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
-import { ReactNode } from 'react';
 
 interface Props {
   size: 'sm' | 'md' | 'lg';
@@ -11,7 +10,7 @@ interface Props {
 }
 
 interface IconParams {
-  icon: ReactNode;
+  iconColorClassName: string;
   bgClassName: string;
   definitionId: DefinitionTooltipID;
 }
@@ -25,19 +24,19 @@ export function RiskWarningIcon({ size, userRiskWarningState }: Props) {
     lg: 'h-6 w-6',
   }[size];
 
-  const { icon, bgClassName, definitionId }: IconParams = (() => {
+  const { iconColorClassName, bgClassName, definitionId }: IconParams = (() => {
     switch (userRiskWarningState) {
       case 'extreme_liquidation_risk':
         return {
-          icon: <Icons.BsExclamation size={20} className="text-negative" />,
+          iconColorClassName: 'text-negative',
           definitionId: 'extremeLiquidationRisk',
           bgClassName: 'bg-negative-muted',
         };
       case 'no_funds_available':
         return {
-          icon: <Icons.TbCurrencyDollarOff size={12} className="text-accent" />,
+          iconColorClassName: 'text-accent',
           definitionId: 'noFundsAvailable',
-          bgClassName: 'bg-overlay-accent/20',
+          bgClassName: COMMON_TRANSPARENCY_COLORS.bgAccent,
         };
     }
   })();
@@ -45,13 +44,15 @@ export function RiskWarningIcon({ size, userRiskWarningState }: Props) {
   return (
     <DefinitionTooltip
       contentWrapperClassName={joinClassNames(
-        'overflow-hidden shrink-0 rounded-full flex items-center justify-center',
+        'overflow-hidden shrink-0 rounded-full flex items-center justify-center p-0.5',
         sizeClassName,
         bgClassName,
       )}
       definitionId={definitionId}
     >
-      {icon}
+      <Icons.ExclamationMark
+        className={joinClassNames('h-full w-full', iconColorClassName)}
+      />
     </DefinitionTooltip>
   );
 }

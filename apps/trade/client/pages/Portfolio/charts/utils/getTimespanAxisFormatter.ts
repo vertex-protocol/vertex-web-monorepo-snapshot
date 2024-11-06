@@ -1,9 +1,9 @@
-import { ChartTimespan } from '../types';
+import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
 import {
   dateAxisFormatter,
   dateWithDayAxisFormatter,
   timeAxisFormatter,
-} from './axisFormatters';
+} from 'client/pages/Portfolio/charts/utils/axisFormatters';
 
 /**
  * @param timespan

@@ -1,5 +1,6 @@
-import { PrimaryButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 
 interface Props {
@@ -24,12 +25,15 @@ export const TpSlPlaceOrderSubmitButton = ({ state, isTakeProfit }: Props) => {
   })();
 
   return (
-    <PrimaryButton
+    <ValidUserStatePrimaryButton
       type="submit"
       isLoading={state === 'loading'}
       disabled={state === 'disabled'}
+      handledErrors={
+        HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+      }
     >
       {message}
-    </PrimaryButton>
+    </ValidUserStatePrimaryButton>
   );
 };

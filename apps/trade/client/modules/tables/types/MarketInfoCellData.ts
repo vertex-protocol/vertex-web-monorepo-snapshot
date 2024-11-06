@@ -1,6 +1,6 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
+import { TokenIconMetadata } from '@vertex-protocol/metadata';
 
 export interface MarketInfoCellData {
   marketName: string;

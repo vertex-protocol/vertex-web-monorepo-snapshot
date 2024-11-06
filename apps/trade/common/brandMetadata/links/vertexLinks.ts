@@ -1,16 +1,21 @@
 export const VERTEX_SPECIFIC_LINKS = {
-  arbWallets:
-    'https://portal.arbitrum.io/?chains=arbitrum-one&categories=wallet',
+  benjiTradingCompetitionDocs:
+    'https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-base/basenji-trading-competition',
   blitzApp: 'https://app.blitz.exchange',
+  blitzTestnetApp: 'https://testnet.blitz.exchange',
+  electionTokensDocs: 'https://docs.vertexprotocol.com/basics/election-markets',
   fuulReferralsDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/referral-program-new',
   rewardsDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/trade-and-earn-rewards-program',
+  seiTradingCompetitionDocs:
+    'https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-sei/trading-competition-series',
   stakeVrtxDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/the-vertex-lba/stake-vrtx',
+  degenRewardsDetails:
+    'https://x.com/vertex_protocol/status/1852017998019858698',
   vestingScheduleGraphic: '/rewards/lba-vesting-schedule.png',
-  tradingCompetitionDocs:
-    'https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-mantle/mantle-trading-competition',
+  wrapSei: 'https://dragonswap.app/swap',
 };
 
 export const VERTEX_COMMON_LINKS = {
@@ -20,13 +25,16 @@ export const VERTEX_COMMON_LINKS = {
     'https://docs.vertexprotocol.com/tutorials/cross-chain-deposits',
   discord: 'https://discord.gg/vertexprotocol',
   docs: 'https://docs.vertexprotocol.com/getting-started/overview',
+  faq: 'https://docs.vertexprotocol.com/basics/faqs',
   faqFeesDocs: 'https://docs.vertexprotocol.com/basics/fees',
-  faqGasFeesDocs: `https://docs.vertexprotocol.com/basics/fees#gas-fees`,
-  hacken: 'https://hackenproof.com/vertex-protocol',
+  fastWithdrawalsLearnMore: `https://docs.vertexprotocol.com/tutorials/fast-withdrawals`,
+  hacken: 'https://hackenproof.com/company/vertex-protocol/programs',
   lpDocs: 'https://docs.vertexprotocol.com/basics/hybrid-orderbook-amm-design',
   maintenanceWindowDocs:
     'https://docs.vertexprotocol.com/more/maintenance-windows-and-status',
   marketingSite: 'https://vertexprotocol.com',
+  multipleSubaccountsDocs:
+    'https://docs.vertexprotocol.com/tutorials/multiple-accounts',
   privacyPolicy: 'https://vertexprotocol.com/docs/PrivacyPolicy.pdf',
   productSpecDocs:
     'https://docs.vertexprotocol.com/basics/perpetual-and-spot-market-specifications',

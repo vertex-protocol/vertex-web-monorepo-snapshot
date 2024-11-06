@@ -8,7 +8,7 @@ import {
 import { CancellableOrderWithNotificationInfo } from 'client/hooks/execute/cancelOrder/types';
 import { useExecuteCancelOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrdersWithNotification';
 import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
-import { getTableButtonOnClickHandler } from '../utils/getTableButtonOnClickHandler';
+import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 
 interface Props extends TableCellProps {
   order: CancellableOrderWithNotificationInfo;

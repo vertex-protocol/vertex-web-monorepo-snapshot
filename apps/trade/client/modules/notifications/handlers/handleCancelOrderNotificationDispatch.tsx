@@ -1,16 +1,16 @@
 import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
+import { CancelOrderErrorNotification } from 'client/modules/notifications/components/orders/CancelOrderErrorNotification';
+import { CancelOrderSuccessNotification } from 'client/modules/notifications/components/orders/CancelOrderSuccessNotification';
 import { SignaturePendingNotification } from 'client/modules/notifications/components/SignaturePendingNotification';
+import {
+  CancelOrderNotificationData,
+  NotificationDispatchContext,
+} from 'client/modules/notifications/types';
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import toast from 'react-hot-toast';
-import { CancelOrderErrorNotification } from '../components/orders/CancelOrderErrorNotification';
-import { CancelOrderSuccessNotification } from '../components/orders/CancelOrderSuccessNotification';
-import {
-  CancelOrderNotificationData,
-  NotificationDispatchContext,
-} from '../types';
 
 export async function handleCancelOrderNotificationDispatch(
   cancelOrderNotificationData: CancelOrderNotificationData,

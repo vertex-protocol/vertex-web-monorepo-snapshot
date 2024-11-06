@@ -1,9 +1,15 @@
+'use client';
+
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Button, Card } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import {
+  Button,
+  Card,
+  COMMON_TRANSPARENCY_COLORS,
+  UpDownChevronIcon,
+} from '@vertex-protocol/web-ui';
+import { MarginManagerDefinitionsTabs } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/MarginManagerDefinitionsTabs';
 import { useState } from 'react';
-import { MarginManagerDefinitionsTabs } from './MarginManagerDefinitionsTabs';
 
 function CollapsibleTrigger({ isExpanded }: { isExpanded: boolean }) {
   return (
@@ -27,7 +33,12 @@ export function MarginManagerDefinitionsCollapsible() {
 
   return (
     <Collapsible.Root asChild open={isExpanded} onOpenChange={setIsExpanded}>
-      <Card className="bg-overlay-accent/10 flex flex-col">
+      <Card
+        className={joinClassNames(
+          'flex flex-col',
+          COMMON_TRANSPARENCY_COLORS.bgAccent,
+        )}
+      >
         <CollapsibleTrigger isExpanded={isExpanded} />
         <Collapsible.Content>
           <MarginManagerDefinitionsTabs />

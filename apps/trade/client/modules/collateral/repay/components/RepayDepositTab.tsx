@@ -1,15 +1,19 @@
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { Button } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { Form } from 'client/components/Form';
-import { InputSummary } from 'client/components/InputSummary';
+import { InputSummaryItem } from 'client/components/InputSummaryItem';
 import { CollateralSelectInput } from 'client/modules/collateral/components/CollateralSelectInput';
+import { DepositSummaryDisclosure } from 'client/modules/collateral/components/DepositSummaryDisclosure';
+import { useDepositAmountErrorTooltipContent } from 'client/modules/collateral/deposit/hooks/useDepositAmountErrorTooltipContent';
+import { RepayDepositButton } from 'client/modules/collateral/repay/components/RepayDepositButton';
 import { useRepayDepositForm } from 'client/modules/collateral/repay/hooks/useRepayDepositForm';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { DepositSummaryDisclosure } from '../../components/DepositSummaryDisclosure';
-import { useDepositAmountErrorTooltipContent } from '../../deposit/hooks/useDepositAmountErrorTooltipContent';
-import { RepayDepositButton } from './RepayDepositButton';
 
-export const RepayDepositTab = () => {
+export const RepayDepositTab = ({
+  initialProductId,
+}: {
+  initialProductId: number | undefined;
+}) => {
   const {
     form,
     formError,
@@ -20,9 +24,11 @@ export const RepayDepositTab = () => {
     buttonState,
     amountInputValueUsd,
     onMaxRepayClicked,
+    onAmountBorrowingClicked,
+    onMaxDepositClicked,
     validateAmount,
     onSubmit,
-  } = useRepayDepositForm();
+  } = useRepayDepositForm({ initialProductId });
 
   const amountErrorTooltipContent = useDepositAmountErrorTooltipContent({
     formError,
@@ -42,13 +48,13 @@ export const RepayDepositTab = () => {
             Max Repay
           </Button>
         </div>
-        <div>
+        <div className="flex flex-col gap-y-1.5">
           <CollateralSelectInput
             {...form.register('amount', {
               validate: validateAmount,
             })}
             estimatedValueUsd={amountInputValueUsd}
-            dropdownProps={{
+            selectProps={{
               selectedProduct,
               availableProducts,
               assetAmountTitle: 'Borrowing',
@@ -62,20 +68,22 @@ export const RepayDepositTab = () => {
               form.setValue('amountSource', 'absolute');
             }}
           />
-          <InputSummary.Container>
-            <InputSummary.Item
+          <div className="flex flex-col gap-y-0.5">
+            <InputSummaryItem
               label="Borrowing:"
               definitionTooltipId="repayAmountBorrowing"
               currentValue={balances.current?.borrowed}
               formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              onValueClick={onAmountBorrowingClicked}
             />
-            <InputSummary.Item
+            <InputSummaryItem
               label="Max deposit:"
               definitionTooltipId="repayDepositMaxDeposit"
               currentValue={balances.current?.wallet}
               formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              onValueClick={onMaxDepositClicked}
             />
-          </InputSummary.Container>
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-y-2.5 pt-3">
@@ -83,7 +91,7 @@ export const RepayDepositTab = () => {
           <DepositSummaryDisclosure
             estimateStateTxs={estimateStateTxs}
             productId={selectedProduct?.productId}
-            triggerOpen={buttonState === 'idle'}
+            isHighlighted={buttonState === 'idle'}
             symbol={selectedProduct?.symbol}
           />
           <RepayDepositButton state={buttonState} />

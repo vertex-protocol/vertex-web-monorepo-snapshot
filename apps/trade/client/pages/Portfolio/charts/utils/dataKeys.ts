@@ -1,4 +1,4 @@
-import { PortfolioChartDataItem } from '../hooks/usePortfolioChartData/usePortfolioChartData';
+import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
 
 export function timestampDataKey(data: PortfolioChartDataItem) {
   return data.timestampMillis;

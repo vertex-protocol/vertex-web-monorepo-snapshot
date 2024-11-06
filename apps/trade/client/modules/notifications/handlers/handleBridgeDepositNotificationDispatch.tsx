@@ -1,15 +1,15 @@
 import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
+import { ActionErrorNotification } from 'client/modules/notifications/components/collateral/ActionErrorNotification';
+import { BridgeDepositSuccessNotification } from 'client/modules/notifications/components/collateral/BridgeDepositSuccessNotification';
+import {
+  BridgeDepositNotificationData,
+  NotificationDispatchContext,
+} from 'client/modules/notifications/types';
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import { toast } from 'react-hot-toast';
-import { ActionErrorNotification } from '../components/collateral/ActionErrorNotification';
-import { BridgeDepositSuccessNotification } from '../components/collateral/BridgeDepositSuccessNotification';
-import {
-  BridgeDepositNotificationData,
-  NotificationDispatchContext,
-} from '../types';
 
 export async function handleBridgeDepositNotificationDispatch(
   {

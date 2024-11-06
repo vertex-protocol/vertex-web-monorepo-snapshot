@@ -3,18 +3,21 @@ import {
   TriggerOrderInfo,
 } from '@vertex-protocol/trigger-client';
 import { TriggerOrderStatus } from '@vertex-protocol/trigger-client/src/types/clientTypes';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
-import { removeDecimals } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  removeDecimals,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useSubaccountPaginatedHistoricalTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountPaginatedHistoricalTriggerOrders';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
-export interface HistoricalTriggerOrder {
+export interface HistoricalTriggerOrdersTableItem {
   timestampMillis: number;
   status: TriggerOrderStatus;
   marketInfo: MarketInfoCellData;
@@ -42,66 +45,81 @@ export function useHistoricalTriggerOrdersTable() {
   const {
     data: historicalTriggerOrders,
     isLoading,
-    isFetchingNextPage,
     fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
     hasNextPage,
   } = useSubaccountPaginatedHistoricalTriggerOrders({
     pageSize: PAGE_SIZE,
   });
 
-  const { pageCount, paginationState, setPaginationState, getPageData } =
-    useDataTablePagination<TriggerListOrdersResponse, TriggerOrderInfo>({
-      pageSize: PAGE_SIZE,
-      numPagesFromQuery: historicalTriggerOrders?.pages.length,
-      hasNextPage,
-      fetchNextPage,
-      extractItems,
-    });
+  const {
+    pageCount,
+    paginationState,
+    setPaginationState,
+    getPageData,
+    isFetchingCurrPage,
+  } = useDataTablePagination<TriggerListOrdersResponse, TriggerOrderInfo>({
+    pageSize: PAGE_SIZE,
+    numPagesFromQuery: historicalTriggerOrders?.pages.length,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    extractItems,
+  });
 
-  const mappedData: HistoricalTriggerOrder[] | undefined = useMemo(() => {
-    if (!historicalTriggerOrders || !marketsStaticData) {
-      return;
-    }
-    return getPageData(historicalTriggerOrders)
-      .map((triggerOrderInfo): HistoricalTriggerOrder | undefined => {
-        const marketData =
-          marketsStaticData.all[triggerOrderInfo.order.productId];
-        const quoteData =
-          marketsStaticData.quotes[triggerOrderInfo.order.productId];
+  const mappedData: HistoricalTriggerOrdersTableItem[] | undefined =
+    useMemo(() => {
+      if (!historicalTriggerOrders || !marketsStaticData) {
+        return;
+      }
+      return getPageData(historicalTriggerOrders)
+        .map(
+          (triggerOrderInfo): HistoricalTriggerOrdersTableItem | undefined => {
+            const marketData =
+              marketsStaticData.all[triggerOrderInfo.order.productId];
+            const quoteData =
+              marketsStaticData.quotes[triggerOrderInfo.order.productId];
 
-        if (!marketData || !quoteData) {
-          return;
-        }
+            if (!marketData || !quoteData) {
+              return;
+            }
 
-        const { icon, symbol } = getBaseProductMetadata(marketData.metadata);
-        const totalAmount = removeDecimals(triggerOrderInfo.order.amount);
-        const triggerPrice = toBigDecimal(
-          triggerOrderInfo.order.triggerCriteria.triggerPrice,
-        );
+            const { icon, symbol } = getSharedProductMetadata(
+              marketData.metadata,
+            );
+            const totalAmount = removeDecimals(triggerOrderInfo.order.amount);
+            const triggerPrice = toBigDecimal(
+              triggerOrderInfo.order.triggerCriteria.triggerPrice,
+            );
 
-        return {
-          timestampMillis: secondsToMilliseconds(triggerOrderInfo.updatedAt),
-          status: triggerOrderInfo.status,
-          marketInfo: {
-            marketName: marketData.metadata.marketName,
-            icon,
-            symbol,
-            quoteSymbol: quoteData.symbol,
-            isPrimaryQuote: quoteData.isPrimaryQuote,
-            amountForSide: totalAmount,
-            productType: marketData.type,
-            sizeIncrement: marketData.sizeIncrement,
-            priceIncrement: marketData.priceIncrement,
+            return {
+              timestampMillis: secondsToMilliseconds(
+                triggerOrderInfo.updatedAt,
+              ),
+              status: triggerOrderInfo.status,
+              marketInfo: {
+                marketName: marketData.metadata.marketName,
+                icon,
+                symbol,
+                quoteSymbol: quoteData.symbol,
+                isPrimaryQuote: quoteData.isPrimaryQuote,
+                amountForSide: totalAmount,
+                productType: marketData.type,
+                sizeIncrement: marketData.sizeIncrement,
+                priceIncrement: marketData.priceIncrement,
+              },
+              price: triggerPrice,
+              totalSize: totalAmount.abs(),
+            };
           },
-          price: triggerPrice,
-          totalSize: totalAmount.abs(),
-        };
-      })
-      .filter(nonNullFilter);
-  }, [historicalTriggerOrders, marketsStaticData, getPageData]);
+        )
+        .filter(nonNullFilter);
+    }, [historicalTriggerOrders, marketsStaticData, getPageData]);
 
   return {
-    isLoading: isLoading || isFetchingNextPage || marketsDataLoading,
+    isLoading: isLoading || marketsDataLoading || isFetchingCurrPage,
     mappedData,
     pageCount,
     paginationState,

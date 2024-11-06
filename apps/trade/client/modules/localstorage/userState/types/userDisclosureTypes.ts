@@ -1,9 +1,5 @@
 // Used for "hardcoded" feature notifications
-export const NEW_FEATURE_DISCLOSURE_KEYS = [
-  'one_click_trading',
-  'arb_new_incentives',
-  'mantle_new_incentives',
-] as const;
+export const NEW_FEATURE_DISCLOSURE_KEYS = ['new_markets_oct_31'] as const;
 
 export type NewFeatureDisclosureKey =
   (typeof NEW_FEATURE_DISCLOSURE_KEYS)[number];
@@ -20,11 +16,18 @@ const USER_INFO_DISCLOSURE_KEYS = [
   'stake_vrtx',
   'swap_weth',
   'swap_wmnt',
-  'usdb_rebase_yield',
+  'swap_wsei',
+  'blast_native_yield_deposit_dialog',
   'how_to_stake',
-  'blitz_points_banner',
-  'blitz_points_claim_complete',
+  'blitz_points_banner_phase_2',
+  'arbitrum_rewards_banner',
+  'sei_season_3_rewards_banner',
   'edit_order_via_chart_dialog',
+  'blitz_vaults_rewards',
+  'blitz_market_boosts',
+  'skate_vault_withdrawal',
+  'no_partial_unstaking',
+  'base_trade_degen_rewards',
 ] as const;
 
 export const USER_DISCLOSURE_KEYS = [

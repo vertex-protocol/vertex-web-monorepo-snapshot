@@ -1,10 +1,13 @@
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { Pill } from '@vertex-protocol/web-ui';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { useTokenStaking } from 'client/modules/rewards/hooks/useTokenStaking';
+import { useAccountStakingApr } from 'client/modules/rewards/hooks/useAccountStakingApr';
+import { useAccountStakingMetrics } from 'client/modules/rewards/hooks/useAccountStakingMetrics';
 import { OverviewInfoCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoCardButton';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
 import Image from 'next/image';
 
 interface Props {
@@ -15,8 +18,8 @@ interface Props {
  * This is extracted from OverviewInfoCardButtons so that VRTX specific logic only runs when this is rendered (i.e. within Vertex and not Blitz)
  */
 export function OverviewInfoVrtxCardButton({ isPrivate }: Props) {
-  const { accountStaked, accountStakedValueUsd, accountCurrentApr } =
-    useTokenStaking();
+  const { accountStaked, accountStakedValueUsd } = useAccountStakingMetrics();
+  const accountCurrentApr = useAccountStakingApr();
 
   return (
     <OverviewInfoCardButton
@@ -45,7 +48,7 @@ export function OverviewInfoVrtxCardButton({ isPrivate }: Props) {
       }
       valueClassName="gap-x-2 items-end"
       pill={
-        <Pill colorVariant="accent" sizeVariant="sm">
+        <Pill colorVariant="accent" sizeVariant="xs">
           APR:
           <span>
             {formatNumber(accountCurrentApr, {

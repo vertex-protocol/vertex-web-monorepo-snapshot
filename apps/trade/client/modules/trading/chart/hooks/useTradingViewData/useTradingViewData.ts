@@ -1,5 +1,5 @@
-import { nowInSeconds, toPrintableObject } from '@vertex-protocol/utils';
 import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
+import { nowInSeconds, toPrintableObject } from '@vertex-protocol/utils';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
 import {
@@ -8,17 +8,17 @@ import {
   RESOLUTIONS_TO_INTERVALS,
   TradingViewSymbolInfo,
 } from 'client/modules/trading/chart/config/datafeedConfig';
-import { first, last, mapValues } from 'lodash';
-import type { Bar, IBasicDataFeed } from 'public/charting_library';
-import { useMemo, useRef } from 'react';
-import { BarSubscriber } from './types';
-import { useUpdateLatestBar } from './useUpdateLatestBar';
+import { BarSubscriber } from 'client/modules/trading/chart/hooks/useTradingViewData/types';
+import { useUpdateLatestBar } from 'client/modules/trading/chart/hooks/useTradingViewData/useUpdateLatestBar';
 import {
   getLastBarMapKey,
   syncBarOpenWithValue,
   toTVCandlestick,
   toTVCandlesticks,
-} from './utils';
+} from 'client/modules/trading/chart/hooks/useTradingViewData/utils';
+import { first, last, mapValues } from 'lodash';
+import type { Bar, IBasicDataFeed } from 'public/charting_library';
+import { useMemo, useRef } from 'react';
 
 interface UseTradingViewData {
   symbolInfoByProductId?: Record<number, TradingViewSymbolInfo>;
@@ -115,8 +115,8 @@ export function useTradingViewData({
           firstDataRequest,
         );
 
-        // `to` is in seconds
-        const beforeTime = firstDataRequest ? nowInSeconds() : to;
+        // `to` is in seconds and meant to be exclusive, but the query is inclusive. Subtract 1 second to simulate that behavior
+        const beforeTime = firstDataRequest ? nowInSeconds() : to - 1;
 
         startProfiling();
 
@@ -165,7 +165,6 @@ export function useTradingViewData({
         resolution,
         onRealtimeCallback,
         subscribeUID,
-        onResetCacheNeededCallback,
       ) => {
         const marketInfo = symbolInfoByProductId[Number(symbolInfo.ticker)];
         if (!marketInfo) {
@@ -261,6 +260,13 @@ export function useTradingViewData({
 
                 return syncBarOpenWithValue(fetchedBar, valueToSync);
               })();
+
+              if (lastBar && tvBar.time < lastBar.time) {
+                console.debug(
+                  '[useTradingViewData] Fetched bar time is earlier than last bar time, ignoring stale update',
+                );
+                return;
+              }
 
               chartKeyToLastBar.current.set(lastBarKey, tvBar);
 

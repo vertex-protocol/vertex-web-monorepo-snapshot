@@ -1,13 +1,11 @@
-import { ProductEngineType } from '@vertex-protocol/contracts';
 import { PaginatedHistoricalTradesTable } from 'client/modules/tables/PaginatedHistoricalTradesTable';
+import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
+import { HistoricalTradesFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
   TradingTabFilterOption,
   TradingTabFilters,
 } from 'client/modules/trading/layout/types';
-import { historicalTradesSelectedFilterIdAtom } from 'client/store/trading/commonTradingStore';
-import { HistoricalTradesFilterOptionID } from 'client/store/trading/types';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { useAtom } from 'jotai';
 import { useMemo } from 'react';
 
 const historicalTradesFilterOptions: TradingTabFilterOption<HistoricalTradesFilterOptionID>[] =
@@ -33,7 +31,7 @@ const historicalTradesFilterOptions: TradingTabFilterOption<HistoricalTradesFilt
 export const historicalTradesTableFilters: TradingTabFilters<HistoricalTradesFilterOptionID> =
   {
     options: historicalTradesFilterOptions,
-    valueAtom: historicalTradesSelectedFilterIdAtom,
+    tradingTableTab: 'historicalTrades',
   };
 
 export function HistoricalTradesTab({
@@ -47,22 +45,23 @@ export function HistoricalTradesTab({
   productId: number | undefined;
   isDesktop: boolean;
 }) {
-  const [historicalTradesSelectedFilterId] = useAtom(
-    historicalTradesSelectedFilterIdAtom,
-  );
+  const { selectedFilter } =
+    useSelectedFilterByTradingTableTabSetting<HistoricalTradesFilterOptionID>({
+      tradingTableTab: 'historicalTrades',
+    });
 
   const userFilter = useMemo((): MarketFilter | undefined => {
-    switch (historicalTradesSelectedFilterId) {
+    switch (selectedFilter) {
       case 'all':
         return;
       case 'spot_only':
-        return { marketType: ProductEngineType.SPOT };
+        return { marketCategory: 'spot' };
       case 'perp_only':
-        return { marketType: ProductEngineType.PERP };
+        return { marketCategory: 'perp' };
       case 'current_market':
         return productId ? { productIds: [productId] } : undefined;
     }
-  }, [historicalTradesSelectedFilterId, productId]);
+  }, [selectedFilter, productId]);
 
   return (
     <PaginatedHistoricalTradesTable

@@ -1,12 +1,18 @@
+'use client';
+
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { useMarketsPageOverviewCards } from '../../hooks/useMarketsPageOverviewCards';
-import { MarketsOverviewCard } from './MarketsOverviewCard';
+import { ScrollShadowsContainer } from '@vertex-protocol/web-ui';
+import { MarketsOverviewCard } from 'client/pages/Markets/components/MarketOverviewCards/MarketsOverviewCard';
+import { useMarketsPageOverviewCards } from 'client/pages/Markets/hooks/useMarketsPageOverviewCards';
 
 export function MarketsOverviewCards({ className }: WithClassnames) {
   const marketsPageOverviewCardData = useMarketsPageOverviewCards();
 
   return (
-    <div className={joinClassNames('flex gap-x-4', className)}>
+    <ScrollShadowsContainer
+      orientation="horizontal"
+      className={joinClassNames('flex gap-x-4', className)}
+    >
       {marketsPageOverviewCardData.map(({ title, value }) => (
         <MarketsOverviewCard
           title={title}
@@ -15,6 +21,6 @@ export function MarketsOverviewCards({ className }: WithClassnames) {
           className="flex-1"
         />
       ))}
-    </div>
+    </ScrollShadowsContainer>
   );
 }

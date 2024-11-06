@@ -2,7 +2,7 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
-import { ProductInfoCell } from 'client/modules/tables/cells/ProductInfoCell';
+import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
 import { ActionName } from 'client/modules/commandCenter/components/cells/ActionName';
 import { BalanceTableItem } from 'client/modules/commandCenter/hooks/useCommandCenterBalanceItems';
 import { BaseTable } from 'client/modules/commandCenter/components/tables/BaseTable/BaseTable';
@@ -23,7 +23,7 @@ export function BalancesTable({ balances }: Props) {
         cell: ({ getValue }) => {
           const metadata = getValue<BalanceTableItem['metadata']>();
           return (
-            <ProductInfoCell
+            <MarketProductInfoCell
               symbol={metadata.token.symbol}
               iconSrc={metadata.token.icon.asset}
             />

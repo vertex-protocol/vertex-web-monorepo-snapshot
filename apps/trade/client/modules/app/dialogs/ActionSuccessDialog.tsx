@@ -1,6 +1,5 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { PrimaryButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { CheckmarkIcon } from 'client/components/CheckmarkIcon';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -22,17 +21,17 @@ export function ActionSuccessDialog({
   const { hide } = useDialog();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>{title}</BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col items-center gap-y-4">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>{title}</BaseAppDialog.Title>
+      <BaseAppDialog.Body className="items-center">
         <CheckmarkIcon size={100} />
-        <p className="text-center">{description}</p>
+        <p className="text-center text-base">{description}</p>
         {!!cta && (
           <PrimaryButton className="w-full" onClick={cta.onClick}>
             {cta.label}
           </PrimaryButton>
         )}
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

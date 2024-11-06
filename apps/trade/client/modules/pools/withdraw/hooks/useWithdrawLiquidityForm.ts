@@ -19,21 +19,21 @@ import {
   useOnFractionSelectedHandler,
 } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { withdrawLiquidityProductIdAtom } from 'client/store/collateralStore';
+import {
+  PairMetadata,
+  WithdrawLiquidityErrorType,
+} from 'client/modules/pools/types';
+import { useWithdrawLiquidityValidators } from 'client/modules/pools/withdraw/hooks/useWithdrawLiquidityValidators';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { roundToString } from 'client/utils/rounding';
-import { useAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
-import { PairMetadata, WithdrawLiquidityErrorType } from '../../types';
-import { useWithdrawLiquidityValidators } from './useWithdrawLiquidityValidators';
 
 export type WithdrawLiquidityFormValues = LinkedPercentageAmountFormValues;
 
@@ -61,24 +61,26 @@ export interface UseWithdrawLiquidityForm {
   onSubmit: () => void;
 }
 
-export function useWithdrawLiquidityForm(): UseWithdrawLiquidityForm {
-  const [productIdAtomValue] = useAtom(withdrawLiquidityProductIdAtom);
-  const { data: marketData } = useMarket({ productId: productIdAtomValue });
+export function useWithdrawLiquidityForm({
+  productId,
+}: {
+  productId: number;
+}): UseWithdrawLiquidityForm {
+  const { data: marketData } = useMarket({ productId });
   const { data: lpYields } = useLpYields();
   const { balances } = useLpBalances();
   const { data: staticMarketData } = useAllMarketsStaticData();
   const { dispatchNotification } = useNotificationManagerContext();
-  const { hide } = useDialog();
 
   const quoteMetadata = staticMarketData?.primaryQuote;
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   // Mutation to burn LP tokens
   const executeBurnLp = useExecuteBurnLp();
 
   useRunWithDelayOnCondition({
     condition: executeBurnLp.isSuccess,
-    fn: hide,
+    fn: executeBurnLp.reset,
   });
 
   /**
@@ -105,18 +107,13 @@ export function useWithdrawLiquidityForm(): UseWithdrawLiquidityForm {
 
   // Current subaccount LP balance
   const currentLpBalance = useMemo(() => {
-    return balances?.find(
-      (balance) => balance.productId === productIdAtomValue,
-    );
-  }, [balances, productIdAtomValue]);
+    return balances?.find((balance) => balance.productId === productId);
+  }, [balances, productId]);
 
   // Current subaccount LP yield
   const currentYield = useMemo(() => {
-    if (!productIdAtomValue || !lpYields) {
-      return BigDecimals.ZERO;
-    }
-    return lpYields[productIdAtomValue] ?? BigDecimals.ZERO;
-  }, [lpYields, productIdAtomValue]);
+    return lpYields?.[productId] ?? BigDecimals.ZERO;
+  }, [lpYields, productId]);
 
   // Metadata for the current pair
   const pairMetadata = useMemo((): PairMetadata | undefined => {
@@ -124,7 +121,7 @@ export function useWithdrawLiquidityForm(): UseWithdrawLiquidityForm {
       return undefined;
     }
     return {
-      base: getBaseProductMetadata(currentLpBalance.product.metadata),
+      base: getSharedProductMetadata(currentLpBalance.product.metadata),
       quote: quoteMetadata.metadata.token,
     };
   }, [currentLpBalance, quoteMetadata]);
@@ -201,9 +198,9 @@ export function useWithdrawLiquidityForm(): UseWithdrawLiquidityForm {
     );
     const estimatedBaseValueUsd = estimatedBaseAmount
       .multipliedBy(currentLpBalance.oraclePrice)
-      .multipliedBy(quotePrice);
+      .multipliedBy(primaryQuotePriceUsd);
     const estimatedQuoteValueUsd =
-      estimatedQuoteAmount.multipliedBy(quotePrice);
+      estimatedQuoteAmount.multipliedBy(primaryQuotePriceUsd);
     const estimatedLpValue = estimatedBaseValueUsd.plus(estimatedQuoteValueUsd);
 
     return {
@@ -214,7 +211,7 @@ export function useWithdrawLiquidityForm(): UseWithdrawLiquidityForm {
       quoteValueUsd: estimatedQuoteValueUsd,
       lpValueUsd: estimatedLpValue,
     };
-  }, [currentLpBalance, quotePrice, validPercentageAmount]);
+  }, [currentLpBalance, primaryQuotePriceUsd, validPercentageAmount]);
 
   const onFractionSelected = useOnFractionSelectedHandler({
     setValue,

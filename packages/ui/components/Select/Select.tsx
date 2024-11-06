@@ -1,5 +1,4 @@
 import {
-  SelectTriggerProps as BaseSelectTriggerProps,
   Root,
   SelectContent,
   SelectContentProps,
@@ -16,69 +15,28 @@ import {
 } from '@vertex-protocol/web-common';
 import { ReactNode, forwardRef } from 'react';
 import { getStateOverlayClassNames } from '../../utils';
+import {
+  DropdownPillTrigger,
+  DropdownTrigger,
+  DropdownTriggerProps,
+} from '../DropdownTrigger';
+import { ScrollShadowsContainer } from '../ScrollShadowsContainer';
+import { Icons } from '../Icons';
 
 export interface SelectTriggerProps
-  extends WithClassnames<BaseSelectTriggerProps> {
-  endIcon?: ReactNode;
-  stateClassNameOverrides?: string;
-}
+  extends Omit<DropdownTriggerProps, 'trigger'> {}
 
 const Trigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  function Trigger(
-    {
-      children,
-      endIcon,
-      disabled,
-      className,
-      stateClassNameOverrides,
-      ...rest
-    },
-    ref,
-  ) {
-    // Since we want to handle the disabled trigger state differently and without the
-    // disabled state overlay, consumers are responsible for the disabled overlay if needed
-    // ex. `CollateralInputSelect` has a disabled trigger state, but the disabled overlay
-    // is managed by its container.
-    const hoverStateOverlayClassNames = getStateOverlayClassNames({
-      borderRadiusVariant: 'base',
-      stateClassNameOverrides,
-    });
-
-    return (
-      <SelectTrigger
-        className={mergeClassNames(
-          'flex items-center gap-x-2',
-          'rounded px-2 py-1 text-xs',
-          disabled ? 'cursor-not-allowed' : hoverStateOverlayClassNames,
-          className,
-        )}
-        disabled={disabled}
-        ref={ref}
-        {...rest}
-      >
-        {children}
-        {endIcon}
-      </SelectTrigger>
-    );
+  function Trigger(props, ref) {
+    return <DropdownTrigger {...props} trigger={SelectTrigger} ref={ref} />;
   },
 );
 
 const PillTrigger = forwardRef<
   HTMLButtonElement,
   Omit<SelectTriggerProps, 'stateClassNameOverrides'>
->(function PillTrigger({ className, ...rest }, ref) {
-  return (
-    <Trigger
-      className={mergeClassNames(
-        'bg-surface-2 rounded-full',
-        'text-text-primary text-sm',
-        className,
-      )}
-      stateClassNameOverrides="before:rounded-full"
-      ref={ref}
-      {...rest}
-    />
-  );
+>(function PillTrigger(props, ref) {
+  return <DropdownPillTrigger {...props} trigger={Trigger} ref={ref} />;
 });
 
 export interface SelectOptionsProps
@@ -111,15 +69,17 @@ const Options = forwardRef<HTMLDivElement, SelectOptionsProps>(function Options(
       {...rest}
     >
       {header}
-      <SelectViewport
-        className={viewportClassName}
+      <ScrollShadowsContainer
+        asChild
         ref={(ref) => {
           // Hack: https://github.com/radix-ui/primitives/issues/1658#issuecomment-1695422917
           ref?.addEventListener('touchend', (e) => e.preventDefault());
         }}
       >
-        {children}
-      </SelectViewport>
+        <SelectViewport className={viewportClassName}>
+          {children}
+        </SelectViewport>
+      </ScrollShadowsContainer>
     </SelectContent>
   );
 });
@@ -127,6 +87,7 @@ const Options = forwardRef<HTMLDivElement, SelectOptionsProps>(function Options(
 export interface SelectOptionProps extends WithClassnames<SelectItemProps> {
   selectionStartIcon?: ReactNode;
   selectionEndIcon?: ReactNode;
+  withSelectedCheckmark?: boolean;
 }
 
 const Option = forwardRef<HTMLDivElement, SelectOptionProps>(function Option(
@@ -137,13 +98,23 @@ const Option = forwardRef<HTMLDivElement, SelectOptionProps>(function Option(
     className,
     selectionStartIcon,
     selectionEndIcon,
+    withSelectedCheckmark = true,
     ...rest
   },
   ref,
 ) {
   const hoverStateOverlayClassNames = getStateOverlayClassNames({
     borderRadiusVariant: 'base',
+    // Applies overlay class when item is highlighted via keyboard nav.
+    stateClassNameOverrides: 'data-[highlighted]:before:bg-overlay-hover',
   });
+
+  const endIndicator = (() => {
+    if (withSelectedCheckmark) {
+      return <Icons.Check />;
+    }
+    return selectionEndIcon;
+  })();
 
   return (
     <SelectItem
@@ -164,8 +135,8 @@ const Option = forwardRef<HTMLDivElement, SelectOptionProps>(function Option(
         <SelectItemIndicator>{selectionStartIcon}</SelectItemIndicator>
       )}
       {children}
-      {selectionEndIcon && (
-        <SelectItemIndicator>{selectionEndIcon}</SelectItemIndicator>
+      {endIndicator && (
+        <SelectItemIndicator>{endIndicator}</SelectItemIndicator>
       )}
     </SelectItem>
   );

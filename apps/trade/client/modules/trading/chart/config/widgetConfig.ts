@@ -1,7 +1,7 @@
+import { WidgetConfig } from 'client/modules/trading/chart/config/types';
+import { SaveLoadAdapter } from 'client/modules/trading/chart/SaveLoadAdapter';
 import { COLORS } from 'common/theme/colors';
 import { ResolutionString } from 'public/charting_library/charting_library';
-import { SaveLoadAdapter } from '../SaveLoadAdapter';
-import { WidgetConfig } from './types';
 
 export const WIDGET_CONTAINER_ID: string = 'default-chart-container';
 

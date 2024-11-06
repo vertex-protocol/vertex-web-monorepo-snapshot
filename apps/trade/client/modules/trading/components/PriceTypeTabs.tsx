@@ -1,10 +1,10 @@
 import { TabsList, Root as TabsRoot, TabsTrigger } from '@radix-ui/react-tabs';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { useEVMContext } from '@vertex-protocol/react-client';
 import { Icons, TabTextButton, TextButton } from '@vertex-protocol/web-ui';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { PlaceOrderPriceType } from 'client/modules/trading/types';
 import { useFormContext } from 'react-hook-form';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 
 const ORDER_PRICE_TYPES: PlaceOrderPriceType[] = ['market', 'limit', 'stop'];
 
@@ -16,8 +16,7 @@ const TYPE_TO_LABEL: Record<PlaceOrderPriceType, string> = {
 
 function AppSettingsButton({ className }: WithClassnames) {
   const { show } = useDialog();
-  const { connectionStatus } = useEVMContext();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
 
   return (
     <TextButton
@@ -26,11 +25,11 @@ function AppSettingsButton({ className }: WithClassnames) {
         isConnected && 'hover:bg-surface-2 hover:text-text-secondary',
         className,
       )}
-      startIcon={<Icons.BsGear size={12} />}
+      startIcon={<Icons.GearSix size={12} />}
       onClick={() => {
         show({
-          type: 'account_center',
-          params: { initialShowSettingsContent: true },
+          type: 'settings',
+          params: {},
         });
       }}
       disabled={!isConnected}

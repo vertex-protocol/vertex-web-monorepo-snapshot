@@ -1,11 +1,11 @@
-import bigBrainHoldings from './assets/big-brain-holdings.png';
-import collabCurrency from './assets/collab-currency.png';
-import dexterity from './assets/dexterity-capital.png';
-import gsr from './assets/gsr.svg';
-import hack from './assets/hack-vc.svg';
-import hrt from './assets/hrt.png';
-import janeStreet from './assets/jane-street.png';
-import wintermute from './assets/wintermute.svg';
+import bigBrainHoldings from 'client/sections/Investors/assets/big-brain-holdings.png';
+import collabCurrency from 'client/sections/Investors/assets/collab-currency.png';
+import dexterity from 'client/sections/Investors/assets/dexterity-capital.png';
+import gsr from 'client/sections/Investors/assets/gsr.svg';
+import hack from 'client/sections/Investors/assets/hack-vc.svg';
+import hrt from 'client/sections/Investors/assets/hrt.png';
+import janeStreet from 'client/sections/Investors/assets/jane-street.png';
+import wintermute from 'client/sections/Investors/assets/wintermute.svg';
 
 export const INVESTOR_CARD_DATA = [
   {

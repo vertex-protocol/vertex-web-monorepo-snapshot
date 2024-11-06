@@ -3,8 +3,8 @@ import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
 import { EXTERNAL_LINKS } from 'client/consts';
 import Image from 'next/image';
 import Link from 'next/link';
-import { VrtxInfoSectionContainer } from './VrtxInfoSectionContainer';
-import { VrtxLinkProps } from './VrtxNetworkCard';
+import { VrtxInfoSectionContainer } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxInfoSectionContainer';
+import { VrtxLinkProps } from 'client/sections/Vrtx/components/VrtxInfoSectionContent/VrtxNetworkCard/VrtxNetworkCard';
 
 import cgIcon from 'client/sections/Vrtx/assets/cg-token.svg';
 import cmcIcon from 'client/sections/Vrtx/assets/cmc-token.svg';

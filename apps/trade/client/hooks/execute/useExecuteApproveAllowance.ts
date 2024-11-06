@@ -43,7 +43,7 @@ export function useExecuteApproveAllowance() {
 
         refetchQueryKeysRef.current = [
           tokenAllowanceQueryKey(
-            context.subaccount.chainId,
+            context.subaccount.chainEnv,
             context.subaccount.address,
             params.spenderAddress,
             params.tokenAddress,

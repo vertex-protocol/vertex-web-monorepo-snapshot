@@ -1,4 +1,4 @@
-import { MarginManagerDefinition } from './MarginManagerDefinition';
+import { MarginManagerDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/MarginManagerDefinition';
 
 const { ContentContainer, Description, Section, Title, InfoCard } =
   MarginManagerDefinition;

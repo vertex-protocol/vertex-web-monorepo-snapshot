@@ -1,13 +1,15 @@
-import { LinkButton } from 'client/components/LinkButton';
 import { ToastProps } from 'client/components/Toast/types';
-import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
 import { NewFeatureDisclosureKey } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
 import { TOAST_MARKET_ICON_CLASSNAME } from 'client/modules/notifications/components/consts';
 import { NewFeatureNotification } from 'client/modules/notifications/components/newFeature/NewFeatureNotification';
-import { SpotProductMetadata } from 'common/productMetadata/types';
+import { SpotProductMetadata } from '@vertex-protocol/metadata';
 import Image from 'next/image';
+import { LinkButton } from '@vertex-protocol/web-ui';
+import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
+import { get } from 'lodash';
+import Link from 'next/link';
 
 interface Props extends ToastProps {
   disclosureKey: NewFeatureDisclosureKey;
@@ -23,7 +25,7 @@ export function SpotMarketFeatureNotification({
   ...rest
 }: Props) {
   const showDialogForProduct = useShowDialogForProduct();
-  const pushTradePage = usePushTradePage();
+  const productTradingLinks = useProductTradingLinks();
 
   const { dismiss: dismissNewFeatureNotification } =
     useShowUserDisclosure(disclosureKey);
@@ -40,14 +42,16 @@ export function SpotMarketFeatureNotification({
     });
     onDismiss();
   };
+
   const onTradeClick = () => {
-    pushTradePage({ productId });
     onDismiss();
   };
 
   const marketName = metadata.marketName;
   const symbol = metadata.token.symbol;
   const icon = metadata.token.icon;
+
+  const productTradingLink = get(productTradingLinks, productId, undefined);
 
   const content = (
     <div className="flex flex-col gap-y-3">
@@ -68,13 +72,17 @@ export function SpotMarketFeatureNotification({
         >
           Deposit {symbol}
         </LinkButton>
-        <LinkButton
-          colorVariant="primary"
-          onClick={onTradeClick}
-          className="text-text-primary"
-        >
-          Trade {marketName}
-        </LinkButton>
+        {productTradingLink && (
+          <LinkButton
+            as={Link}
+            colorVariant="primary"
+            href={productTradingLink.link}
+            onClick={onTradeClick}
+            className="text-text-primary"
+          >
+            Trade {marketName}
+          </LinkButton>
+        )}
       </div>
     </div>
   );

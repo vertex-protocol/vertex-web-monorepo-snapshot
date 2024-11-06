@@ -1,9 +1,9 @@
 import {
+  joinClassNames,
   WithChildren,
   WithClassnames,
-  joinClassNames,
 } from '@vertex-protocol/web-common';
-import { IconType } from '@vertex-protocol/web-ui';
+import { IconComponent } from '@vertex-protocol/web-ui';
 
 function IconDiscListContainer({
   children,
@@ -17,7 +17,7 @@ function IconDiscListContainer({
 }
 
 interface Props extends WithChildren<WithClassnames> {
-  icon: IconType;
+  icon: IconComponent;
   size?: number;
 }
 

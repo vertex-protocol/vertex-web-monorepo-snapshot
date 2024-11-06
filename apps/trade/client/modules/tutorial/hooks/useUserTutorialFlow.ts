@@ -1,6 +1,8 @@
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useRunOnceOnCondition } from 'client/hooks/util/useRunOnceOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { UserTutorialFlowStepID } from 'client/modules/localstorage/userState/types/userTutorialFlowTypes';
+import { useTutorialFlowState } from 'client/modules/tutorial/hooks/useTutorialFlowState';
 import {
   UserTutorialFlowStep,
   useTutorialFlowSteps,
@@ -8,7 +10,6 @@ import {
 import { atom, useAtom } from 'jotai';
 import { differenceWith } from 'lodash';
 import { useMemo, useState } from 'react';
-import { useTutorialFlowState } from './useTutorialFlowState';
 
 export interface UseUserTutorialFlow {
   steps: UserTutorialFlowStep[];
@@ -21,24 +22,28 @@ export interface UseUserTutorialFlow {
   isCompleted: boolean;
   activeStepId: UserTutorialFlowStepID | undefined;
   completedStepIds: UserTutorialFlowStepID[];
+  shouldShowTutorialFlow: boolean;
 }
 
 // We need an atom here to persist open/close state between page nav
-const isExpandedAtom = atom(true);
+const isExpandedAtom = atom(false);
 
 export function useUserTutorialFlow(): UseUserTutorialFlow {
+  const isConnected = useIsConnected();
+  const tutorialFlowSteps = useTutorialFlowSteps();
+  const {
+    tutorialFlowState: { completedSteps: completedStepIds, isDismissed },
+    markStepAsComplete,
+    dismissFlow,
+    didLoadPersistedValue,
+  } = useTutorialFlowState();
   const { show } = useDialog();
 
   const [isExpanded, setIsExpanded] = useAtom(isExpandedAtom);
   const [activeStepId, setActiveStepId] = useState<UserTutorialFlowStepID>();
 
-  const tutorialFlowSteps = useTutorialFlowSteps();
-  const {
-    tutorialFlowState: { completedSteps: completedStepIds },
-    markStepAsComplete,
-    dismissFlow,
-    didLoadPersistedValue,
-  } = useTutorialFlowState();
+  const shouldShowTutorialFlow =
+    didLoadPersistedValue && isConnected && !isDismissed;
 
   // If there is no difference between the two arrays, then we know the tutorial flow has been completed
   const isCompleted = useMemo(() => {
@@ -81,10 +86,9 @@ export function useUserTutorialFlow(): UseUserTutorialFlow {
         });
         break;
       case 'set_trading_preferences':
-        // Show settings
         show({
-          type: 'account_center',
-          params: { initialShowSettingsContent: true },
+          type: 'settings',
+          params: {},
         });
 
         break;
@@ -119,5 +123,6 @@ export function useUserTutorialFlow(): UseUserTutorialFlow {
     isCompleted,
     completedStepIds,
     activeStepId: activeStepId,
+    shouldShowTutorialFlow,
   };
 }

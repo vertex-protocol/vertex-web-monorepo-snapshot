@@ -13,11 +13,12 @@ export function SeparatedRowDataTable<TData>({
 }: DataTableProps<TData>) {
   return (
     <DataTable
-      // Removing the border from `headerRowClassName` and `dataRowClassName` to match the design
+      // Removing the border from `headerRowClassName` to match the design
       headerRowClassName={joinClassNames('border-b-0', headerRowClassName)}
       dataRowClassName={joinClassNames(
+        // Applying this here to override the standard "first:border-t-0" in `DataTableRowGroup`
+        'first:border-t-1',
         CARD_CLASSNAMES,
-        'ring-inset border-t-0',
         dataRowClassName,
       )}
       dataRowContainerClassName={joinClassNames(

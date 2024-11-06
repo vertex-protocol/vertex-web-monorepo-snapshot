@@ -51,7 +51,7 @@ export function useExecuteWithdrawCollateral() {
 
   const mutation = useMutation({
     mutationFn,
-    onSuccess(data, variables) {
+    onSuccess() {
       refetchEngineQueries();
       refetchChainQueries();
     },

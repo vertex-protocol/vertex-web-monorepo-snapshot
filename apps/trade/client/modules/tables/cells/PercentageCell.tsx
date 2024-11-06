@@ -1,7 +1,7 @@
 import {
+  formatNumber,
   NumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-  formatNumber,
 } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
@@ -10,7 +10,7 @@ import {
 } from 'client/components/DataTable/cells/TableCell';
 
 interface Props extends TableCellProps {
-  fraction: BigDecimal;
+  fraction: BigDecimal | undefined;
   formatSpecifier?: NumberFormatSpecifier;
 }
 

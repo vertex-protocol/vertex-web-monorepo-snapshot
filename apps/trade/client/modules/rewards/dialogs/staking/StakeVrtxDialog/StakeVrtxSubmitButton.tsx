@@ -1,7 +1,8 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { PrimaryButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
-import { StakeVrtxActionButtonState } from './useStakeVrtxForm';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
+import { StakeVrtxActionButtonState } from 'client/modules/rewards/dialogs/staking/StakeVrtxDialog/useStakeVrtxForm';
 
 interface Props extends WithClassnames {
   state: StakeVrtxActionButtonState;
@@ -30,13 +31,16 @@ export function StakeVrtxSubmitButton({ className, state }: Props) {
   const isLoading = state === 'approve_loading' || state === 'loading';
 
   return (
-    <PrimaryButton
+    <ValidUserStatePrimaryButton
       type="submit"
       className={className}
       isLoading={isLoading}
       disabled={state === 'disabled'}
+      handledErrors={
+        HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+      }
     >
       {message}
-    </PrimaryButton>
+    </ValidUserStatePrimaryButton>
   );
 }

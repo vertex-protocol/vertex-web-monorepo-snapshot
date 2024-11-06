@@ -4,10 +4,10 @@ interface DescriptionLinkItem {
 }
 
 export const LINKS = {
-  x: 'https://twitter.com/poweredbyvertex',
+  x: 'https://twitter.com/EdgeLayer',
   blog: 'https://medium.com/@vertex_edge',
   cookiePolicy: '/docs/CookiePolicy.pdf',
-  // docs: 'https://vertex-protocol.gitbook.io/docs/getting-started/overview',
+  docs: 'https://docs.vertexprotocol.com/getting-started/vertex-edge',
   dashboard:
     'https://flipsidecrypto.xyz/the_watchmen/vertex-edge---cross-chain-liquidity-HDYU-y?tabIndex=1',
   vertex: 'https://vertexprotocol.com',
@@ -25,8 +25,8 @@ export const DESCRIPTION_LINKS: DescriptionLinkItem[] = [
     label: 'Blog',
     url: LINKS.blog,
   },
-  // {
-  //   label: 'Docs',
-  //   url: LINKS.docs,
-  // },
+  {
+    label: 'Docs',
+    url: LINKS.docs,
+  },
 ];

@@ -1,10 +1,9 @@
-import { nowInSeconds } from '@vertex-protocol/client';
-import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { removeDecimals } from '@vertex-protocol/utils';
+import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
+import { BarSubscriber } from 'client/modules/trading/chart/hooks/useTradingViewData/types';
+import { getLastBarMapKey } from 'client/modules/trading/chart/hooks/useTradingViewData/utils';
 import type { Bar } from 'public/charting_library';
 import { MutableRefObject, useEffect } from 'react';
-import { BarSubscriber } from './types';
-import { getLastBarMapKey, syncBarOpenWithValue } from './utils';
 
 interface UseUpdateLatestBarParams {
   currentProductId: number | undefined;
@@ -19,13 +18,13 @@ export function useUpdateLatestBar({
   productIdToSubscriberUIDs,
   chartKeyToLastBar,
 }: UseUpdateLatestBarParams) {
-  const { data: latestOrderFill } = useLatestOrderFill({
+  const { data: latestFill } = useLatestOrderFill({
     productId: currentProductId,
   });
 
   // Update last bar when latest order fills come in
   useEffect(() => {
-    if (!latestOrderFill || !currentProductId) {
+    if (!latestFill || !currentProductId) {
       return;
     }
 
@@ -52,50 +51,52 @@ export function useUpdateLatestBar({
         return;
       }
 
-      const nowSeconds = nowInSeconds();
       const { chartIntervalSeconds } = barSubscriber;
-      const lastBarTimeSeconds = lastBar.time / 1000;
+      const chartIntervalMillis = chartIntervalSeconds * 1000;
 
-      const latestOrderFillPrice = latestOrderFill.price.toNumber();
-      const latestOrderFillSize = removeDecimals(latestOrderFill.amount)
-        .abs()
-        .toNumber();
+      const latestFillTimeMillis = latestFill.timestamp * 1000;
+      const latestFillPrice = latestFill.price.toNumber();
+      const latestFillSize = removeDecimals(latestFill.amount).abs().toNumber();
 
-      // If the bar is from this period, we update its values and add to its volume.
-      if (lastBarTimeSeconds > nowSeconds - chartIntervalSeconds) {
-        const updatedBar = { ...lastBar };
-        updatedBar.close = latestOrderFillPrice;
-        updatedBar.low = Math.min(lastBar.close, updatedBar.close);
-        updatedBar.high = Math.max(lastBar.close, updatedBar.close);
-        updatedBar.volume = (lastBar.volume ?? 0) + latestOrderFillSize;
+      // chart interval-adjusted time for the latest fill
+      const latestFillBarTime =
+        latestFillTimeMillis - (latestFillTimeMillis % chartIntervalMillis);
 
-        chartKeyToLastBar.current.set(lastBarKey, updatedBar);
-        barSubscriber.updateLatestBar(
-          updatedBar,
-          'in response to new latest order fill for this period',
+      if (latestFillBarTime < lastBar.time) {
+        console.debug(
+          `[useUpdateLastBar] Latest fill time is earlier than last bar time, ignoring stale update`,
         );
-      } else {
-        // If it's from a previous period, we create a new bar for the current period.
-        const newBar: Bar = {
-          close: latestOrderFillPrice,
-          open: latestOrderFillPrice,
-          high: latestOrderFillPrice,
-          low: latestOrderFillPrice,
-          volume: latestOrderFillSize,
-          // Set time to the current period (now % interval is the elapsed time).
-          time: (nowSeconds - (nowSeconds % chartIntervalSeconds)) * 1000,
-        };
-        const syncedNewBar = syncBarOpenWithValue(newBar, lastBar.close);
-
-        chartKeyToLastBar.current.set(lastBarKey, syncedNewBar);
-        barSubscriber.updateLatestBar(
-          syncedNewBar,
-          'in response to new latest order fill for a previous period',
-        );
+        return;
       }
+
+      // reference bar we will update:
+      // - if latest fill bar time is the same as the last bar, we'll update last bar
+      // - if newer, we create a new bar with the open price set to the close of the last bar
+      const referenceBar =
+        latestFillBarTime === lastBar.time
+          ? lastBar
+          : ({
+              time: latestFillBarTime,
+              open: lastBar.close,
+              low: lastBar.close,
+              high: lastBar.close,
+            } as Bar);
+
+      // update reference bar with latest fill data
+      const updatedBar = { ...referenceBar };
+      updatedBar.close = latestFillPrice;
+      updatedBar.low = Math.min(referenceBar.low, updatedBar.close);
+      updatedBar.high = Math.max(referenceBar.high, updatedBar.close);
+      updatedBar.volume = (referenceBar.volume ?? 0) + latestFillSize;
+
+      chartKeyToLastBar.current.set(lastBarKey, updatedBar);
+      barSubscriber.updateLatestBar(
+        updatedBar,
+        'in response to new latest order fill for this period',
+      );
     });
   }, [
-    latestOrderFill,
+    latestFill,
     currentProductId,
     subscriberUIDToBarSubscriber,
     productIdToSubscriberUIDs,

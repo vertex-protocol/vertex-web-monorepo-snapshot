@@ -1,5 +1,7 @@
-import { ButtonHelperInfo, PrimaryButton } from '@vertex-protocol/web-ui';
+import { ButtonHelperInfo } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import {
   SignatureModeSlowModeSettingsAction,
   SignatureModeSlowModeSettingsActionButtonState,
@@ -28,9 +30,10 @@ export function SlowModeSettingsActionButton({
             return 'Save';
           case 'execute_slow_mode':
             return 'Save & Send Transaction';
+          // This shouldn't be a valid case
+          case 'no_action_required':
+            return '';
         }
-        // This shouldn't be a valid case
-        return '';
       case 'disabled':
         if (userAction === 'no_action_required') {
           return 'Configure Signature Mode';
@@ -46,13 +49,16 @@ export function SlowModeSettingsActionButton({
 
   return (
     <ButtonHelperInfo.Container>
-      <PrimaryButton
+      <ValidUserStatePrimaryButton
         type="submit"
         isLoading={buttonState === 'loading'}
         disabled={buttonState === 'disabled'}
+        handledErrors={
+          HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+        }
       >
         {buttonContent}
-      </PrimaryButton>
+      </ValidUserStatePrimaryButton>
       {buttonState === 'success' && (
         <ButtonHelperInfo.Content>
           You may now close this dialog. It may take a minute for your trading

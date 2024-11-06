@@ -1,9 +1,11 @@
-import { Slot, Slottable } from '@radix-ui/react-slot';
+import { Slottable } from '@radix-ui/react-slot';
 import { mergeClassNames, WithChildren } from '@vertex-protocol/web-common';
 import { ReactNode } from 'react';
 import { usePopperTooltip } from 'react-popper-tooltip';
 import styles from './BaseTooltip.module.css';
 import { TooltipPortal } from './TooltipPortal';
+import { ConditionalAsChild } from '../ConditionalAsChild';
+import { Z_INDEX } from '../../consts';
 
 export interface BaseTooltipProps extends WithChildren {
   tooltipContent: ReactNode;
@@ -13,7 +15,6 @@ export interface BaseTooltipProps extends WithChildren {
    * Note, if `asChild` is `true`, this will be applied directly to the child.
    */
   contentWrapperClassName?: string;
-  portal?: boolean;
   popperTooltipProps: ReturnType<typeof usePopperTooltip>;
   /**
    * This renders `children` directly instead of within a wrapper element.
@@ -39,7 +40,6 @@ export function BaseTooltip({
   tooltipContainerClassName,
   contentWrapperClassName,
   hideArrow,
-  portal,
   popperTooltipProps,
   asChild,
   noHelpCursor,
@@ -57,31 +57,35 @@ export function BaseTooltip({
     if (!visible) return null;
 
     return (
-      <div
-        {...getTooltipProps({
-          className: mergeClassNames(
-            'text-text-tertiary z-50 shadow-elevation rounded',
-            styles['tooltip-container'],
-            tooltipContainerClassName,
-          ),
-        })}
-        ref={setTooltipRef}
-      >
-        {tooltipContent}
+      <TooltipPortal>
         <div
-          {...getArrowProps()}
-          className={hideArrow ? 'hidden' : styles['tooltip-arrow']}
-        />
-      </div>
+          {...getTooltipProps({
+            className: mergeClassNames(
+              'text-text-tertiary shadow-elevation rounded',
+              // `z-index` should be >= to the dialog's so it's visible when used in a dialog.
+              Z_INDEX.dialogContainer,
+              styles['tooltip-container'],
+              tooltipContainerClassName,
+            ),
+          })}
+          ref={setTooltipRef}
+        >
+          {tooltipContent}
+          <div
+            {...getArrowProps()}
+            className={hideArrow ? 'hidden' : styles['tooltip-arrow']}
+          />
+        </div>
+      </TooltipPortal>
     );
   })();
 
-  const Comp = asChild ? Slot : 'div';
-
   return (
     <>
-      {portal ? <TooltipPortal>{tooltip}</TooltipPortal> : tooltip}
-      <Comp
+      {tooltip}
+      <ConditionalAsChild
+        asChild={asChild}
+        fallback="div"
         ref={setTriggerRef}
         className={mergeClassNames(
           !noHelpCursor && 'cursor-help',
@@ -91,7 +95,7 @@ export function BaseTooltip({
         {/* `Slottable` tells Radix which element to pass props to. */}
         <Slottable>{children}</Slottable>
         {endIcon}
-      </Comp>
+      </ConditionalAsChild>
     </>
   );
 }

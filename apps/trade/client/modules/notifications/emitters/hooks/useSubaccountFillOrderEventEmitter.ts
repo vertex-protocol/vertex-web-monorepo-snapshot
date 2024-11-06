@@ -1,6 +1,5 @@
 import { isTriggerOrderNonce } from '@vertex-protocol/client';
 import { toBigDecimal } from '@vertex-protocol/utils';
-import { usePrimaryChainId } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useSubaccountLatestFillOrderEvents } from 'client/hooks/query/subaccount/useSubaccountLatestFillOrderEvents';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
@@ -11,9 +10,8 @@ import { first } from 'lodash';
 import { useEffect, useRef } from 'react';
 
 export function useSubaccountFillOrderEventEmitter() {
-  const primaryChainId = usePrimaryChainId();
   const {
-    currentSubaccount: { address, name },
+    currentSubaccount: { address, name, chainEnv },
   } = useSubaccountContext();
   const { data: latestFillOrderEvents } = useSubaccountLatestFillOrderEvents();
   const { dispatchNotification } = useNotificationManagerContext();
@@ -27,7 +25,7 @@ export function useSubaccountFillOrderEventEmitter() {
   // Reset on subaccount & primary chain changes
   useEffect(() => {
     lastFillOrderSubmissionIdx.current = undefined;
-  }, [address, name, primaryChainId]);
+  }, [address, name, chainEnv]);
 
   useEffect(
     () => {

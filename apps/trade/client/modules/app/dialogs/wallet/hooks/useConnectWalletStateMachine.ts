@@ -1,8 +1,8 @@
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useSavedUserState } from 'client/modules/localstorage/userState/useSavedUserState';
 import { useCallback, useEffect, useState } from 'react';
-import { useEVMContext } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 
 type OnboardingFlowState = 'connect' | 'terms_of_use' | 'key_features';
 
@@ -23,9 +23,8 @@ export function useConnectWalletStateMachine(): UseConnectWalletStateMachine {
   const { savedUserState, setSavedUserState } = useSavedUserState();
   const onboardingCompleted = savedUserState.onboardingComplete;
 
-  const { connectionStatus } = useEVMContext();
   const { disconnect } = useSubaccountContext();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
 
   // Route appropriately after connection
   useEffect(() => {

@@ -47,7 +47,7 @@ export function useExecuteInValidContext<TParams = unknown, TData = unknown>(
       }
 
       // Need to destructure here for typecheck statement on address to work
-      const { address, chainId, name } = currentSubaccount;
+      const { address, chainEnv, chainId, name } = currentSubaccount;
       if (!address || !signer) {
         throw new Error('Wallet not connected');
       }
@@ -59,6 +59,7 @@ export function useExecuteInValidContext<TParams = unknown, TData = unknown>(
         signer,
         subaccount: {
           address,
+          chainEnv,
           chainId,
           name,
         },

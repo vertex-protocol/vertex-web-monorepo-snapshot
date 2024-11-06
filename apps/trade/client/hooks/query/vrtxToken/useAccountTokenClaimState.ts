@@ -1,9 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { IAirdrop__factory, ILBA__factory } from '@vertex-protocol/client';
+import {
+  ChainEnv,
+  IAirdrop__factory,
+  ILBA__factory,
+} from '@vertex-protocol/client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
   useEVMContext,
   useIsChainType,
@@ -14,10 +17,10 @@ import { ZeroAddress } from 'ethers';
 import { Address } from 'viem';
 
 export function accountTokenClaimStateQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   address?: string,
 ) {
-  return createQueryKey('accountTokenClaimState', chainId, address);
+  return createQueryKey('accountTokenClaimState', chainEnv, address);
 }
 
 export interface AccountTokenClaimStateData {
@@ -41,7 +44,7 @@ export function useAccountTokenClaimState() {
   const publicClient = usePrimaryChainPublicClient();
   const {
     connectionStatus: { address },
-    primaryChain,
+    primaryChainEnv,
   } = useEVMContext();
 
   const disabled = !vertexClient || !publicClient || !isArb;
@@ -97,7 +100,7 @@ export function useAccountTokenClaimState() {
   };
 
   return useQuery({
-    queryKey: accountTokenClaimStateQueryKey(primaryChain.id, addressForQuery),
+    queryKey: accountTokenClaimStateQueryKey(primaryChainEnv, addressForQuery),
     queryFn,
     enabled: !disabled,
     refetchInterval: 10000,

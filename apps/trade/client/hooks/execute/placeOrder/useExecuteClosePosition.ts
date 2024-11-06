@@ -10,7 +10,7 @@ import {
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueries } from 'client/hooks/execute/util/useRefetchQueries';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
 import { roundToString } from 'client/utils/rounding';
 import { useCallback } from 'react';
@@ -31,7 +31,7 @@ export function useExecuteClosePosition() {
   const {
     savedSettings: { market: marketSlippageFraction },
   } = useOrderSlippageSettings();
-  const { data: subaccountSummary } = useCurrentSubaccountSummary();
+  const { data: subaccountSummary } = useSubaccountSummary();
   const { data: latestMarketPrices } = useAllMarketsLatestPrices();
 
   const closePositionMutationFn = useCallback(
@@ -92,7 +92,7 @@ export function useExecuteClosePosition() {
 
   return useMutation({
     mutationFn,
-    onSuccess(data, variables) {
+    onSuccess() {
       refetchPlaceEngineOrderRelatedQueries();
     },
     onError(error, variables) {

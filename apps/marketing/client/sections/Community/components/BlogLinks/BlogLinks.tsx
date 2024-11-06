@@ -1,11 +1,13 @@
+'use client';
+
+import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr/ArrowUpRight';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
 import { EXTERNAL_LINKS } from 'client/consts';
 import { useLatestBlogPosts } from 'client/hooks/useLatestBlogPosts';
+import { BlogCard } from 'client/sections/Community/components/BlogLinks/BlogCard';
+import { CommunityGradientPill } from 'client/sections/Community/components/CommunityGradientPill';
 import Link from 'next/link';
-import { MdArrowUpward } from 'react-icons/md';
-import { CommunityGradientPill } from '../CommunityGradientPill';
-import { BlogCard } from './BlogCard';
-import { joinClassNames } from '@vertex-protocol/web-common';
 
 export type BlogCardData = {
   title: string;
@@ -28,7 +30,7 @@ export function BlogLinks() {
         <CommunityGradientPill content="Blog Posts" />
         <HomePageButton
           className="bg-mainPurpleGradient gradient-text text-sm font-bold uppercase sm:text-base"
-          endIcon={<MdArrowUpward className="rotate-45 text-purple-700" />}
+          endIcon={<ArrowUpRight className="text-purple-700" />}
           as={Link}
           href={EXTERNAL_LINKS.blog}
         >

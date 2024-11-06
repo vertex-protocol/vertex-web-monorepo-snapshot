@@ -1,5 +1,5 @@
+import { LargeScreenTradingLayout } from 'client/modules/trading/layout/LargeScreenTradingLayout';
 import { TradingLayoutProps } from 'client/modules/trading/layout/types';
-import { LargeScreenTradingLayout } from './LargeScreenTradingLayout';
 
 export function DesktopTradingLayout({
   productId,
@@ -7,17 +7,17 @@ export function DesktopTradingLayout({
   MarketSwitcher,
   InfoCards,
   OrderPlacement,
-  AccountHealth,
-  PriceChart,
+  ChartComponent,
 }: TradingLayoutProps) {
   return (
     <LargeScreenTradingLayout
       showMarketOrderSideBar
-      heroComponent={<PriceChart productId={productId} className="h-full" />}
+      heroComponent={
+        <ChartComponent productId={productId} className="h-full" />
+      }
       productId={productId}
       tradingTabs={tradingTabs}
       MarketSwitcher={MarketSwitcher}
-      AccountHealth={AccountHealth}
       InfoCards={InfoCards}
       OrderPlacement={OrderPlacement}
     />

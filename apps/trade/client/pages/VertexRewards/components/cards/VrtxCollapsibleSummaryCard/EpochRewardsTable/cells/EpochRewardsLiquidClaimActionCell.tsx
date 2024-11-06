@@ -4,9 +4,9 @@ import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { EpochRewardsTableData } from '../useEpochRewardsTable';
+import { EpochRewardsTableData } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/useEpochRewardsTable';
 
 type Props = TableCellProps &
   Pick<
@@ -27,8 +27,8 @@ export function EpochRewardsLiquidClaimActionCell({
   className,
   ...rest
 }: Props) {
+  const isConnected = useIsConnected();
   const { show } = useDialog();
-  const userActionState = useUserActionState();
 
   const hasClaimedRewards = rewardsEarned?.gt(0) && rewardsUnclaimed?.isZero();
 
@@ -37,7 +37,7 @@ export function EpochRewardsLiquidClaimActionCell({
   const canClaim =
     !isCurrent && !isPastClaimDeadline && rewardsUnclaimed?.gt(0);
 
-  const isDisabled = !canClaim || userActionState === 'block_all';
+  const isDisabled = !canClaim || !isConnected;
 
   const buttonLabel = (() => {
     // Current Epoch

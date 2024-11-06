@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { AnnotatedPerpBalanceWithProduct } from 'common/productMetadata/types';
+import { AnnotatedPerpBalanceWithProduct } from '@vertex-protocol/metadata';
 
 // If long: oracle_price - (health / amount / long_weight)
 // If short: oracle_price + (health / amount * short_weight)
@@ -9,7 +9,12 @@ export function calcEstimatedLiquidationPrice(
   balanceWithProduct: AnnotatedPerpBalanceWithProduct,
   maintenanceHealth: BigDecimal,
 ): BigDecimal | null {
-  if (balanceWithProduct.amount.isPositive()) {
+  // If balance amount is 0 return null.
+  if (balanceWithProduct.amount.isZero()) {
+    return null;
+  }
+  // If balance amount is positive.
+  else if (balanceWithProduct.amount.isPositive()) {
     const longLiquidationPrice = balanceWithProduct.oraclePrice.minus(
       maintenanceHealth
         .div(balanceWithProduct.amount)
@@ -23,8 +28,8 @@ export function calcEstimatedLiquidationPrice(
 
     return longLiquidationPrice;
   }
-
-  if (balanceWithProduct.amount.isNegative()) {
+  // If balance amount is negative.
+  else {
     const shortLiquidationPrice = balanceWithProduct.oraclePrice.plus(
       maintenanceHealth
         .div(balanceWithProduct.amount.abs())
@@ -38,7 +43,4 @@ export function calcEstimatedLiquidationPrice(
 
     return shortLiquidationPrice;
   }
-
-  // If amount is 0. Which is very unlikely to happen return null
-  return null;
 }

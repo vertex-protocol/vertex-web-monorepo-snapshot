@@ -4,19 +4,19 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { useCopyText } from '@vertex-protocol/web-common';
-import { Spinner, TextButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
+import {
+  Spinner,
+  TextButton,
+  formatTimestamp,
+  TimeFormatSpecifier,
+} from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { PreLiquidationBalanceAccordionItem } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/PreLiquidationBalanceAccordionItem';
 import { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
 import { usePreLiquidationDetailsDialog } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/usePreLiquidationDetailsDialog';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { useState } from 'react';
 
@@ -46,11 +46,11 @@ export function PreLiquidationDetailsDialog(
   const copyJsonButtonText = isCopied ? 'Copied!' : 'Copy raw data';
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>
         Pre-Liquidation Balances
-      </BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-4 text-sm">
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <div className="flex flex-col items-start gap-y-2 text-xs">
           <p>
             The following is a snapshot of your account before the liquidation
@@ -193,7 +193,7 @@ export function PreLiquidationDetailsDialog(
             );
           })}
         </Accordion.Root>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

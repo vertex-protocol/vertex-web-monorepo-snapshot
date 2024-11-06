@@ -9,9 +9,10 @@ import { useDataTablePagination } from 'client/components/DataTable/hooks/useDat
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useSubaccountPaginatedPaymentEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedPaymentEvents';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { SpotProductMetadata } from 'common/productMetadata/types';
+import { SpotProductMetadata } from '@vertex-protocol/metadata';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 
 export interface InterestPaymentsTableItem {
   timestampMillis: number;
@@ -19,6 +20,7 @@ export interface InterestPaymentsTableItem {
   balanceAmount: BigDecimal;
   interestRateFrac: BigDecimal;
   interestPaidAmount: BigDecimal;
+  valueUsd: BigDecimal;
 }
 
 interface Params {
@@ -42,25 +44,35 @@ export function useInterestPaymentsTable({
   const {
     data: interestPaymentsData,
     isLoading,
-    isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
   } = useSubaccountPaginatedPaymentEvents({
     productIds,
     pageSize,
   });
 
-  const { getPageData, pageCount, paginationState, setPaginationState } =
-    useDataTablePagination<
-      GetIndexerInterestFundingPaymentsResponse,
-      IndexerProductPayment
-    >({
-      pageSize,
-      numPagesFromQuery: interestPaymentsData?.pages.length,
-      hasNextPage,
-      fetchNextPage,
-      extractItems,
-    });
+  const {
+    getPageData,
+    pageCount,
+    paginationState,
+    setPaginationState,
+    isFetchingCurrPage,
+  } = useDataTablePagination<
+    GetIndexerInterestFundingPaymentsResponse,
+    IndexerProductPayment
+  >({
+    pageSize,
+    numPagesFromQuery: interestPaymentsData?.pages.length,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    extractItems,
+  });
+
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const mappedData: InterestPaymentsTableItem[] | undefined = useMemo(() => {
     if (!interestPaymentsData || !allMarketsStaticData) {
@@ -84,13 +96,17 @@ export function useInterestPaymentsTable({
         }
 
         const { metadata } = spotProduct;
+        const interestPaidAmount = removeDecimals(item.paymentAmount);
 
         return {
           timestampMillis: secondsToMilliseconds(item.timestamp.toNumber()),
           metadata,
           balanceAmount: removeDecimals(item.balanceAmount),
           interestRateFrac: item.annualPaymentRate,
-          interestPaidAmount: removeDecimals(item.paymentAmount),
+          interestPaidAmount,
+          valueUsd: interestPaidAmount
+            .multipliedBy(item.oraclePrice)
+            .multipliedBy(primaryQuotePriceUsd),
         };
       })
       .filter(nonNullFilter);
@@ -99,11 +115,12 @@ export function useInterestPaymentsTable({
     interestPaymentsData,
     enablePagination,
     getPageData,
+    primaryQuotePriceUsd,
   ]);
 
   return {
     mappedData,
-    isLoading: isFetchingNextPage || isLoading,
+    isLoading: isLoading || isFetchingCurrPage,
     pageCount,
     paginationState,
     setPaginationState,

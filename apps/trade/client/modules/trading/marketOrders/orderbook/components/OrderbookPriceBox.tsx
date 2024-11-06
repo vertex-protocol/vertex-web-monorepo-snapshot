@@ -1,16 +1,20 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
   formatNumber,
   getMarketPriceFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
+import {
+  joinClassNames,
+  mergeClassNames,
+  WithClassnames,
+} from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
 import { useShouldFlash } from 'client/hooks/ui/useShouldFlash';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
+import { OrderbookViewType } from 'client/modules/trading/marketOrders/orderbook/types';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { useMemo } from 'react';
-import { OrderbookViewType } from 'client/modules/trading/marketOrders/orderbook/types';
 
 interface Props {
   lastPriceChange: BigDecimal | undefined;
@@ -66,7 +70,7 @@ export function OrderbookPriceBox({
   return (
     <DefinitionTooltip definitionId="lastPrice" decoration="none">
       <div
-        className={joinClassNames(
+        className={mergeClassNames(
           'flex cursor-pointer border-y px-4 py-1.5 text-sm',
           variableClassName,
           className,
@@ -106,10 +110,7 @@ function OrderbookSpreadWarning({
       )}
     >
       {isHighSpread && (
-        <Icons.BsExclamation
-          size={16}
-          className="text-negative bg-negative-muted rounded-full"
-        />
+        <Icons.ExclamationMark className="text-negative bg-negative-muted size-4 rounded-full p-0.5" />
       )}
       Spread:
       <div className={isHighSpread ? 'text-negative' : 'text-text-tertiary'}>

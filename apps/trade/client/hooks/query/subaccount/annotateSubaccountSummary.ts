@@ -6,7 +6,7 @@ import {
   AnnotatedBalanceWithProduct,
   PerpProductMetadata,
   SpotProductMetadata,
-} from 'common/productMetadata/types';
+} from '@vertex-protocol/metadata';
 import { sortBy } from 'lodash';
 
 // Annotated balances that include metadata

@@ -5,7 +5,7 @@ import {
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
+import { NOT_CONNECTED_ALT_QUERY_ADDRESS } from 'client/hooks/query/consts/notConnectedAltQueryAddress';
 
 export function addressTakerRewardsQueryKey(sender?: string) {
   return createQueryKey('addressTakerRewards', sender);
@@ -17,7 +17,7 @@ export function useAddressTakerRewards() {
 
   const disabled = !vertexClient;
   const addressForQuery =
-    currentSubaccount.address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
+    currentSubaccount.address ?? NOT_CONNECTED_ALT_QUERY_ADDRESS;
 
   return useQuery({
     queryKey: addressTakerRewardsQueryKey(addressForQuery),

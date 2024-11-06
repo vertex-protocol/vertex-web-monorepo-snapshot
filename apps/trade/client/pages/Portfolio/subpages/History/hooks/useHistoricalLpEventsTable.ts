@@ -3,21 +3,24 @@ import {
   GetIndexerSubaccountLpEventsResponse,
   IndexerLpEvent,
 } from '@vertex-protocol/indexer-client';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { removeDecimals } from '@vertex-protocol/utils';
+import { Token } from '@vertex-protocol/metadata';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import {
+  StaticMarketData,
+  useAllMarketsStaticData,
+} from 'client/hooks/markets/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedLpEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedLpEvents';
 import { PairMetadata } from 'client/modules/pools/types';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
 const PAGE_SIZE = 10;
 
-export interface HistoricalLpEvent {
+export interface HistoricalLpEventsTableItem {
   timestampMillis: number;
   lpSize: BigDecimal;
   lpAmount: BigDecimal;
@@ -36,83 +39,113 @@ function extractItems(data: GetIndexerSubaccountLpEventsResponse) {
 export function useHistoricalLpEventsTable() {
   const { data: allMarketsStaticData, isLoading: marketsDataLoading } =
     useAllMarketsStaticData();
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const {
     data: subaccountPaginatedEvents,
     isLoading,
-    isFetchingNextPage,
     fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
     hasNextPage,
   } = useSubaccountPaginatedLpEvents({
     pageSize: PAGE_SIZE,
   });
 
-  const { pageCount, paginationState, setPaginationState, getPageData } =
-    useDataTablePagination<
-      GetIndexerSubaccountLpEventsResponse,
-      IndexerLpEvent
-    >({
-      numPagesFromQuery: subaccountPaginatedEvents?.pages.length,
-      pageSize: PAGE_SIZE,
-      hasNextPage,
-      fetchNextPage,
-      extractItems,
-    });
+  const {
+    pageCount,
+    paginationState,
+    setPaginationState,
+    getPageData,
+    isFetchingCurrPage,
+  } = useDataTablePagination<
+    GetIndexerSubaccountLpEventsResponse,
+    IndexerLpEvent
+  >({
+    numPagesFromQuery: subaccountPaginatedEvents?.pages.length,
+    pageSize: PAGE_SIZE,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    extractItems,
+  });
 
-  const mappedData = useMemo((): HistoricalLpEvent[] | undefined => {
+  const mappedData = useMemo((): HistoricalLpEventsTableItem[] | undefined => {
     if (!subaccountPaginatedEvents || !allMarketsStaticData) {
       return undefined;
     }
     return getPageData(subaccountPaginatedEvents)
       .map((event) => {
-        const { baseSnapshot, baseDelta, lpDelta, quoteDelta, timestamp } =
-          event;
+        const marketProductId = event.baseSnapshot.market.productId;
+        const staticMarketData = allMarketsStaticData.all[marketProductId];
 
-        const marketData =
-          allMarketsStaticData.all[baseSnapshot.market.productId];
-
-        if (!marketData) {
-          console.warn('Pool market data not found');
-          return undefined;
+        if (!staticMarketData) {
+          console.warn(
+            `[useHistoricalLpEventsTable] Product ${marketProductId} not found`,
+          );
+          return;
         }
 
-        let metadata: PairMetadata = {
-          base: getBaseProductMetadata(marketData.metadata),
-          // LPs can only be in the primary quote
-          quote: allMarketsStaticData.primaryQuote.metadata.token,
-        };
-
-        const decimalAdjustedLpAmountDelta = removeDecimals(lpDelta);
-
-        return {
-          timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
-          lpSize: decimalAdjustedLpAmountDelta.abs(),
-          lpAmount: decimalAdjustedLpAmountDelta,
-          lpValueUsd: removeDecimals(
-            lpDelta
-              .multipliedBy(calcLpTokenValue(baseSnapshot.market.product))
-              .multipliedBy(quotePrice),
-          ).abs(),
-          amountChanges: {
-            baseAmount: removeDecimals(baseDelta),
-            quoteAmount: removeDecimals(quoteDelta),
-          },
-          metadata,
-        };
+        return getHistoricalLpEventsTableItem({
+          event,
+          staticMarketData,
+          primaryQuoteToken: allMarketsStaticData.primaryQuote.metadata.token,
+          primaryQuotePriceUsd,
+        });
       })
       .filter(nonNullFilter);
   }, [
-    allMarketsStaticData,
-    quotePrice,
     subaccountPaginatedEvents,
+    allMarketsStaticData,
     getPageData,
+    primaryQuotePriceUsd,
   ]);
 
   return {
-    isLoading: isLoading || isFetchingNextPage || marketsDataLoading,
+    isLoading: isLoading || marketsDataLoading || isFetchingCurrPage,
     mappedData,
     pageCount,
     paginationState,
     setPaginationState,
+  };
+}
+
+interface GetHistoricalLpEventsTableItemParams {
+  event: IndexerLpEvent;
+  staticMarketData: StaticMarketData;
+  primaryQuoteToken: Token;
+  primaryQuotePriceUsd: BigDecimal;
+}
+
+export function getHistoricalLpEventsTableItem({
+  event,
+  staticMarketData,
+  primaryQuoteToken,
+  primaryQuotePriceUsd,
+}: GetHistoricalLpEventsTableItemParams) {
+  const { baseSnapshot, baseDelta, lpDelta, quoteDelta, timestamp } = event;
+
+  let metadata: PairMetadata = {
+    base: getSharedProductMetadata(staticMarketData.metadata),
+    // LPs can only be in the primary quote
+    quote: primaryQuoteToken,
+  };
+
+  const decimalAdjustedLpAmountDelta = removeDecimals(lpDelta);
+
+  return {
+    timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
+    lpSize: decimalAdjustedLpAmountDelta.abs(),
+    lpAmount: decimalAdjustedLpAmountDelta,
+    lpValueUsd: removeDecimals(
+      lpDelta
+        .multipliedBy(calcLpTokenValue(baseSnapshot.market.product))
+        .multipliedBy(primaryQuotePriceUsd),
+    ).abs(),
+    amountChanges: {
+      baseAmount: removeDecimals(baseDelta),
+      quoteAmount: removeDecimals(quoteDelta),
+    },
+    metadata,
   };
 }

@@ -1,19 +1,20 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
+import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { ProductInfoCell } from 'client/modules/tables/cells/ProductInfoCell';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { useMemo } from 'react';
-import { AmountWithSymbolCell } from './cells/AmountWithSymbolCell';
-import { DateTimeCell } from './cells/DateTimeCell';
-import { PercentageCell } from './cells/PercentageCell';
+import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
+import { StackedAmountValueCell } from 'client/modules/tables/cells/StackedAmountValueCell';
+import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
+import { PercentageCell } from 'client/modules/tables/cells/PercentageCell';
 import {
   InterestPaymentsTableItem,
   useInterestPaymentsTable,
-} from './hooks/useInterestPaymentsTable';
+} from 'client/modules/tables/hooks/useInterestPaymentsTable';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<InterestPaymentsTableItem>();
 
@@ -50,7 +51,7 @@ export const PaginatedInterestPaymentsTable = ({
           const {
             token: { symbol, icon },
           } = getValue<InterestPaymentsTableItem['metadata']>();
-          return <ProductInfoCell symbol={symbol} iconSrc={icon.asset} />;
+          return <MarketProductInfoCell symbol={symbol} iconSrc={icon.asset} />;
         },
         enableSorting: false,
         meta: {
@@ -103,13 +104,14 @@ export const PaginatedInterestPaymentsTable = ({
         cell: (context) => {
           const amount =
             context.getValue<InterestPaymentsTableItem['interestPaidAmount']>();
+          const valueUsd = context.row.original.valueUsd;
           const symbol = context.row.original.metadata.token.symbol;
           return (
-            <AmountWithSymbolCell
-              amount={amount}
+            <StackedAmountValueCell
               symbol={symbol}
-              // Using 5sf here as interest payments are often super small, and we prefer showing exponents over "0"
-              formatSpecifier=",.5"
+              size={amount}
+              valueUsd={valueUsd}
+              sizeFormatSpecifier=",.5"
             />
           );
         },

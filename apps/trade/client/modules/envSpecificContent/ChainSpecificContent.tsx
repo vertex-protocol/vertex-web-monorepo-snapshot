@@ -1,6 +1,6 @@
-import { WithChildren } from '@vertex-protocol/web-common';
 import { PrimaryChainID } from '@vertex-protocol/react-client';
-import { useIsEnabledForChainIds } from './hooks/useIsEnabledForChainIds';
+import { WithChildren } from '@vertex-protocol/web-common';
+import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
 
 interface Props extends WithChildren {
   enabledChainIds: PrimaryChainID[];

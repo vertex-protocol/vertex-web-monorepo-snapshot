@@ -1,8 +1,8 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { useSpotLeverageEnabled } from 'client/modules/trading/hooks/useSpotLeverageEnabled';
+import { useSpotOrderFormContext } from 'client/pages/SpotTrading/context/SpotOrderFormContext';
 import { useMemo } from 'react';
-import { useSpotOrderFormContext } from '../context/SpotOrderFormContext';
 
 interface UseSpotTradingFormAccountInfo {
   showQuote: boolean | undefined;

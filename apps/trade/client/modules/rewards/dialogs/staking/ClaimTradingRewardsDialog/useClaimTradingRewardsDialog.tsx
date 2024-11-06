@@ -1,4 +1,5 @@
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { removeDecimals } from '@vertex-protocol/utils';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useExecuteClaimAndStakeLiquidTokens } from 'client/hooks/execute/vrtxToken/useExecuteClaimAndStakeLiquidTokens';
 import { useExecuteClaimLiquidTokens } from 'client/hooks/execute/vrtxToken/useExecuteClaimLiquidTokens';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
@@ -7,11 +8,10 @@ import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnC
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/types';
+import { ClaimAndStakeRadioID } from 'client/modules/rewards/dialogs/staking/components/StakingRadioGroup';
+import { BaseClaimAndStakeHookReturn } from 'client/modules/rewards/dialogs/staking/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
-import { removeDecimals } from '@vertex-protocol/utils';
 import { useCallback, useMemo, useState } from 'react';
-import { ClaimAndStakeRadioID } from '../components/StakingRadioGroup';
-import { BaseClaimAndStakeHookReturn } from '../types';
 
 export function useClaimTradingRewardsDialog({
   epochNumber,

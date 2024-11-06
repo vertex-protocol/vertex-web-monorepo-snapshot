@@ -1,3 +1,4 @@
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_GAP,
@@ -5,9 +6,8 @@ import {
   DEFAULT_SECTION_WIDTH,
   SECTION_IDS,
 } from 'client/consts';
-import { DeveloperCard } from './components/DeveloperCard';
-import { DEVELOPER_CARDS } from './data';
-import { joinClassNames } from '@vertex-protocol/web-common';
+import { DeveloperCard } from 'client/sections/Developer/components/DeveloperCard';
+import { DEVELOPER_CARDS } from 'client/sections/Developer/data';
 
 export function Developer() {
   return (
@@ -50,11 +50,14 @@ export function Developer() {
           'lg:gap-y-0',
         )}
       >
-        {DEVELOPER_CARDS.map((card) => (
+        {DEVELOPER_CARDS.map(({ icon, content, href, title, comingSoon }) => (
           <DeveloperCard
-            {...card}
-            key={card.title}
-            comingSoon={card.comingSoon}
+            icon={icon}
+            content={content}
+            title={title}
+            key={title}
+            href={href}
+            comingSoon={comingSoon}
           />
         ))}
       </div>

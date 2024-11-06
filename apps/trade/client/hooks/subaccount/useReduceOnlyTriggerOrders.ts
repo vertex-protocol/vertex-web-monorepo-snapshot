@@ -1,7 +1,7 @@
 import { TriggerOrderInfo } from '@vertex-protocol/client';
+import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
 import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
 import { useMemo } from 'react';
-import { useSubaccountOpenTriggerOrders } from '../query/subaccount/useSubaccountOpenTriggerOrders';
 
 interface ReduceOnlyTriggerOrders {
   orders: TriggerOrderInfo[];

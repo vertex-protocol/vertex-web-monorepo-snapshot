@@ -1,22 +1,27 @@
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { Icons } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
+import { COMMON_TRANSPARENCY_COLORS, Icons } from '@vertex-protocol/web-ui';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { InputSummary } from 'client/components/InputSummary';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { InputSummaryItem } from 'client/components/InputSummaryItem';
 import { useSubaccountHealthCheckSequencerFee } from 'client/hooks/subaccount/useSubaccountHealthCheckSequencerFee';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { LpInfoPanel } from 'client/modules/pools/components/LpInfoPanel/LpInfoPanel';
-import { ProvideLiquidityInput } from './ProvideLiquidityInput';
-import { ProvideLiquiditySubmitButton } from './ProvideLiquiditySubmitButton';
-import { ProvideLiquiditySummary } from './ProvideLiquiditySummary';
-import { useProvideLiquidityAmountErrorTooltipContent } from './hooks/useProvideLiquidityAmountErrorTooltipContent';
-import { useProvideLiquidityForm } from './hooks/useProvideLiquidityForm';
+import { ProvideLiquidityInput } from 'client/modules/pools/provide/ProvideLiquidityInput';
+import { ProvideLiquiditySubmitButton } from 'client/modules/pools/provide/ProvideLiquiditySubmitButton';
+import { ProvideLiquiditySummary } from 'client/modules/pools/provide/ProvideLiquiditySummary';
+import { useProvideLiquidityAmountErrorTooltipContent } from 'client/modules/pools/provide/hooks/useProvideLiquidityAmountErrorTooltipContent';
+import { useProvideLiquidityForm } from 'client/modules/pools/provide/hooks/useProvideLiquidityForm';
 
-export function ProvideLiquidityDialog() {
+export interface ProvideLiquidityDialogParams {
+  productId: number;
+}
+
+export function ProvideLiquidityDialog({
+  productId,
+}: ProvideLiquidityDialogParams) {
   const {
     form,
     formError,
@@ -33,7 +38,9 @@ export function ProvideLiquidityDialog() {
     onMaxSelected,
     validateBaseAmount,
     validateQuoteAmount,
-  } = useProvideLiquidityForm();
+  } = useProvideLiquidityForm({
+    productId,
+  });
   const sequencerFee = useSubaccountHealthCheckSequencerFee();
   const { primaryQuoteToken } = useVertexMetadataContext();
   const amountErrorTooltipContent =
@@ -44,10 +51,12 @@ export function ProvideLiquidityDialog() {
   const { hide } = useDialog();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Provide Liquidity</BaseDialog.Title>
-      <BaseDialog.Body>
-        <Form onSubmit={onSubmit} className="flex w-full flex-col gap-y-4">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>
+        Provide Liquidity
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body asChild>
+        <Form onSubmit={onSubmit}>
           <LpInfoPanel
             metadata={pairMetadata}
             currentLpBalance={currentLpBalance}
@@ -60,51 +69,47 @@ export function ProvideLiquidityDialog() {
                 className="relative top-[18px] h-20 w-4"
               />
               <div className="flex flex-1 flex-col gap-y-1.5">
-                <div>
+                <div className="flex flex-col gap-y-1">
                   <ProvideLiquidityInput
                     {...form.register('baseAmount', {
                       validate: validateBaseAmount,
                     })}
-                    icon={pairMetadata?.base?.icon}
-                    symbol={pairMetadata?.base?.symbol}
+                    icon={pairMetadata?.base.icon}
+                    symbol={pairMetadata?.base.symbol}
                     estimatedValueUsd={estimatedChangeAmounts?.baseValueUsd}
                     error={amountErrorTooltipContent}
                     onFocus={() => {
                       form.setValue('amountSource', 'base');
                     }}
                   />
-                  <InputSummary.Container>
-                    <InputSummary.Item
-                      label="Balance:"
-                      definitionTooltipId="lpUnderlyingBalance"
-                      currentValue={underlyingBaseBalance}
-                      onValueClick={onMaxSelected}
-                      formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                    />
-                  </InputSummary.Container>
+                  <InputSummaryItem
+                    label="Balance:"
+                    definitionTooltipId="lpUnderlyingBalance"
+                    currentValue={underlyingBaseBalance}
+                    onValueClick={onMaxSelected}
+                    formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+                  />
                 </div>
-                <div>
+                <div className="flex flex-col gap-y-1">
                   <ProvideLiquidityInput
                     {...form.register('quoteAmount', {
                       validate: validateQuoteAmount,
                     })}
-                    icon={pairMetadata?.quote?.icon}
-                    symbol={pairMetadata?.quote?.symbol}
+                    icon={pairMetadata?.quote.icon}
+                    symbol={pairMetadata?.quote.symbol}
                     estimatedValueUsd={estimatedChangeAmounts?.quoteValueUsd}
                     error={amountErrorTooltipContent}
                     onFocus={() => {
                       form.setValue('amountSource', 'quote');
                     }}
                   />
-                  <InputSummary.Container>
-                    <InputSummary.Item
-                      label="Balance:"
-                      definitionTooltipId="lpUnderlyingBalance"
-                      currentValue={underlyingQuoteBalance}
-                      onValueClick={onMaxSelected}
-                      formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                    />
-                  </InputSummary.Container>
+                  <InputSummaryItem
+                    label="Balance:"
+                    definitionTooltipId="lpUnderlyingBalance"
+                    currentValue={underlyingQuoteBalance}
+                    onValueClick={onMaxSelected}
+                    formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+                  />
                 </div>
               </div>
             </div>
@@ -121,8 +126,8 @@ export function ProvideLiquidityDialog() {
           />
           <ProvideLiquiditySubmitButton state={buttonState} />
         </Form>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }
 
@@ -130,12 +135,13 @@ function Linker({ className }: WithClassnames) {
   return (
     <div
       className={joinClassNames(
-        'border-overlay-divider/10 rounded-l border border-r-0',
+        'rounded-l border border-r-0',
+        COMMON_TRANSPARENCY_COLORS.border,
         className,
       )}
     >
       <div className="bg-surface-2 absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md p-0.5">
-        <Icons.BiPlus className="text-text-tertiary" size={16} />
+        <Icons.Plus className="text-text-tertiary" size={16} />
       </div>
     </div>
   );

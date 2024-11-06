@@ -1,7 +1,7 @@
 import { Icons } from '@vertex-protocol/web-ui';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { UserStateError } from 'client/hooks/subaccount/useUserStateError';
-import { ProfileAvatarIcon } from 'client/modules/userProfile/components/ProfileAvatarIcon';
-import { useSavedUserProfile } from 'client/modules/userProfile/hooks/useSavedUserProfile';
+import { ProfileAvatarIcon } from 'client/modules/subaccounts/components/ProfileAvatarIcon';
 
 type ControlCenterWalletIconProps = {
   size: number;
@@ -12,11 +12,17 @@ export function AccountCenterWalletIcon({
   userStateError,
   size,
 }: ControlCenterWalletIconProps) {
-  const { savedAvatar } = useSavedUserProfile();
+  const {
+    currentSubaccountProfile: { avatar },
+  } = useSubaccountContext();
 
-  if (userStateError) {
-    return <Icons.BsExclamationTriangle size={size} className="text-warning" />;
+  if (userStateError === 'requires_sign_once_approval') {
+    return <Icons.LightningSlash size={size} className="text-warning" />;
   }
 
-  return <ProfileAvatarIcon avatar={savedAvatar} size={size} />;
+  if (userStateError === 'incorrect_connected_chain') {
+    return <Icons.Warning size={size} className="text-warning" />;
+  }
+
+  return <ProfileAvatarIcon avatar={avatar} size={size} />;
 }

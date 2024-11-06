@@ -6,11 +6,12 @@ import { ProductEngineType } from '@vertex-protocol/contracts';
 import { BigDecimal, BigDecimalish } from '@vertex-protocol/utils';
 import { ExecutePlaceOrderParams } from 'client/hooks/execute/placeOrder/types';
 import { ExecuteCloseAllPositionsResult } from 'client/hooks/execute/placeOrder/useExecuteCloseAllPositions';
+import { SizeClass } from 'client/hooks/ui/breakpoints';
 import { NewFeatureDisclosureKey } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
 import { OrderType, PlaceOrderPriceType } from 'client/modules/trading/types';
 import { TxResponse } from 'client/types/TxResponse';
-import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
-import { ContractTransactionResponse, TransactionReceipt } from 'ethers';
+import { TokenIconMetadata } from '@vertex-protocol/metadata';
+import { TransactionReceipt } from 'ethers';
 
 // Additional data surrounding user/app state required by notification handlers
 export interface NotificationDispatchContext {
@@ -18,10 +19,11 @@ export interface NotificationDispatchContext {
   getConfirmedTxPromise: (
     txResponsePromise: Promise<TxResponse>,
   ) => Promise<TransactionReceipt>;
+  sizeClass: SizeClass;
 }
 
 interface OnChainExecutionData {
-  txResponsePromise: Promise<ContractTransactionResponse>;
+  txResponsePromise: Promise<TxResponse>;
 }
 
 interface ServerExecutionData {

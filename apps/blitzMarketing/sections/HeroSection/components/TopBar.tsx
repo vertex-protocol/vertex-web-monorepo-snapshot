@@ -17,19 +17,22 @@ export function TopBar() {
           开 始 交 易
         </GlitchText>
         <BlitzLinkButton external href={LINKS.app}>
-          LAUNCH
+          START TRADING
         </BlitzLinkButton>
       </div>
-      <div className="flex items-center gap-x-2 text-lg">
-        BUILT ON
-        <Link href={LINKS.blast} target="_blank" rel="noopener noreferrer">
-          <Image
-            src={blastLogo}
-            alt="blast"
-            className="h-5 w-auto pb-0.5"
-            priority
-          />
-        </Link>
+      <div className="flex flex-col gap-y-1">
+        <div className="flex items-center gap-x-2 text-lg">
+          BUILT ON
+          <Link href={LINKS.blast} target="_blank" rel="noopener noreferrer">
+            <Image
+              src={blastLogo}
+              alt="blast"
+              className="h-5 w-auto pb-0.5"
+              priority
+            />
+          </Link>
+        </div>
+        <span>EARN POINTS & GOLD</span>
       </div>
     </div>
   );

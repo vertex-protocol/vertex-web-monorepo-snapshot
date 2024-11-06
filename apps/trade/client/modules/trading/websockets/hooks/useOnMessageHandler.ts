@@ -4,7 +4,7 @@ import {
   EngineServerPriceTickLiquidity,
   EngineServerSubscriptionTradeEvent,
 } from '@vertex-protocol/engine-client';
-import { usePrimaryChainId } from '@vertex-protocol/react-client';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import {
   BatchBookDepthUpdateData,
   BatchMarketTradeUpdateData,
@@ -20,7 +20,7 @@ interface Params {
 }
 
 export function useOnMessageHandler({ productId }: Params) {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const queryClient = useQueryClient();
 
   // Chunk updates to be processed in batches. Backend can issue updates as frequently as 50ms, and we don't want to run
@@ -50,18 +50,18 @@ export function useOnMessageHandler({ productId }: Params) {
     batchedTradeEventsRef.current = [];
 
     handleBatchedBookDepthEvents(
-      primaryChainId,
+      primaryChainEnv,
       batchedBookDepthEvents,
       productId,
       queryClient,
     );
     handleBatchedMarketTradeEvents(
-      primaryChainId,
+      primaryChainEnv,
       batchedTradeEvents,
       productId,
       queryClient,
     );
-  }, [primaryChainId, productId, queryClient]);
+  }, [primaryChainEnv, productId, queryClient]);
 
   // Clear batches on product ID change
   useEffect(() => {

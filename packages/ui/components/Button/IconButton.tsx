@@ -1,20 +1,22 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
+import { forwardRef } from 'react';
 import { Except } from 'type-fest';
 import { SizeVariant } from '../../types';
 import { getStateOverlayClassNames } from '../../utils';
-import { IconType } from '../Icons/types';
+import { IconComponent } from '../Icons/types';
+import { LabelTooltip } from '../Tooltip';
 import { Button } from './Button';
 import { ButtonProps } from './types';
-import { forwardRef } from 'react';
 
 type Props = Except<ButtonProps, 'loadingIconSize'> & {
-  icon: IconType;
+  icon: IconComponent;
   size: SizeVariant;
+  tooltipLabel?: string;
 };
 
 export const IconButton = forwardRef<HTMLButtonElement, Props>(
   function IconButton(
-    { icon: Icon, className, iconClassName, size, ...rest },
+    { icon: Icon, className, iconClassName, size, tooltipLabel, ...rest },
     ref,
   ) {
     const stateOverlayClassNames = getStateOverlayClassNames({
@@ -44,7 +46,7 @@ export const IconButton = forwardRef<HTMLButtonElement, Props>(
       },
     }[size];
 
-    return (
+    const button = (
       <Button
         className={mergeClassNames(
           'text-text-secondary bg-surface-2 aspect-square rounded',
@@ -59,6 +61,16 @@ export const IconButton = forwardRef<HTMLButtonElement, Props>(
       >
         <Icon size={iconSize} className={iconClassName} />
       </Button>
+    );
+
+    if (!tooltipLabel) {
+      return button;
+    }
+
+    return (
+      <LabelTooltip label={tooltipLabel} asChild noHelpCursor>
+        {button}
+      </LabelTooltip>
     );
   },
 );

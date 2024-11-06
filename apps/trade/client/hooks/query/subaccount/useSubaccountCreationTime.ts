@@ -1,43 +1,45 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { first } from 'lodash';
 
 export function subaccountCreationTimeQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   subaccountOwner?: string,
   subaccountName?: string,
 ) {
   return createQueryKey(
     'subaccountCreationTime',
-    chainId,
+    chainEnv,
     subaccountOwner,
     subaccountName,
   );
 }
 
 /**
- * Returns the creation time for the subaccount, indicated by the time of the first deposit event. Data is
- * null if the subaccount does not exist.
+ * Returns the creation time for the subaccount, indicated by the time of the first
+ * deposit or quote transfer event. Data is null if the subaccount does not exist.
  */
 export function useSubaccountCreationTime() {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const {
-    currentSubaccount: { address: subaccountOwner, name: subaccountName },
+    currentSubaccount: {
+      address: subaccountOwner,
+      name: subaccountName,
+      chainEnv,
+    },
   } = useSubaccountContext();
 
   const disabled = !vertexClient || !subaccountOwner;
 
   return useQuery({
     queryKey: subaccountCreationTimeQueryKey(
-      primaryChainId,
+      chainEnv,
       subaccountOwner,
       subaccountName,
     ),
@@ -56,7 +58,7 @@ export function useSubaccountCreationTime() {
           value: 1,
         },
         desc: false,
-        eventTypes: ['deposit_collateral'],
+        eventTypes: ['deposit_collateral', 'transfer_quote'],
       });
 
       return first(events)?.timestamp ?? null;

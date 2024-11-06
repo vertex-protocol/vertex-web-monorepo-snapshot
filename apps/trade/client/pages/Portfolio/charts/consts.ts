@@ -1,4 +1,6 @@
 import { TimeInSeconds } from '@vertex-protocol/client';
+import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
+import { timestampDataKey } from 'client/pages/Portfolio/charts/utils/dataKeys';
 import { COLORS } from 'common/theme/colors';
 import { mapValues, range } from 'lodash';
 import { ComponentProps, ComponentPropsWithoutRef } from 'react';
@@ -14,9 +16,6 @@ import {
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent';
 import { Dot } from 'recharts/types/shape/Dot';
-import { ChartCoordinate } from 'recharts/types/util/types';
-import { ChartTimespan } from './types';
-import { timestampDataKey } from './utils/dataKeys';
 
 type ChartTimespanMetadata = Record<
   ChartTimespan,
@@ -50,7 +49,7 @@ export const PORTFOLIO_CHART_TIMESPAN_METADATA: ChartTimespanMetadata = {
   },
 } as const;
 
-export const PORTFOLIO_CHART_XAXIS_DEFAULTS: XAxisProps = {
+export const PORTFOLIO_CHART_XAXIS_DEFAULTS: Omit<XAxisProps, 'ref'> = {
   dataKey: timestampDataKey,
   domain: ['dataMin', 'dataMax'],
   tick: { fontSize: 10 },
@@ -62,7 +61,7 @@ export const PORTFOLIO_CHART_XAXIS_DEFAULTS: XAxisProps = {
   height: 20,
 };
 
-export const PORTFOLIO_CHART_YAXIS_DEFAULTS: YAxisProps = {
+export const PORTFOLIO_CHART_YAXIS_DEFAULTS: Omit<YAxisProps, 'ref'> = {
   tick: { fontSize: 10 },
   axisLine: false,
   tickLine: false,
@@ -133,7 +132,7 @@ export const PORTFOLIO_DYNAMIC_GRADIENT_CONFIGS = {
   interest: [
     {
       id: PORTFOLIO_CHART_GRADIENT_IDS.interest,
-      stopColor: COLORS.warning.DEFAULT,
+      stopColor: COLORS.positive.DEFAULT,
     },
   ],
   funding: [
@@ -150,12 +149,6 @@ export const PORTFOLIO_DYNAMIC_GRADIENT_CONFIGS = {
     {
       id: PORTFOLIO_CHART_GRADIENT_IDS.pnlNegative,
       stopColor: COLORS.negative.DEFAULT,
-    },
-  ],
-  apr: [
-    {
-      id: PORTFOLIO_CHART_GRADIENT_IDS.apr,
-      stopColor: COLORS.warning.DEFAULT,
     },
   ],
   lpPosition: [

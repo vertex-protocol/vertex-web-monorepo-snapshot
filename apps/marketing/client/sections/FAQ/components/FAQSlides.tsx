@@ -1,12 +1,15 @@
+'use client';
+
+import { CaretDown } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { CaretUp } from '@phosphor-icons/react/dist/ssr/CaretUp';
 import {
   WithChildren,
   WithClassnames,
   joinClassNames,
 } from '@vertex-protocol/web-common';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
-import { FAQ_DATA } from '../data';
-import { useActiveFAQSlide } from '../hooks/useActiveFAQSlide';
+import { FAQ_DATA } from 'client/sections/FAQ/data';
+import { useActiveFAQSlide } from 'client/sections/FAQ/hooks/useActiveFAQSlide';
 
 export function FAQSlides() {
   const { active, setActiveSlide } = useActiveFAQSlide();
@@ -29,7 +32,7 @@ export function FAQSlides() {
   );
 }
 
-export interface SlideType extends WithChildren<WithClassnames> {
+interface FAQSlideProps extends WithChildren<WithClassnames> {
   label: string;
   index: number;
   active: boolean;
@@ -42,8 +45,13 @@ function FAQSlide({
   index,
   active,
   setActiveSlide,
-}: SlideType) {
-  const ChevronIcon = active ? FiChevronUp : FiChevronDown;
+}: FAQSlideProps) {
+  const chevronIcon = active ? (
+    <CaretUp size={22} className="opacity-100" />
+  ) : (
+    <CaretDown size={22} className="opacity-100" />
+  );
+
   const iconContent = (
     <div
       className={joinClassNames(
@@ -51,12 +59,10 @@ function FAQSlide({
         active ? 'bg-white-400' : 'bg-transparent',
       )}
     >
-      <ChevronIcon
-        size={22}
-        className={active ? 'opacity-100' : 'opacity-80'}
-      />
+      {chevronIcon}
     </div>
   );
+
   return (
     <div
       className={joinClassNames(

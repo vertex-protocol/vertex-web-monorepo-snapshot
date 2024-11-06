@@ -1,18 +1,18 @@
 import {
-  joinClassNames,
-  mergeClassNames,
-  WithClassnames,
-} from '@vertex-protocol/web-common';
-import {
   CustomNumberFormatSpecifier,
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import {
+  joinClassNames,
+  mergeClassNames,
+  WithClassnames,
+} from '@vertex-protocol/web-common';
 import { Select, useSelect } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { CollateralSpotProduct } from 'client/modules/collateral/types';
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { CollateralSpotProduct } from '../types';
 
 export interface AssetSelectProps extends WithClassnames {
   availableProducts: CollateralSpotProduct[];
@@ -44,32 +44,25 @@ export function CollateralAssetSelect({
     [availableProducts],
   );
 
-  const {
-    selectOptions,
-    open,
-    onValueChange,
-    value,
-    defaultOpen,
-    onOpenChange,
-  } = useSelect({
-    defaultOpen: false,
-    selectedValue: selectedProduct,
-    onSelectedValueChange: (product) => onProductSelected(product.productId),
-    options,
-  });
+  const { selectOptions, open, onValueChange, value, onOpenChange } = useSelect(
+    {
+      selectedValue: selectedProduct,
+      onSelectedValueChange: (product) => onProductSelected(product.productId),
+      options,
+    },
+  );
 
   return (
     <Select.Root
       open={open}
       onValueChange={onValueChange}
       value={value}
-      defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
       disabled={disableSelect}
     >
       <Select.Trigger
         className={joinClassNames(
-          'flex justify-between rounded-r-none',
+          'flex rounded-r-none bg-transparent',
           className,
         )}
         disabled={disableSelect}
@@ -133,6 +126,7 @@ function AssetSelectOption({
     <Select.Option
       value={value}
       className="flex items-center justify-between px-3 py-1"
+      withSelectedCheckmark={false}
     >
       <div className="flex w-full items-center gap-x-2">
         <Image

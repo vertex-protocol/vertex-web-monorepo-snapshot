@@ -1,22 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  usePrimaryChainVertexClient,
   QueryDisabledError,
-  usePrimaryChainId,
+  useVertexClientForChainEnv,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { ZeroAddress } from 'ethers';
 
 export function subaccountLeaderboardStateKey(
-  primaryChainId?: number,
-  contestId?: number,
+  chainEnv?: ChainEnv,
+  contestId?: number[],
   subaccountOwner?: string,
   subaccountName?: string,
 ) {
   return createQueryKey(
     'subaccountLeaderboardState',
-    primaryChainId,
+    chainEnv,
     contestId,
     subaccountOwner,
     subaccountName,
@@ -24,22 +24,25 @@ export function subaccountLeaderboardStateKey(
 }
 
 interface Params {
-  contestId: number | undefined;
+  chainEnv: ChainEnv;
+  contestIds: number[] | undefined;
 }
 
-export function useSubaccountLeaderboardState({ contestId }: Params) {
-  const primaryChainId = usePrimaryChainId();
-  const vertexClient = usePrimaryChainVertexClient();
+export function useSubaccountLeaderboardState({
+  chainEnv,
+  contestIds,
+}: Params) {
+  const vertexClient = useVertexClientForChainEnv(chainEnv);
 
   const { currentSubaccount } = useSubaccountContext();
   const subaccountOwnerForQuery = currentSubaccount.address ?? ZeroAddress;
 
-  const disabled = !vertexClient || !contestId;
+  const disabled = !vertexClient || !contestIds;
 
   return useQuery({
     queryKey: subaccountLeaderboardStateKey(
-      primaryChainId,
-      contestId,
+      chainEnv,
+      contestIds,
       subaccountOwnerForQuery,
       currentSubaccount.name,
     ),
@@ -54,7 +57,7 @@ export function useSubaccountLeaderboardState({ contestId }: Params) {
       };
 
       return vertexClient.context.indexerClient.getLeaderboardParticipant({
-        contestId,
+        contestIds,
         subaccount,
       });
     },

@@ -6,7 +6,7 @@ import { useLatestPriceChange } from 'client/hooks/markets/useLatestPriceChange'
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSpotOrderFormContext } from 'client/pages/SpotTrading/context/SpotOrderFormContext';
-import { AnnotatedSpotMarket } from 'common/productMetadata/types';
+import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface SpotMarketInfo {

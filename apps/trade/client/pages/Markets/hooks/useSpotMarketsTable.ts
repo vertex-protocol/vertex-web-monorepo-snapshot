@@ -1,15 +1,15 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import {
-  getMarketPriceFormatSpecifier,
-  useEVMContext,
-} from '@vertex-protocol/react-client';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import {
+  SpotProductMetadata,
+  useVertexMetadataContext,
+} from '@vertex-protocol/metadata';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
-import { SpotProductMetadata } from 'common/productMetadata/types';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useMemo } from 'react';
 
 export interface SpotMarketTableItem {
@@ -30,7 +30,7 @@ export function useSpotMarketsTable() {
   const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
   const { data: latestMarketPricesData } = useAllMarketsLatestPrices();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
-  const { connectionStatus } = useEVMContext();
+  const isConnected = useIsConnected();
   const { getIsHiddenMarket, getIsNewMarket } = useVertexMetadataContext();
 
   const spotMarkets = allMarketData?.spotMarkets;
@@ -62,18 +62,18 @@ export function useSpotMarketsTable() {
         };
       });
   }, [
-    latestMarketPricesData,
-    marketMetricsData,
-    favoritedMarketIds,
     spotMarkets,
     getIsHiddenMarket,
+    marketMetricsData?.metricsByMarket,
+    latestMarketPricesData,
     getIsNewMarket,
+    favoritedMarketIds,
   ]);
 
   return {
     isLoading: isAllMarketDataLoading,
     spotProducts: mappedData,
     toggleIsFavoritedMarket,
-    disableFavoriteButton: connectionStatus.type !== 'connected',
+    disableFavoriteButton: !isConnected,
   };
 }

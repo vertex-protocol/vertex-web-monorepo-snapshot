@@ -4,19 +4,20 @@ import {
   ProductEngineType,
   TimeInSeconds,
 } from '@vertex-protocol/client';
-import {
-  getMarketPriceFormatSpecifier,
-  useEVMContext,
-} from '@vertex-protocol/react-client';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
 import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
 import { useAllProductsHistoricalSnapshots } from 'client/hooks/query/markets/useAllProductsHistoricalSnapshots';
 import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
+import { useTextSearch } from 'client/hooks/ui/useTextSearch';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
 import { safeDiv } from 'client/utils/safeDiv';
-import { PerpProductMetadata } from 'common/productMetadata/types';
+import {
+  PerpProductMetadata,
+  useVertexMetadataContext,
+} from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface FundingRateTableItem {
@@ -41,9 +42,9 @@ enum FundingPeriod {
   ONE_MONTH = TimeInSeconds.DAY * 30,
 }
 
-export function useFundingRateMarketsTable() {
+export function useFundingRateMarketsTable({ query }: { query: string }) {
   const { getIsHiddenMarket, getIsNewMarket } = useVertexMetadataContext();
-  const { connectionStatus } = useEVMContext();
+  const isConnected = useIsConnected();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
   const { data: allMarketData, isLoading: isAllMarketDataLoading } =
     useAllMarkets();
@@ -140,11 +141,17 @@ export function useFundingRateMarketsTable() {
     productSnapshotsData,
   ]);
 
+  const { results } = useTextSearch({
+    query,
+    items: fundingRateData,
+    getSearchString,
+  });
+
   return {
     isLoading: isAllMarketDataLoading,
-    fundingRateData,
+    fundingRateData: results,
     toggleIsFavoritedMarket,
-    disableFavoriteButton: connectionStatus.type !== 'connected',
+    disableFavoriteButton: !isConnected,
   };
 }
 
@@ -170,4 +177,8 @@ function getHistoricalAvgFundingRates(
   return getFundingRates(
     fundingRateOverPeriod.multipliedBy(TimeInSeconds.DAY / period),
   );
+}
+
+function getSearchString(item: FundingRateTableItem) {
+  return item.metadata.marketName;
 }

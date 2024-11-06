@@ -1,16 +1,16 @@
 import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
+import { ClosePositionErrorNotification } from 'client/modules/notifications/components/positions/ClosePositionErrorNotification';
+import { ClosePositionSuccessNotification } from 'client/modules/notifications/components/positions/ClosePositionSuccessNotification';
 import { SignaturePendingNotification } from 'client/modules/notifications/components/SignaturePendingNotification';
+import {
+  ClosePositionNotificationData,
+  NotificationDispatchContext,
+} from 'client/modules/notifications/types';
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import toast from 'react-hot-toast';
-import { ClosePositionErrorNotification } from '../components/positions/ClosePositionErrorNotification';
-import { ClosePositionSuccessNotification } from '../components/positions/ClosePositionSuccessNotification';
-import {
-  ClosePositionNotificationData,
-  NotificationDispatchContext,
-} from '../types';
 
 export async function handleClosePositionNotificationDispatch(
   closePositionNotificationData: ClosePositionNotificationData,

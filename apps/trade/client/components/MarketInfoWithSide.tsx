@@ -29,16 +29,16 @@ export function MarketInfoWithSide({
       {!!iconSrc && (
         <Image src={iconSrc} className="h-auto w-6" alt="Asset Icon" />
       )}
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-y-0.5">
         {!!marketName && (
-          <div className="text-text-primary text-xs leading-4">
+          <div className="text-text-primary text-xs font-medium leading-4">
             {marketName}
           </div>
         )}
         {!!amountForSide && (
           <div
             className={joinClassNames(
-              'text-3xs uppercase leading-3',
+              'text-2xs uppercase leading-3',
               signDependentValue(amountForSide, {
                 positive: 'text-positive',
                 negative: 'text-negative',

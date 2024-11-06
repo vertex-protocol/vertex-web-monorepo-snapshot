@@ -1,4 +1,6 @@
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import {
   addDecimals,
   BigDecimal,
@@ -11,7 +13,6 @@ import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useExecuteWithdrawCollateral } from 'client/hooks/execute/useExecuteWithdrawCollateral';
 import { useMaxWithdrawableAmount } from 'client/hooks/query/subaccount/useMaxWithdrawableAmount';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
@@ -20,24 +21,21 @@ import {
   useOnFractionSelectedHandler,
 } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useWithdrawalsAreDelayed } from 'client/modules/collateral/hooks/useWithdrawalsAreDelayed';
 import { useWithdrawFormData } from 'client/modules/collateral/withdraw/hooks/useWithdrawFormData';
+import {
+  WithdrawErrorType,
+  WithdrawFormValues,
+  WithdrawProduct,
+} from 'client/modules/collateral/withdraw/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { withdrawProductIdAtom } from 'client/store/collateralStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { roundToString } from 'client/utils/rounding';
-import { useAtom } from 'jotai';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
-import {
-  WithdrawErrorType,
-  WithdrawFormValues,
-  WithdrawProduct,
-} from '../types';
 
 interface UseWithdrawForm {
   // Form errors indicate when to show an input error state
@@ -54,7 +52,6 @@ interface UseWithdrawForm {
   selectedProductMaxWithdrawable: BigDecimal | undefined;
   buttonState: BaseActionButtonState;
   estimateStateTxs: SubaccountTx[];
-  disableAmountInputs: boolean;
   enableBorrows: boolean;
   suggestBorrowing: boolean;
   isProtocolTokenSelected: boolean;
@@ -67,26 +64,26 @@ interface UseWithdrawForm {
 
 export function useWithdrawForm({
   defaultEnableBorrows,
+  initialProductId,
 }: {
   defaultEnableBorrows: boolean;
+  initialProductId: number | undefined;
 }): UseWithdrawForm {
   const { protocolTokenMetadata } = useVertexMetadataContext();
   const { dispatchNotification } = useNotificationManagerContext();
-  const [withdrawProductIdAtomValue] = useAtom(withdrawProductIdAtom);
   const withdrawalsDelayed = useWithdrawalsAreDelayed();
-  const { hide } = useDialog();
 
   const executeWithdrawCollateral = useExecuteWithdrawCollateral();
 
   useRunWithDelayOnCondition({
     condition: executeWithdrawCollateral.isSuccess,
-    fn: hide,
+    fn: executeWithdrawCollateral.reset,
   });
 
   // Form state
   const useWithdrawForm = useForm<WithdrawFormValues>({
     defaultValues: {
-      productId: withdrawProductIdAtomValue,
+      productId: initialProductId ?? QUOTE_PRODUCT_ID,
       amount: '',
       amountSource: 'absolute',
       enableBorrows: defaultEnableBorrows,
@@ -127,9 +124,6 @@ export function useWithdrawForm({
   }, [maxWithdrawable, selectedProduct]);
 
   // Util derived data
-  const isCurrentlyBorrowingProduct =
-    selectedProduct?.displayedAssetAmount.isNegative();
-  const hasZeroProductBalance = selectedProduct?.displayedAssetAmount.isZero();
   const minInput = selectedProduct?.fee?.amount ?? BigDecimals.ZERO;
   const maxInput = decimalAdjustedMaxWithdrawableWithFee ?? BigDecimals.ZERO;
 
@@ -141,15 +135,6 @@ export function useWithdrawForm({
   const validPercentageAmount = useMemo(() => {
     return safeParseForData(percentageValidator, percentageAmountInput);
   }, [percentageAmountInput]);
-
-  // When the atoms change, update local form state
-  useEffect(
-    () => {
-      useWithdrawForm.setValue('productId', withdrawProductIdAtomValue);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [withdrawProductIdAtomValue],
-  );
 
   // Reset form on borrow toggle or product ID change
   useEffect(
@@ -190,20 +175,10 @@ export function useWithdrawForm({
       }
       // Then check max
       if (toBigDecimal(parsedInput).gt(maxInput)) {
-        const canBorrow = decimalAdjustedMaxWithdrawableWithFee?.gt(
-          selectedProduct.decimalAdjustedVertexBalance,
-        );
-        const suggestBorrow = !enableBorrows && canBorrow;
-        return suggestBorrow ? 'require_borrow' : 'max_exceeded';
+        return 'max_exceeded';
       }
     },
-    [
-      decimalAdjustedMaxWithdrawableWithFee,
-      enableBorrows,
-      maxInput,
-      minInput,
-      selectedProduct,
-    ],
+    [maxInput, minInput, selectedProduct],
   );
 
   const isProtocolTokenSelected =
@@ -221,20 +196,9 @@ export function useWithdrawForm({
       return 'vrtx_borrow';
     }
 
-    // Leaving this zero available error state because it prompts borrowing
-    // Disable borrow considerations
-    if (
-      !enableBorrows &&
-      (isCurrentlyBorrowingProduct || hasZeroProductBalance)
-    ) {
-      return 'require_borrow';
-    }
-
     return amountInputError;
   }, [
     selectedProduct,
-    isCurrentlyBorrowingProduct,
-    hasZeroProductBalance,
     enableBorrows,
     isProtocolTokenSelected,
     amountInputError,
@@ -369,9 +333,6 @@ export function useWithdrawForm({
     selectedProductMaxWithdrawable: decimalAdjustedMaxWithdrawableWithFee,
     buttonState,
     estimateStateTxs,
-    disableAmountInputs: Boolean(
-      (hasZeroProductBalance || isCurrentlyBorrowingProduct) && !enableBorrows,
-    ),
     enableBorrows,
     isProtocolTokenSelected,
     validateAmount,

@@ -16,7 +16,6 @@ export const Button = forwardRef(function Button(
   const {
     as: Component,
     className: baseClassName,
-    iconClassName,
     startIcon: baseStartIcon = null,
     endIcon = null,
     disabled = false,

@@ -11,7 +11,7 @@ import Image from 'next/image';
 
 import backgroundImage from 'public/blitz/blitz-background.png';
 import { ibmMono, pixelify } from 'utils/fonts';
-import '../styles/globals.css';
+import 'styles/globals.css';
 
 const queryClient = new QueryClient();
 

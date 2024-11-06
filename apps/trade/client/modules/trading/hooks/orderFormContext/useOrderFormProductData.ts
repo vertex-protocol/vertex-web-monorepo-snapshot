@@ -6,18 +6,24 @@ import { removeDecimals } from '@vertex-protocol/utils';
 import { roundToIncrement } from 'client/utils/rounding';
 import { useCallback, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { useMarket } from 'client/hooks/markets/useMarket';
 
 interface Params {
   form: UseFormReturn<BaseOrderFormValues>;
   currentMarket: StaticMarketData | undefined;
   latestMarketPrices: LatestMarketPrice | undefined;
+  productId: number | undefined;
 }
 
 export function useOrderFormProductData({
   form,
   currentMarket,
   latestMarketPrices,
+  productId,
 }: Params) {
+  const { data: marketData } = useMarket({ productId });
+  const totalLpSupply = marketData?.product.totalLpSupply;
+
   const orderSide = form.watch('side');
   const priceType = form.watch('priceType');
 
@@ -82,6 +88,7 @@ export function useOrderFormProductData({
     priceIncrement,
     sizeIncrement,
     minAssetOrderSize,
+    totalLpSupply,
     roundPrice,
     roundAmount,
   };

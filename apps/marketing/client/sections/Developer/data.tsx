@@ -1,24 +1,32 @@
+import { BracketsAngle } from '@phosphor-icons/react/dist/ssr/BracketsAngle';
+import { Lightning } from '@phosphor-icons/react/dist/ssr/Lightning';
+import { Planet } from '@phosphor-icons/react/dist/ssr/Planet';
 import { EXTERNAL_LINKS } from 'client/consts';
-import { BsCode } from 'react-icons/bs';
-import { MdBolt } from 'react-icons/md';
-import { SiPrisma } from 'react-icons/si';
+import { ReactNode } from 'react';
+
+interface IconProps {
+  size?: number;
+  className?: string;
+}
+
+export type IconType = (props: IconProps) => ReactNode;
 
 export const DEVELOPER_CARDS = [
   {
     title: 'Vertex API',
-    icon: MdBolt,
+    icon: (props: IconProps) => <Lightning weight="fill" {...props} />,
     content: 'Lightning fast API for automated traders.',
     href: EXTERNAL_LINKS.api,
   },
   {
     title: 'Vertex SDK',
-    icon: BsCode,
+    icon: BracketsAngle,
     content: 'Build products and trading experiences on top of Vertex.',
     href: EXTERNAL_LINKS.sdk,
   },
   {
     title: 'Ecosystem',
-    icon: SiPrisma,
+    icon: Planet,
     content: 'The future of finance.',
     href: '',
     comingSoon: true,

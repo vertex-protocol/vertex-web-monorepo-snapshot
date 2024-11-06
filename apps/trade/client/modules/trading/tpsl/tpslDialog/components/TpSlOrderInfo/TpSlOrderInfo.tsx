@@ -1,13 +1,12 @@
 import { TriggerOrderInfo } from '@vertex-protocol/client';
-import { TpSlOrderEstimate } from '../TpSlOrderEstimate';
-import { TpSlTriggerPriceInfo } from './TpSlTriggerPriceInfo';
-import { useTpSlOrderInfo } from '../../hooks/useTpSlOrderInfo';
+import { TpSlOrderEstimate } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlOrderEstimate';
+import { TpSlTriggerPriceInfo } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlOrderInfo/TpSlTriggerPriceInfo';
+import { useTpSlOrderInfo } from 'client/modules/trading/tpsl/tpslDialog/hooks/useTpSlOrderInfo';
 
 interface Props {
   productId: number;
-  relevantOrder: TriggerOrderInfo;
+  existingTpSlOrder: TriggerOrderInfo;
   priceFormatSpecifier: string;
-  sizeFormatSpecifier: string;
   isTakeProfit: boolean;
   marketName: string | undefined;
 }
@@ -15,14 +14,13 @@ interface Props {
 export function TpSlOrderInfo({
   productId,
   isTakeProfit,
-  relevantOrder,
+  existingTpSlOrder,
   priceFormatSpecifier,
-  sizeFormatSpecifier,
   marketName,
 }: Props) {
   const orderInfo = useTpSlOrderInfo({
     productId,
-    relevantOrder,
+    existingTpSlOrder,
   });
 
   return (
@@ -39,9 +37,7 @@ export function TpSlOrderInfo({
         triggerCriteriaPriceType={orderInfo.triggerCriteriaPriceType}
         estimatedPnlUsd={orderInfo.estimatedPnlUsd}
         triggerPrice={orderInfo.triggerPrice}
-        amountCloseSize={orderInfo.amountCloseSize}
         priceFormatSpecifier={priceFormatSpecifier}
-        sizeFormatSpecifier={sizeFormatSpecifier}
         marketName={marketName}
       />
     </div>

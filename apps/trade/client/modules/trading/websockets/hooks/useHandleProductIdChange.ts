@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { latestOrderFillsForProductQueryKey } from 'client/hooks/query/markets/useLatestOrderFillsForProduct';
@@ -23,7 +23,7 @@ export function useHandleProductIdChange({
   productId,
   sendMessage,
 }: Params) {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const queryClient = useQueryClient();
   const vertexClient = usePrimaryChainVertexClient();
 
@@ -34,10 +34,10 @@ export function useHandleProductIdChange({
 
     // When switching between products, the old query data is stale, so invalidate the relevant queries
     queryClient.invalidateQueries({
-      queryKey: marketLiquidityQueryKey(true, primaryChainId, productId),
+      queryKey: marketLiquidityQueryKey(true, primaryChainEnv, productId),
     });
     queryClient.invalidateQueries({
-      queryKey: latestOrderFillsForProductQueryKey(primaryChainId, productId),
+      queryKey: latestOrderFillsForProductQueryKey(primaryChainEnv, productId),
     });
 
     const bookDepthParams = getBookDepthSubscriptionParams(
@@ -89,7 +89,7 @@ export function useHandleProductIdChange({
     };
   }, [
     isActiveWebsocket,
-    primaryChainId,
+    primaryChainEnv,
     productId,
     queryClient,
     sendMessage,

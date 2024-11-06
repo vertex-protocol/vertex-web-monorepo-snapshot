@@ -1,3 +1,7 @@
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
@@ -9,8 +13,6 @@ import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/Def
 import { PORTFOLIO_CHART_TIMESPAN_METADATA } from 'client/pages/Portfolio/charts/consts';
 import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 
 interface PerpHeroHeaderProps {
@@ -77,8 +79,8 @@ function PerpPnl({
         )}
       >
         {signDependentValue(cumulativeTotalPerpPnl, {
-          positive: <Icons.MdArrowUpward size={14} />,
-          negative: <Icons.MdArrowDownward size={14} />,
+          positive: <Icons.ArrowUp size={14} />,
+          negative: <Icons.ArrowDown size={14} />,
           zero: undefined,
         })}
         <div className="flex items-center gap-x-1">

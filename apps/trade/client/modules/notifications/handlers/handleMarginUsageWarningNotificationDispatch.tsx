@@ -1,6 +1,6 @@
+import { MarginUsageWarningNotification } from 'client/modules/notifications/components/risk/MarginUsageWarningNotification';
 import { createToastId } from 'client/utils/createToastId';
 import { toast } from 'react-hot-toast';
-import { MarginUsageWarningNotification } from '../components/risk/MarginUsageWarningNotification';
 
 export function handleMarginUsageWarningNotificationDispatch() {
   const toastId = createToastId('marginUsageWarning');

@@ -1,12 +1,13 @@
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
+import { Divider } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/types';
-import { StakingClaimAndStakeChangeItems } from '../components/StakingClaimAndStakeChangeItems';
-import { StakingRadioGroup } from '../components/StakingRadioGroup';
-import { useClaimTradingRewardsDialog } from './useClaimTradingRewardsDialog';
+import { useClaimTradingRewardsDialog } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/useClaimTradingRewardsDialog';
+import { StakingClaimAndStakeChangeItems } from 'client/modules/rewards/dialogs/staking/components/StakingClaimAndStakeChangeItems';
+import { StakingRadioGroup } from 'client/modules/rewards/dialogs/staking/components/StakingRadioGroup';
 
 export function ClaimTradingRewardsDialog(
   params: ClaimTradingRewardsDialogParams,
@@ -62,11 +63,11 @@ export function ClaimTradingRewardsDialog(
   );
 
   return (
-    <BaseAppDialog onClose={onClose}>
-      <BaseDialog.Title onClose={onClose}>
+    <BaseAppDialog.Container onClose={onClose}>
+      <BaseAppDialog.Title onClose={onClose}>
         Claim Trading Rewards
-      </BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-6">
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <StakingRadioGroup.Root
           value={selectedRadioId}
           onValueChange={setSelectedRadioId}
@@ -88,14 +89,17 @@ export function ClaimTradingRewardsDialog(
             disabled={disableRadioButtons}
           />
         </StakingRadioGroup.Root>
-        <PrimaryButton
+        <ValidUserStatePrimaryButton
           isLoading={actionButtonState === 'loading'}
           disabled={actionButtonState === 'disabled'}
           onClick={onSubmit}
+          handledErrors={
+            HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+          }
         >
           {buttonStateContent}
-        </PrimaryButton>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+        </ValidUserStatePrimaryButton>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

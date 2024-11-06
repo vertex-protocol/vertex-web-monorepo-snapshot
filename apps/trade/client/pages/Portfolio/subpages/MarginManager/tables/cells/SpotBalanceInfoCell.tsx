@@ -27,7 +27,7 @@ export function SpotBalanceInfoCell({
     >
       <Image src={iconSrc} width={24} height={24} alt="Asset Icon" />
       <div className="flex flex-col gap-y-0.5">
-        {symbol}
+        <p className="font-medium">{symbol}</p>
         <div className="text-text-tertiary text-2xs">
           {signDependentValue(amount, {
             positive: 'Deposit',

@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
 import {
   TabIdentifiable,
   TabIdentifiableID,
   TabIdentifiableList,
-} from './types';
+} from 'client/hooks/ui/tabs/types';
+import { useCallback, useMemo, useState } from 'react';
 
 export function useTabs<
   TTab extends TabIdentifiable<TTabId>,

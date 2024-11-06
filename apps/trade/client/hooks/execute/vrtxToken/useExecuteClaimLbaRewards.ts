@@ -22,8 +22,7 @@ const REFETCH_QUERY_KEYS: string[][] = [
  */
 export function useExecuteClaimLbaRewards() {
   const mutationFn = useExecuteInValidContext(
-    useCallback(async (params: EmptyObject, context: ValidExecuteContext) => {
-      console.log('Claiming LBA Rewards', params);
+    useCallback(async (_: EmptyObject, context: ValidExecuteContext) => {
       return context.vertexClient.rewards.claimLbaRewards();
     }, []),
   );

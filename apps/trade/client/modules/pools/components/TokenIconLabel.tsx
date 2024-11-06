@@ -30,10 +30,10 @@ export function TokenIconLabel({
           width={tokenIconSize}
           height={tokenIconSize}
           alt={symbol ?? ''}
-          className="bg-surface-card ring-stroke rounded-full ring-2"
+          className="bg-surface-card border-stroke rounded-full border-2"
         />
       )}
-      <p>{symbol}</p>
+      <p className="font-medium">{symbol}</p>
     </div>
   );
 }

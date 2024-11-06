@@ -1,4 +1,3 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
 import { EdgeTileLink } from 'components/EdgeTileLink/EdgeTileLink';
 import { EdgeBgImage } from 'components/EdgeBgImage/EdgeBgImage';
 import { EdgeDescription } from 'components/EdgeDescription/EdgeDescription';

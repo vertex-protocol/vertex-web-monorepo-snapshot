@@ -2,7 +2,7 @@ import { CancelOrdersWithNotificationParams } from 'client/hooks/execute/cancelO
 import { useExecuteCancelOrders } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrders';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { useCallback } from 'react';
 
 export function useExecuteCancelOrdersWithNotification() {
@@ -20,7 +20,7 @@ export function useExecuteCancelOrdersWithNotification() {
           return;
         }
 
-        const { symbol, icon } = getBaseProductMetadata(
+        const { symbol, icon } = getSharedProductMetadata(
           marketStaticData.metadata,
         );
 

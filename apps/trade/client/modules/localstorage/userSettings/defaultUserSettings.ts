@@ -1,39 +1,42 @@
 import { SavedUserSettings } from 'client/modules/localstorage/userSettings/types/SavedUserSettings';
 import { DEFAULT_ORDER_SLIPPAGE } from 'client/modules/trading/defaultOrderSlippage';
-import { ProfileAvatar } from 'client/modules/userProfile/types';
 import { cloneDeep } from 'lodash';
-import { isValidProfileAvatar } from './userSettingValidators';
+import { settingsSchema } from 'client/modules/localstorage/userSettings/userSettingsSchema';
+import { validateOrReset } from 'client/modules/localstorage/utils/zodValidators';
 
 const DEFAULT_USER_SETTINGS: SavedUserSettings =
   Object.freeze<SavedUserSettings>({
+    favoriteMarketIds: [],
     navPins: ['accountValue'],
-    profile: {
-      avatar: {
-        type: 'default',
-      },
-      username: '',
+    portfolio: {
+      enabledOptionalHistoryTabIds: [],
     },
+    privacy: {
+      areAccountValuesPrivate: false,
+      isAddressPrivate: false,
+    },
+    profileBySubaccountKey: {},
+    selectedSubaccountNameByChainId: {},
+    signingPreferenceBySubaccountKey: {},
     trading: {
       consolePosition: 'right',
       leverageByProductId: {},
       orderbookTickSpacingMultiplierByProductId: {},
       showOrderbookTotalInQuote: false,
       spotLeverageEnabled: false,
-      marketSlippageFraction: 'auto',
       slippage: DEFAULT_ORDER_SLIPPAGE,
       enableTradingNotifications: true,
       enableTradingOrderLines: true,
       tpSlTriggerPriceType: 'oracle_price',
+      selectedFilterByTradingTableTab: {
+        positions: 'all',
+        balances: 'all',
+        openEngineOrders: 'all',
+        openTriggerOrders: 'all',
+        historicalTrades: 'all',
+        realizedPnlEvents: 'all',
+      },
     },
-    portfolio: {
-      enabledOptionalHistoryTabIds: [],
-    },
-    favoriteMarketIds: [],
-    privacy: {
-      areAccountValuesPrivate: false,
-      isAddressPrivate: false,
-    },
-    signingPreferenceBySubaccountKey: {},
   });
 
 /**
@@ -43,80 +46,110 @@ const DEFAULT_USER_SETTINGS: SavedUserSettings =
  *
  * This also guards against changes in the interface of `SavedUserSettings`. For example, if we remove a property from
  * the interface, then it's automatically cleaned up when the user uses the app again.
- *
- * @param currentSaved
  */
 export function getUserSettingsWithDefaults(
   currentSaved: Partial<SavedUserSettings> | undefined,
 ): SavedUserSettings {
-  const savedAvatar = currentSaved?.profile?.avatar;
-  const profileAvatar: ProfileAvatar = isValidProfileAvatar(savedAvatar)
-    ? savedAvatar
-    : DEFAULT_USER_SETTINGS.profile.avatar;
+  const portfolioSchema = settingsSchema.shape.portfolio;
+  const privacySchema = settingsSchema.shape.privacy;
+  const tradingSchema = settingsSchema.shape.trading;
 
   const withDefaults: SavedUserSettings = {
-    profile: {
-      avatar: profileAvatar,
-      username:
-        currentSaved?.profile?.username ??
-        DEFAULT_USER_SETTINGS.profile.username,
-    },
-    navPins: currentSaved?.navPins ?? DEFAULT_USER_SETTINGS.navPins,
-    trading: {
-      consolePosition:
-        currentSaved?.trading?.consolePosition ??
-        DEFAULT_USER_SETTINGS.trading.consolePosition,
-      enableTradingNotifications:
-        currentSaved?.trading?.enableTradingNotifications ??
-        DEFAULT_USER_SETTINGS.trading.enableTradingNotifications,
-      enableTradingOrderLines:
-        currentSaved?.trading?.enableTradingOrderLines ??
-        DEFAULT_USER_SETTINGS.trading.enableTradingOrderLines,
-      leverageByProductId: {
-        ...DEFAULT_USER_SETTINGS.trading.leverageByProductId,
-        ...currentSaved?.trading?.leverageByProductId,
-      },
-      orderbookTickSpacingMultiplierByProductId: {
-        ...DEFAULT_USER_SETTINGS.trading
-          .orderbookTickSpacingMultiplierByProductId,
-        ...currentSaved?.trading?.orderbookTickSpacingMultiplierByProductId,
-      },
-      showOrderbookTotalInQuote:
-        currentSaved?.trading?.showOrderbookTotalInQuote ??
-        DEFAULT_USER_SETTINGS.trading.showOrderbookTotalInQuote,
-      spotLeverageEnabled:
-        currentSaved?.trading?.spotLeverageEnabled ??
-        DEFAULT_USER_SETTINGS.trading.spotLeverageEnabled,
-      tpSlTriggerPriceType:
-        currentSaved?.trading?.tpSlTriggerPriceType ??
-        DEFAULT_USER_SETTINGS.trading.tpSlTriggerPriceType,
-      marketSlippageFraction:
-        currentSaved?.trading?.marketSlippageFraction ??
-        DEFAULT_USER_SETTINGS.trading.marketSlippageFraction,
-      slippage: {
-        ...DEFAULT_USER_SETTINGS.trading.slippage,
-        ...currentSaved?.trading?.slippage,
-      },
-    },
-    portfolio: {
-      enabledOptionalHistoryTabIds:
-        currentSaved?.portfolio?.enabledOptionalHistoryTabIds ??
-        DEFAULT_USER_SETTINGS.portfolio.enabledOptionalHistoryTabIds,
-    },
-    favoriteMarketIds:
-      currentSaved?.favoriteMarketIds ??
+    favoriteMarketIds: validateOrReset(
+      currentSaved?.favoriteMarketIds,
       DEFAULT_USER_SETTINGS.favoriteMarketIds,
-    privacy: {
-      areAccountValuesPrivate:
-        currentSaved?.privacy?.areAccountValuesPrivate ??
-        DEFAULT_USER_SETTINGS.privacy.areAccountValuesPrivate,
-      isAddressPrivate:
-        currentSaved?.privacy?.isAddressPrivate ??
-        DEFAULT_USER_SETTINGS.privacy.isAddressPrivate,
+      settingsSchema.shape.favoriteMarketIds,
+    ),
+    navPins: validateOrReset(
+      currentSaved?.navPins,
+      DEFAULT_USER_SETTINGS.navPins,
+      settingsSchema.shape.navPins,
+    ),
+    portfolio: {
+      enabledOptionalHistoryTabIds: validateOrReset(
+        currentSaved?.portfolio?.enabledOptionalHistoryTabIds,
+        DEFAULT_USER_SETTINGS.portfolio.enabledOptionalHistoryTabIds,
+        portfolioSchema.shape.enabledOptionalHistoryTabIds,
+      ),
     },
-    signingPreferenceBySubaccountKey: {
-      ...DEFAULT_USER_SETTINGS.signingPreferenceBySubaccountKey,
-      ...currentSaved?.signingPreferenceBySubaccountKey,
+    privacy: {
+      areAccountValuesPrivate: validateOrReset(
+        currentSaved?.privacy?.areAccountValuesPrivate,
+        DEFAULT_USER_SETTINGS.privacy.areAccountValuesPrivate,
+        privacySchema.shape.areAccountValuesPrivate,
+      ),
+      isAddressPrivate: validateOrReset(
+        currentSaved?.privacy?.isAddressPrivate,
+        DEFAULT_USER_SETTINGS.privacy.isAddressPrivate,
+        privacySchema.shape.isAddressPrivate,
+      ),
+    },
+    profileBySubaccountKey: validateOrReset(
+      currentSaved?.profileBySubaccountKey,
+      DEFAULT_USER_SETTINGS.profileBySubaccountKey,
+      settingsSchema.shape.profileBySubaccountKey,
+    ),
+    selectedSubaccountNameByChainId: validateOrReset(
+      currentSaved?.selectedSubaccountNameByChainId,
+      DEFAULT_USER_SETTINGS.selectedSubaccountNameByChainId,
+      settingsSchema.shape.selectedSubaccountNameByChainId,
+    ),
+    signingPreferenceBySubaccountKey: validateOrReset(
+      currentSaved?.signingPreferenceBySubaccountKey,
+      DEFAULT_USER_SETTINGS.signingPreferenceBySubaccountKey,
+      settingsSchema.shape.signingPreferenceBySubaccountKey,
+    ),
+    trading: {
+      consolePosition: validateOrReset(
+        currentSaved?.trading?.consolePosition,
+        DEFAULT_USER_SETTINGS.trading.consolePosition,
+        tradingSchema.shape.consolePosition,
+      ),
+      leverageByProductId: validateOrReset(
+        currentSaved?.trading?.leverageByProductId,
+        DEFAULT_USER_SETTINGS.trading.leverageByProductId,
+        tradingSchema.shape.leverageByProductId,
+      ),
+      orderbookTickSpacingMultiplierByProductId: validateOrReset(
+        currentSaved?.trading?.orderbookTickSpacingMultiplierByProductId,
+        DEFAULT_USER_SETTINGS.trading.orderbookTickSpacingMultiplierByProductId,
+        tradingSchema.shape.orderbookTickSpacingMultiplierByProductId,
+      ),
+      showOrderbookTotalInQuote: validateOrReset(
+        currentSaved?.trading?.showOrderbookTotalInQuote,
+        DEFAULT_USER_SETTINGS.trading.showOrderbookTotalInQuote,
+        tradingSchema.shape.showOrderbookTotalInQuote,
+      ),
+      spotLeverageEnabled: validateOrReset(
+        currentSaved?.trading?.spotLeverageEnabled,
+        DEFAULT_USER_SETTINGS.trading.spotLeverageEnabled,
+        tradingSchema.shape.spotLeverageEnabled,
+      ),
+      slippage: validateOrReset(
+        currentSaved?.trading?.slippage,
+        DEFAULT_USER_SETTINGS.trading.slippage,
+        tradingSchema.shape.slippage,
+      ),
+      enableTradingNotifications: validateOrReset(
+        currentSaved?.trading?.enableTradingNotifications,
+        DEFAULT_USER_SETTINGS.trading.enableTradingNotifications,
+        tradingSchema.shape.enableTradingNotifications,
+      ),
+      enableTradingOrderLines: validateOrReset(
+        currentSaved?.trading?.enableTradingOrderLines,
+        DEFAULT_USER_SETTINGS.trading.enableTradingOrderLines,
+        tradingSchema.shape.enableTradingOrderLines,
+      ),
+      tpSlTriggerPriceType: validateOrReset(
+        currentSaved?.trading?.tpSlTriggerPriceType,
+        DEFAULT_USER_SETTINGS.trading.tpSlTriggerPriceType,
+        tradingSchema.shape.tpSlTriggerPriceType,
+      ),
+      selectedFilterByTradingTableTab: validateOrReset(
+        currentSaved?.trading?.selectedFilterByTradingTableTab,
+        DEFAULT_USER_SETTINGS.trading.selectedFilterByTradingTableTab,
+        tradingSchema.shape.selectedFilterByTradingTableTab,
+      ),
     },
   };
 

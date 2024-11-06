@@ -37,7 +37,7 @@ export function useRefetchQueries(
 export function useRefetchQueriesOnContractTransaction(
   queryKeys: unknown[][],
   txResponse: TxResponse | undefined,
-  afterMillis: number = 2000,
+  afterMillis: number = 2500,
 ) {
   const queryClient = useQueryClient();
 

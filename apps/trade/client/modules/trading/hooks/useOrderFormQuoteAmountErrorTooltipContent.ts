@@ -1,5 +1,5 @@
+import { OrderFormError } from 'client/modules/trading/types';
 import { useMemo } from 'react';
-import { OrderFormError } from '../types';
 
 export function useOrderFormQuoteAmountErrorTooltipContent({
   formError,

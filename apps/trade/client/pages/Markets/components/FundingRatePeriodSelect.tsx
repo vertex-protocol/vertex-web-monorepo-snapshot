@@ -1,6 +1,5 @@
-import { Select } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
-import { useFundingRatePeriodSelect } from '../hooks/useFundingRatePeriodSelect';
+import { Select, UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { useFundingRatePeriodSelect } from 'client/pages/Markets/hooks/useFundingRatePeriodSelect';
 
 export function FundingRatePeriodSelect() {
   const {

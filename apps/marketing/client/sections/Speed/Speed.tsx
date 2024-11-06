@@ -5,23 +5,18 @@ import {
   SECTION_IDS,
 } from 'client/consts';
 import { IncrementMarker } from 'client/sections/Speed/components/IncrementMarker';
-import { SpeedBar } from 'client/sections/Speed/components/SpeedBar';
-import { useSpeedSection } from 'client/sections/Speed/hooks/useSpeedSection';
 import { range } from 'lodash';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import logo from 'assets/logo-light.svg';
 import { joinClassNames } from '@vertex-protocol/web-common';
+import { SpeedBars } from 'client/sections/Speed/components/SpeedBars';
+
+const INCREMENT_TO_STRING: { [key: number]: string } = {
+  0: '1s',
+  1: '5s',
+  2: '10s',
+  3: '30s',
+};
 
 export function Speed() {
-  const { containerRef, isInView, incrementToString } = useSpeedSection();
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    if (inView) return;
-    setInView(isInView);
-  }, [isInView, inView]);
-
   return (
     <section
       className={joinClassNames(
@@ -36,55 +31,17 @@ export function Speed() {
         title="Speed"
         heading="Lightning fast"
         content="Order matching execution of ~30 milliseconds. Vertex is as powerful as your favorite CEX."
-        contentClassNames="w-3/4 md:w-3/5 "
+        contentClassNames="w-3/4 md:w-3/5"
         className="items-start px-0 pb-6 md:pb-0"
       />
-      <div
-        className={joinClassNames(
-          'flex w-full flex-col items-start justify-center gap-y-9',
-          'text-black-500 font-bold',
-          'md:gap-y-4',
-          'xl:text-xl',
-        )}
-        ref={containerRef}
-      >
-        <SpeedBar
-          label="Ethereum DEX (13.23s)"
-          className="w-[77%] delay-100 duration-[1.5s]"
-          inView={inView}
-        />
-        <SpeedBar
-          label="L2 DEX (1.31s)"
-          className="w-[27%] delay-150 duration-1000"
-          inView={inView}
-        />
-        <SpeedBar
-          label="Popular CEX (1-50ms)"
-          className="w-[2%] delay-300 duration-200"
-          inView={inView}
-        />
-        <SpeedBar
-          label={
-            <div className="flex items-center gap-x-2 leading-8">
-              <Image
-                src={logo}
-                alt="Vertex"
-                className={joinClassNames(
-                  '-mt-0.5 flex h-full justify-start delay-300 duration-500 md:scale-90',
-                  inView ? 'opacity-100' : 'opacity-0',
-                )}
-              />{' '}
-              (10-30ms)
-            </div>
-          }
-          className="bg-speedGradient w-[1%] delay-[400ms] duration-200"
-          inView={inView}
-        />
-      </div>
+      <SpeedBars />
       <div className="w-full">
         <div className="text-black-500 flex w-full items-center justify-end">
           {range(4).map((_, index) => (
-            <IncrementMarker increment={incrementToString[index]} key={index} />
+            <IncrementMarker
+              increment={INCREMENT_TO_STRING[index]}
+              key={index}
+            />
           ))}
         </div>
         <div className="font-dmSans text-white-700 text-2xs pt-6 font-normal italic lg:text-xs">

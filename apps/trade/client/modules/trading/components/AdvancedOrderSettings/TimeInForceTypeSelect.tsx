@@ -1,6 +1,6 @@
-import { Icons, Select, useSelect } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
-import { TimeInForceType } from '../../types';
+import { Select, useSelect } from '@vertex-protocol/web-ui';
+import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { TimeInForceType } from 'client/modules/trading/types';
 
 interface Props {
   timeInForceType: TimeInForceType;
@@ -39,10 +39,8 @@ export function TimeInForceTypeSelect({
     open,
     onValueChange,
     value,
-    defaultOpen,
     onOpenChange,
   } = useSelect({
-    defaultOpen: false,
     selectedValue: timeInForceType,
     onSelectedValueChange: (option) => setTimeInForceType(option),
     options: TIME_IN_FORCE_OPTIONS,
@@ -53,7 +51,6 @@ export function TimeInForceTypeSelect({
       open={open}
       onValueChange={onValueChange}
       value={value}
-      defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
       <Select.Trigger endIcon={<UpDownChevronIcon open={open} />}>
@@ -61,11 +58,7 @@ export function TimeInForceTypeSelect({
       </Select.Trigger>
       <Select.Options className="w-28">
         {selectOptions.map(({ label, value }) => (
-          <Select.Option
-            key={value}
-            value={value}
-            selectionEndIcon={<Icons.MdCheck />}
-          >
+          <Select.Option key={value} value={value}>
             {label}
           </Select.Option>
         ))}

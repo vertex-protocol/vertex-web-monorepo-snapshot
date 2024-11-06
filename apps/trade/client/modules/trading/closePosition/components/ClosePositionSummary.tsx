@@ -1,9 +1,9 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { formatNumber } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
+  formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
 import { signDependentValue } from 'client/utils/signDependentValue';
 
 interface ClosePositionSummaryProps {
@@ -30,7 +30,7 @@ export function ClosePositionSummary({
   });
 
   return (
-    <div className="text-text-secondary text-xs">
+    <div className="text-xs">
       You will close&nbsp;
       <span className="text-text-primary">
         {formattedAmountCloseSize}

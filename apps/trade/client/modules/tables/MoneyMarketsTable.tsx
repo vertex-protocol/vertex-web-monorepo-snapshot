@@ -1,3 +1,5 @@
+'use client';
+
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import {
   CustomNumberFormatSpecifier,
@@ -69,7 +71,7 @@ export function MoneyMarketsTable() {
             context.getValue<MoneyMarketsTableItem['metadata']>();
           return (
             <MarketProductInfoCell
-              name={metadata.token.symbol}
+              symbol={metadata.token.symbol}
               iconSrc={metadata.token.icon.asset}
               isNewMarket={context.row.original.isNewMarket}
             />

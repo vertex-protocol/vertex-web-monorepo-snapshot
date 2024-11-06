@@ -47,7 +47,7 @@ export function LiquidationNotification({
 
   const heading = (
     <div className="text-negative flex items-center gap-x-2">
-      <Icons.BsExclamationTriangle size={TOAST_HEADER_ICON_SIZE} />
+      <Icons.Warning size={TOAST_HEADER_ICON_SIZE} />
       Liquidation Event
     </div>
   );

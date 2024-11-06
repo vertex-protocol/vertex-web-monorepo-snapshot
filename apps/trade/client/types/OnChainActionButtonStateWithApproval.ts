@@ -1,4 +1,4 @@
-import { BaseActionButtonState } from './BaseActionButtonState';
+import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 
 export type ApprovalButtonState =
   | 'approve_loading'

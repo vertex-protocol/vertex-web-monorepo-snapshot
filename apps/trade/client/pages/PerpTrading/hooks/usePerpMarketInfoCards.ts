@@ -1,6 +1,6 @@
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { useLatestPriceChange } from 'client/hooks/markets/useLatestPriceChange';
@@ -15,7 +15,7 @@ import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
 import {
   AnnotatedPerpMarket,
   PerpProductMetadata,
-} from 'common/productMetadata/types';
+} from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface PerpMarketInfo {
@@ -46,7 +46,7 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
   const productId = staticMarketData?.productId;
 
   const { data: perpMarket } = useMarket<AnnotatedPerpMarket>({ productId });
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { millisToNextFunding } = useNextFundingTime();
   const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
   const { data: fundingRatesData } = useAllMarkets24HrFundingRates();
@@ -81,7 +81,8 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
       ),
       metadata: perpMarket.metadata,
       marketPrice: latestOrderFillPrice?.price,
-      marketPriceValueUsd: latestOrderFillPrice?.price.multipliedBy(quotePrice),
+      marketPriceValueUsd:
+        latestOrderFillPrice?.price.multipliedBy(primaryQuotePriceUsd),
       oraclePrice,
       indexPrice,
       priceChange24hr: marketPriceChange,
@@ -98,7 +99,7 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
     fundingRatesData,
     latestOraclePricesData,
     latestPerpPricesData,
-    quotePrice,
+    primaryQuotePriceUsd,
     latestPriceChange,
   ]);
 

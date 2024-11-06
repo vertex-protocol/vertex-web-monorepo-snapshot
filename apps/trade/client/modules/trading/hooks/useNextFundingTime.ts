@@ -1,6 +1,9 @@
 import { now } from 'lodash';
-import { endOfHour } from 'date-fns';
+import { secondsToMilliseconds } from 'date-fns';
 import { useCallback, useEffect, useState } from 'react';
+import { TimeInSeconds } from '@vertex-protocol/client';
+
+const ONE_HOUR_MILLIS = secondsToMilliseconds(TimeInSeconds.HOUR);
 
 /**
  * A countdown hook that returns the number of milliseconds until the next
@@ -15,7 +18,12 @@ export function useNextFundingTime(): {
 
   const updateCountdown = useCallback(() => {
     const nowTime = now();
-    const endOfCurrentHourTime = endOfHour(nowTime).getTime();
+
+    // we do not use date-fns' endOfHour here as it always returns in local timezone
+    // we do not want a local timezone as we calculate difference to end of the hour in UTC time
+    const startOfCurrentHourTime = nowTime - (nowTime % ONE_HOUR_MILLIS);
+    const endOfCurrentHourTime = startOfCurrentHourTime + ONE_HOUR_MILLIS - 1;
+
     setMillisToNextFunding(endOfCurrentHourTime - nowTime);
     setNextFundingTimeMillis(endOfCurrentHourTime);
   }, []);

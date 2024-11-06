@@ -1,6 +1,5 @@
 import * as Accordion from '@radix-ui/react-accordion';
-import { Button, Step } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
+import { Button, Step, UpDownChevronIcon } from '@vertex-protocol/web-ui';
 
 interface Props {
   open: boolean;

@@ -1,18 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { IStaking__factory } from '@vertex-protocol/client';
 import {
+  createQueryKey,
+  QueryDisabledError,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
+import {
   BigDecimal,
   sumBigDecimalBy,
   toBigDecimal,
 } from '@vertex-protocol/utils';
-import {
-  createQueryKey,
-  QueryDisabledError,
-  useEVMContext,
-  useIsChainType,
-  usePrimaryChainPublicClient,
-  usePrimaryChainVertexClient,
-} from '@vertex-protocol/react-client';
+import { useProtocolTokenQueryClients } from 'client/hooks/query/useProtocolTokenQueryClients';
 import { ZeroAddress } from 'ethers';
 import { Address } from 'viem';
 
@@ -40,14 +38,13 @@ export interface AccountStakingState {
  * A multicall query that returns a summary of an address' state in the staking contract
  */
 export function useAccountStakingState() {
-  const { isArb } = useIsChainType();
-  const vertexClient = usePrimaryChainVertexClient();
-  const publicClient = usePrimaryChainPublicClient();
   const {
     connectionStatus: { address },
   } = useEVMContext();
+  const { publicClient, vertexClient } = useProtocolTokenQueryClients();
 
-  const disabled = !vertexClient || !publicClient || !isArb;
+  const disabled = !vertexClient || !publicClient;
+
   const addressForQuery = address ?? ZeroAddress;
 
   const queryFn = async (): Promise<AccountStakingState> => {

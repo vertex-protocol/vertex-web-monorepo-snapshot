@@ -1,7 +1,13 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { PerpProductMetadata } from 'common/productMetadata/types';
+import { PerpProductMetadata } from '@vertex-protocol/metadata';
 
-export type TriggerCriteriaPriceType = 'oracle_price' | 'last_price';
+export const TRIGGER_CRITERIA_PRICE_TYPES = [
+  'oracle_price',
+  'last_price',
+] as const;
+
+export type TriggerCriteriaPriceType =
+  (typeof TRIGGER_CRITERIA_PRICE_TYPES)[number];
 
 export interface TpSlOrderInfo {
   productId: number;
@@ -24,4 +30,5 @@ export interface TpSlPositionData {
   fastOraclePrice: BigDecimal;
   sizeIncrement: BigDecimal | undefined;
   priceIncrement: BigDecimal | undefined;
+  longWeightInitial: BigDecimal | undefined;
 }

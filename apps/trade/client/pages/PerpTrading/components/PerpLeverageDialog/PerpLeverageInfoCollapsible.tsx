@@ -1,4 +1,4 @@
-import { DialogInfoCollapsible } from 'client/components/DialogInfoCollapsible';
+import { CollapsibleInfoCard } from 'client/components/CollapsibleInfoCard';
 import { DiscList } from '@vertex-protocol/web-ui';
 
 export function PerpLeverageInfoCollapsible() {
@@ -20,7 +20,7 @@ export function PerpLeverageInfoCollapsible() {
   );
 
   return (
-    <DialogInfoCollapsible
+    <CollapsibleInfoCard
       title="More Info"
       collapsibleContent={collapsibleContent}
     />

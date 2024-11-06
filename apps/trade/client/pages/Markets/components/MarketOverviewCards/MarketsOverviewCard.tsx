@@ -15,7 +15,6 @@ export function MarketsOverviewCard({ title, value, className }: Props) {
         'flex min-w-[180px] flex-col justify-center gap-y-4 p-4',
         className,
       )}
-      insetRing
     >
       <span className="text-text-tertiary text-sm">{title}</span>
       <span className="text-text-primary text-3xl">{value}</span>

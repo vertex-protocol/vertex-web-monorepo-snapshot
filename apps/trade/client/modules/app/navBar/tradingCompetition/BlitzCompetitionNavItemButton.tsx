@@ -3,12 +3,12 @@ import {
   AppNavItemButtonProps,
 } from 'client/modules/app/navBar/components/AppNavItemButton';
 import { useGetIsActiveRoute } from 'client/modules/app/navBar/hooks/useGetIsActiveRoute';
-import { TRADING_COMPETITION_CONFIGS_BY_KEY } from 'client/pages/TradingCompetition/configs/configs';
+import { BLITZ_TRADING_COMPETITION_ROUTES } from 'client/pages/TradingCompetition/configs/blitz/routes';
 import { openMobileNavAtom } from 'client/store/navigationStore';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 
-const ROUTE = TRADING_COMPETITION_CONFIGS_BY_KEY['blitz'].route;
+const ROUTE = BLITZ_TRADING_COMPETITION_ROUTES.base;
 
 type Props = Pick<AppNavItemButtonProps, 'withMobilePadding'>;
 
@@ -25,7 +25,7 @@ export function BlitzCompetitionNavItemButton({ withMobilePadding }: Props) {
       className="text-text-primary"
       onClick={() => setOpenMobileNav(false)}
     >
-      📈 Trading Comp
+      🏆 Trading Comp
     </AppNavItemButton>
   );
 }

@@ -2,13 +2,13 @@ import { TabsList, Root as TabsRoot, TabsTrigger } from '@radix-ui/react-tabs';
 import { BalanceSide } from '@vertex-protocol/contracts';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { TradeTabButton, TradeTabButtonProps } from '@vertex-protocol/web-ui';
+import { BaseOrderFormValues } from 'client/modules/trading/types';
 import { useFormContext } from 'react-hook-form';
-import { BaseOrderFormValues } from '../types';
 
 function OrderSideTabButton({
   side,
   active,
-  ref,
+  ref: _ref,
   ...rest
 }: TradeTabButtonProps) {
   return (

@@ -1,7 +1,4 @@
-import {
-  useEVMContext,
-  useVertexClientContext,
-} from '@vertex-protocol/react-client';
+import { useVertexClientContext } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
 import { useSavedSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSavedSubaccountSigningPreference';
@@ -14,12 +11,12 @@ import { useEffect, useRef } from 'react';
  * - Update local state given backend state on initial load
  */
 export function useLinkedSignerSync() {
-  const { primaryChainEnv } = useEVMContext();
   const { setLinkedSigner, vertexClientsByChainEnv } = useVertexClientContext();
   const {
     signingPreference: { current: localSigningPreference },
     currentSubaccount,
   } = useSubaccountContext();
+  const { chainEnv } = currentSubaccount;
 
   // Sync vertex client & local state
   const didLoadVertexClients = !!vertexClientsByChainEnv;
@@ -37,19 +34,14 @@ export function useLinkedSignerSync() {
     }
 
     console.debug(
-      `[useLinkedSignerSync] Updating linked signer on Vertex Client for ${primaryChainEnv}`,
+      `[useLinkedSignerSync] Updating linked signer on Vertex Client for ${chainEnv}`,
       linkedSigner?.address ?? null,
     );
     setLinkedSigner({
       signer: linkedSigner,
-      chainEnv: primaryChainEnv,
+      chainEnv,
     });
-  }, [
-    didLoadVertexClients,
-    localSigningPreference,
-    primaryChainEnv,
-    setLinkedSigner,
-  ]);
+  }, [didLoadVertexClients, localSigningPreference, chainEnv, setLinkedSigner]);
 
   // Consume the saved state directly for a BE <> Local sync, this is because we don't have access to the private key
   // if backend is configured as sign-once but local has no saved setting
@@ -57,7 +49,7 @@ export function useLinkedSignerSync() {
     signingPreference: savedSigningPreference,
     didLoadPersistedValue: didLoadSigningPreferencePersistedValue,
     saveSigningPreference,
-  } = useSavedSubaccountSigningPreference(currentSubaccount);
+  } = useSavedSubaccountSigningPreference(currentSubaccount.name);
 
   const { data: backendLinkedSigner } = useSubaccountLinkedSigner();
 

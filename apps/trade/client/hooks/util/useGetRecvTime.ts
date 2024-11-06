@@ -8,8 +8,8 @@ import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
  * against cases where the client's time is not synced.
  */
 export function useGetRecvTime() {
-  const { data: serverTime } = useServerTime();
-  const serverTimeRef = useSyncedRef(serverTime);
+  const { data } = useServerTime();
+  const serverTimeRef = useSyncedRef(data?.serverTimeMillis);
 
   // Compute recvTime via server time, but if the query fails (i.e. no data), default back to client time
   return useCallback(async () => {

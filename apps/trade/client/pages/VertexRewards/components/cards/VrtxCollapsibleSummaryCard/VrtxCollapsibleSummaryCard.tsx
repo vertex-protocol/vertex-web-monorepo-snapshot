@@ -1,36 +1,43 @@
+'use client';
+
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
+import {
+  COMMON_TRANSPARENCY_COLORS,
+  Divider,
+  PrimaryButton,
+} from '@vertex-protocol/web-ui';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
-import { startCase } from 'lodash';
-import { RewardsSummaryCard } from '../RewardsSummaryCard';
-import { EpochRewardsTable } from './EpochRewardsTable/EpochRewardsTable';
-import { useVrtxSummaryCard } from './useVrtxSummaryCard';
-import { VrtxClaimDeadlineWarning } from './VtrxClaimDeadlineWarning';
+import { RewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/RewardsSummaryCard';
+import { EpochRewardsTable } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/EpochRewardsTable';
+import { useVrtxSummaryCard } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/useVrtxSummaryCard';
+import { VrtxClaimDeadlineWarning } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/VrtxClaimDeadlineWarning';
 
 export function VrtxCollapsibleSummaryCard() {
   const {
-    isOnProtocolTokenChain,
+    isOnProtocolTokenChainEnv,
+    protocolTokenChainName,
     protocolTokenMetadata,
     unclaimedLastEpochRewards,
     disableClaimButton,
-    disableSwitchChainButton,
-    setPrimaryChainEnv,
+    switchToProtocolTokenChainEnv,
     epochEndTimeMillis,
     currentEpochNumber,
     estimatedNewRewards,
     totalRewardsEarned,
-    vrtxToken,
     nextEpochNumber,
     lastCompletedEpoch,
     showClaimWarning,
   } = useVrtxSummaryCard();
   const { show } = useDialog();
 
+  const vrtxTokenSymbol = protocolTokenMetadata.token.symbol;
   const epochLabel = `Epoch ${formatNumber(lastCompletedEpoch?.epochNumber, {
     formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
   })}`;
@@ -39,13 +46,13 @@ export function VrtxCollapsibleSummaryCard() {
     return (
       <>
         {/*Total earned from on-chain data is accurate only on the protocol token chain*/}
-        {isOnProtocolTokenChain && (
+        {isOnProtocolTokenChainEnv && (
           <ValueWithLabel.Vertical
             label="Total Earned"
             value={totalRewardsEarned}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
             tooltip={{ id: 'rewardsTotalRewardsEarned' }}
-            valueEndElement={vrtxToken?.symbol}
+            valueEndElement={vrtxTokenSymbol}
           />
         )}
         <ValueWithLabel.Vertical
@@ -53,7 +60,7 @@ export function VrtxCollapsibleSummaryCard() {
           value={estimatedNewRewards}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           tooltip={{ id: 'rewardsEstimatedNewRewards' }}
-          valueEndElement={vrtxToken?.symbol}
+          valueEndElement={vrtxTokenSymbol}
         />
       </>
     );
@@ -67,24 +74,25 @@ export function VrtxCollapsibleSummaryCard() {
           You have 30 days to claim rewards after an epoch is complete.
         </p>
       </RewardsSummaryCard.CollapsibleTitle>
-      <EpochRewardsTable isOnProtocolTokenChain={isOnProtocolTokenChain} />
+      <EpochRewardsTable
+        isOnProtocolTokenChainEnv={isOnProtocolTokenChainEnv}
+      />
     </>
   );
 
-  const actionMetric = isOnProtocolTokenChain ? (
+  const actionMetric = isOnProtocolTokenChainEnv ? (
     <ValueWithLabel.Vertical
       label={`Available to Claim (${epochLabel})`}
       value={unclaimedLastEpochRewards}
       numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
       tooltip={{ id: 'rewardsAvailableToClaim' }}
-      valueEndElement={vrtxToken?.symbol}
+      valueEndElement={vrtxTokenSymbol}
     />
   ) : null;
 
-  const protocolTokenChainName = startCase(protocolTokenMetadata.chain.name);
-  const action = isOnProtocolTokenChain ? (
+  const action = isOnProtocolTokenChainEnv ? (
     <RewardsSummaryCard.ActionWithHelperText helperText="Rewards are claimable a few days after each epoch ends. Unclaimed rewards are burned 30 days after the epoch ends.">
-      <PrimaryButton
+      <ValidUserStatePrimaryButton
         onClick={() => {
           if (!lastCompletedEpoch || !unclaimedLastEpochRewards) {
             return;
@@ -98,20 +106,18 @@ export function VrtxCollapsibleSummaryCard() {
           });
         }}
         disabled={disableClaimButton}
+        handledErrors={
+          HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+        }
       >
         Claim {epochLabel} Rewards
-      </PrimaryButton>
+      </ValidUserStatePrimaryButton>
     </RewardsSummaryCard.ActionWithHelperText>
   ) : (
     <RewardsSummaryCard.ActionWithHelperText
       helperText={`Earned rewards can be viewed and claimed on ${protocolTokenChainName}`}
     >
-      <PrimaryButton
-        onClick={() => {
-          setPrimaryChainEnv(protocolTokenMetadata.chainEnv);
-        }}
-        disabled={disableSwitchChainButton}
-      >
+      <PrimaryButton onClick={switchToProtocolTokenChainEnv}>
         Switch to {protocolTokenChainName}
       </PrimaryButton>
     </RewardsSummaryCard.ActionWithHelperText>
@@ -119,8 +125,8 @@ export function VrtxCollapsibleSummaryCard() {
 
   return (
     <RewardsSummaryCard.Container
-      className="to-surface-card from-overlay-accent/20 ring-accent bg-gradient-to-r"
-      collapsibleTriggerClassName="bg-overlay-accent/20"
+      className="to-surface-card from-overlay-accent/20 border-accent bg-gradient-to-r"
+      collapsibleTriggerClassName={COMMON_TRANSPARENCY_COLORS.bgAccent}
       collapsibleContent={collapsibleContent}
     >
       <RewardsSummaryCard.Content

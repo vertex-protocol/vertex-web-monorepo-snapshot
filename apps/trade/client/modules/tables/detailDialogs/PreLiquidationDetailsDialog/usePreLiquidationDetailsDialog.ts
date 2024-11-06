@@ -21,7 +21,7 @@ import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePri
 import { useSubaccountIndexerSnapshotsAtTimes } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshotsAtTimes';
 import { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
 import { calcIndexerSummaryUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { millisecondsToSeconds } from 'date-fns';
 import { first, get } from 'lodash';
 import { useMemo } from 'react';
@@ -58,7 +58,7 @@ interface UsePreLiquidationDetailsDialog {
 export function usePreLiquidationDetailsDialog({
   liquidationTimestampMillis,
 }: PreLiquidationDetailsDialogParams) {
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const {
     data: allMarketsStaticData,
     isLoading: isLoadingMarketData,
@@ -99,7 +99,7 @@ export function usePreLiquidationDetailsDialog({
           : get(allMarketsStaticData.all, productId, undefined);
       if (!marketData) return;
 
-      const marketMetadata = getBaseProductMetadata(marketData.metadata);
+      const marketMetadata = getSharedProductMetadata(marketData.metadata);
       const balanceAmount = removeDecimals(state.postBalance.amount);
       const oraclePrice = state.market.product.oraclePrice;
       const priceFormatSpecifier = getMarketPriceFormatSpecifier(
@@ -131,8 +131,8 @@ export function usePreLiquidationDetailsDialog({
 
         spotBalances.push({
           ...commonBalanceProperties,
-          balanceValueUsd: balanceValue.multipliedBy(quotePriceUsd),
-          lpBalanceValueUsd: lpBalanceValue.multipliedBy(quotePriceUsd),
+          balanceValueUsd: balanceValue.multipliedBy(primaryQuotePriceUsd),
+          lpBalanceValueUsd: lpBalanceValue.multipliedBy(primaryQuotePriceUsd),
         });
       } else {
         const unrealizedPnl = calcIndexerSummaryUnrealizedPnl(balance);
@@ -144,7 +144,7 @@ export function usePreLiquidationDetailsDialog({
         perpBalances.push({
           ...commonBalanceProperties,
           unrealizedPnlUsd:
-            removeDecimals(unrealizedPnl).multipliedBy(quotePriceUsd),
+            removeDecimals(unrealizedPnl).multipliedBy(primaryQuotePriceUsd),
           unsettledQuote: removeDecimals(unsettledQuote),
           sizeFormatSpecifier: getMarketSizeFormatSpecifier(
             marketData.sizeIncrement,
@@ -157,7 +157,7 @@ export function usePreLiquidationDetailsDialog({
       spotBalances,
       perpBalances,
     };
-  }, [allMarketsStaticData, quotePriceUsd, snapshot]);
+  }, [allMarketsStaticData, primaryQuotePriceUsd, snapshot]);
 
   const rawJsonData = useMemo(() => {
     if (!snapshots) return;

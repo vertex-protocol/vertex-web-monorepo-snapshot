@@ -1,6 +1,6 @@
 import { ErrorPanel } from 'client/components/ErrorPanel';
-import { OrderFormError } from '../types';
 import { TriggerOrderEnableOneClickTradingInfo } from 'client/modules/trading/components/TriggerOrderEnableOneClickTradingInfo';
+import { OrderFormError } from 'client/modules/trading/types';
 
 interface Props {
   formError: OrderFormError | undefined;

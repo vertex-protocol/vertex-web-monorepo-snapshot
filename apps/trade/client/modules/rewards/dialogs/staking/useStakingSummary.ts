@@ -1,6 +1,9 @@
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/client';
+import {
+  AnnotatedSpotMarket,
+  useVertexMetadataContext,
+} from '@vertex-protocol/metadata';
 import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { useAccountStakingState } from 'client/hooks/query/vrtxToken/useAccountStakingState';
 import { useStakingState } from 'client/hooks/query/vrtxToken/useStakingState';
@@ -10,8 +13,7 @@ import {
   calcStakingAprRange,
   calcStakingScoreRange,
   calcTimeOfMaxStakingScore,
-} from 'client/utils/calcs/stakingCalcs';
-import { AnnotatedSpotMarket } from 'common/productMetadata/types';
+} from 'client/utils/calcs/stakingV1Calcs';
 import { now } from 'lodash';
 import { useMemo } from 'react';
 

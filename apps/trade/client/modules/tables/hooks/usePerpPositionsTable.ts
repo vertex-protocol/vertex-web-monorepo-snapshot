@@ -5,7 +5,7 @@ import {
   getMarketSizeFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import {

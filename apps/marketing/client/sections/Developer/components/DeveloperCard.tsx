@@ -1,10 +1,10 @@
+import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr/ArrowUpRight';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { GradientButton } from 'client/components/Button/GradientButton';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
+import { IconType } from 'client/sections/Developer/data';
 import Link from 'next/link';
 import { ReactNode } from 'react';
-import { IconType } from 'react-icons';
-import { MdArrowUpward } from 'react-icons/md';
 
 interface Props {
   icon: IconType;
@@ -73,8 +73,9 @@ function Header({
         </GradientButton>
       );
     }
-    <MdArrowUpward className="text-black-500 rotate-45" size={28} />;
+    return <ArrowUpRight className="text-black-500" size={24} />;
   })();
+
   return (
     <div className="flex items-center justify-between px-3 pt-3 lg:px-4 lg:pt-4">
       <div className="flex items-center justify-between gap-x-3 text-lg leading-8 md:text-2xl">

@@ -10,6 +10,11 @@ interface Params {
   isSellOrder: boolean;
   marketProductId: number | undefined;
   selectedRepayProduct: RepayConvertProduct | undefined;
+  allowAnyOrderSizeIncrement: boolean;
+  roundAmount: (
+    amount: BigDecimal,
+    roundingMode?: BigDecimal.RoundingMode,
+  ) => BigDecimal;
 }
 
 export function useRepayConvertMaxRepaySizes({
@@ -17,6 +22,8 @@ export function useRepayConvertMaxRepaySizes({
   isSellOrder,
   marketProductId,
   selectedRepayProduct,
+  allowAnyOrderSizeIncrement,
+  roundAmount,
 }: Params) {
   const maxOrderSizeParams = useMemo((): UseMaxOrderSizeParams | undefined => {
     if (!executionConversionPrice || !marketProductId) {
@@ -40,36 +47,67 @@ export function useRepayConvertMaxRepaySizes({
     if (!executionConversionPrice || !maxAssetOrderSize) {
       return;
     }
+
     if (isSellOrder) {
       // This means we're repaying quote, so we need to convert asset -> quote
-      return maxAssetOrderSize.multipliedBy(executionConversionPrice);
+      const convertedMaxAssetOrderSize = maxAssetOrderSize.multipliedBy(
+        executionConversionPrice,
+      );
+
+      return allowAnyOrderSizeIncrement
+        ? convertedMaxAssetOrderSize
+        : roundAmount(convertedMaxAssetOrderSize);
     }
-    return maxAssetOrderSize;
-  }, [executionConversionPrice, isSellOrder, maxAssetOrderSize]);
+
+    return allowAnyOrderSizeIncrement
+      ? maxAssetOrderSize
+      : roundAmount(maxAssetOrderSize);
+  }, [
+    executionConversionPrice,
+    isSellOrder,
+    maxAssetOrderSize,
+    allowAnyOrderSizeIncrement,
+    roundAmount,
+  ]);
 
   // The max repay size is the minimum of the amount borrowed & the max order size
   const maxRepaySize = useMemo(() => {
     if (!selectedRepayProduct) {
       return maxRepaySizeIgnoringAmountBorrowed;
     }
+
     if (!maxRepaySizeIgnoringAmountBorrowed) {
       return;
     }
+
+    // Never exceed max order size.
+    const roundedMaxRepaySizeIgnoringAmountBorrowed = allowAnyOrderSizeIncrement
+      ? roundToDecimalPlaces(
+          maxRepaySizeIgnoringAmountBorrowed,
+          6,
+          BigDecimal.ROUND_DOWN,
+        )
+      : roundAmount(maxRepaySizeIgnoringAmountBorrowed);
+
+    // Ensure fully repaying the amount borrowed.
+    const roundedAmountBorrowed = allowAnyOrderSizeIncrement
+      ? roundToDecimalPlaces(
+          selectedRepayProduct.amountBorrowed,
+          6,
+          BigDecimal.ROUND_UP,
+        )
+      : roundAmount(selectedRepayProduct.amountBorrowed, BigDecimal.ROUND_UP);
+
     return BigDecimal.min(
-      // Never exceed max order size
-      roundToDecimalPlaces(
-        maxRepaySizeIgnoringAmountBorrowed,
-        6,
-        BigDecimal.ROUND_DOWN,
-      ),
-      // Ensure fully repaying the amount borrowed
-      roundToDecimalPlaces(
-        selectedRepayProduct.amountBorrowed,
-        6,
-        BigDecimal.ROUND_UP,
-      ),
+      roundedMaxRepaySizeIgnoringAmountBorrowed,
+      roundedAmountBorrowed,
     );
-  }, [maxRepaySizeIgnoringAmountBorrowed, selectedRepayProduct]);
+  }, [
+    maxRepaySizeIgnoringAmountBorrowed,
+    roundAmount,
+    allowAnyOrderSizeIncrement,
+    selectedRepayProduct,
+  ]);
 
   return {
     maxRepaySizeIgnoringAmountBorrowed,

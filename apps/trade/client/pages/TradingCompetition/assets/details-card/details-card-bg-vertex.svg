@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="122.478 193.278 469.95 610.102" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="b" x1="219.198" x2="526.198" y1="399.698" y2="420.698" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16161D" stop-opacity="0"/>
+      <stop offset="1" stop-color="#16161D"/>
+    </linearGradient>
+    <linearGradient id="c" x1="613.097" x2="503.192" y1="434.92" y2="291.178" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#050505"/>
+      <stop offset="1" stop-color="#2D2931"/>
+    </linearGradient>
+    <radialGradient id="d" cx="0" cy="0" r="1" gradientTransform="rotate(107.168 -17.238 346.461) scale(250.054 304.302)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.002" stop-color="#ADA7FB"/>
+      <stop offset="0.161" stop-color="#ADA7FB" stop-opacity=".7"/>
+      <stop offset="0.311" stop-color="#ADA7FB" stop-opacity=".2"/>
+      <stop offset="0.341" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="e" cx="0" cy="0" r="1" gradientTransform="matrix(274.5083 104.26605 -100.7735 265.31324 299.698 515.698)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ADA7FB"/>
+      <stop offset="1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="f" cx="0" cy="0" r="1" gradientTransform="matrix(-196.734055, -230.794235, 299.696289, -255.467667, 658.91153, 689.65129)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ADA7FB"/>
+      <stop offset="1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g filter="url(#a)" transform="matrix(0.9659258262890684, -0.25881904510252074, 0.25881904510252074, 0.9659258262890684, -109.6477275076735, 156.5408330865289)">
+    <circle cx="539.699" cy="494.699" r="254.501" fill="#0A0A0D"/>
+    <circle cx="539.699" cy="494.699" r="254.501" fill="url(#b)"/>
+    <circle cx="539.699" cy="494.699" r="254.001" stroke="url(#c)"/>
+    <circle cx="539.699" cy="494.699" r="254.001" stroke="url(#d)"/>
+    <circle cx="539.699" cy="494.699" r="254.001" stroke="url(#e)" stroke-opacity=".9"/>
+    <circle cx="536.591" cy="506.291" r="254.001" stroke="url(#f)"/>
+  </g>
+</svg>

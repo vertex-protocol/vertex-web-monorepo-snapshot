@@ -1,17 +1,17 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
+import { RangeSlider } from 'client/modules/trading/components/RangeSlider';
 import { TradeInput } from 'client/modules/trading/components/TradeInput';
+import { useOrderFormInputs } from 'client/modules/trading/hooks/useOrderFormInputs';
 import {
   OrderFormError,
   OrderFormValidators,
 } from 'client/modules/trading/types';
-import { useOrderFormInputs } from '../hooks/useOrderFormInputs';
-import { RangeSlider } from './RangeSlider';
 
 interface Props extends WithClassnames {
   formError: OrderFormError | undefined;
@@ -44,7 +44,6 @@ export function OrderFormInputs({
     showPriceInput,
     priceType,
     percentageAmount,
-    showStopMarketInfoTooltip,
     errorTooltips,
   } = useOrderFormInputs({
     formError,
@@ -54,16 +53,13 @@ export function OrderFormInputs({
   });
 
   return (
-    <div className={joinClassNames('flex flex-col gap-y-2', className)}>
+    <div className={joinClassNames('flex flex-col gap-y-3', className)}>
       <div className="flex flex-col gap-y-2">
         {showPriceInput && (
           <TradeInput
             {...priceInputRegister}
             id={priceInputRegister.name}
             label={priceType === 'limit' ? 'Price' : 'Trigger'}
-            definitionId={
-              showStopMarketInfoTooltip ? 'tradingStopMarketInfo' : undefined
-            }
             step={inputIncrements.price?.toString()}
             symbol={undefined}
             error={errorTooltips.price}
@@ -78,16 +74,16 @@ export function OrderFormInputs({
           error={errorTooltips.assetAmount}
           onFocus={() => onFocusAmountSource('asset')}
         />
+        <TradeInput
+          {...quoteAmountInputRegister}
+          id={quoteAmountInputRegister.name}
+          label="Total"
+          symbol={quoteSymbol}
+          step={0.01}
+          error={errorTooltips.quoteAmount}
+          onFocus={() => onFocusAmountSource('quote')}
+        />
       </div>
-      <TradeInput
-        {...quoteAmountInputRegister}
-        id={quoteAmountInputRegister.name}
-        label="Total"
-        symbol={quoteSymbol}
-        step={0.01}
-        error={errorTooltips.quoteAmount}
-        onFocus={() => onFocusAmountSource('quote')}
-      />
       <RangeSlider
         className="pr-5"
         min={0}

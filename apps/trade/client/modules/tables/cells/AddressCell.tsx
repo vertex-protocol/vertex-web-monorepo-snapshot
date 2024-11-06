@@ -1,8 +1,8 @@
+import { truncateAddress } from '@vertex-protocol/web-common';
 import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { getTruncatedAddress } from 'client/utils/getTruncatedAddress';
 
 interface Props extends TableCellProps {
   address: string;
@@ -10,8 +10,6 @@ interface Props extends TableCellProps {
 
 export function AddressCell({ address, className }: Props) {
   return (
-    <TableCell className={className}>
-      {getTruncatedAddress(address, 4)}
-    </TableCell>
+    <TableCell className={className}>{truncateAddress(address)}</TableCell>
   );
 }

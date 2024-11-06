@@ -1,6 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { useHealthGroups } from 'client/hooks/query/markets/useHealthGroups';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import {
   calcSpreadBasisAmount,
   calcSpreadHealthIncrease,
@@ -12,7 +12,7 @@ import {
   AnnotatedPerpBalanceWithProduct,
   AnnotatedSpotBalanceWithProduct,
   SpotProductMetadata,
-} from 'common/productMetadata/types';
+} from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface SpreadBalanceItem {
@@ -30,7 +30,7 @@ export function useSpreadBalances() {
     data: summaryData,
     isError: summaryError,
     isLoading: summaryLoading,
-  } = useCurrentSubaccountSummary();
+  } = useSubaccountSummary();
 
   const mappedData: SpreadBalanceItem[] | undefined = useMemo(() => {
     if (!healthGroups) {

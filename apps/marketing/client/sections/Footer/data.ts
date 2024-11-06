@@ -27,8 +27,8 @@ export const FOOTER_LINKS: FooterLinkProps[] = [
     label: 'Discord',
   },
   {
-    href: EXTERNAL_LINKS.twitter,
-    label: 'Twitter',
+    href: EXTERNAL_LINKS.x,
+    label: 'X',
   },
   {
     href: EXTERNAL_LINKS.blog,

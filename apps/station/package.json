@@ -1,0 +1,44 @@
+{
+  "name": "station",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3009",
+    "typecheck": "tsc --noEmit",
+    "build": "next build",
+    "start": "next start --port 3009",
+    "lint": "next lint --dir ."
+  },
+  "dependencies": {
+    "@next/third-parties": "*",
+    "@radix-ui/react-popover": "*",
+    "@tanstack/react-query": "*",
+    "@uiw/codemirror-extensions-basic-setup": "^4.23.3",
+    "@uiw/codemirror-extensions-langs": "^4.23.3",
+    "@uiw/react-codemirror": "^4.23.3",
+    "@vertex-protocol/client": "*",
+    "@vertex-protocol/react-client": "*",
+    "@vertex-protocol/web-common": "*",
+    "@vertex-protocol/web-ui": "*",
+    "date-fns": "*",
+    "jotai": "*",
+    "lodash": "*",
+    "next": "*",
+    "react": "*",
+    "react-dom": "*",
+    "sharp": "*"
+  },
+  "devDependencies": {
+    "@tanstack/react-query-devtools": "*",
+    "@types/lodash": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "autoprefixer": "*",
+    "eslint": "*",
+    "eslint-config-custom": "*",
+    "postcss": "*",
+    "tailwindcss": "*",
+    "ts-config": "*",
+    "typescript": "*"
+  }
+}

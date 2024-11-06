@@ -1,23 +1,22 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import { GetIndexerSubaccountSettlementEventsParams } from '@vertex-protocol/indexer-client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 
 export function subaccountPaginatedSettlementEventsQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   subaccountOwner?: string,
   subaccountName?: string,
   pageSize?: number,
 ) {
   return createQueryKey(
     'subaccountPaginatedSettlementEvents',
-    chainId,
+    chainEnv,
     subaccountOwner,
     subaccountName,
     pageSize,
@@ -35,15 +34,18 @@ interface Params {
 export function useSubaccountPaginatedSettlementEvents({
   pageSize = 10,
 }: Params) {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const {
-    currentSubaccount: { address: subaccountOwner, name: subaccountName },
+    currentSubaccount: {
+      address: subaccountOwner,
+      name: subaccountName,
+      chainEnv,
+    },
   } = useSubaccountContext();
   const disabled = !vertexClient || !subaccountOwner;
   return useInfiniteQuery({
     queryKey: subaccountPaginatedSettlementEventsQueryKey(
-      primaryChainId,
+      chainEnv,
       subaccountOwner,
       subaccountName,
       pageSize,

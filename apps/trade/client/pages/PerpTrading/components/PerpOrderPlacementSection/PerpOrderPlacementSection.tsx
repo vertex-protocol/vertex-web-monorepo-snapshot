@@ -1,90 +1,122 @@
-import { WithClassnames } from '@vertex-protocol/web-common';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { Divider } from '@vertex-protocol/web-ui';
 import { Form } from 'client/components/Form';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { AdvancedOrderSettings } from 'client/modules/trading/components/AdvancedOrderSettings/AdvancedOrderSettings';
 import { OrderFormInputs } from 'client/modules/trading/components/OrderFormInputs';
 import { OrderFormSpreadWarningPanel } from 'client/modules/trading/components/OrderFormSpreadWarningPanel';
-import { OrderFormTpSlWarningPanel } from 'client/modules/trading/components/OrderFormTpSlWarningPanel';
 import { OrderSideTabs } from 'client/modules/trading/components/OrderSideTabs';
+import { OrderSubmitButton } from 'client/modules/trading/components/OrderSubmitButton';
 import { PriceTypeTabs } from 'client/modules/trading/components/PriceTypeTabs';
 import { StopMarketOrderDismissible } from 'client/modules/trading/components/StopMarketOrderDismissible';
 import { StopOrderTriggerPriceInfo } from 'client/modules/trading/components/StopOrderTriggerPriceInfo';
 import { TradingErrorPanel } from 'client/modules/trading/components/TradingErrorPanel';
 import { useIsHighSpread } from 'client/modules/trading/hooks/useIsHighSpread';
-import { useHasTpSlOrders } from 'client/modules/trading/tpsl/hooks/useHasTpSlOrders';
 import { PerpLeverageSelector } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpLeverageSelector';
-import { PerpOrderSubmitWithSummary } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpOrderSubmitWithSummary';
-import { PerpTradingFormAccountInfo } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpTradingFormAccountInfo';
+import { PerpOrderSummary } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpOrderSummary';
 import { usePerpOrderFormContext } from 'client/pages/PerpTrading/context/PerpOrderFormContext';
+import { usePerpTradingFormTradingAccountMetrics } from 'client/pages/PerpTrading/hooks/usePerpTradingFormTradingAccountMetrics';
+import { PerpTpSlSection } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpTpSlSection/PerpTpSlSection';
+import { PerpTradeDegenRewardsDismissible } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpTradeDegenRewardsDismissible';
 
 export function PerpOrderPlacementSection({ className }: WithClassnames) {
-  const { show } = useDialog();
-
   const {
-    form,
     onSubmit,
     validators,
     formError,
     currentMarket,
     inputConversionPrice,
-    buttonState,
     inputIncrements,
     minAssetOrderSize,
+    buttonState,
+    validatedAssetAmountInput,
+    executionConversionPrice,
+    maxAssetOrderSize,
+    enableMaxSizeLogic,
+    orderSide,
+    priceType,
   } = usePerpOrderFormContext();
   const {
     primaryQuoteToken: { symbol: primaryQuoteSymbol },
   } = useVertexMetadataContext();
 
-  const marketSymbol = currentMarket?.metadata.symbol;
   const isHighSpread = useIsHighSpread(currentMarket?.productId);
-  const hasTpSlOrders = useHasTpSlOrders(currentMarket?.productId);
-  const showTpSlWarning = hasTpSlOrders && buttonState === 'idle';
 
-  const priceType = form.watch('priceType');
-  const orderSide = form.watch('side');
+  const tradingAccountMetrics = usePerpTradingFormTradingAccountMetrics({
+    currentMarket,
+    orderSide,
+    validatedAssetAmountInput,
+    executionConversionPrice,
+    maxAssetOrderSize,
+    enableMaxSizeLogic,
+  });
 
   const isStopOrder = priceType === 'stop';
+  const isMarketOrder = priceType === 'market';
+  const marketSymbol = currentMarket?.metadata.symbol;
 
   return (
-    <div className={className}>
-      <Form onSubmit={onSubmit} className="flex flex-col gap-y-2.5 p-2 pb-4">
-        <PerpLeverageSelector
-          productId={currentMarket?.productId}
-          className="px-4"
+    <Form
+      onSubmit={onSubmit}
+      className={joinClassNames('flex flex-col gap-y-2.5 p-3', className)}
+    >
+      <PerpTradeDegenRewardsDismissible productId={currentMarket?.productId} />
+      <PerpLeverageSelector
+        productId={currentMarket?.productId}
+        className="px-4"
+      />
+      <OrderSideTabs />
+      <PriceTypeTabs />
+      <div className="flex flex-1 flex-col gap-y-3">
+        <StopMarketOrderDismissible isStopOrder={isStopOrder} />
+        <OrderFormInputs
+          formError={formError}
+          validators={validators}
+          baseSymbol={marketSymbol}
+          inputIncrements={inputIncrements}
+          minAssetOrderSize={minAssetOrderSize}
+          quoteSymbol={primaryQuoteSymbol}
         />
-        <OrderSideTabs />
-        <PriceTypeTabs />
-        <div className="flex flex-col gap-y-5">
-          <StopMarketOrderDismissible isStopOrder={isStopOrder} />
-          <OrderFormInputs
+        <ValueWithLabel.Horizontal
+          label="Margin Req. / Avail."
+          sizeVariant="xs"
+          valueContent={
+            <>
+              {formatNumber(tradingAccountMetrics.derivedMetrics.costUsd, {
+                formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+              })}
+              <span className="text-text-tertiary"> / </span>
+              {formatNumber(
+                tradingAccountMetrics.derivedMetrics.fundsAvailableUsd,
+                {
+                  formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+                },
+              )}
+            </>
+          }
+        />
+        {isMarketOrder && <PerpTpSlSection />}
+        {!isStopOrder && (
+          <AdvancedOrderSettings
+            priceType={priceType}
             formError={formError}
             validators={validators}
-            baseSymbol={marketSymbol}
-            inputIncrements={inputIncrements}
-            minAssetOrderSize={minAssetOrderSize}
-            quoteSymbol={primaryQuoteSymbol}
           />
-          {!isStopOrder && (
-            <AdvancedOrderSettings
-              priceType={priceType}
-              formError={formError}
-              validators={validators}
-            />
-          )}
-          <PerpTradingFormAccountInfo />
-          <TradingErrorPanel formError={formError} />
-          {isHighSpread && <OrderFormSpreadWarningPanel />}
-          {showTpSlWarning && <OrderFormTpSlWarningPanel />}
-          {/*Extra padding to separate summary section a bit more*/}
-          <div className="flex flex-col gap-y-2.5 pt-5">
-            <PerpOrderSubmitWithSummary
-              onSlippageAdjust={() => {
-                show({
-                  type: 'account_center',
-                  params: { initialShowSettingsContent: true },
-                });
-              }}
+        )}
+        <TradingErrorPanel formError={formError} />
+        {isHighSpread && <OrderFormSpreadWarningPanel />}
+        <div className="mt-auto flex flex-col gap-y-5">
+          <div className="flex flex-col gap-y-1.5">
+            <OrderSubmitButton
+              isPerp
+              marketSymbol={marketSymbol}
+              state={buttonState}
+              side={orderSide}
             />
             <StopOrderTriggerPriceInfo
               priceIncrement={currentMarket?.priceIncrement}
@@ -93,8 +125,14 @@ export function PerpOrderPlacementSection({ className }: WithClassnames) {
               orderSide={orderSide}
             />
           </div>
+          {/*Margin for extra space between the divider and order summary*/}
+          <Divider className="mb-3" />
+          <PerpOrderSummary
+            currentState={tradingAccountMetrics.currentState}
+            estimatedState={tradingAccountMetrics.estimatedState}
+          />
         </div>
-      </Form>
-    </div>
+      </div>
+    </Form>
   );
 }

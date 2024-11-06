@@ -3,11 +3,13 @@ import {
   formatNumber,
 } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
+import { Divider } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useArbRewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/ArbRewardsSummaryCard/useArbRewardsSummaryCard';
-import { RewardsSummaryCard } from '../RewardsSummaryCard';
+import { RewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/RewardsSummaryCard';
 
 export function ArbRewardsSummaryCard() {
   const {
@@ -24,7 +26,7 @@ export function ArbRewardsSummaryCard() {
     isClaiming,
     arbToken,
     roundDurationInWeeks,
-    isArbRewardsCompleted,
+    isCompleted,
   } = useArbRewardsSummaryCard();
 
   const claimButtonLabel = (() => {
@@ -61,7 +63,7 @@ export function ArbRewardsSummaryCard() {
           valueEndElement={arbToken.symbol}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
-        {!isArbRewardsCompleted && (
+        {!isCompleted && (
           <ValueWithLabel.Vertical
             label="Est. New"
             tooltip={{ id: 'rewardsFoundationEstNew' }}
@@ -78,7 +80,7 @@ export function ArbRewardsSummaryCard() {
     <RewardsSummaryCard.Container
       className={joinClassNames(
         'to-surface-card bg-gradient-to-r from-[#3A80D2]/30',
-        'ring-[#3A80D2]',
+        'border-[#3A80D2]',
       )}
     >
       <RewardsSummaryCard.Content
@@ -101,18 +103,21 @@ export function ArbRewardsSummaryCard() {
         }
         action={
           <RewardsSummaryCard.ActionWithHelperText helperText="Rewards are claimable a few days after each week ends.">
-            <PrimaryButton
+            <ValidUserStatePrimaryButton
               onClick={onClaimClick}
               isLoading={isClaiming}
               disabled={disableClaimButton}
+              handledErrors={
+                HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+              }
             >
               {claimButtonLabel}
-            </PrimaryButton>
+            </ValidUserStatePrimaryButton>
           </RewardsSummaryCard.ActionWithHelperText>
         }
         footer={
-          isArbRewardsCompleted ? (
-            <div className="text-sm">Arb Incentives Completed</div>
+          isCompleted ? (
+            <div className="text-sm">ARB Incentives Completed</div>
           ) : (
             <RewardsSummaryCard.FooterCountdown
               label={

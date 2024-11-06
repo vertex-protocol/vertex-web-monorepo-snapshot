@@ -1,10 +1,9 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import { GetIndexerSubaccountInterestFundingPaymentsParams } from '@vertex-protocol/indexer-client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -16,7 +15,7 @@ interface Params {
 }
 
 export function subaccountPaginatedPaymentEventsQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   subaccountOwner?: string,
   subaccountName?: string,
   productIds?: number[],
@@ -24,7 +23,7 @@ export function subaccountPaginatedPaymentEventsQueryKey(
 ) {
   return createQueryKey(
     'subaccountPaginatedPaymentEvents',
-    chainId,
+    chainEnv,
     subaccountOwner,
     subaccountName,
     productIds,
@@ -50,17 +49,20 @@ export function useSubaccountPaginatedPaymentEvents({
   pageSize = 10,
   productIds,
 }: Params) {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const {
-    currentSubaccount: { address: subaccountOwner, name: subaccountName },
+    currentSubaccount: {
+      address: subaccountOwner,
+      name: subaccountName,
+      chainEnv,
+    },
   } = useSubaccountContext();
 
   const disabled = !vertexClient || !subaccountOwner || !productIds?.length;
 
   return useInfiniteQuery({
     queryKey: subaccountPaginatedPaymentEventsQueryKey(
-      primaryChainId,
+      chainEnv,
       subaccountOwner,
       subaccountName,
       productIds,

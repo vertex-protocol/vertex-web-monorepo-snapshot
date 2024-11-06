@@ -1,11 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { IERC20__factory } from '@vertex-protocol/client';
+import { ChainEnv, IERC20__factory } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
   useEVMContext,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { toBigDecimal } from '@vertex-protocol/utils';
@@ -17,14 +15,14 @@ interface Params {
 }
 
 export function tokenAllowanceQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   accountAddress?: string,
   spenderAddress?: string,
   tokenAddress?: string,
 ) {
   return createQueryKey(
     'tokenAllowance',
-    chainId,
+    chainEnv,
     accountAddress?.toLowerCase(),
     spenderAddress?.toLowerCase(),
     tokenAddress?.toLowerCase(),
@@ -32,10 +30,10 @@ export function tokenAllowanceQueryKey(
 }
 
 export function useTokenAllowance({ tokenAddress, spenderAddress }: Params) {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const {
     connectionStatus: { address },
+    primaryChainEnv,
   } = useEVMContext();
 
   const disabled = !vertexClient || !spenderAddress || !tokenAddress;
@@ -43,7 +41,7 @@ export function useTokenAllowance({ tokenAddress, spenderAddress }: Params) {
 
   return useQuery({
     queryKey: tokenAllowanceQueryKey(
-      primaryChainId,
+      primaryChainEnv,
       accountAddress,
       spenderAddress,
       tokenAddress,

@@ -1,5 +1,4 @@
 import { PrimaryButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
@@ -30,17 +29,17 @@ export function EditOrderViaChartDialog({
   }, [shouldShow, hide, onClose]);
 
   return (
-    <BaseAppDialog onClose={dismiss}>
-      <BaseDialog.Title onClose={dismiss}>
+    <BaseAppDialog.Container onClose={dismiss}>
+      <BaseAppDialog.Title onClose={dismiss}>
         Modifying Order Price
-      </BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-6 text-sm">
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         You can modify orders by dragging order lines on the chart. This results
         in the cancellation of the original order and placement of a new one.
         The order modification may fail if the price of the new order is
         invalid.
         <PrimaryButton onClick={dismiss}>OK</PrimaryButton>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

@@ -1,11 +1,11 @@
+import { BigDecimals } from '@vertex-protocol/client';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { AllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { StaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { AllLatestMarketPricesData } from 'client/hooks/query/markets/types';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
-import { MarketSwitcherItem } from './types';
-import { BigDecimals } from '@vertex-protocol/client';
+import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
 import { bigDecimalComparator } from 'client/utils/comparators';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 
 export function getMappedMarket(
   market: StaticMarketData,
@@ -16,8 +16,8 @@ export function getMappedMarket(
   href: string,
 ): MarketSwitcherItem {
   const { productId, metadata, priceIncrement, type: productType } = market;
-  const { marketName: name } = metadata;
-  const { symbol, icon } = getBaseProductMetadata(metadata);
+  const { marketCategories: categories } = metadata;
+  const { marketName, symbol, icon } = getSharedProductMetadata(metadata);
   const currentPrice = latestMarketPrices?.[productId]?.safeAverage;
   const priceChangeFrac =
     marketMetricsData?.metricsByMarket[productId]?.pastDayPriceChangeFrac;
@@ -29,8 +29,9 @@ export function getMappedMarket(
     market: {
       productType,
       symbol,
-      name,
+      marketName,
       icon,
+      categories,
     },
     price: {
       currentPrice,
@@ -46,7 +47,7 @@ export function getMappedMarket(
 }
 
 export function getSearchString(item: MarketSwitcherItem) {
-  return item.market.name;
+  return item.market.marketName;
 }
 
 export function volumeComparator(a: MarketSwitcherItem, b: MarketSwitcherItem) {

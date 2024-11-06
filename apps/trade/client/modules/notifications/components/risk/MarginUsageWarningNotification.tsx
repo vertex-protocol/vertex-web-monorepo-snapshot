@@ -33,10 +33,7 @@ export function MarginUsageWarningNotification({
 
   const headerContent = (
     <div className="flex items-center gap-x-2">
-      <Icons.BsExclamationTriangle
-        className="text-accent"
-        size={TOAST_HEADER_ICON_SIZE}
-      />
+      <Icons.Warning className="text-accent" size={TOAST_HEADER_ICON_SIZE} />
       <span>Margin Usage - 100%</span>
     </div>
   );

@@ -8,8 +8,8 @@ import {
   useIsChainType,
   usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { Token } from 'common/productMetadata/types';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { Token } from '@vertex-protocol/metadata';
 import { ZeroAddress } from 'ethers';
 import { Address } from 'viem';
 

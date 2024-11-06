@@ -1,6 +1,6 @@
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
-import { UseFormReturn } from 'react-hook-form';
 import { useCallback } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 
 export type OnFractionSelectedHandler = (fraction: number) => void;
 
@@ -20,11 +20,10 @@ export function useOnFractionSelectedHandler<
 
   return useCallback(
     (fraction: number) => {
-      if (!fraction) {
-        return;
+      if (fraction != null && isFinite(fraction)) {
+        typedSetValue('amountSource', 'percentage');
+        typedSetValue('percentageAmount', fraction);
       }
-      typedSetValue('amountSource', 'percentage');
-      typedSetValue('percentageAmount', fraction);
     },
     [typedSetValue],
   );

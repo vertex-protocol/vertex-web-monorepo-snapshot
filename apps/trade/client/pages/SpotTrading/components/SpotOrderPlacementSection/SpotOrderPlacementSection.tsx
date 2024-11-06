@@ -1,28 +1,30 @@
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { Divider } from '@vertex-protocol/web-ui';
+import { Form } from 'client/components/Form';
 import { AdvancedOrderSettings } from 'client/modules/trading/components/AdvancedOrderSettings/AdvancedOrderSettings';
 import { OrderFormInputs } from 'client/modules/trading/components/OrderFormInputs';
 import { OrderFormSpreadWarningPanel } from 'client/modules/trading/components/OrderFormSpreadWarningPanel';
 import { OrderFormVrtxBorrowWarningPanel } from 'client/modules/trading/components/OrderFormVrtxBorrowWarningPanel';
 import { OrderSideTabs } from 'client/modules/trading/components/OrderSideTabs';
+import { OrderSubmitButton } from 'client/modules/trading/components/OrderSubmitButton';
 import { PriceTypeTabs } from 'client/modules/trading/components/PriceTypeTabs';
 import { StopMarketOrderDismissible } from 'client/modules/trading/components/StopMarketOrderDismissible';
 import { StopOrderTriggerPriceInfo } from 'client/modules/trading/components/StopOrderTriggerPriceInfo';
 import { TradingErrorPanel } from 'client/modules/trading/components/TradingErrorPanel';
 import { useIsHighSpread } from 'client/modules/trading/hooks/useIsHighSpread';
+import { PredictionMarketInfo } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/PredictionMarketInfo';
 import { SpotLeverageOffDismissible } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotLeverageOffDismissible';
-import { SpotLeverageSegmentedControl } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotLeverageSegmentedControl';
-import { SpotOrderSubmitWithSummary } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotOrderSubmitWithSummary';
+import { SpotLeverageOnDisclosure } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotLeverageOnDisclosure';
+import { SpotMarginSwitch } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotMarginSwitch';
+import { SpotOrderSummary } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotOrderSummary';
 import { SpotTradingFormAccountInfo } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotTradingFormAccountInfo';
 import { useSpotOrderFormContext } from 'client/pages/SpotTrading/context/SpotOrderFormContext';
-import { Form } from 'react-hook-form';
-import { useShowLeverageWarnings } from '../../hooks/useShowLeverageWarnings';
-import { useSpotTradingFormAccountInfo } from '../../hooks/useSpotTradingFormAccountInfo';
-import { SpotLeverageOnDisclosure } from './components/SpotLeverageOnDisclosure';
+import { useShowLeverageWarnings } from 'client/pages/SpotTrading/hooks/useShowLeverageWarnings';
+import { useSpotTradingFormAccountInfo } from 'client/pages/SpotTrading/hooks/useSpotTradingFormAccountInfo';
+import { useSpotTradingFormAccountMetrics } from 'client/pages/SpotTrading/hooks/useSpotTradingFormAccountMetrics';
 
 export function SpotOrderPlacementSection({ className }: WithClassnames) {
-  const { show } = useDialog();
   const { protocolTokenMetadata } = useVertexMetadataContext();
 
   const {
@@ -34,7 +36,12 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
     inputConversionPrice,
     inputIncrements,
     minAssetOrderSize,
+    validatedAssetAmountInput,
+    executionConversionPrice,
+    enableMaxSizeLogic,
+    maxAssetOrderSize,
     formError,
+    buttonState,
   } = useSpotOrderFormContext();
   const {
     maxOrderSize,
@@ -42,7 +49,6 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
     showQuote,
     leverageEnabled,
   } = useSpotTradingFormAccountInfo();
-  const marketSymbol = currentMarket?.metadata.token.symbol;
 
   const { showLeverageOnWarning, showLeverageOffWarning } =
     useShowLeverageWarnings();
@@ -50,6 +56,18 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
 
   const priceType = form.watch('priceType');
   const orderSide = form.watch('side');
+
+  const tradingAccountMetrics = useSpotTradingFormAccountMetrics({
+    currentMarket,
+    quoteMetadata,
+    orderSide,
+    validatedAssetAmountInput,
+    executionConversionPrice,
+    enableMaxSizeLogic,
+    maxAssetOrderSize,
+  });
+
+  const marketSymbol = currentMarket?.metadata.token.symbol;
 
   const isStopOrder = priceType === 'stop';
 
@@ -59,14 +77,13 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
     orderSide === 'short';
 
   return (
-    <div
-      className={joinClassNames('flex flex-col gap-y-2.5 pb-4 pt-2', className)}
-    >
-      <SpotLeverageSegmentedControl className="px-2" />
-      <div className="relative flex-1">
+    <div className={joinClassNames('flex flex-col gap-y-2.5 py-2', className)}>
+      <SpotMarginSwitch className="px-3" />
+      {/* This div is used so we can use absolute position in SpotLeverageOnDisclosure to fill the entire container. */}
+      <div className="relative flex flex-1">
         <Form
           onSubmit={onSubmit}
-          className="flex flex-1 flex-col gap-y-2.5 px-2"
+          className="flex flex-1 flex-col gap-y-2.5 px-3"
         >
           {showLeverageOnWarning && <SpotLeverageOnDisclosure />}
           {showLeverageOffWarning && (
@@ -74,7 +91,7 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
           )}
           <OrderSideTabs />
           <PriceTypeTabs />
-          <div className="flex flex-col gap-y-5">
+          <div className="flex flex-1 flex-col gap-y-3">
             <StopMarketOrderDismissible isStopOrder={isStopOrder} />
             <OrderFormInputs
               validators={validators}
@@ -84,6 +101,14 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
               minAssetOrderSize={minAssetOrderSize}
               formError={formError}
             />
+            <SpotTradingFormAccountInfo
+              maxOrderSize={maxOrderSize}
+              symbol={accountInfoSymbol}
+              leverageEnabled={leverageEnabled}
+              showQuote={showQuote}
+              sizeIncrement={currentMarket?.sizeIncrement}
+              derivedMetrics={tradingAccountMetrics.derivedMetrics}
+            />
             {!isStopOrder && (
               <AdvancedOrderSettings
                 priceType={priceType}
@@ -91,31 +116,30 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
                 validators={validators}
               />
             )}
-            <SpotTradingFormAccountInfo
-              maxOrderSize={maxOrderSize}
-              symbol={accountInfoSymbol}
-              leverageEnabled={leverageEnabled}
-              showQuote={showQuote}
-              sizeIncrement={currentMarket?.sizeIncrement}
-            />
             <TradingErrorPanel formError={formError} />
             {showVrtxBorrowWarning && <OrderFormVrtxBorrowWarningPanel />}
             {isHighSpread && <OrderFormSpreadWarningPanel />}
-            {/*Extra padding to separate summary section a bit more*/}
-            <div className="flex flex-col gap-y-2.5 pt-5">
-              <SpotOrderSubmitWithSummary
-                onSlippageAdjust={() => {
-                  show({
-                    type: 'account_center',
-                    params: { initialShowSettingsContent: true },
-                  });
-                }}
-              />
-              <StopOrderTriggerPriceInfo
-                priceIncrement={currentMarket?.priceIncrement}
-                inputConversionPrice={inputConversionPrice}
-                isStopOrder={isStopOrder}
-                orderSide={orderSide}
+            <div className="mt-auto flex flex-col gap-y-5">
+              <div className="flex flex-col gap-y-1.5">
+                <OrderSubmitButton
+                  isPerp={false}
+                  marketSymbol={marketSymbol}
+                  state={buttonState}
+                  side={orderSide}
+                />
+                <StopOrderTriggerPriceInfo
+                  priceIncrement={currentMarket?.priceIncrement}
+                  inputConversionPrice={inputConversionPrice}
+                  isStopOrder={isStopOrder}
+                  orderSide={orderSide}
+                />
+                <PredictionMarketInfo />
+              </div>
+              {/*Margin for extra space between the divider and order summary*/}
+              <Divider className="mb-3" />
+              <SpotOrderSummary
+                currentState={tradingAccountMetrics.currentState}
+                estimatedState={tradingAccountMetrics.estimatedState}
               />
             </div>
           </div>

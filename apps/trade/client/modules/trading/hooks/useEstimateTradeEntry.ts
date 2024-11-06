@@ -12,7 +12,7 @@ import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccou
 import { useMemo } from 'react';
 
 export interface EstimateEntryParams {
-  productId: number;
+  productId: number | undefined;
   // Amount of product in input (ex. 1.1 USDC)
   amountInput?: BigDecimal;
   // Limit price submitted to book
@@ -52,7 +52,9 @@ export function useEstimateTradeEntry({
   const { data: subaccountFeeRates } = useSubaccountFeeRates();
 
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
-  const marketStaticData = allMarketsStaticData?.all[productId];
+  const marketStaticData = productId
+    ? allMarketsStaticData?.all[productId]
+    : undefined;
 
   return useMemo((): TradeEntryEstimate | undefined => {
     if (
@@ -154,8 +156,14 @@ export function useEstimateTradeEntry({
      * This is effectively the same as: max(immediate fee, total quote amount * fee rate)
      */
     const estimatedTradeFee = (() => {
-      const feeRateForProduct =
-        subaccountFeeRates.orders[productId]?.taker ?? BigDecimals.ZERO;
+      const feeRateForProduct = (() => {
+        if (!productId) {
+          return BigDecimals.ZERO;
+        }
+
+        return subaccountFeeRates.orders[productId]?.taker ?? BigDecimals.ZERO;
+      })();
+
       const takerTotalQuote = takerFilledAmount.times(avgTakerFillPrice);
 
       // If the amount is less than min limit order size, then lastFilledPrice is the price of the first maker order

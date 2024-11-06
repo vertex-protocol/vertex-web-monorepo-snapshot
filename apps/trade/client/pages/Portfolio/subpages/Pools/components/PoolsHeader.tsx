@@ -1,7 +1,7 @@
-import { LinkButton } from 'client/components/LinkButton';
 import { LINKS } from 'common/brandMetadata/links/links';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
 import Link from 'next/link';
+import { LinkButton } from '@vertex-protocol/web-ui';
 
 export function PoolsHeader() {
   return (

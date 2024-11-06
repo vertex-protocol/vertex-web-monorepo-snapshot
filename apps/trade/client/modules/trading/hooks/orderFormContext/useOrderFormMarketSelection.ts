@@ -7,7 +7,7 @@ import {
 } from 'client/hooks/markets/useAllMarketsStaticData';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { first } from 'lodash';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface UseOrderFormMarketSelection<TMarketType extends ProductEngineType> {
@@ -32,12 +32,12 @@ interface StaticDataByProductType {
 export function useOrderFormMarketSelection<
   TMarketType extends ProductEngineType,
 >(marketType: TMarketType): UseOrderFormMarketSelection<TMarketType> {
-  const sanitizedRouteMarketName = useMarketNameFromRoute();
+  const { data: allMarketsStaticData } = useAllMarketsStaticData();
   const [currentMarketId, setCurrentMarketId] = useState<number>();
 
-  const { data: allMarketsStaticData } = useAllMarketsStaticData();
-
   const pushTradePage = usePushTradePage();
+  const sanitizedRouteMarketName = useMarketNameFromRoute();
+
   const availableMarketsByProductId = (
     marketType === ProductEngineType.SPOT
       ? allMarketsStaticData?.spot
@@ -110,8 +110,6 @@ export function useOrderFormMarketSelection<
 }
 
 function useMarketNameFromRoute() {
-  const {
-    query: { marketName },
-  } = useRouter();
+  const { marketName } = useParams();
   return first(marketName)?.toLowerCase();
 }

@@ -1,22 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import { GetIndexerSubaccountMatchEventParams } from '@vertex-protocol/indexer-client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 
 export function subaccountLatestFillOrderEventsQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   subaccountOwner?: string,
   subaccountName?: string,
 ) {
   return createQueryKey(
     'latestFillOrderEvents',
-    chainId,
+    chainEnv,
     subaccountOwner,
     subaccountName,
   );
@@ -26,16 +25,19 @@ export function subaccountLatestFillOrderEventsQueryKey(
  * Latest 10 fill order events for the current subaccount.
  */
 export function useSubaccountLatestFillOrderEvents() {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const {
-    currentSubaccount: { address: subaccountOwner, name: subaccountName },
+    currentSubaccount: {
+      address: subaccountOwner,
+      name: subaccountName,
+      chainEnv,
+    },
   } = useSubaccountContext();
   const disabled = !vertexClient || !subaccountOwner;
 
   return useQuery({
     queryKey: subaccountLatestFillOrderEventsQueryKey(
-      primaryChainId,
+      chainEnv,
       subaccountOwner,
       subaccountName,
     ),

@@ -27,7 +27,7 @@ const SegmentedControlButton = forwardRef<
       return 'text-disabled';
     }
     if (active) {
-      return 'ring-1 ring-inset ring-stroke bg-surface-2 text-text-primary';
+      return 'bg-surface-2 text-text-primary';
     }
     return 'text-text-tertiary hover:text-text-secondary';
   })();
@@ -55,7 +55,7 @@ const SegmentedControlContainer = forwardRef<
   return (
     <div
       className={mergeClassNames(
-        'bg-surface-1 flex items-center rounded',
+        'bg-surface-1 flex items-center rounded p-0.5',
         className,
       )}
       ref={ref}

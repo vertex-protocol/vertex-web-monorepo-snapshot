@@ -1,5 +1,5 @@
 import { TimeInSeconds } from '@vertex-protocol/utils';
-import { useAllMarketsHistoricalSnapshots } from 'client/hooks/query/markets/useAllMarketsHistoricalSnapshots';
+import { useMarketSnapshots } from 'client/hooks/query/markets/useMarketSnapshots';
 import { first, last } from 'lodash';
 import { useMemo } from 'react';
 
@@ -8,7 +8,7 @@ import { useMemo } from 'react';
  * This is useful for standardizing cached data for queries
  */
 export function useAllMarkets24hrSnapshots() {
-  const { data, ...rest } = useAllMarketsHistoricalSnapshots({
+  const { data, ...rest } = useMarketSnapshots({
     granularity: TimeInSeconds.DAY,
     limit: 2,
   });

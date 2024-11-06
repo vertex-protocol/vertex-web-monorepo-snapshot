@@ -3,18 +3,20 @@ import {
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
+import { Divider } from '@vertex-protocol/web-ui';
 import { AmountWithSymbol } from 'client/components/AmountWithSymbol';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
-import Image from 'next/image';
-import { StakingClaimAndStakeChangeItems } from '../components/StakingClaimAndStakeChangeItems';
-import { StakingRadioGroup } from '../components/StakingRadioGroup';
 
 // Assets
-import camelotLogo from './assets/camelot.svg';
-import { useClaimStakingRewardsDialog } from './useClaimStakingRewardsDialog';
+import camelotLogo from 'client/modules/rewards/dialogs/staking/ClaimStakingRewardsDialog/assets/camelot.svg';
+import { useClaimStakingRewardsDialog } from 'client/modules/rewards/dialogs/staking/ClaimStakingRewardsDialog/useClaimStakingRewardsDialog';
+import { StakingClaimAndStakeChangeItems } from 'client/modules/rewards/dialogs/staking/components/StakingClaimAndStakeChangeItems';
+import { StakingRadioGroup } from 'client/modules/rewards/dialogs/staking/components/StakingRadioGroup';
+
+import Image from 'next/image';
 
 export function ClaimStakingRewardsDialog() {
   const {
@@ -53,14 +55,14 @@ export function ClaimStakingRewardsDialog() {
   })();
 
   const expandableContent = (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-3">
       <StakingClaimAndStakeChangeItems
         protocolTokenSymbol={protocolTokenSymbol}
         currentAmountStaked={currentAmountStaked}
         estimatedAmountStaked={estimatedAmountStaked}
       />
       <Divider />
-      <div className="flex flex-col gap-y-3.5">
+      <div className="flex flex-col gap-y-1">
         <StakingRadioGroup.LineItem
           label="Available Rewards"
           value={claimableStakingRewards}
@@ -95,11 +97,11 @@ export function ClaimStakingRewardsDialog() {
   );
 
   return (
-    <BaseAppDialog onClose={onClose}>
-      <BaseDialog.Title onClose={onClose}>
+    <BaseAppDialog.Container onClose={onClose}>
+      <BaseAppDialog.Title onClose={onClose}>
         Claim Staking Rewards
-      </BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-6">
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <StakingRadioGroup.Root
           value={selectedRadioId}
           onValueChange={setSelectedRadioId}
@@ -126,14 +128,17 @@ export function ClaimStakingRewardsDialog() {
             disabled={disableRadioButtons}
           />
         </StakingRadioGroup.Root>
-        <PrimaryButton
+        <ValidUserStatePrimaryButton
           isLoading={actionButtonState === 'loading'}
           disabled={actionButtonState === 'disabled'}
           onClick={onSubmit}
+          handledErrors={
+            HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain
+          }
         >
           {buttonStateContent}
-        </PrimaryButton>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+        </ValidUserStatePrimaryButton>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

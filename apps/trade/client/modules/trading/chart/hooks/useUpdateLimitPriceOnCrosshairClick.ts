@@ -1,11 +1,11 @@
 import { toBigDecimal } from '@vertex-protocol/client';
+import { useSetPriceInput } from 'client/modules/trading/hooks/useSetPriceInput';
 import { debounce } from 'lodash';
 import {
   CrossHairMovedEventParams,
   IChartingLibraryWidget,
 } from 'public/charting_library/charting_library';
 import { useEffect, useRef } from 'react';
-import { useSetPriceInput } from '../../hooks/useSetPriceInput';
 
 interface Params {
   tvWidget: IChartingLibraryWidget | undefined;

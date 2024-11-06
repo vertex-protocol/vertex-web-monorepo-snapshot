@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import { EngineOrder } from '@vertex-protocol/engine-client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -15,13 +14,13 @@ import { QueryState } from 'client/types/QueryState';
 export type SubaccountOpenEngineOrders = Record<number, EngineOrder[]>;
 
 export function subaccountOpenEngineOrdersQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   sender?: string,
   subaccountName?: string,
 ) {
   return createQueryKey(
     'subaccountOpenEngineOrders',
-    chainId,
+    chainEnv,
     sender,
     subaccountName,
   );
@@ -32,16 +31,15 @@ export function subaccountOpenEngineOrdersQueryKey(
  * @param params
  */
 export function useSubaccountOpenEngineOrders(): QueryState<SubaccountOpenEngineOrders> {
-  const primaryChainId = usePrimaryChainId();
   const vertexClient = usePrimaryChainVertexClient();
   const { filteredProductIds: allProductIds } = useFilteredMarkets();
   const {
-    currentSubaccount: { name, address },
+    currentSubaccount: { name, address, chainEnv },
   } = useSubaccountContext();
   const disabled = !vertexClient || !allProductIds?.length || !address;
 
   return useQuery({
-    queryKey: subaccountOpenEngineOrdersQueryKey(primaryChainId, address, name),
+    queryKey: subaccountOpenEngineOrdersQueryKey(chainEnv, address, name),
     queryFn: async (): Promise<SubaccountOpenEngineOrders> => {
       if (disabled) {
         throw new QueryDisabledError();

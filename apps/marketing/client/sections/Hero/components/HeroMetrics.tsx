@@ -1,32 +1,60 @@
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
+'use client';
+
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import edgeLogo from 'assets/edge.svg';
+import { useVertexMetrics } from 'client/hooks/query/useVertexMetrics';
+import Image from 'next/image';
+import { ReactNode } from 'react';
 
 export function HeroMetrics({ className }: WithClassnames) {
+  const { data: marketMetrics } = useVertexMetrics();
   return (
     <div
       className={joinClassNames(
-        'flex justify-center gap-x-8',
-        'md:gap-x-20',
-        'lg:gap-x-28',
-        'xl:gap-x-32',
+        'flex flex-wrap justify-center gap-x-6 gap-y-4 px-2',
+        'sm:gap-x-12',
         className,
       )}
     >
-      <StackedMetric label="Total Volume" value="$80B+" />
-      <StackedMetric label="Total Markets" value="45+" />
-      <StackedMetric label="Number of Traders" value="25k+" />
+      <Metric
+        label="Total Volume"
+        valueContent={formatNumber(marketMetrics?.totalCumulativeVolume, {
+          formatSpecifier:
+            CustomNumberFormatSpecifier.CURRENCY_LARGE_ABBREVIATED,
+        })}
+      />
+      <Metric label="Markets" valueContent="50+" />
+      <Metric
+        label="Powered by"
+        valueContent={<Image src={edgeLogo} alt="EDGE" />}
+      />
     </div>
   );
 }
 
-function StackedMetric({ label, value }: { label: string; value: string }) {
+function Metric({
+  label,
+  valueContent,
+}: {
+  label: string;
+  valueContent: ReactNode;
+}) {
   return (
-    <div className="flex flex-col gap-y-1 md:gap-y-1.5">
-      <span className="text-white-700 font-dmSans text-xs sm:text-sm md:text-base xl:text-lg">
-        {label}
-      </span>
-      <span className="xs:text-xl font-sans text-xl font-bold leading-tight text-white sm:text-2xl md:text-4xl xl:text-6xl">
-        {value}
-      </span>
+    <div
+      className={joinClassNames(
+        'flex flex-col gap-1 gap-y-1.5',
+        'font-dmSans text-sm/none',
+        'sm:flex-row sm:items-center',
+        'md:text-base',
+        'lg:text-lg',
+      )}
+    >
+      <span className="text-white-700 leading-normal">{label}</span>
+      <span className="text-white">{valueContent}</span>
     </div>
   );
 }

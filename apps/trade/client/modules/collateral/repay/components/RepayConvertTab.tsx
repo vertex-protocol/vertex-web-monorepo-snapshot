@@ -1,27 +1,31 @@
-import { mergeClassNames } from '@vertex-protocol/web-common';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { Button } from '@vertex-protocol/web-ui';
+import { TextButton } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { Form } from 'client/components/Form';
-import { InputSummary } from 'client/components/InputSummary';
+import { InputSummaryItem } from 'client/components/InputSummaryItem';
+import { CollateralSelectInput } from 'client/modules/collateral/components/CollateralSelectInput';
+import { DepositSummaryDisclosure } from 'client/modules/collateral/components/DepositSummaryDisclosure';
+import { MaxRepayDismissible } from 'client/modules/collateral/repay/components/MaxRepayDismissible';
+import { RepayConversionRateDisplay } from 'client/modules/collateral/repay/components/RepayConversionRateDisplay';
 import { RepayConvertButton } from 'client/modules/collateral/repay/components/RepayConvertButton';
+import { RepayConvertDismissible } from 'client/modules/collateral/repay/components/RepayConvertDismissible';
+import { RepayConvertFormErrorPanel } from 'client/modules/collateral/repay/components/RepayConvertFormErrorPanel';
+import { RepayConvertInputWrapper } from 'client/modules/collateral/repay/components/RepayConvertInputWrapper';
 import { useRepayConvertForm } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/useRepayConvertForm';
-import { CollateralSelectInput } from '../../components/CollateralSelectInput';
-import { DepositSummaryDisclosure } from '../../components/DepositSummaryDisclosure';
-import { useRepayConvertReplayAmountErrorTooltipContent } from '../hooks/useRepayConvertForm/useRepayConvertReplayAmountErrorTooltipContent';
-import { MaxRepayDismissible } from './MaxRepayDismissible';
-import { RepayConversionRateDisplay } from './RepayConversionRateDisplay';
-import { RepayConvertDismissible } from './RepayConvertDismissible';
-import { RepayConvertInputWrapper } from './RepayConvertInputWrapper';
+import { useRepayConvertReplayAmountErrorTooltipContent } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/useRepayConvertReplayAmountErrorTooltipContent';
 
-export function RepayConvertTab() {
+export function RepayConvertTab({
+  initialProductId,
+}: {
+  initialProductId: number | undefined;
+}) {
   const {
     form,
+    amountInputError,
     formError,
     availableRepayProducts,
     availableSourceProducts,
     isMaxRepayDismissibleOpen,
-    disableRepayAmountInput,
     disableMaxRepayButton,
     selectedRepayProduct,
     selectedSourceProduct,
@@ -31,16 +35,21 @@ export function RepayConvertTab() {
     buttonState,
     repayAmountValueUsd,
     maxRepaySize,
+    sizeIncrement,
     onMaxRepayClicked,
+    onAmountBorrowingClicked,
     onSubmit,
     validateRepayAmount,
     sourceAmount,
     sourceAmountValueUsd,
-  } = useRepayConvertForm();
+  } = useRepayConvertForm({
+    initialProductId,
+  });
 
   const repayAmountErrorTooltipContent =
     useRepayConvertReplayAmountErrorTooltipContent({
-      formError,
+      amountInputError,
+      sizeIncrement,
     });
 
   return (
@@ -53,16 +62,13 @@ export function RepayConvertTab() {
           labelContent={
             <div className="flex items-center justify-between">
               <p>Repay</p>
-              <Button
-                className={mergeClassNames(
-                  'text-accent text-xs',
-                  disableRepayAmountInput ? 'opacity-50' : 'cursor-pointer',
-                )}
+              <TextButton
+                className="text-accent text-xs"
                 onClick={onMaxRepayClicked}
                 disabled={disableMaxRepayButton}
               >
                 Max Repay
-              </Button>
+              </TextButton>
             </div>
           }
         >
@@ -71,8 +77,7 @@ export function RepayConvertTab() {
               validate: validateRepayAmount,
             })}
             estimatedValueUsd={repayAmountValueUsd}
-            disabled={disableRepayAmountInput}
-            dropdownProps={{
+            selectProps={{
               selectedProduct: selectedRepayProduct,
               availableProducts: availableRepayProducts,
               assetAmountTitle: 'Borrowing',
@@ -84,31 +89,32 @@ export function RepayConvertTab() {
             }}
             error={repayAmountErrorTooltipContent}
           />
-          <InputSummary.Container>
-            <InputSummary.Item
+          <div className="flex flex-col gap-y-0.5">
+            <InputSummaryItem
               label="Borrowing:"
               definitionTooltipId="repayAmountBorrowing"
               currentValue={selectedRepayProduct?.amountBorrowed}
               formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              onValueClick={onAmountBorrowingClicked}
             />
-            <InputSummary.Item
+            <InputSummaryItem
               label="Max Repay:"
               definitionTooltipId="repayConvertMaxRepay"
               currentValue={maxRepaySize}
               formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              onValueClick={onMaxRepayClicked}
             />
-          </InputSummary.Container>
+          </div>
         </RepayConvertInputWrapper>
         {/* Sell Input */}
         <RepayConvertInputWrapper labelContent="Sell">
           <CollateralSelectInput
             readOnly
-            disabled={!availableSourceProducts.length}
             estimatedValueUsd={sourceAmountValueUsd}
             value={sourceAmount?.toString() ?? ''}
-            inputClassName="cursor-default"
-            dropdownProps={{
+            selectProps={{
               availableProducts: availableSourceProducts,
+              disabled: !availableSourceProducts.length,
               selectedProduct: selectedSourceProduct,
               assetAmountTitle: 'Balance',
               onProductSelected: (productId) => {
@@ -117,15 +123,14 @@ export function RepayConvertTab() {
               },
             }}
           />
-          <InputSummary.Container>
-            <InputSummary.Item
-              label="Balance:"
-              currentValue={selectedSourceProduct?.decimalAdjustedVertexBalance}
-              formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-            />
-          </InputSummary.Container>
+          <InputSummaryItem
+            label="Balance:"
+            currentValue={selectedSourceProduct?.decimalAdjustedVertexBalance}
+            formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+          />
         </RepayConvertInputWrapper>
       </div>
+      <RepayConvertFormErrorPanel formError={formError} />
       <div className="flex flex-col gap-y-3">
         <RepayConversionRateDisplay
           className="px-1"
@@ -135,7 +140,7 @@ export function RepayConvertTab() {
         <ActionSummary.Container>
           <DepositSummaryDisclosure
             estimateStateTxs={estimateStateTxs}
-            triggerOpen={buttonState === 'idle'}
+            isHighlighted={buttonState === 'idle'}
             productId={selectedRepayProduct?.productId}
             symbol={selectedRepayProduct?.symbol}
           />

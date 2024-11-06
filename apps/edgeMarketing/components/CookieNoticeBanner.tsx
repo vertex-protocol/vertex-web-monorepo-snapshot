@@ -1,7 +1,9 @@
-import { useEdgeCookiePreference } from 'hooks/useEdgeCookiePreference';
+'use client';
+
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { EdgeLink } from 'components/EdgeLink/EdgeLink';
 import { LINKS } from 'config/links';
+import { useEdgeCookiePreference } from 'hooks/useEdgeCookiePreference';
 
 export function CookieNoticeBanner() {
   const {
@@ -24,7 +26,7 @@ export function CookieNoticeBanner() {
         'bg-gray-light absolute bottom-0 z-10 rounded-2xl lg:bottom-3 lg:right-12',
       )}
     >
-      <div className="flex flex-col gap-y-2 ">
+      <div className="flex flex-col gap-y-2">
         <p className="text-sm font-bold text-black">Manage Cookies</p>
         <p className="text-white-dark text-xs">
           Edge may collect and disclose cookie and other data collection

@@ -3,13 +3,20 @@ import { GetIndexerMatchEventsParams } from '@vertex-protocol/indexer-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { QueryState } from 'client/types/QueryState';
 import { calcOrderFillPrice } from 'client/utils/calcs/calcOrderFillPrice';
+import { ChainEnv } from '@vertex-protocol/client';
+
+/**
+ * The maximum shown in the UI + some buffer for filtering out RFQ matches.
+ * Hardcoded here so we can avoid querying uniquely per `limit` and can share
+ * with the WS handler. If we need more data, we can bump this number.
+ */
+export const LATEST_ORDER_FILLS_LIMIT = 75;
 
 export interface LatestOrderFillsForProductParams<TSelectedData> {
   productId?: number;
@@ -27,10 +34,10 @@ export interface LatestOrderFill {
 }
 
 export function latestOrderFillsForProductQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   productId?: number,
 ) {
-  return createQueryKey('latestOrderFills', chainId, productId);
+  return createQueryKey('latestOrderFills', chainEnv, productId);
 }
 
 export function useLatestOrderFillsForProduct<
@@ -39,7 +46,7 @@ export function useLatestOrderFillsForProduct<
   productId,
   select,
 }: LatestOrderFillsForProductParams<TSelectedData>): QueryState<TSelectedData> {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient || !productId;
 
@@ -50,9 +57,7 @@ export function useLatestOrderFillsForProduct<
 
     const params: GetIndexerMatchEventsParams = {
       productIds: [productId],
-      // This will be the maximum that we should need on the UI + some buffer for filtering out RFQ matches, because we want to avoid
-      // querying uniquely per `limit`, we hardcode it here. If we need more data, we can bump this number
-      limit: 75,
+      limit: LATEST_ORDER_FILLS_LIMIT,
     };
     // Match events without a subaccount filter gives only taker orders, so no need to dedup here
     const baseData =
@@ -79,7 +84,7 @@ export function useLatestOrderFillsForProduct<
   };
 
   return useQuery({
-    queryKey: latestOrderFillsForProductQueryKey(primaryChainId, productId),
+    queryKey: latestOrderFillsForProductQueryKey(primaryChainEnv, productId),
     queryFn,
     enabled: !disabled,
     select,

@@ -9,7 +9,7 @@ export const NavPopoverContentContainer = forwardRef<
   return (
     <Card
       className={mergeClassNames(
-        'from-grad-nav-surface-start to-grad-nav-surface-end bg-gradient-to-b p-2',
+        'from-surface-2 to-surface-1 shadow-elevation-nav-dropdown bg-gradient-to-b p-2',
         className,
       )}
       ref={ref}

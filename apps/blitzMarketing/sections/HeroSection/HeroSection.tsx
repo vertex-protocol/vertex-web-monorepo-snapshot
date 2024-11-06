@@ -2,8 +2,8 @@ import { BlitzLinkButton } from 'components/BlitzLinkButton';
 import { LINKS } from 'config/links';
 import Image from 'next/image';
 import logo from 'public/blitz/blitz-logo.png';
-import { BottomBar } from './components/BottomBar';
-import { TopBar } from './components/TopBar';
+import { BottomBar } from 'sections/HeroSection/components/BottomBar';
+import { TopBar } from 'sections/HeroSection/components/TopBar';
 import { CookieNoticeBanner } from 'components/CookieNoticeBanner';
 
 /**
@@ -22,19 +22,23 @@ export function HeroSection() {
           <div className="relative flex h-full w-full flex-col justify-between">
             <TopBar />
             <div>
-              <div className="flex flex-col gap-y-6 px-4 md:px-10">
-                <Image
-                  src={logo}
-                  alt="blitz-logo"
-                  className="max-w-80"
-                  priority
-                />
-                <h1 className="font-ibm sm:text-md max-w-[624px] text-sm md:text-lg">
-                  Blazing fast orderbook for spot and futures trading. Earn on
-                  Blast. Trade on Blitz. Connected by Edge.
-                </h1>
+              <div className="flex flex-col gap-y-10 px-4 md:px-10">
+                <div className="flex flex-col gap-y-4">
+                  <Image
+                    src={logo}
+                    alt="blitz-logo"
+                    className="max-w-80"
+                    priority
+                  />
+                  <h2 className="font-ibm sm:text-md max-w-[624px] text-sm md:text-base">
+                    Trade on-chain with CEX-like performance. Use USDB and wETH
+                    as margin while earning interest. Tap into deep liquidity
+                    and experience the speed powered by Vertex Edge. Blitz is
+                    the exchange for traders on Blast.
+                  </h2>
+                </div>
                 <BlitzLinkButton external href={LINKS.app}>
-                  LAUNCH
+                  START TRADING
                 </BlitzLinkButton>
               </div>
               <BottomBar />

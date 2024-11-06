@@ -1,11 +1,12 @@
 import { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
 
+// eslint-disable-next-line no-relative-import-paths/no-relative-import-paths
 import { COLORS } from './styles/colors';
 
 const config: Config = {
   darkMode: 'class',
-  content: ['./pages/**/*.{js,ts,jsx,tsx}', './client/**/*.{js,ts,jsx,tsx}'],
+  content: ['./app/**/*.{js,ts,jsx,tsx}', './client/**/*.{js,ts,jsx,tsx}'],
   theme: {
     screens: {
       xxs: '375px',

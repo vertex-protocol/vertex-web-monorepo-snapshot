@@ -10,9 +10,11 @@ import { removeDecimals } from '@vertex-protocol/utils';
 export function calcDecimalAdjustedDeltas(
   currentValue: BigDecimal,
   prevValue: BigDecimal,
-  quotePrice: BigDecimal,
+  primaryQuotePriceUsd: BigDecimal,
 ) {
-  const deltaUsd = currentValue.minus(prevValue).multipliedBy(quotePrice);
+  const deltaUsd = currentValue
+    .minus(prevValue)
+    .multipliedBy(primaryQuotePriceUsd);
   const decimalAdjustedDeltaUsd = removeDecimals(deltaUsd).toNumber();
   const deltaFraction = calcChangeFrac(currentValue, prevValue).toNumber();
 

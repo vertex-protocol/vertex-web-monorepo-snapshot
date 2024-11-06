@@ -77,14 +77,17 @@ function Container({
   );
 }
 
-function Label({ className, ...rest }: ComponentProps<'label'>) {
-  return (
-    <label
-      className={mergeClassNames('text-text-tertiary', className)}
-      {...rest}
-    />
-  );
-}
+const Label = forwardRef<HTMLLabelElement, ComponentProps<'label'>>(
+  function Label({ className, ...rest }, ref) {
+    return (
+      <label
+        ref={ref}
+        className={mergeClassNames('text-text-tertiary', className)}
+        {...rest}
+      />
+    );
+  },
+);
 
 export const Input = {
   TextArea,

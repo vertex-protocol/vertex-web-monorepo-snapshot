@@ -1,18 +1,12 @@
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { Button } from '@vertex-protocol/web-ui';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { AppVersion } from 'client/modules/app/components/AppVersion';
+import { LatencyMonitor } from 'client/modules/app/components/LatencyMonitor';
+import { NeedHelpButton } from 'client/modules/app/components/NeedHelpButton';
+import { StatusButton } from 'client/modules/app/components/StatusButton';
+import { UpcomingMaintenanceAlert } from 'client/modules/app/components/UpcomingMaintenanceAlert';
 import { TutorialFlowPopover } from 'client/modules/tutorial/components/TutorialFlowPopover';
-import { useShouldShowTutorialFlow } from 'client/modules/tutorial/hooks/useShouldShowTutorialFlow';
-import { StatusButton } from './components/StatusButton';
-import { UpcomingMaintenance } from './components/UpcomingMaintenance';
-import { useDialog } from './dialogs/hooks/useDialog';
-import { useAlertUpcomingMaintenanceWindow } from './hooks/useAlertUpcomingMaintenanceWindow';
 
 export function AppFooter({ className }: WithClassnames) {
-  const { show } = useDialog();
-
-  const shouldShowTutorialFlow = useShouldShowTutorialFlow();
-  const alertUpcomingMaintenanceWindow = useAlertUpcomingMaintenanceWindow();
-
   return (
     <div
       className={joinClassNames(
@@ -23,15 +17,14 @@ export function AppFooter({ className }: WithClassnames) {
     >
       <div className="flex flex-1 items-center gap-x-4 text-xs">
         <StatusButton />
-        <Button
-          className="text-text-secondary hover:text-text-primary"
-          onClick={() => show({ type: 'help_center', params: {} })}
-        >
-          Need Help?
-        </Button>
-        {shouldShowTutorialFlow && <TutorialFlowPopover />}
+        <NeedHelpButton />
+        <TutorialFlowPopover />
       </div>
-      {alertUpcomingMaintenanceWindow && <UpcomingMaintenance />}
+      <div className="flex items-center gap-x-2 text-xs">
+        <AppVersion />
+        <LatencyMonitor />
+        <UpcomingMaintenanceAlert />
+      </div>
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { NextImageSrc } from '@vertex-protocol/web-common';
 import {
   PresetNumberFormatSpecifier,
   formatNumber,
 } from '@vertex-protocol/react-client';
+import { NextImageSrc } from '@vertex-protocol/web-common';
 import { Icons, Pill } from '@vertex-protocol/web-ui';
 import Image from 'next/image';
 
@@ -36,7 +36,7 @@ export function LpHeader({
       </div>
       <div className="text-text-primary flex items-center pr-2">
         {baseSymbol}
-        <Icons.BsDot />
+        <Icons.Dot />
         {quoteSymbol}
       </div>
       {!!takerFee && (

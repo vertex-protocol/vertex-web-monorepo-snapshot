@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { some } from 'lodash';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { ProductEngineType } from '@vertex-protocol/contracts';
 
 export function useHasRepayableBalances() {
-  const { data: subaccountSummary } = useCurrentSubaccountSummary();
+  const { data: subaccountSummary } = useSubaccountSummary();
   return useMemo(() => {
     if (!subaccountSummary?.balances) return false;
 

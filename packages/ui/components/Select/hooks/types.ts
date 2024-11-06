@@ -13,7 +13,7 @@ export interface SelectComponentOption<TValue> {
 }
 
 export interface UseSelectParams<TIdentifier extends string, TValue> {
-  defaultOpen: boolean;
+  defaultOpen?: boolean;
   selectedValue: TValue | undefined;
   onSelectedValueChange: (value: TValue) => void;
   options:
@@ -25,7 +25,6 @@ export interface UseSelect<TIdentifier extends string, TValue> {
   open: boolean;
   onValueChange: (value: TIdentifier) => void;
   value: TIdentifier | undefined;
-  defaultOpen: boolean;
   onOpenChange: (open: boolean) => void;
   selectOptions: SelectComponentOption<TValue>[];
   selectedOption: SelectOption<TIdentifier, TValue> | undefined;

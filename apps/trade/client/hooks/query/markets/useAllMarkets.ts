@@ -1,21 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import {
+  ChainEnv,
   ProductEngineType,
   QUOTE_PRODUCT_ID,
 } from '@vertex-protocol/contracts';
 import {
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
 import {
   AnnotatedMarket,
   AnnotatedPerpMarket,
   AnnotatedSpotMarket,
-} from 'common/productMetadata/types';
+  useVertexMetadataContext,
+} from '@vertex-protocol/metadata';
 
 export type AllMarketsSelectFn<TSelectedData> = (
   data: AllMarketsData,
@@ -41,8 +41,8 @@ export interface AllMarketsData {
   perpMarketsProductIds: number[];
 }
 
-export function allMarketsQueryKey(chainId?: PrimaryChainID) {
-  return ['allMarkets', chainId];
+export function allMarketsQueryKey(chainEnv?: ChainEnv) {
+  return ['allMarkets', chainEnv];
 }
 
 export function useAllMarkets<TSelectedData = AllMarketsData>(
@@ -54,7 +54,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
   );
   const vertexClient = usePrimaryChainVertexClient();
   const { getPerpMetadata, getSpotMetadata } = useVertexMetadataContext();
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
 
   const disabled = !vertexClient;
 
@@ -126,7 +126,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
   };
 
   return useQuery({
-    queryKey: allMarketsQueryKey(primaryChainId),
+    queryKey: allMarketsQueryKey(primaryChainEnv),
     queryFn,
     enabled: !disabled,
     refetchInterval: 60000,

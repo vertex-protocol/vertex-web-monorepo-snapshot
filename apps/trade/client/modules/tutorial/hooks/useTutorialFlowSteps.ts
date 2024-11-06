@@ -1,5 +1,4 @@
-import { ARB_CHAIN_IDS } from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { UserTutorialFlowStepID } from 'client/modules/localstorage/userState/types/userTutorialFlowTypes';
 import { useMemo } from 'react';
 
@@ -18,7 +17,7 @@ const NOTIFICATION_STEP: UserTutorialFlowStep = {
 };
 
 export function useTutorialFlowSteps() {
-  const hasNotificationStep = useIsEnabledForChainIds(ARB_CHAIN_IDS);
+  const { isNotifiEnabled } = useEnabledFeatures();
 
   return useMemo((): UserTutorialFlowStep[] => {
     return [
@@ -43,7 +42,7 @@ export function useTutorialFlowSteps() {
         description:
           'Customize your trading console to be on the right or left. Adjust your market slippage tolerance.',
       },
-      ...(hasNotificationStep ? [NOTIFICATION_STEP] : []),
+      ...(isNotifiEnabled ? [NOTIFICATION_STEP] : []),
     ];
-  }, [hasNotificationStep]);
+  }, [isNotifiEnabled]);
 }

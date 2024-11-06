@@ -1,4 +1,3 @@
-import { usePrimaryChainId } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useSubaccountPaginatedLiquidationEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedLiquidationEvents';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
@@ -6,9 +5,8 @@ import { LiquidationNotificationData } from 'client/modules/notifications/types'
 import { useEffect, useRef } from 'react';
 
 export function useSubaccountLiquidationEventEmitter() {
-  const primaryChainId = usePrimaryChainId();
   const {
-    currentSubaccount: { address, name },
+    currentSubaccount: { address, name, chainEnv },
   } = useSubaccountContext();
   const { data: paginatedLiquidations } =
     useSubaccountPaginatedLiquidationEvents({});
@@ -24,7 +22,7 @@ export function useSubaccountLiquidationEventEmitter() {
   // Reset on subaccount & primary chain changes
   useEffect(() => {
     lastLiquidationSubmissionIdx.current = undefined;
-  }, [address, name, primaryChainId]);
+  }, [address, name, chainEnv]);
 
   useEffect(
     () => {

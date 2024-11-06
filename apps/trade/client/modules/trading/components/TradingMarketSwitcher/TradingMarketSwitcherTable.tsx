@@ -1,11 +1,11 @@
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
+import { FixedHeaderDataTable } from 'client/components/FixedHeaderDataTable';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
-import { BaseMarketSwitcherTable } from 'client/modules/trading/components/BaseMarketSwitcherTable/BaseMarketSwitcherTable';
 import { MarketSwitcherStackedPriceCell } from 'client/modules/trading/components/BaseMarketSwitcherTable/cells/MarketSwitcherStackedPriceCell';
 import { TradingMarketSwitcherProductInfoCell } from 'client/modules/trading/components/TradingMarketSwitcher/TradingMarketSwitcherProductInfoCell';
 import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
@@ -19,13 +19,15 @@ interface Props {
   disableFavoriteButton: boolean;
   toggleIsFavoritedMarket: (marketId: number) => void;
   markets: MarketSwitcherItem[];
-  onRowClick: () => void;
+  isLoading: boolean;
+  onRowClick: (row: Row<MarketSwitcherItem>) => void;
 }
 
 export function TradingMarketSwitcherTable({
   disableFavoriteButton,
   toggleIsFavoritedMarket,
   markets,
+  isLoading,
   onRowClick,
 }: Props) {
   const columns: ColumnDef<MarketSwitcherItem, any>[] = useMemo(
@@ -35,7 +37,7 @@ export function TradingMarketSwitcherTable({
           <FavoriteHeaderCell
             header={header}
             favoriteButtonSize={14}
-            favoriteButtonClassName="p-3"
+            favoriteButtonClassName="px-3"
             disableFavoriteButton={disableFavoriteButton}
           />
         ),
@@ -61,7 +63,7 @@ export function TradingMarketSwitcherTable({
 
           return (
             <TradingMarketSwitcherProductInfoCell
-              marketName={market.name}
+              marketName={market.marketName}
               symbol={market.symbol}
               icon={market.icon}
               volume24h={volume24h}
@@ -85,22 +87,31 @@ export function TradingMarketSwitcherTable({
               priceIncrement={priceIncrement}
               priceChangeFrac={priceChangeFrac}
               currentPrice={currentPrice}
-              priceChangeFracClassName="text-3xs"
+              priceChangeFracClassName="text-2xs"
             />
           );
         },
-        sortingFn: getKeyedBigDecimalSortFn('currentPrice'),
+        sortingFn: getKeyedBigDecimalSortFn('priceChangeFrac'),
       }),
     ],
     [disableFavoriteButton, toggleIsFavoritedMarket],
   );
 
   return (
-    <BaseMarketSwitcherTable
-      markets={markets}
+    <FixedHeaderDataTable
+      data={markets}
+      isLoading={isLoading}
       columns={columns}
+      initialSortingState={[{ id: 'isFavorited', desc: false }]}
+      rowAsLinkHref={(row) => row.original.href}
       onRowClick={onRowClick}
-      rowClassName="lg:py-0.5"
+      emptyState={
+        <p className="text-text-tertiary p-2 text-xs">No markets found.</p>
+      }
+      // `pr-3` needed as each favorite button has its own left padding (increases hit area)
+      headerClassName="pr-3"
+      rowClassName="pr-3 py-1"
+      scrollContainerClassName="gap-y-0.5"
     />
   );
 }

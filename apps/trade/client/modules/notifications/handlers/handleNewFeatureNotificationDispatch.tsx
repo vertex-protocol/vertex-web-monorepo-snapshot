@@ -1,21 +1,23 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import {
+  BRETT_PERP_METADATA,
+  DEGEN_PERP_METADATA,
+  GOAT_PERP_METADATA,
+  PRIMARY_QUOTE_SYMBOLS,
+  SCR_PERP_METADATA,
+  SpotProductMetadata,
+  USDT_ARB_ONE,
+} from '@vertex-protocol/metadata';
 import { NewFeatureDisclosureKey } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
-import { OneClickTradingNotification } from 'client/modules/notifications/components/newFeature/features/OneClickTradingNotification';
-import { USDT_ARB_ONE } from 'common/productMetadata/arbitrum/tokens';
-import { USDT_SPOT_MARKET_DETAILS } from 'common/productMetadata/marketDetailsMetadata';
-import { PRIMARY_QUOTE_SYMBOLS } from 'common/productMetadata/primaryQuoteSymbols';
-import { SpotProductMetadata } from 'common/productMetadata/types';
+import { PerpMarketsFeatureNotification } from 'client/modules/notifications/components/newFeature/features/PerpMarketsFeatureNotification';
 import { toast } from 'react-hot-toast';
-import { ArbNewIncentivesNotification } from '../components/newFeature/features/ArbNewIncentivesNotification';
-import { MantleNewIncentivesNotification } from '../components/newFeature/features/MantleNewIncentivesNotification';
 
 export async function handleNewFeatureNotificationDispatch(
   feature: NewFeatureDisclosureKey,
 ) {
   switch (feature) {
-    /* [REMOVING NEW MARKET NOTIFICATION]
     // Example new mkt notification
-    case 'new_markets_may_24':
+    case 'new_markets_oct_31':
       return toast.custom(
         (t) => (
           <PerpMarketsFeatureNotification
@@ -33,63 +35,23 @@ export async function handleNewFeatureNotificationDispatch(
           id: feature,
         },
       );
-      */
-    case 'arb_new_incentives':
-      return toast.custom(
-        (t) => (
-          <ArbNewIncentivesNotification
-            visible={t.visible}
-            ttl={Infinity}
-            disclosureKey={feature}
-            onDismiss={() => toast.dismiss(t.id)}
-          />
-        ),
-        { duration: Infinity, id: feature },
-      );
-    case 'mantle_new_incentives':
-      return toast.custom(
-        (t) => (
-          <MantleNewIncentivesNotification
-            visible={t.visible}
-            ttl={Infinity}
-            disclosureKey={feature}
-            onDismiss={() => toast.dismiss(t.id)}
-          />
-        ),
-        { duration: Infinity, id: feature },
-      );
-    case 'one_click_trading':
-      return toast.custom(
-        (t) => (
-          <OneClickTradingNotification
-            visible={t.visible}
-            ttl={Infinity}
-            disclosureKey={feature}
-            onDismiss={() => toast.dismiss(t.id)}
-          />
-        ),
-        { duration: Infinity, id: feature },
-      );
   }
 }
 
 // Kind of a hack, but we can leave this here for easy addition of new market notifications
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const NEW_SPOT_PRODUCT_ID = 31;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const NEW_SPOT_METADATA: SpotProductMetadata = {
   marketName: `USDT-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
   token: USDT_ARB_ONE,
-  marketDetails: USDT_SPOT_MARKET_DETAILS,
-  hasLpPool: true,
   quoteProductId: QUOTE_PRODUCT_ID,
+  marketCategories: new Set(['spot']),
 };
 
-/* [REMOVING NEW MARKET NOTIFICATION]
 const NEW_PERP_MARKETS_METADATA = [
-  TON_PERP_METADATA,
-  WIF_PERP_METADATA,
-  FTM_PERP_METADATA,
-  ONDO_PERP_METADATA,
-  MNT_PERP_METADATA,
-  ENA_PERP_METADATA,
+  SCR_PERP_METADATA,
+  DEGEN_PERP_METADATA,
+  GOAT_PERP_METADATA,
+  BRETT_PERP_METADATA,
 ];
-*/

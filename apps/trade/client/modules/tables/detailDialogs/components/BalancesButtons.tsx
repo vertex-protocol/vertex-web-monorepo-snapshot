@@ -1,8 +1,8 @@
 import { BigDecimal, QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 
 interface Props {
@@ -14,14 +14,13 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
   const { hide } = useDialog();
   const showDialogForProduct = useShowDialogForProduct();
   const pushTradePage = usePushTradePage();
-  const userActionState = useUserActionState();
 
+  const isConnected = useIsConnected();
   const disableTrade = productId === QUOTE_PRODUCT_ID;
-  const disableDeposit = userActionState === 'block_all';
-  const disableBorrow = userActionState !== 'allow_all';
-  const disableRepay = userActionState === 'block_all' || balanceAmount.gte(0);
-  const disableWithdraw =
-    userActionState !== 'allow_all' || balanceAmount.lte(0);
+  const disableDeposit = !isConnected;
+  const disableBorrow = !isConnected;
+  const disableRepay = !isConnected || balanceAmount.gte(0);
+  const disableWithdraw = !isConnected || balanceAmount.lte(0);
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -30,6 +29,7 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
           showDialogForProduct({
             dialogType: 'deposit',
             productId,
+            navBehavior: 'push',
           });
         }}
         disabled={disableDeposit}
@@ -52,6 +52,7 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
           showDialogForProduct({
             dialogType: 'withdraw',
             productId,
+            navBehavior: 'push',
           });
         }}
         disabled={disableWithdraw}
@@ -63,6 +64,7 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
           showDialogForProduct({
             dialogType: 'borrow',
             productId,
+            navBehavior: 'push',
           });
         }}
         disabled={disableBorrow}
@@ -74,6 +76,7 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
           showDialogForProduct({
             dialogType: 'repay',
             productId,
+            navBehavior: 'push',
           });
         }}
         disabled={disableRepay}

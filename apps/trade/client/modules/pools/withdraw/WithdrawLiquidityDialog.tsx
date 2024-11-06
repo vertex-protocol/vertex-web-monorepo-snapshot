@@ -1,18 +1,23 @@
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useSubaccountHealthCheckSequencerFee } from 'client/hooks/subaccount/useSubaccountHealthCheckSequencerFee';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { LpInfoPanel } from 'client/modules/pools/components/LpInfoPanel/LpInfoPanel';
-import { useWithdrawLiquidityAmountErrorTooltipContent } from './hooks/useWithdrawLiquidityAmountErrorTooltipContent';
-import { useWithdrawLiquidityForm } from './hooks/useWithdrawLiquidityForm';
-import { WithdrawLiquidityInput } from './WithdrawLiquidityInput';
-import { WithdrawLiquiditySubmitButton } from './WithdrawLiquiditySubmitButton';
-import { WithdrawLiquiditySummary } from './WithdrawLiquiditySummary';
+import { useWithdrawLiquidityAmountErrorTooltipContent } from 'client/modules/pools/withdraw/hooks/useWithdrawLiquidityAmountErrorTooltipContent';
+import { useWithdrawLiquidityForm } from 'client/modules/pools/withdraw/hooks/useWithdrawLiquidityForm';
+import { WithdrawLiquidityInput } from 'client/modules/pools/withdraw/WithdrawLiquidityInput';
+import { WithdrawLiquiditySubmitButton } from 'client/modules/pools/withdraw/WithdrawLiquiditySubmitButton';
+import { WithdrawLiquiditySummary } from 'client/modules/pools/withdraw/WithdrawLiquiditySummary';
 
-export function WithdrawLiquidityDialog() {
+export interface WithdrawLiquidityDialogParams {
+  productId: number;
+}
+
+export function WithdrawLiquidityDialog({
+  productId,
+}: WithdrawLiquidityDialogParams) {
   const {
     form,
     formError,
@@ -26,7 +31,9 @@ export function WithdrawLiquidityDialog() {
     onSubmit,
     validateLpAmount,
     onFractionSelected,
-  } = useWithdrawLiquidityForm();
+  } = useWithdrawLiquidityForm({
+    productId,
+  });
   const { primaryQuoteToken } = useVertexMetadataContext();
   const { hide } = useDialog();
   const sequencerFee = useSubaccountHealthCheckSequencerFee();
@@ -38,10 +45,12 @@ export function WithdrawLiquidityDialog() {
   const hasRequiredData = pairMetadata && currentLpBalance;
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Withdraw Liquidity</BaseDialog.Title>
-      <BaseDialog.Body>
-        <Form onSubmit={onSubmit} className="flex w-full flex-col gap-y-4">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>
+        Withdraw Liquidity
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body asChild>
+        <Form onSubmit={onSubmit}>
           <LpInfoPanel
             metadata={pairMetadata}
             currentLpBalance={currentLpBalance}
@@ -80,7 +89,7 @@ export function WithdrawLiquidityDialog() {
           )}
           <WithdrawLiquiditySubmitButton state={buttonState} />
         </Form>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

@@ -1,5 +1,5 @@
 import { DiscList } from '@vertex-protocol/web-ui';
-import { MarginManagerDefinition } from './MarginManagerDefinition';
+import { MarginManagerDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/MarginManagerDefinition';
 
 const {
   ContentContainer,

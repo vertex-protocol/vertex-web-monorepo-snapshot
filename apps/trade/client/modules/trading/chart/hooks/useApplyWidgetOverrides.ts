@@ -1,4 +1,4 @@
-import { WIDGET_CONFIG } from '../config/widgetConfig';
+import { WIDGET_CONFIG } from 'client/modules/trading/chart/config/widgetConfig';
 import { IChartingLibraryWidget } from 'public/charting_library/charting_library';
 import { useEffect } from 'react';
 

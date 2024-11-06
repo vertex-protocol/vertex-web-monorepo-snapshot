@@ -21,7 +21,14 @@ export function useServerTime() {
       if (disabled) {
         throw new QueryDisabledError();
       }
-      return vertexClient.context.engineClient.getTime();
+
+      const timeOfRequestMillis = Date.now();
+      const serverTimeMillis =
+        await vertexClient.context.engineClient.getTime();
+      return {
+        serverTimeMillis,
+        latencyMillis: Date.now() - timeOfRequestMillis,
+      };
     },
     enabled: !disabled,
     refetchInterval: 5000,

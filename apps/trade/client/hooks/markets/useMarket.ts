@@ -3,7 +3,7 @@ import {
   AllMarketsSelectFn,
   useAllMarkets,
 } from 'client/hooks/query/markets/useAllMarkets';
-import { AnnotatedMarket } from 'common/productMetadata/types';
+import { AnnotatedMarket } from '@vertex-protocol/metadata';
 import { useCallback } from 'react';
 
 interface Params {

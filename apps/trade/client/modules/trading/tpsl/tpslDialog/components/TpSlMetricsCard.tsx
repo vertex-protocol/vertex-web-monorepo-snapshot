@@ -3,7 +3,7 @@ import { Card, Divider } from '@vertex-protocol/web-ui';
 import { MarketInfoWithSide } from 'client/components/MarketInfoWithSide';
 import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useTpSlPositionData } from '../hooks/useTpSlPositionData';
+import { useTpSlPositionData } from 'client/modules/trading/tpsl/tpslDialog/hooks/useTpSlPositionData';
 
 interface Props {
   productId: number;
@@ -23,7 +23,7 @@ export function TpSlMetricsCard({ productId }: Props) {
       <MarketInfoWithSide
         isPerp
         alwaysShowOrderDirection={false}
-        marketName={tpSlPositionData?.metadata?.name}
+        marketName={tpSlPositionData?.metadata?.marketName}
         iconSrc={tpSlPositionData?.metadata?.icon.asset}
         amountForSide={tpSlPositionData?.amount}
       />

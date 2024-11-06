@@ -1,5 +1,5 @@
 import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useTokenAllowance } from 'client/hooks/query/useTokenAllowance';
 
 /**

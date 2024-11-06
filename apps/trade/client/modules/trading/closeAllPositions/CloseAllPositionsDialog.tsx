@@ -1,6 +1,13 @@
-import { SecondaryButton, TextButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
+import {
+  PrimaryButton,
+  SecondaryButton,
+  TextButton,
+} from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
+import {
+  HANDLED_BUTTON_USER_STATE_ERRORS,
+  useButtonUserStateErrorProps,
+} from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useCloseAllPositionsDialog } from 'client/modules/trading/closeAllPositions/hooks/useCloseAllPositionsDialog';
@@ -12,17 +19,19 @@ export function CloseAllPositionsDialog() {
   const { onSubmit, buttonState } = useCloseAllPositionsDialog();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Close All Positions</BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-8 text-sm">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>
+        Close All Positions
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <p>Are you sure you want to close all of your positions?</p>
         <ActionButtons
           hide={hide}
           closeAllPositions={onSubmit}
           buttonState={buttonState}
         />
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }
 
@@ -37,6 +46,10 @@ function ActionButtons({
   closeAllPositions,
   buttonState,
 }: ActionButtonsProps) {
+  const userStateErrorButtonProps = useButtonUserStateErrorProps({
+    handledErrors: HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain,
+  });
+
   const message = useMemo(() => {
     switch (buttonState) {
       case 'loading':
@@ -50,8 +63,12 @@ function ActionButtons({
     }
   }, [buttonState]);
 
-  return (
-    <div className="flex flex-col gap-y-3">
+  const actionButton = (() => {
+    if (userStateErrorButtonProps) {
+      return <PrimaryButton {...userStateErrorButtonProps} />;
+    }
+
+    return (
       <SecondaryButton
         destructive
         isLoading={buttonState === 'loading'}
@@ -59,6 +76,12 @@ function ActionButtons({
       >
         {message}
       </SecondaryButton>
+    );
+  })();
+
+  return (
+    <div className="flex flex-col gap-y-3">
+      {actionButton}
       <TextButton onClick={hide}>Cancel</TextButton>
     </div>
   );

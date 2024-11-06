@@ -28,7 +28,7 @@ export function RadioGroupCard<TIdentifier extends string>({
         className={mergeClassNames(
           'flex flex-col items-stretch gap-y-2',
           'text-left text-sm',
-          active ? 'bg-surface-2 ring-accent' : 'bg-surface-1',
+          active ? 'bg-surface-2 border-accent' : 'bg-surface-1',
           className,
         )}
         disabled={disabled}

@@ -1,24 +1,24 @@
 import { sumBigDecimalBy, TimeInSeconds } from '@vertex-protocol/client';
-import { useEVMContext } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
+import { useSwitchToProtocolTokenChainEnv } from 'client/hooks/util/useSwitchToProtocolTokenChainEnv';
 import { useLatestRewardsEpochs } from 'client/modules/rewards/hooks/useLatestRewardsEpochs';
 import { isBefore, secondsToMilliseconds } from 'date-fns';
 import { get, now } from 'lodash';
 import { useMemo } from 'react';
 
 export function useVrtxSummaryCard() {
-  const { primaryChain, connectionStatus, setPrimaryChainEnv } =
-    useEVMContext();
-  const userActionState = useUserActionState();
-  const { protocolTokenMetadata } = useVertexMetadataContext();
   const { data: latestRewardsEpochs } = useLatestRewardsEpochs();
   const { data: accountTokenClaimState } = useAccountTokenClaimState();
+  const {
+    isOnProtocolTokenChainEnv,
+    switchToProtocolTokenChainEnv,
+    protocolTokenChainName,
+    protocolTokenMetadata,
+  } = useSwitchToProtocolTokenChainEnv();
 
-  const isOnProtocolTokenChain =
-    primaryChain.id === protocolTokenMetadata.chain.id;
+  const isConnected = useIsConnected();
 
   const mappedData = useMemo(() => {
     const { currentEpoch, lastCompletedEpoch } = latestRewardsEpochs;
@@ -97,14 +97,13 @@ export function useVrtxSummaryCard() {
 
   return {
     ...mappedData,
-    isOnProtocolTokenChain,
+    isOnProtocolTokenChainEnv,
+    protocolTokenChainName,
+    switchToProtocolTokenChainEnv,
     protocolTokenMetadata,
-    disableSwitchChainButton: connectionStatus.type !== 'connected',
     disableClaimButton:
       !mappedData.unclaimedLastEpochRewards ||
       mappedData.unclaimedLastEpochRewards.isZero() ||
-      userActionState === 'block_all',
-    vrtxToken: protocolTokenMetadata.token,
-    setPrimaryChainEnv,
+      !isConnected,
   };
 }

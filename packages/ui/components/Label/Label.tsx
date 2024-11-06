@@ -1,17 +1,16 @@
 import {
+  mergeClassNames,
   WithChildren,
   WithClassnames,
-  joinClassNames,
-  mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { SizeVariant } from '../../types';
-import { IconType } from '../Icons';
 import { forwardRef } from 'react';
+import { SizeVariant } from '../../types';
+import { IconComponent } from '../Icons';
 
 export interface LabelProps extends WithClassnames<WithChildren> {
   sizeVariant?: SizeVariant;
-  startIcon?: IconType;
-  endIcon?: IconType;
+  startIcon?: IconComponent;
+  endIcon?: IconComponent;
   iconClassName?: string;
   outerClassName?: string;
 }
@@ -44,11 +43,11 @@ export const Label = forwardRef<HTMLDivElement, LabelProps>(function Label(
       ref={ref}
     >
       {!!StartIcon && (
-        <StartIcon className={joinClassNames('size-4', iconClassName)} />
+        <StartIcon className={mergeClassNames('size-4', iconClassName)} />
       )}
       {children}
       {!!EndIcon && (
-        <EndIcon className={joinClassNames('size-4', iconClassName)} />
+        <EndIcon className={mergeClassNames('size-4', iconClassName)} />
       )}
     </div>
   );

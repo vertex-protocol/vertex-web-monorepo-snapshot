@@ -7,7 +7,7 @@ import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellDa
 import { EngineOrderType } from 'client/modules/trading/types';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { QueryState } from 'client/types/QueryState';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
@@ -59,7 +59,7 @@ export function useOpenEngineOrdersTable(
 
       return ordersForProduct.map(
         (openEngineOrder): OpenEngineOrderTableItem => {
-          const { icon, symbol } = getBaseProductMetadata(market.metadata);
+          const { icon, symbol } = getSharedProductMetadata(market.metadata);
           const decimalAdjustedTotalAmount = removeDecimals(
             openEngineOrder.totalAmount,
           );

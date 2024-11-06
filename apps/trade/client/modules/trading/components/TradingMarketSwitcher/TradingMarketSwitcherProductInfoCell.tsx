@@ -2,7 +2,7 @@ import { BigDecimal } from '@vertex-protocol/client';
 import { NewPill } from 'client/components/NewPill';
 import { formatNumber } from '@vertex-protocol/react-client';
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
+import { TokenIconMetadata } from '@vertex-protocol/metadata';
 import Image from 'next/image';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 
@@ -25,8 +25,8 @@ export function TradingMarketSwitcherProductInfoCell({
     <TableCell className="gap-x-2.5">
       <Image src={icon.asset} className="h-auto w-6" alt={symbol} />
       <div className="flex flex-col items-start leading-4">
-        <p className="text-text-secondary text-sm">{marketName}</p>
-        <p className="text-text-tertiary text-xs">
+        <p className="text-text-secondary text-xs">{marketName}</p>
+        <p className="text-text-tertiary text-2xs">
           {formatNumber(volume24h, {
             formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
           })}

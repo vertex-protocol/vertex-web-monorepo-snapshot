@@ -1,6 +1,10 @@
-import { DiscList, PrimaryButton } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
-import { LinkButton } from 'client/components/LinkButton';
+import {
+  DiscList,
+  LinkButton,
+  PrimaryButton,
+  ScrollShadowsContainer,
+} from '@vertex-protocol/web-ui';
+import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { UseConnectWalletStateMachine } from 'client/modules/app/dialogs/wallet/hooks/useConnectWalletStateMachine';
 import { LINKS } from 'common/brandMetadata/links/links';
 import { clientEnv } from 'common/environment/clientEnv';
@@ -25,10 +29,10 @@ const TERMS_OF_USE_CONTENT = [
 export function TermsOfUseDialogContent({ stateMachine }: Props) {
   return (
     <>
-      <BaseDialog.Title onClose={stateMachine.hideDialog}>
+      <BaseAppDialog.Title onClose={stateMachine.hideDialog}>
         Terms of Use
-      </BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-6 text-sm">
+      </BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <p>
           By clicking this button, you agree to our{' '}
           <LinkButton
@@ -52,18 +56,18 @@ export function TermsOfUseDialogContent({ stateMachine }: Props) {
         </p>
         <div className="flex flex-col gap-y-3">
           <p>You hereby agree and warrant that:</p>
-          <div className="text-text-tertiary bg-surface-1 flex max-h-56 w-full overflow-auto rounded p-4">
+          <ScrollShadowsContainer className="text-text-tertiary bg-surface-1 flex max-h-56 rounded p-4">
             <DiscList.Container className="h-max text-xs">
               {TERMS_OF_USE_CONTENT.map((name) => {
                 return <DiscList.Item key={name}>{name}</DiscList.Item>;
               })}
             </DiscList.Container>
-          </div>
+          </ScrollShadowsContainer>
         </div>
         <PrimaryButton onClick={stateMachine.termsOfUseAgreeClicked}>
           Agree to Terms
         </PrimaryButton>
-      </BaseDialog.Body>
+      </BaseAppDialog.Body>
     </>
   );
 }

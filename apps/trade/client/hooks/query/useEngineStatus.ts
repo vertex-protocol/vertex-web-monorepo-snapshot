@@ -1,22 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 
-function engineStatusQueryKey(chainId?: PrimaryChainID) {
-  return ['engineStatus', chainId];
+function engineStatusQueryKey(chainEnv?: ChainEnv) {
+  return ['engineStatus', chainEnv];
 }
 
 export function useEngineStatus() {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const vertexClient = usePrimaryChainVertexClient();
   const disabled = !vertexClient;
 
   return useQuery({
-    queryKey: engineStatusQueryKey(primaryChainId),
+    queryKey: engineStatusQueryKey(primaryChainEnv),
     queryFn: async () => {
       if (disabled) {
         throw new QueryDisabledError();

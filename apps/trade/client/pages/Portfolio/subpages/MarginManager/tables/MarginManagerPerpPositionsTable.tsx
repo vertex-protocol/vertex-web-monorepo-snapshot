@@ -1,10 +1,13 @@
+'use client';
+
 import { createColumnHelper } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
-import { WithClassnames } from '@vertex-protocol/web-common';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import {
   PresetNumberFormatSpecifier,
-  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { WithClassnames } from '@vertex-protocol/web-common';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
@@ -13,8 +16,7 @@ import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
@@ -23,25 +25,23 @@ import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWi
 import { PnlCell } from 'client/modules/tables/cells/PnlCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
-import { useMemo } from 'react';
-import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
-import { MarginWeightCell } from './cells/MarginWeightCell';
-import { MarginWeightHeaderCell } from './cells/MarginWeightHeaderCell';
+import { CalculatorIconHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/CalculatorIconHeaderCell';
+import { MarginWeightCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginWeightCell';
+import { MarginWeightHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginWeightHeaderCell';
 import {
   MarginManagerPerpPositionsTableItem,
   useMarginManagerPerpPositionsTable,
-} from './hooks/useMarginManagerPerpPositionsTable';
+} from 'client/pages/Portfolio/subpages/MarginManager/tables/hooks/useMarginManagerPerpPositionsTable';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarginManagerPerpPositionsTableItem>();
 
 export function MarginManagerPerpPositionsTable({ className }: WithClassnames) {
+  const { show } = useDialog();
   const { primaryQuoteToken } = useVertexMetadataContext();
   const { positions, isLoading } = useMarginManagerPerpPositionsTable();
 
-  const { show } = useDialog();
-
-  const userActionState = useUserActionState();
-  const disableClosePosition = userActionState !== 'allow_all';
+  const isConnected = useIsConnected();
 
   const columns: ColumnDef<MarginManagerPerpPositionsTableItem, any>[] =
     useMemo(() => {
@@ -67,12 +67,12 @@ export function MarginManagerPerpPositionsTable({ className }: WithClassnames) {
             <HeaderCell header={header}>Position</HeaderCell>
           ),
           cell: (context) => {
-            const { priceIncrement, symbol } = context.row.original.marketInfo;
+            const { sizeIncrement, symbol } = context.row.original.marketInfo;
 
             return (
               <AmountWithSymbolCell
                 amount={context.getValue()}
-                formatSpecifier={getMarketPriceFormatSpecifier(priceIncrement)}
+                formatSpecifier={getMarketSizeFormatSpecifier(sizeIncrement)}
                 symbol={symbol}
               />
             );
@@ -188,7 +188,7 @@ export function MarginManagerPerpPositionsTable({ className }: WithClassnames) {
                       },
                     });
                   })}
-                  disabled={disableClosePosition}
+                  disabled={!isConnected}
                 >
                   Close
                 </SecondaryButton>
@@ -200,7 +200,7 @@ export function MarginManagerPerpPositionsTable({ className }: WithClassnames) {
           },
         }),
       ];
-    }, [disableClosePosition, show, primaryQuoteToken.symbol]);
+    }, [primaryQuoteToken.symbol, isConnected, show]);
 
   return (
     <DataTable

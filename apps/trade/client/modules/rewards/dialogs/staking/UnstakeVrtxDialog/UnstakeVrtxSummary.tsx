@@ -1,23 +1,20 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { VOVRTX_INFO, VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { Icons } from '@vertex-protocol/web-ui';
+import {
+  Icons,
+  formatTimestamp,
+  TimeFormatSpecifier,
+} from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
-import {
-  VOVRTX_INFO,
-  VRTX_TOKEN_INFO,
-} from 'common/productMetadata/vertexTokenInfo';
+import { StakingSummary } from 'client/modules/rewards/dialogs/staking/components/StakingSummary';
+import { useStakingSummary } from 'client/modules/rewards/dialogs/staking/useStakingSummary';
 import Image from 'next/image';
-import { StakingSummary } from '../components/StakingSummary';
-import { useStakingSummary } from '../useStakingSummary';
 
 interface Props extends WithClassnames {
   validAmount: BigDecimal | undefined;
@@ -64,7 +61,7 @@ export function UnstakeVrtxSummary({ className, validAmount }: Props) {
           sizeVariant="xs"
           label="Unlock Time"
           labelClassName="gap-x-1"
-          labelStartIcon={Icons.MdLockOpen}
+          labelStartIcon={Icons.LockOpen}
           valueContent={
             <span className="text-warning">
               {formatTimestamp(unstakeUnlockTimeMillis, {
@@ -143,7 +140,7 @@ export function UnstakeVrtxSummary({ className, validAmount }: Props) {
       className={className}
       expandableContent={content}
       labelContent="Summary"
-      triggerOpen={!!estimatedSummary}
+      isHighlighted={!!estimatedSummary}
     />
   );
 }

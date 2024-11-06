@@ -1,4 +1,4 @@
-import { Token } from 'common/productMetadata/types';
+import { Token } from '@vertex-protocol/metadata';
 import { ReactNode } from 'react';
 
 export interface DefinitionTooltipContent {

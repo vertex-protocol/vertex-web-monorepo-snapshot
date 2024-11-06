@@ -5,13 +5,17 @@ import {
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { CardButton, Divider } from '@vertex-protocol/web-ui';
+import {
+  CardButton,
+  Divider,
+  ScrollShadowsContainer,
+} from '@vertex-protocol/web-ui';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
-import { HowToUseTheMarginManagerDefinition } from './HowToUseTheMarginManagerDefinition';
-import { InitialAndMaintenanceWeightsDefinition } from './InitialAndMaintenanceWeightsDefinition';
-import { InitialVsMaintenanceDefinition } from './InitialVsMaintenanceDefinition';
-import { LiquidationRiskAndFundsAvailableDefinition } from './LiquidationRiskAndFundsAvailableDefinition';
-import { MarginUsageAndFundsAvailableDefinition } from './MarginUsageAndFundsAvailableDefinition';
+import { HowToUseTheMarginManagerDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/HowToUseTheMarginManagerDefinition';
+import { InitialAndMaintenanceWeightsDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/InitialAndMaintenanceWeightsDefinition';
+import { InitialVsMaintenanceDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/InitialVsMaintenanceDefinition';
+import { LiquidationRiskAndFundsAvailableDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/LiquidationRiskAndFundsAvailableDefinition';
+import { MarginUsageAndFundsAvailableDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/MarginUsageAndFundsAvailableDefinition';
 
 const MARGIN_MANAGER_TABS = [
   {
@@ -54,47 +58,45 @@ export function MarginManagerDefinitionsTabs() {
         'h-[420px] p-2 sm:h-96',
       )}
     >
-      <TabsList
-        className={joinClassNames(
-          'flex flex-row gap-2 px-1',
-          'no-scrollbar overflow-x-auto',
-          'sm:flex-1 sm:flex-col',
-        )}
-      >
-        {MARGIN_MANAGER_TABS.map((tab) => {
-          const isSelected = tab.id === selectedTabId;
+      <TabsList asChild>
+        <ScrollShadowsContainer
+          orientation="horizontal"
+          className={joinClassNames(
+            'flex flex-row gap-2 px-1',
+            'sm:flex-1 sm:flex-col',
+          )}
+        >
+          {MARGIN_MANAGER_TABS.map((tab) => {
+            const isSelected = tab.id === selectedTabId;
 
-          const stateClassNames = (() => {
-            if (isSelected) {
+            const stateClassNames = (() => {
+              if (isSelected) {
+                return ['border-accent', 'text-text-primary'];
+              }
               return [
-                'ring-accent',
-                'bg-overlay-accent/10 hover:bg-overlay-accent/15',
-                'text-text-primary',
+                'text-text-tertiary',
+                'bg-background',
+                'hover:text-text-secondary',
               ];
-            }
-            return [
-              'text-text-tertiary',
-              'bg-background',
-              'hover:text-text-secondary hover:bg-overlay-accent/10',
-            ];
-          })();
+            })();
 
-          return (
-            <TabsTrigger key={tab.id} value={tab.id} asChild>
-              <CardButton
-                className={joinClassNames(
-                  'flex min-w-max justify-start',
-                  'flex-1 ring-inset',
-                  'p-3 lg:py-4',
-                  'text-xs lg:text-sm',
-                  stateClassNames,
-                )}
-              >
-                {tab.label}
-              </CardButton>
-            </TabsTrigger>
-          );
-        })}
+            return (
+              <TabsTrigger key={tab.id} value={tab.id} asChild>
+                <CardButton
+                  className={joinClassNames(
+                    'flex min-w-max justify-start',
+                    'flex-1',
+                    'p-3 lg:py-4',
+                    'text-xs lg:text-sm',
+                    stateClassNames,
+                  )}
+                >
+                  {tab.label}
+                </CardButton>
+              </TabsTrigger>
+            );
+          })}
+        </ScrollShadowsContainer>
       </TabsList>
       <Divider vertical className="hidden lg:flex" />
       {tabs.map(({ id, content }) => (

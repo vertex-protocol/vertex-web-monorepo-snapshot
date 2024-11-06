@@ -1,16 +1,17 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { isSpotProduct } from '@vertex-protocol/contracts';
 import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import {
   BigDecimal,
   BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
-import {
-  createQueryKey,
-  QueryDisabledError,
-} from '@vertex-protocol/react-client';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { calcBorrowAPR, calcDepositAPR } from 'client/utils/calcs/calcSpotApr';
+import { useSpotInterestRates } from 'client/hooks/markets/useSpotInterestRates';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import {
   calcSpotBalanceHealth,
   InitialMaintMetrics,
@@ -19,8 +20,7 @@ import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import {
   AnnotatedSpotBalanceWithProduct,
   SpotProductMetadata,
-} from 'common/productMetadata/types';
-import { useCurrentSubaccountSummary } from '../query/subaccount/useCurrentSubaccountSummary';
+} from '@vertex-protocol/metadata';
 
 export interface SpotBalanceItem {
   metadata: SpotProductMetadata;
@@ -32,8 +32,8 @@ export interface SpotBalanceItem {
   oraclePriceUsd: BigDecimal;
   valueUsd: BigDecimal;
   healthMetrics: InitialMaintMetrics;
-  depositAPR: BigDecimal;
-  borrowAPR: BigDecimal;
+  depositAPR: BigDecimal | undefined;
+  borrowAPR: BigDecimal | undefined;
 }
 
 interface UseSpotBalances {
@@ -54,7 +54,8 @@ export function useSpotBalances(): UseSpotBalances {
     isError: summaryError,
     isLoading: summaryLoading,
     dataUpdatedAt,
-  } = useCurrentSubaccountSummary();
+  } = useSubaccountSummary();
+  const { data: spotInterestRates } = useSpotInterestRates();
 
   const disabled = !summaryData;
 
@@ -98,8 +99,8 @@ export function useSpotBalances(): UseSpotBalances {
             initial: removeDecimals(healthMetrics.initial),
             maintenance: removeDecimals(healthMetrics.maintenance),
           },
-          depositAPR: calcDepositAPR(balanceWithProduct),
-          borrowAPR: calcBorrowAPR(balanceWithProduct),
+          depositAPR: spotInterestRates?.[balance.productId]?.deposit,
+          borrowAPR: spotInterestRates?.[balance.productId]?.borrow,
         };
       });
   };

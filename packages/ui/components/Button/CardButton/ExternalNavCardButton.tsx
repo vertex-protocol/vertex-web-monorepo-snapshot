@@ -5,31 +5,28 @@ import { NavCardButtonContent } from './NavCardButtonContent';
 import { NavCardBaseProps } from './types';
 
 export function ExternalNavCardButton({
-  icon: Icon,
-  className,
   title,
   description,
+  icon,
+  className,
   contentClassName,
   ...rest
 }: NavCardBaseProps) {
   return (
     <CardButton
-      className={joinClassNames('rounded p-4', className)}
-      startIcon={
-        Icon ? <Icon className="text-text-primary" size={24} /> : undefined
-      }
+      className={joinClassNames('rounded px-4 py-3', className)}
       stateOverlayBorderRadiusVariant="base"
-      endIcon={
-        <Icons.PiArrowUpRight size={20} className="text-text-tertiary" />
-      }
+      endIcon={<Icons.ArrowUpRight size={20} className="text-text-tertiary" />}
       {...rest}
     >
       <NavCardButtonContent
-        className={joinClassNames('flex-1', contentClassName)}
+        icon={icon}
+        className={joinClassNames('flex-1 gap-y-0.5', contentClassName)}
         title={title}
         description={description}
         titleClassName="text-base"
-        descriptionClassName="text-sm"
+        descriptionClassName="text-xs"
+        iconClassName="h-4"
       />
     </CardButton>
   );

@@ -3,14 +3,14 @@ import { removeDecimals } from '@vertex-protocol/utils';
 
 /**
  * @param value
- * @param quotePrice
+ * @param primaryQuotePriceUsd
  * @returns Decimal adjusted USD value
  */
 export function calcDecimalAdjustedUsdValue(
   value: BigDecimal,
-  quotePrice: BigDecimal,
+  primaryQuotePriceUsd: BigDecimal,
 ) {
-  const usdValue = value.multipliedBy(quotePrice);
+  const usdValue = value.multipliedBy(primaryQuotePriceUsd);
   const decimalAdjustedUsdValue = removeDecimals(usdValue);
 
   return decimalAdjustedUsdValue.toNumber();

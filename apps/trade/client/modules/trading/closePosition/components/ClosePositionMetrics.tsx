@@ -1,3 +1,7 @@
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
   joinClassNames,
@@ -6,8 +10,6 @@ import {
 } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
 import { MarketInfoWithSide } from 'client/components/MarketInfoWithSide';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { ReactNode } from 'react';
 
@@ -37,7 +39,12 @@ export function ClosePositionMetrics({
   estimatedPnlUsd,
 }: ClosePositionMetricsProps) {
   return (
-    <div className="bg-surface-1 flex flex-col gap-y-4 rounded px-3.5 py-3">
+    <div
+      className={joinClassNames(
+        'flex flex-col gap-y-4 px-3.5 py-3',
+        'bg-surface-1 rounded',
+      )}
+    >
       <div className="grid grid-cols-2">
         <MarketInfoWithSide
           isPerp

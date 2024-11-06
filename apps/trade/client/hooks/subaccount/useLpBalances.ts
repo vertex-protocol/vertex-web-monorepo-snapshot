@@ -4,15 +4,16 @@ import {
   ProductEngineType,
 } from '@vertex-protocol/contracts';
 import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import {
   BigDecimal,
   BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
-import {
-  createQueryKey,
-  QueryDisabledError,
-} from '@vertex-protocol/react-client';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import {
   calcLpBalanceHealth,
   InitialMaintMetrics,
@@ -21,9 +22,7 @@ import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import {
   PerpProductMetadata,
   SpotProductMetadata,
-} from 'common/productMetadata/types';
-
-import { useCurrentSubaccountSummary } from '../query/subaccount/useCurrentSubaccountSummary';
+} from '@vertex-protocol/metadata';
 
 type LpUnderlyingProduct =
   | {
@@ -72,8 +71,8 @@ export function useLpBalances(): UseLpBalances {
     isError: summaryError,
     isLoading: summaryLoading,
     dataUpdatedAt,
-  } = useCurrentSubaccountSummary();
-  const quotePrice = usePrimaryQuotePriceUsd();
+  } = useSubaccountSummary();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const disabled = !summaryData;
 
@@ -110,7 +109,7 @@ export function useLpBalances(): UseLpBalances {
         product,
         productId: balance.productId,
         oraclePrice: balance.oraclePrice,
-        oraclePriceUsd: balance?.oraclePrice.multipliedBy(quotePrice),
+        oraclePriceUsd: balance?.oraclePrice.multipliedBy(primaryQuotePriceUsd),
         lpAmount: decimalAdjustedLpAmount,
         underlyingAmount: removeDecimals(balance.amount),
         amountBase: removeDecimals(
@@ -120,7 +119,7 @@ export function useLpBalances(): UseLpBalances {
           balance.totalLpQuoteAmount.multipliedBy(shareOfPool),
         ),
         lpValueUsd: removeDecimals(calcLpBalanceValue(balance)).multipliedBy(
-          quotePrice,
+          primaryQuotePriceUsd,
         ),
         healthMetrics: {
           initial: removeDecimals(healthMetrics.initial),

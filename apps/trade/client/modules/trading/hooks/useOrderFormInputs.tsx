@@ -1,3 +1,7 @@
+import { BigDecimal } from '@vertex-protocol/client';
+import { useOrderFormAssetAmountErrorTooltipContent } from 'client/modules/trading/hooks/useOrderFormAssetAmountErrorTooltipContent';
+import { useOrderFormPriceErrorTooltipContent } from 'client/modules/trading/hooks/useOrderFormPriceErrorTooltipContent';
+import { useOrderFormQuoteAmountErrorTooltipContent } from 'client/modules/trading/hooks/useOrderFormQuoteAmountErrorTooltipContent';
 import {
   BaseOrderFormValues,
   OrderFormError,
@@ -5,10 +9,6 @@ import {
 } from 'client/modules/trading/types';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { BigDecimal } from '@vertex-protocol/client';
-import { useOrderFormAssetAmountErrorTooltipContent } from './useOrderFormAssetAmountErrorTooltipContent';
-import { useOrderFormPriceErrorTooltipContent } from './useOrderFormPriceErrorTooltipContent';
-import { useOrderFormQuoteAmountErrorTooltipContent } from './useOrderFormQuoteAmountErrorTooltipContent';
 
 interface Params {
   formError: OrderFormError | undefined;
@@ -106,7 +106,6 @@ export function useOrderFormInputs({
       price: priceErrorTooltipContent,
       quoteAmount: quoteAmountErrorTooltipContent,
     },
-    showStopMarketInfoTooltip: priceType === 'stop',
     onFractionChange,
     onFocusAmountSource,
   };

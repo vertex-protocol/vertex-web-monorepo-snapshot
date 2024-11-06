@@ -10,7 +10,7 @@ export function LpLiquidationPairInfo({ metadata }: Props) {
     <div className="flex w-32 items-center gap-x-2">
       <StackedTokenPairIcon metadata={metadata} />
       <div className="flex flex-col gap-y-0.5">
-        <p className="text-text-primary text-xs">
+        <p className="text-text-primary text-xs font-medium">
           {`${metadata.base.symbol}-${metadata.quote.symbol}`}
         </p>
         <p className="text-text-tertiary text-3xs uppercase">Pool</p>

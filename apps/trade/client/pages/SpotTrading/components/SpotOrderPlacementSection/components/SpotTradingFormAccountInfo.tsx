@@ -4,9 +4,9 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { WithClassnames } from '@vertex-protocol/web-common';
-import { Summary } from 'client/components/Summary';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useSpotOrderFormContext } from 'client/pages/SpotTrading/context/SpotOrderFormContext';
+import { SpotTradingFormTradingAccountMetrics } from 'client/pages/SpotTrading/hooks/useSpotTradingFormAccountMetrics';
 
 interface Props {
   leverageEnabled: boolean;
@@ -14,6 +14,7 @@ interface Props {
   showQuote: boolean | undefined;
   maxOrderSize: BigDecimal | undefined;
   symbol: string | undefined;
+  derivedMetrics: SpotTradingFormTradingAccountMetrics['derivedMetrics'];
 }
 
 export function SpotTradingFormAccountInfo({
@@ -22,12 +23,9 @@ export function SpotTradingFormAccountInfo({
   showQuote,
   sizeIncrement,
   symbol = '',
-  className,
-}: WithClassnames<Props>) {
-  const {
-    tradingAccountMetrics: { derivedMetrics },
-    allowAnyOrderSizeIncrement,
-  } = useSpotOrderFormContext();
+  derivedMetrics,
+}: Props) {
+  const { allowAnyOrderSizeIncrement } = useSpotOrderFormContext();
 
   const sizeFormatSpecifier = (() => {
     if (showQuote) {
@@ -40,42 +38,35 @@ export function SpotTradingFormAccountInfo({
     return getMarketSizeFormatSpecifier(sizeIncrement);
   })();
 
-  const items = (() => {
-    if (leverageEnabled) {
-      return (
-        <>
-          <Summary.Item
-            label={
-              <>
-                <span className="text-positive">Max</span> Available:
-              </>
-            }
-            value={maxOrderSize}
-            numberFormatSpecifier={sizeFormatSpecifier}
-            valueEndElement={symbol}
-          />
-          <Summary.Item
-            label="Borrow:"
-            valueEndElement={derivedMetrics.borrowAssetSymbol}
-            numberFormatSpecifier={sizeFormatSpecifier}
-            value={derivedMetrics.amountToBorrow}
-          />
-        </>
-      );
-    }
-
+  if (leverageEnabled) {
     return (
-      <Summary.Item
-        label="Available:"
-        value={maxOrderSize}
-        numberFormatSpecifier={sizeFormatSpecifier}
-        valueEndElement={symbol}
-        definitionTooltipId={
-          showQuote ? 'spotTradingAvailableQuote' : undefined
-        }
-      />
+      <div className="flex flex-col gap-y-1">
+        <ValueWithLabel.Horizontal
+          label="Max Available:"
+          sizeVariant="xs"
+          value={maxOrderSize}
+          numberFormatSpecifier={sizeFormatSpecifier}
+          valueEndElement={symbol}
+        />
+        <ValueWithLabel.Horizontal
+          label="Amount to Borrow:"
+          sizeVariant="xs"
+          valueEndElement={derivedMetrics.borrowAssetSymbol}
+          numberFormatSpecifier={sizeFormatSpecifier}
+          value={derivedMetrics.amountToBorrow}
+        />
+      </div>
     );
-  })();
+  }
 
-  return <Summary.Container className={className}>{items}</Summary.Container>;
+  return (
+    <ValueWithLabel.Horizontal
+      sizeVariant="xs"
+      label="Available:"
+      value={maxOrderSize}
+      numberFormatSpecifier={sizeFormatSpecifier}
+      valueEndElement={symbol}
+      tooltip={showQuote ? { id: 'spotTradingAvailableQuote' } : undefined}
+    />
+  );
 }

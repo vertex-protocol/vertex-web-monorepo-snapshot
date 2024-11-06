@@ -3,15 +3,15 @@ import { ColumnDef } from '@tanstack/table-core';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
-  useEVMContext,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
+import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { LpActionsCell } from 'client/modules/pools/components/LpActionsCell';
 import { LpTableItem, useLpTable } from 'client/modules/pools/hooks/useLpTable';
@@ -32,9 +32,8 @@ export function LpMarketsTable({ className }: WithClassnames) {
   });
 
   const { show } = useDialog();
-  const { connectionStatus } = useEVMContext();
   const isDesktop = useIsDesktop();
-  const isConnected = connectionStatus.type === 'connected';
+  const isConnected = useIsConnected();
 
   const columns: ColumnDef<LpTableItem, any>[] = useMemo(() => {
     return [

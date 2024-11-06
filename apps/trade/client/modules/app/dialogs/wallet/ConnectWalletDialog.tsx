@@ -19,6 +19,8 @@ export function ConnectWalletDialog() {
   })();
 
   return (
-    <BaseAppDialog onClose={stateMachine.hideDialog}>{content}</BaseAppDialog>
+    <BaseAppDialog.Container onClose={stateMachine.hideDialog}>
+      {content}
+    </BaseAppDialog.Container>
   );
 }

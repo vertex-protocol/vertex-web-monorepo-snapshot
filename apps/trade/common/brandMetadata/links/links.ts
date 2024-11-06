@@ -3,12 +3,15 @@ import { VERTEX_COMMON_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import { clientEnv } from 'common/environment/clientEnv';
 
 const SHARED_LINKS = {
+  edge: 'https://edge.vertexprotocol.com/',
   elixir: 'https://app.elixir.finance/',
+  ethWallets: 'https://ethereum.org/en/wallets/find-wallet/',
   kado: 'https://kado.money',
+  perpsAi: 'https://perps.ai/',
+  skateFi: 'https://app.skatefi.org/',
   transak: 'https://transak.com',
   twitterTweet: 'https://twitter.com/compose/tweet',
   unlimit: 'https://unlimit.com',
-  edge: 'https://edge.vertexprotocol.com/',
 };
 
 const LINKS_BY_BRAND_NAME = {

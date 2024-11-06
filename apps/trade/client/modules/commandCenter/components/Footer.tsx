@@ -1,15 +1,15 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Divider, Icons } from '@vertex-protocol/web-ui';
-import { IMAGES } from 'common/brandMetadata/images';
 import { Kbd } from 'client/modules/commandCenter/components/Kbd';
-import React, { ReactNode } from 'react';
+import { IMAGES } from 'common/brandMetadata/images';
 import Image from 'next/image';
+import { ReactNode } from 'react';
 
 export function Footer() {
   return (
     <div
       className={joinClassNames(
-        'hidden items-center justify-between px-6 py-4 lg:flex',
+        'hidden items-center justify-between rounded-b-xl px-6 py-4 lg:flex',
         'bg-surface-card text-xs',
       )}
     >
@@ -17,8 +17,8 @@ export function Footer() {
         <Section>
           Navigate
           <div className="flex gap-x-1">
-            <Kbd icon={Icons.AiOutlineArrowUp} />
-            <Kbd icon={Icons.AiOutlineArrowDown} />
+            <Kbd icon={Icons.ArrowUp} />
+            <Kbd icon={Icons.ArrowDown} />
           </div>
         </Section>
         <Divider vertical />

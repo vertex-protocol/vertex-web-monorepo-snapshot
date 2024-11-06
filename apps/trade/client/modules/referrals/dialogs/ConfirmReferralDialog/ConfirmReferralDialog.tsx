@@ -1,24 +1,18 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { CheckmarkIcon } from 'client/components/CheckmarkIcon';
 import { IdentityIcon } from 'client/components/Icons/IdentityIcon';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { VertexReferralLinkBar } from 'client/modules/referrals/components/VertexReferralLinkBar';
 import { FUUL_REFERRALS_REWARDS_CONFIG } from 'client/modules/referrals/consts';
 import { ConfirmReferralSubmitButton } from 'client/modules/referrals/dialogs/ConfirmReferralDialog/ConfirmReferralSubmitButton';
 import { useConfirmReferralDialog } from 'client/modules/referrals/dialogs/ConfirmReferralDialog/hooks/useConfirmReferralDialog';
 import { formatReferralCode } from 'client/modules/referrals/utils/formatReferralCode';
-import { VertexReferralLinkBar } from 'client/pages/VertexReferrals/components/ReferralsReferTradersCard/VertexReferralLinkBar';
 
 export function ConfirmReferralDialog() {
   const { hide } = useDialog();
-  const {
-    confirmButtonState,
-    onConfirmReferral,
-    payoutToken,
-    referralCodeForCurrentUser,
-    referralCodeForSession,
-  } = useConfirmReferralDialog();
+  const { confirmButtonState, onConfirmReferral, referralCodeForSession } =
+    useConfirmReferralDialog();
 
   const isReferralConfirmed = confirmButtonState === 'success';
 
@@ -27,7 +21,7 @@ export function ConfirmReferralDialog() {
       <div
         className={joinClassNames(
           'flex flex-col items-center gap-y-6',
-          'text-text-tertiary text-sm',
+          'text-text-tertiary',
         )}
       >
         <div className="flex items-center gap-x-1.5">
@@ -55,27 +49,25 @@ export function ConfirmReferralDialog() {
       <CheckmarkIcon size={90} />
       <div className="flex flex-col gap-y-1 text-center">
         <p className="text-text-primary text-xl">Referral Confirmed!</p>
-        <p className="text-text-secondary text-sm">
+        <p>
           Share the link below to refer other traders and earn more rewards.
         </p>
       </div>
       <VertexReferralLinkBar
         // w-full is required in order for truncate text to work properly
         className="w-full"
-        referralCode={referralCodeForCurrentUser}
-        payoutToken={payoutToken}
       />
     </div>
   );
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Confirm Referral</BaseDialog.Title>
-      <BaseDialog.Body>
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>Confirm Referral</BaseAppDialog.Title>
+      <BaseAppDialog.Body asChild>
         {isReferralConfirmed
           ? referralConfirmedContent
           : confirmReferralContent}
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

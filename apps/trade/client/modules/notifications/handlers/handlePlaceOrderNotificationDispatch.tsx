@@ -1,16 +1,16 @@
 import { asyncResult } from '@vertex-protocol/utils';
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
+import { PlaceOrderErrorNotification } from 'client/modules/notifications/components/orders/PlaceOrderErrorNotification';
+import { PlaceOrderSuccessNotification } from 'client/modules/notifications/components/orders/PlaceOrderSuccessNotification';
+import { SignaturePendingNotification } from 'client/modules/notifications/components/SignaturePendingNotification';
+import {
+  NotificationDispatchContext,
+  PlaceOrderNotificationData,
+} from 'client/modules/notifications/types';
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
 import toast from 'react-hot-toast';
-import { PlaceOrderErrorNotification } from '../components/orders/PlaceOrderErrorNotification';
-import { PlaceOrderSuccessNotification } from '../components/orders/PlaceOrderSuccessNotification';
-import { SignaturePendingNotification } from '../components/SignaturePendingNotification';
-import {
-  NotificationDispatchContext,
-  PlaceOrderNotificationData,
-} from '../types';
 
 export async function handlePlaceOrderNotificationDispatch(
   placeOrderNotificationData: PlaceOrderNotificationData,

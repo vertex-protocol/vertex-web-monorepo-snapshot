@@ -1,16 +1,16 @@
+import { formatNumber } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { HistoricalLiquidationEvent } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
-import { BigDecimal } from '@vertex-protocol/utils';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { joinClassNames } from '@vertex-protocol/web-common';
 import { LIQUIDATION_MULTI_BALANCE_CELL_CONTAINER_CLASSNAME } from 'client/pages/Portfolio/subpages/History/components/cells/liquidation/consts';
+import { HistoricalLiquidationsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 
 interface Props
   extends TableCellProps,
-    Pick<HistoricalLiquidationEvent, 'spot' | 'perp' | 'decomposedLps'> {}
+    Pick<HistoricalLiquidationsTableItem, 'spot' | 'perp' | 'decomposedLps'> {}
 
 export function LiquidationOraclePriceCell({
   spot,
@@ -30,7 +30,7 @@ export function LiquidationOraclePriceCell({
       {decomposedLps.map((lp) => {
         return (
           <PriceInfo
-            key={lp.baseMetadata.symbol}
+            key={lp.sharedMetadata.symbol}
             price={lp.oraclePrice}
             formatSpecifier={lp.priceFormatSpecifier}
           />

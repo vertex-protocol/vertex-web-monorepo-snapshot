@@ -3,7 +3,7 @@ import {
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { IconType } from '../Icons';
+import { IconComponent } from '../Icons';
 
 function IconDiscListContainer({
   children,
@@ -17,7 +17,7 @@ function IconDiscListContainer({
 }
 
 interface Props extends WithChildren<WithClassnames> {
-  icon: IconType;
+  icon: IconComponent;
   size?: number;
 }
 

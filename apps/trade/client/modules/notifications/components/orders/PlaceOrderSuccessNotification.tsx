@@ -1,18 +1,19 @@
-import { ROUTES } from 'client/modules/app/consts/routes';
-import { toBigDecimal } from '@vertex-protocol/utils';
-import { Toast } from 'client/components/Toast/Toast';
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+  getMarketPriceFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import { removeDecimals, toBigDecimal } from '@vertex-protocol/utils';
+import { CounterPill } from '@vertex-protocol/web-ui';
 import { ActionToast } from 'client/components/Toast/ActionToast/ActionToast';
+import { Toast } from 'client/components/Toast/Toast';
 import { ToastProps } from 'client/components/Toast/types';
+import { ROUTES } from 'client/modules/app/consts/routes';
 import { NotificationPositionInfo } from 'client/modules/notifications/components/NotificationPositionInfo';
 import { OrderNotificationValueItem } from 'client/modules/notifications/components/orders/OrderNotificationValueItem';
+import { OrderSuccessIcon } from 'client/modules/notifications/components/OrderSuccessIcon';
 import { PlaceOrderNotificationData } from 'client/modules/notifications/types';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import { removeDecimals } from '@vertex-protocol/utils';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
-import { OrderSuccessIcon } from '../OrderSuccessIcon';
-import { CounterPill } from '@vertex-protocol/web-ui';
 
 interface PlaceOrderSuccessProps extends ToastProps {
   orderData: PlaceOrderNotificationData;

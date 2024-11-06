@@ -9,12 +9,12 @@ import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWi
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import {
-  HistoricalSettlementEvent,
+  HistoricalSettlementsTableItem,
   useHistoricalSettlementsTable,
 } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalSettlementsTable';
 import { useMemo } from 'react';
 
-const columnHelper = createColumnHelper<HistoricalSettlementEvent>();
+const columnHelper = createColumnHelper<HistoricalSettlementsTableItem>();
 
 export function HistoricalSettlementsTable() {
   const {
@@ -25,57 +25,60 @@ export function HistoricalSettlementsTable() {
     pageCount,
   } = useHistoricalSettlementsTable();
 
-  const columns: ColumnDef<HistoricalSettlementEvent, any>[] = useMemo(() => {
-    return [
-      columnHelper.accessor('timestampMillis', {
-        header: ({ header }) => <HeaderCell header={header}>Time</HeaderCell>,
-        cell: (context) => (
-          <DateTimeCell timestampMillis={context.getValue()} />
-        ),
-        sortingFn: 'basic',
-        meta: {
-          cellContainerClassName: 'w-32',
-          withLeftPadding: true,
-        },
-      }),
-      columnHelper.accessor('marketInfo', {
-        header: ({ header }) => <HeaderCell header={header}>Market</HeaderCell>,
-        cell: (context) => (
-          <MarketInfoWithSideCell
-            alwaysShowOrderDirection={false}
-            marketInfo={context.getValue()}
-          />
-        ),
-        enableSorting: false,
-        meta: {
-          cellContainerClassName: 'w-32',
-        },
-      }),
-      columnHelper.accessor('settlementQuoteAmount', {
-        header: ({ header }) => (
-          <HeaderCell header={header}>
-            <DefinitionTooltip definitionId="historicalSettlement">
-              Settlement
-            </DefinitionTooltip>
-          </HeaderCell>
-        ),
-        cell: (context) => (
-          <AmountWithSymbolCell
-            amount={context.getValue()}
-            symbol={context.row.original.marketInfo.quoteSymbol}
-            formatSpecifier={getMarketQuoteSizeFormatSpecifier(
-              context.row.original.marketInfo.isPrimaryQuote,
-              true,
-            )}
-          />
-        ),
-        sortingFn: bigDecimalSortFn,
-        meta: {
-          cellContainerClassName: 'w-36 grow',
-        },
-      }),
-    ];
-  }, []);
+  const columns: ColumnDef<HistoricalSettlementsTableItem, any>[] =
+    useMemo(() => {
+      return [
+        columnHelper.accessor('timestampMillis', {
+          header: ({ header }) => <HeaderCell header={header}>Time</HeaderCell>,
+          cell: (context) => (
+            <DateTimeCell timestampMillis={context.getValue()} />
+          ),
+          sortingFn: 'basic',
+          meta: {
+            cellContainerClassName: 'w-32',
+            withLeftPadding: true,
+          },
+        }),
+        columnHelper.accessor('marketInfo', {
+          header: ({ header }) => (
+            <HeaderCell header={header}>Market</HeaderCell>
+          ),
+          cell: (context) => (
+            <MarketInfoWithSideCell
+              alwaysShowOrderDirection={false}
+              marketInfo={context.getValue()}
+            />
+          ),
+          enableSorting: false,
+          meta: {
+            cellContainerClassName: 'w-32',
+          },
+        }),
+        columnHelper.accessor('settlementQuoteAmount', {
+          header: ({ header }) => (
+            <HeaderCell header={header}>
+              <DefinitionTooltip definitionId="historicalSettlement">
+                Settlement
+              </DefinitionTooltip>
+            </HeaderCell>
+          ),
+          cell: (context) => (
+            <AmountWithSymbolCell
+              amount={context.getValue()}
+              symbol={context.row.original.marketInfo.quoteSymbol}
+              formatSpecifier={getMarketQuoteSizeFormatSpecifier(
+                context.row.original.marketInfo.isPrimaryQuote,
+                true,
+              )}
+            />
+          ),
+          sortingFn: bigDecimalSortFn,
+          meta: {
+            cellContainerClassName: 'w-36 grow',
+          },
+        }),
+      ];
+    }, []);
 
   return (
     <DataTable

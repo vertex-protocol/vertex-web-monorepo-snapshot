@@ -29,7 +29,7 @@ function Item({
 
 function Container({ className, children }: WithChildren<WithClassnames>) {
   return (
-    <div className={mergeClassNames('flex px-4 py-2', className)}>
+    <div className={mergeClassNames('flex gap-x-1 px-4 py-2', className)}>
       {children}
     </div>
   );

@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { GetIndexerMultiSubaccountSnapshotsParams } from '@vertex-protocol/client';
+import {
+  ChainEnv,
+  GetIndexerMultiSubaccountSnapshotsParams,
+} from '@vertex-protocol/client';
 import { IndexerSubaccountSnapshot } from '@vertex-protocol/indexer-client';
 import { nowInSeconds } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -16,14 +17,14 @@ import { ZeroAddress } from 'ethers';
 import { get } from 'lodash';
 
 export function subaccountIndexerSnapshotsQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   subaccountOwner?: string,
   subaccountName?: string,
   secondsBeforeNow?: number[],
 ) {
   return createQueryKey(
     'subaccountIndexerSnapshots',
-    chainId,
+    chainEnv,
     subaccountOwner,
     subaccountName,
     secondsBeforeNow,
@@ -50,9 +51,12 @@ export function useSubaccountIndexerSnapshots<TSelectedData = Data>({
     'subaccountIndexerSnapshots',
     true,
   );
-  const primaryChainId = usePrimaryChainId();
   const {
-    currentSubaccount: { name: subaccountName, address: subaccountOwner },
+    currentSubaccount: {
+      name: subaccountName,
+      address: subaccountOwner,
+      chainEnv,
+    },
   } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 
@@ -101,7 +105,7 @@ export function useSubaccountIndexerSnapshots<TSelectedData = Data>({
 
   return useQuery({
     queryKey: subaccountIndexerSnapshotsQueryKey(
-      primaryChainId,
+      chainEnv,
       subaccountOwnerForQuery,
       subaccountName,
       secondsBeforeNow,

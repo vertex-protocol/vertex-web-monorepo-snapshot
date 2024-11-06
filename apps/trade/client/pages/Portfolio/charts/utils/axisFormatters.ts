@@ -3,10 +3,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { formatNumber } from '@vertex-protocol/react-client';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
+import { formatTimestamp, TimeFormatSpecifier } from '@vertex-protocol/web-ui';
 
 /**
  * @param value in milliseconds

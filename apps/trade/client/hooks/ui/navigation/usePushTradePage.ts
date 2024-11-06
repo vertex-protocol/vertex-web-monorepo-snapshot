@@ -1,23 +1,29 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
+import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { useRouter } from 'next/router';
+import { get, startsWith } from 'lodash';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCallback } from 'react';
-import { useProductTradingLinks } from './useProductTradingLinks';
 
 interface Params {
   productId: number;
 }
 
 export function usePushTradePage() {
-  const { push, replace, asPath } = useRouter();
+  const { push, replace } = useRouter();
+  const pathname = usePathname();
   const productTradingLinks = useProductTradingLinks();
 
-  const isOnSpot = asPath.startsWith(ROUTES.spotTrading);
-  const isOnPerp = asPath.startsWith(ROUTES.perpTrading);
+  const isOnSpot = startsWith(pathname, ROUTES.spotTrading);
+  const isOnPerp = startsWith(pathname, ROUTES.perpTrading);
 
   return useCallback(
     async (params: Params) => {
-      const productTradingLink = productTradingLinks[params.productId];
+      const productTradingLink = get(
+        productTradingLinks,
+        params.productId,
+        undefined,
+      );
 
       if (!productTradingLink) {
         return;

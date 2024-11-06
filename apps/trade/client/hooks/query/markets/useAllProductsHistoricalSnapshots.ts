@@ -1,23 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
-import { IndexerProductSnapshot } from '@vertex-protocol/client';
+import { ChainEnv, IndexerProductSnapshot } from '@vertex-protocol/client';
 import { nowInSeconds } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
+  useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 
 export function allProductsHistoricalSnapshotsQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   productIds?: number[],
   secondsBeforeNow?: number[],
 ) {
   return createQueryKey(
     'allProductsHistoricalSnapshot',
-    chainId,
+    chainEnv,
     productIds,
     secondsBeforeNow,
   );
@@ -31,14 +30,14 @@ export function allProductsHistoricalSnapshotsQueryKey(
  */
 export function useAllProductsHistoricalSnapshots(secondsBeforeNow: number[]) {
   const vertexClient = usePrimaryChainVertexClient();
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const { filteredProductIds: allProductIds } = useFilteredMarkets();
 
   const disabled = !vertexClient || allProductIds.length === 0;
 
   return useQuery({
     queryKey: allProductsHistoricalSnapshotsQueryKey(
-      primaryChainId,
+      primaryChainEnv,
       allProductIds,
       secondsBeforeNow,
     ),

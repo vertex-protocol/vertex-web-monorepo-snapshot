@@ -6,8 +6,8 @@ import { SubaccountTx } from '@vertex-protocol/engine-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { AnnotatedSubaccountSummary } from 'client/hooks/query/subaccount/annotateSubaccountSummary';
-import { useCurrentSubaccountEstimatedSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountEstimatedSummary';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountEstimatedSummary } from 'client/hooks/query/subaccount/useSubaccountEstimatedSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { useDebounceFalsy } from 'client/hooks/util/useDebounceFalsy';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
@@ -21,6 +21,7 @@ export interface UseEstimateSubaccountInfoChange<TAdditionalInfo> {
 interface UseEstimatedSubaccountInfoChangeParams<TAdditionalInfo> {
   estimateStateTxs: SubaccountTx[];
   additionalInfoFactory?: AdditionalSubaccountInfoFactory<TAdditionalInfo>;
+  subaccountName?: string;
 }
 
 export interface EstimatedBaseSubaccountInfo {
@@ -48,17 +49,20 @@ export type AdditionalSubaccountInfoFactory<TAdditionalInfo> = (
  * Estimates a change in subaccount info. additionalInfoFactory MUST be memoized in a `useCallback`
  * @param estimateStateTxs
  * @param additionalInfoFactory
+ * @param subaccountName
  */
 export function useEstimateSubaccountInfoChange<TAdditionalInfo = EmptyObject>({
   estimateStateTxs,
   additionalInfoFactory,
+  subaccountName,
 }: UseEstimatedSubaccountInfoChangeParams<TAdditionalInfo>): UseEstimateSubaccountInfoChange<TAdditionalInfo> {
-  const { data: current } = useCurrentSubaccountSummary();
-  const { data: estimated } = useCurrentSubaccountEstimatedSummary({
+  const { data: current } = useSubaccountSummary({ subaccountName });
+  const { data: estimated } = useSubaccountEstimatedSummary({
     estimateStateTxs,
+    subaccountName,
   });
 
-  const quotePriceUsd = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   const estimatedSubaccountInfo = useMemo(() => {
     // If there are no transactions, force this to be undefined to indicate that there is no change
@@ -66,14 +70,14 @@ export function useEstimateSubaccountInfoChange<TAdditionalInfo = EmptyObject>({
       ? undefined
       : calcSubaccountInfo(
           estimated,
-          quotePriceUsd,
+          primaryQuotePriceUsd,
           true,
           additionalInfoFactory,
         );
   }, [
     additionalInfoFactory,
     estimated,
-    quotePriceUsd,
+    primaryQuotePriceUsd,
     estimateStateTxs.length,
   ]);
 
@@ -87,7 +91,7 @@ export function useEstimateSubaccountInfoChange<TAdditionalInfo = EmptyObject>({
     return {
       current: calcSubaccountInfo(
         current,
-        quotePriceUsd,
+        primaryQuotePriceUsd,
         false,
         additionalInfoFactory,
       ),
@@ -97,13 +101,13 @@ export function useEstimateSubaccountInfoChange<TAdditionalInfo = EmptyObject>({
     additionalInfoFactory,
     current,
     debouncedEstimatedSubaccountInfo,
-    quotePriceUsd,
+    primaryQuotePriceUsd,
   ]);
 }
 
 function calcSubaccountInfo<TAdditionalInfo>(
   subaccountSummary: AnnotatedSubaccountSummary | undefined,
-  quotePriceUsd: BigDecimal,
+  primaryQuotePriceUsd: BigDecimal,
   isEstimate: boolean,
   additionalInfoFactory?: AdditionalSubaccountInfoFactory<TAdditionalInfo>,
 ): EstimatedSubaccountInfo<TAdditionalInfo> | undefined {
@@ -117,13 +121,13 @@ function calcSubaccountInfo<TAdditionalInfo>(
   return {
     accountValueUsd: removeDecimals(
       subaccountSummary.health.unweighted.health,
-    ).multipliedBy(quotePriceUsd),
+    ).multipliedBy(primaryQuotePriceUsd),
     fundsAvailableUsdBounded: removeDecimals(
       BigDecimal.max(0, subaccountSummary.health.initial.health),
-    ).multipliedBy(quotePriceUsd),
+    ).multipliedBy(primaryQuotePriceUsd),
     fundsUntilLiquidationUsdBounded: removeDecimals(
       BigDecimal.max(0, subaccountSummary.health.maintenance.health),
-    ).multipliedBy(quotePriceUsd),
+    ).multipliedBy(primaryQuotePriceUsd),
     leverage: calcSubaccountLeverage(subaccountSummary),
     marginUsageBounded: marginUsageFractions.initial,
     liquidationRiskBounded: marginUsageFractions.maintenance,

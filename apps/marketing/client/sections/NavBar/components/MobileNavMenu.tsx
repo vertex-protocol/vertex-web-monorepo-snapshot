@@ -1,9 +1,9 @@
+import { ArrowRight } from '@phosphor-icons/react/dist/ssr/ArrowRight';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { HomePageButton } from 'client/components/Button/HomePageButton';
+import { NAV_LINKS } from 'client/sections/NavBar/data';
+import { scrollToElementId } from 'client/sections/NavBar/utils';
 import Link from 'next/link';
-import { BsArrowRight } from 'react-icons/bs';
-import { NAV_LINKS } from '../data';
-import { scrollToElementId } from '../utils';
 
 export function MobileNavMenu({
   toggleShowNav,
@@ -34,7 +34,7 @@ export function MobileNavMenu({
               key={index}
               href={href}
               title={title}
-              endIcon={<BsArrowRight className={iconClassNames} />}
+              endIcon={<ArrowRight className={iconClassNames} />}
               external={external}
             >
               {title}
@@ -46,7 +46,7 @@ export function MobileNavMenu({
             className={linkClassNames}
             key={index}
             onClick={() => handleClick(href)}
-            endIcon={<BsArrowRight className={iconClassNames} />}
+            endIcon={<ArrowRight className={iconClassNames} />}
             title={title}
           >
             {title}

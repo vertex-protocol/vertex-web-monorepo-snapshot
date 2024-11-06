@@ -42,7 +42,7 @@ export const EXTERNAL_LINKS = {
     kucoin: 'https://www.kucoin.com/trade/VRTX-USDT',
   },
   tradingRewards: 'https://app.vertexprotocol.com/rewards',
-  twitter: 'https://twitter.com/vertex_protocol',
+  x: 'https://x.com/vertex_protocol',
   wiki: 'https://vertexprotocol.notion.site/Vertex-Community-Wiki-f7a994c6165f4a0a938060a2a6e6fcb3',
   youtube: 'https://www.youtube.com/@vertexprotocol',
 };

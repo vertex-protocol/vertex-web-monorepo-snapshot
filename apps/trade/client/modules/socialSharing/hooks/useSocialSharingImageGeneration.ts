@@ -1,13 +1,13 @@
 import { asyncResult } from '@vertex-protocol/utils';
+import {
+  SOCIAL_SHARING_THEMES,
+  SocialSharingTheme,
+} from 'client/modules/socialSharing/hooks/socialSharingConfig';
 import { LINKS } from 'common/brandMetadata/links/links';
 import { clientEnv } from 'common/environment/clientEnv';
 import { saveAs } from 'file-saver';
 import { toBlob } from 'html-to-image';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  SOCIAL_SHARING_THEMES,
-  SocialSharingTheme,
-} from './socialSharingConfig';
 
 interface BuildBlobOptions {
   canvasHeight: number;

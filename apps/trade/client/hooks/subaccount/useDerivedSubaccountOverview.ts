@@ -8,22 +8,22 @@ import {
   ProductEngineType,
 } from '@vertex-protocol/contracts';
 import {
+  createQueryKey,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
+import {
   BigDecimal,
   BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
-import {
-  createQueryKey,
-  QueryDisabledError,
-} from '@vertex-protocol/react-client';
 import { useLpYields } from 'client/hooks/markets/useLpYields';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { useSpotInterestRates } from 'client/hooks/markets/useSpotInterestRates';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
 import { QueryState } from 'client/types/QueryState';
 import { calcPositionMarginWithoutPnl } from 'client/utils/calcs/calcPositionMarginWithoutPnl';
-import { calcBorrowAPR, calcDepositAPR } from 'client/utils/calcs/calcSpotApr';
 import { calcIndexerUnrealizedPerpEntryCost } from 'client/utils/calcs/perpEntryCostCalcs';
 import {
   calcIndexerSummaryCumulativePnl,
@@ -73,15 +73,17 @@ export interface DerivedSubaccountOverviewData {
 function derivedSubaccountOverviewQueryKey(
   // Last update times for important queries
   dataUpdateTimes: number[],
-  // Used for unimportant queries
+  // Used for queries where we don't need an instantaneous refresh when data updates
   hasOraclePriceData: boolean,
   hasLpYieldData: boolean,
+  hasInterestRatesData: boolean,
 ) {
   return createQueryKey(
     'derivedSubaccountOverview',
     dataUpdateTimes,
     hasOraclePriceData,
     hasLpYieldData,
+    hasInterestRatesData,
   );
 }
 
@@ -89,13 +91,14 @@ function derivedSubaccountOverviewQueryKey(
  * A util hook to create commonly used derived data from the current subaccount summary
  */
 export function useDerivedSubaccountOverview(): QueryState<DerivedSubaccountOverviewData> {
-  const { data, dataUpdatedAt, ...rest } = useCurrentSubaccountSummary();
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const { data, dataUpdatedAt, ...rest } = useSubaccountSummary();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   // Optional queries
   const { data: indexerSnapshot, dataUpdatedAt: indexerSnapshotUpdatedAt } =
     useSubaccountIndexerSnapshot();
   const { data: lpYields } = useLpYields();
+  const { data: spotInterestRates } = useSpotInterestRates();
   const { data: latestOraclePrices } = useLatestOraclePrices();
 
   const disabled = !data;
@@ -149,20 +152,25 @@ export function useDerivedSubaccountOverview(): QueryState<DerivedSubaccountOver
       if (balance.type === ProductEngineType.SPOT) {
         // Positive for deposits, negative for borrows
         const spotValue = removeDecimals(calcSpotBalanceValue(balance));
-
-        const depositAPR = calcDepositAPR(balance);
-        const borrowAPR = calcBorrowAPR(balance);
+        // APRs are always positive
+        const aprs = spotInterestRates?.[balance.productId];
 
         if (spotValue.lt(0)) {
           totalBorrowsValue = totalBorrowsValue.plus(spotValue);
-          borrowAPRWeightedByValue = borrowAPRWeightedByValue.plus(
-            borrowAPR.multipliedBy(spotValue),
-          );
+
+          if (aprs) {
+            borrowAPRWeightedByValue = borrowAPRWeightedByValue.plus(
+              aprs.borrow.multipliedBy(spotValue),
+            );
+          }
         } else if (spotValue.gt(0)) {
           totalDepositsValue = totalDepositsValue.plus(spotValue);
-          depositAPRWeightedByValue = depositAPRWeightedByValue.plus(
-            depositAPR.multipliedBy(spotValue),
-          );
+
+          if (aprs) {
+            depositAPRWeightedByValue = depositAPRWeightedByValue.plus(
+              aprs.deposit.multipliedBy(spotValue),
+            );
+          }
         }
       }
 
@@ -246,19 +254,23 @@ export function useDerivedSubaccountOverview(): QueryState<DerivedSubaccountOver
       marginUsageFractionBounded: marginUsageFractions.initial,
       liquidationRiskFractionBounded: marginUsageFractions.maintenance,
       portfolioValueUsd:
-        decimalAdjustedTotalPortfolioValues.netTotal.multipliedBy(quotePrice),
+        decimalAdjustedTotalPortfolioValues.netTotal.multipliedBy(
+          primaryQuotePriceUsd,
+        ),
       fundsAvailableBounded: BigDecimal.max(
         0,
-        decimalAdjustedInitialHealth.multipliedBy(quotePrice),
+        decimalAdjustedInitialHealth.multipliedBy(primaryQuotePriceUsd),
       ),
       fundsUntilLiquidationBounded: BigDecimal.max(
         0,
-        decimalAdjustedMaintHealth.multipliedBy(quotePrice),
+        decimalAdjustedMaintHealth.multipliedBy(primaryQuotePriceUsd),
       ),
       spot: {
         netBalance: decimalAdjustedTotalPortfolioValues.spot,
-        totalBorrowsValueUsd: totalBorrowsValue.multipliedBy(quotePrice),
-        totalDepositsValueUsd: totalDepositsValue.multipliedBy(quotePrice),
+        totalBorrowsValueUsd:
+          totalBorrowsValue.multipliedBy(primaryQuotePriceUsd),
+        totalDepositsValueUsd:
+          totalDepositsValue.multipliedBy(primaryQuotePriceUsd),
         averageBorrowAPRFraction: averageBorrowAPR,
         averageDepositAPRFraction: averageDepositAPR,
         averageAPRFraction: averageSpotAPR,
@@ -266,23 +278,30 @@ export function useDerivedSubaccountOverview(): QueryState<DerivedSubaccountOver
       perp: {
         totalNotionalValueUsd:
           decimalAdjustedTotalPortfolioValues.perpNotional.multipliedBy(
-            quotePrice,
+            primaryQuotePriceUsd,
           ),
         totalUnsettledQuote: decimalAdjustedTotalPortfolioValues.perp,
         totalCumulativePnlUsd:
-          decimalAdjustedTotalPerpCumulativePnl.multipliedBy(quotePrice),
+          decimalAdjustedTotalPerpCumulativePnl.multipliedBy(
+            primaryQuotePriceUsd,
+          ),
         totalUnrealizedPnlUsd:
-          decimalAdjustedTotalPerpUnrealizedPnl.multipliedBy(quotePrice),
+          decimalAdjustedTotalPerpUnrealizedPnl.multipliedBy(
+            primaryQuotePriceUsd,
+          ),
         totalUnrealizedPnlFrac,
         totalMarginUsedUsd: removeDecimals(
           totalPerpCollateralUsed,
-        ).multipliedBy(quotePrice),
+        ).multipliedBy(primaryQuotePriceUsd),
       },
       lp: {
-        totalValueUsd: removeDecimals(totalLpValue).multipliedBy(quotePrice),
+        totalValueUsd:
+          removeDecimals(totalLpValue).multipliedBy(primaryQuotePriceUsd),
         averageYieldFraction: safeDiv(lpYieldWeightedByValue, totalLpValue),
         totalUnrealizedPnlUsd:
-          removeDecimals(totalLpUnrealizedPnl).multipliedBy(quotePrice),
+          removeDecimals(totalLpUnrealizedPnl).multipliedBy(
+            primaryQuotePriceUsd,
+          ),
       },
     };
   };
@@ -292,6 +311,7 @@ export function useDerivedSubaccountOverview(): QueryState<DerivedSubaccountOver
       [dataUpdatedAt, indexerSnapshotUpdatedAt],
       !!latestOraclePrices,
       !!lpYields,
+      !!spotInterestRates,
     ),
     queryFn,
     // Prevents a "flash" in UI when query key changes, which occurs when subaccount overview data updates

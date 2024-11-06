@@ -1,17 +1,17 @@
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
-import { SecondaryButton } from '@vertex-protocol/web-ui';
+import {
+  SecondaryButton,
+  formatTimestamp,
+  TimeFormatSpecifier,
+} from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
+import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
+import { useOpenOrderDetailsDialog } from 'client/modules/tables/detailDialogs/hooks/useOpenOrderDetailsDialog';
+import { OpenTriggerOrderTableItem } from 'client/modules/tables/hooks/useOpenTriggerOrdersTable';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
 import { signDependentValue } from 'client/utils/signDependentValue';
-import { OpenTriggerOrderTableItem } from '../hooks/useOpenTriggerOrdersTable';
-import { ProductHeader } from './components/ProductHeader';
-import { useOpenOrderDetailsDialog } from './hooks/useOpenOrderDetailsDialog';
 
 export type OpenTriggerOrderDetailsDialogParams = OpenTriggerOrderTableItem;
 
@@ -112,9 +112,7 @@ export function OpenTriggerOrderDetailsDialog({
 
   const actions = (
     <SecondaryButton
-      className="w-full"
       destructive
-      size="sm"
       title="Cancel Order"
       disabled={disableCancelOrder}
       onClick={cancelOrderHandler}

@@ -1,3 +1,4 @@
+import { ChainEnv } from '@vertex-protocol/client';
 import { SizeClass } from 'client/hooks/ui/breakpoints';
 import { DialogType } from 'client/modules/app/dialogs/types';
 import { SubaccountSigningPreferenceType } from 'client/modules/singleSignatureSessions/types';
@@ -5,46 +6,83 @@ import { EmptyObject } from 'type-fest';
 
 export interface AnalyticsBaseEventProperties {
   sizeClass: SizeClass;
+  buildId: string;
 }
 
 export interface DialogOpenedEvent {
   dialogType: DialogType;
 }
 
-export interface RepayDialogTabViewEvent {
-  repayDialogTab: 'deposit' | 'convert';
-}
-
 export interface MarketEntrypointClickedEvent {
-  entrypoint: 'watchlist' | 'command_center' | 'trade_dropdown' | 'nav_popover';
+  entrypoint:
+    | 'watchlist'
+    | 'command_center'
+    | 'trade_dropdown'
+    | 'nav_popover'
+    | 'sentiment';
 }
 
-export interface ElixirEntrypointClickedEvent {
-  entrypoint: 'spot' | 'perps';
+export interface VaultDialogDepositPlacedEvent {
+  vaultAddress: string;
 }
 
-export interface CloseAllPositionsPlacedEvent {
-  numPositions: number | undefined;
-}
-
-export interface PnlSharedClickedEvent {
-  sharedMethod: 'tweet' | 'download' | 'copy';
-}
-
-export interface TradePageCollateralActionClickedEvent {
-  action: 'deposit' | 'withdraw';
-}
-
-export interface DepositDialogViewEvent {
-  contentType: 'form' | 'help';
-}
-
-export interface WithdrawDialogViewEvent {
-  contentType: 'form' | 'help';
+export interface VaultDialogWithdrawPlacedEvent {
+  vaultAddress: string;
 }
 
 export interface OneClickTradingStatusEvent {
   status: SubaccountSigningPreferenceType;
+}
+
+export interface OverviewTabsClickedEvent {
+  overviewTab: string;
+}
+
+export interface BalancesTabsClickedEvent {
+  balancesTab: string;
+}
+
+export interface PositionsTabsClickedEvent {
+  positionsTab: string;
+}
+
+export interface BalancesHistoryLinkClickedEvent {
+  linkType: 'deposit' | 'withdrawals';
+}
+
+export interface PortfolioNavItemsClickedEvent {
+  portfolioNavItems: string;
+}
+
+export interface OverviewCollateralButtonsClickedEvent {
+  buttonType: 'deposit' | 'withdraw';
+}
+
+export interface HistoryTabsClickedEvent {
+  historyTab: string;
+}
+
+export interface NewsfeedClickedEvent {
+  clickType: 'headline' | 'link';
+}
+
+export interface SubaccountCountEvent {
+  numSubaccount: number;
+  chainEnv: ChainEnv;
+}
+
+export interface WalletDisplayNameShownEvent {
+  displayNameType: 'none' | 'ens' | 'clusters';
+  length?: number;
+}
+
+export interface WalletConnectedEvent {
+  walletName: string;
+}
+
+export interface TpSLOrderSubmitEvent {
+  location: 'perp_order_form' | 'tpsl_dialog';
+  type: 'take_profit' | 'stop_loss';
 }
 
 export type AnalyticsEvent =
@@ -53,46 +91,82 @@ export type AnalyticsEvent =
       data: DialogOpenedEvent;
     }
   | {
-      type: 'repay_tab_view';
-      data: RepayDialogTabViewEvent;
-    }
-  | {
-      type: 'repay_convert_placed';
-      data: EmptyObject;
-    }
-  | {
       type: 'market_entrypoint_clicked';
       data: MarketEntrypointClickedEvent;
     }
   | {
-      type: 'elixir_entrypoint_clicked';
-      data: ElixirEntrypointClickedEvent;
-    }
-  | {
-      type: 'close_all_positions_placed';
-      data: CloseAllPositionsPlacedEvent;
-    }
-  | {
-      type: 'market_details_entrypoint_clicked';
+      type: 'stake_vrtx';
       data: EmptyObject;
     }
   | {
-      type: 'pnl_shared_clicked';
-      data: PnlSharedClickedEvent;
-    }
-  | {
-      type: 'trade_page_collateral_action_clicked';
-      data: TradePageCollateralActionClickedEvent;
-    }
-  | {
-      type: 'deposit_dialog_view';
-      data: DepositDialogViewEvent;
-    }
-  | {
-      type: 'withdraw_dialog_view';
-      data: WithdrawDialogViewEvent;
+      type: 'unstake_vrtx';
+      data: EmptyObject;
     }
   | {
       type: 'one_click_trading_status';
       data: OneClickTradingStatusEvent;
+    }
+  | {
+      type: 'vault_dialog_deposit_placed';
+      data: VaultDialogDepositPlacedEvent;
+    }
+  | {
+      type: 'vault_dialog_withdraw_placed';
+      data: VaultDialogWithdrawPlacedEvent;
+    }
+  | {
+      type: 'overview_tabs_clicked';
+      data: OverviewTabsClickedEvent;
+    }
+  | {
+      type: 'balances_tabs_clicked';
+      data: BalancesTabsClickedEvent;
+    }
+  | {
+      type: 'positions_tabs_clicked';
+      data: PositionsTabsClickedEvent;
+    }
+  | {
+      type: 'privacy_clicked';
+      data: EmptyObject;
+    }
+  | {
+      type: 'balances_history_link_clicked';
+      data: BalancesHistoryLinkClickedEvent;
+    }
+  | {
+      type: 'portfolio_nav_item_clicked';
+      data: PortfolioNavItemsClickedEvent;
+    }
+  | {
+      type: 'edit_profile_clicked';
+      data: EmptyObject;
+    }
+  | {
+      type: 'overview_collateral_buttons_clicked';
+      data: OverviewCollateralButtonsClickedEvent;
+    }
+  | {
+      type: 'history_tabs_clicked';
+      data: HistoryTabsClickedEvent;
+    }
+  | {
+      type: 'newsfeed_clicked';
+      data: NewsfeedClickedEvent;
+    }
+  | {
+      type: 'subaccount_count';
+      data: SubaccountCountEvent;
+    }
+  | {
+      type: 'wallet_display_name_shown';
+      data: WalletDisplayNameShownEvent;
+    }
+  | {
+      type: 'wallet_connected';
+      data: WalletConnectedEvent;
+    }
+  | {
+      type: 'tpsl_order_submit';
+      data: TpSLOrderSubmitEvent;
     };

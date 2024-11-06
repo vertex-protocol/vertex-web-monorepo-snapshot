@@ -4,17 +4,20 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { Icons } from '@vertex-protocol/web-ui';
+import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
-import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
+import {
+  bigDecimalSortFn,
+  getKeyedBigDecimalSortFn,
+} from 'client/components/DataTable/utils/sortingFns';
 import { ActionName } from 'client/modules/commandCenter/components/cells/ActionName';
 import { BaseTable } from 'client/modules/commandCenter/components/tables/BaseTable/BaseTable';
 import { MarketTableItem } from 'client/modules/commandCenter/hooks/useCommandCenterMarketItems';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { signDependentValue } from 'client/utils/signDependentValue';
 import { useMemo } from 'react';
-import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 
 const columnHelper = createColumnHelper<MarketTableItem>();
 
@@ -29,11 +32,11 @@ export function MarketsTable({ markets }: Props) {
         header: ({ header }) => <HeaderCell header={header}>Market</HeaderCell>,
         cell: (context) => {
           const value = context.getValue<MarketTableItem['metadata']>();
-          const { icon } = getBaseProductMetadata(value);
+          const { icon } = getSharedProductMetadata(value);
 
           return (
             <MarketProductInfoCell
-              name={value.marketName}
+              symbol={value.marketName}
               iconSrc={icon.asset}
               isNewMarket={context.row.original.isNewMarket}
             />
@@ -44,12 +47,16 @@ export function MarketsTable({ markets }: Props) {
           cellContainerClassName: 'w-40 lg:w-56',
         },
       }),
-      columnHelper.accessor('currentPrice', {
+      columnHelper.accessor('price', {
         header: ({ header }) => <HeaderCell header={header}>Price</HeaderCell>,
         cell: (context) => {
-          const { currentPrice, priceChangeFrac24hr } = context.row.original;
+          const {
+            currentPrice,
+            priceChangeFrac24h,
+            marketPriceFormatSpecifier,
+          } = context.getValue<MarketTableItem['price']>();
 
-          const color = signDependentValue(priceChangeFrac24hr, {
+          const color = signDependentValue(priceChangeFrac24h, {
             positive: 'text-positive',
             negative: 'text-negative',
             zero: 'text-text-primary',
@@ -59,12 +66,11 @@ export function MarketsTable({ markets }: Props) {
             <StackedTableCell
               className="gap-y-0.5"
               top={formatNumber(currentPrice, {
-                formatSpecifier:
-                  context.row.original.marketPriceFormatSpecifier,
+                formatSpecifier: marketPriceFormatSpecifier,
               })}
               bottom={
                 <span className={color}>
-                  {formatNumber(context.row.original.priceChangeFrac24hr, {
+                  {formatNumber(priceChangeFrac24h, {
                     formatSpecifier:
                       PresetNumberFormatSpecifier.SIGNED_PERCENTAGE_2DP,
                   })}
@@ -73,7 +79,7 @@ export function MarketsTable({ markets }: Props) {
             />
           );
         },
-        sortingFn: bigDecimalSortFn,
+        sortingFn: getKeyedBigDecimalSortFn('priceChangeFrac24h'),
         meta: {
           cellContainerClassName: 'w-24 lg:w-36',
         },
@@ -97,7 +103,7 @@ export function MarketsTable({ markets }: Props) {
         cell: (context) => (
           <ActionName>
             {context.row.original.isFavorited && (
-              <Icons.BsStarFill className="text-accent" size={12} />
+              <Icons.StarFill className="text-accent" size={12} />
             )}
             <span
               // Need to push this down just a tad to get it optically centered.

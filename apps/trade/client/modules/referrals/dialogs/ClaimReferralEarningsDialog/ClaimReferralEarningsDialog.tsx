@@ -2,7 +2,6 @@ import {
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { ClaimReferralEarningsSubmitButton } from 'client/modules/referrals/dialogs/ClaimReferralEarningsDialog/ClaimReferralEarningsSubmitButton';
@@ -15,11 +14,11 @@ export function ClaimReferralEarningsDialog() {
   const { hide } = useDialog();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Claim Earnings</BaseDialog.Title>
-      <BaseDialog.Body className="flex flex-col gap-y-6">
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>Claim Earnings</BaseAppDialog.Title>
+      <BaseAppDialog.Body>
         <div className="flex flex-col items-center gap-y-1.5">
-          <div className="text-text-tertiary">Available to claim</div>
+          <div className="text-text-tertiary text-base">Available to claim</div>
           <div className="text-text-primary flex items-center gap-x-1.5 text-4xl">
             <Image
               className="h-7 w-auto"
@@ -36,11 +35,11 @@ export function ClaimReferralEarningsDialog() {
             state={buttonState}
             onSubmit={onSubmit}
           />
-          <p className="text-text-tertiary text-center text-sm">
+          <p className="text-text-tertiary text-center">
             You will receive rewards in your wallet
           </p>
         </div>
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }

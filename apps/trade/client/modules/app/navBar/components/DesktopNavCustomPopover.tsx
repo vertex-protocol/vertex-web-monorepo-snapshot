@@ -1,51 +1,33 @@
-import { offset } from '@floating-ui/react';
-import { useHoverPopover } from 'client/hooks/ui/useHoverPopover';
+import * as NavigationMenu from '@radix-ui/react-navigation-menu';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { NavPopoverContentContainer } from 'client/modules/app/navBar/components/NavPopoverContentContainer';
 import { ReactNode } from 'react';
 
 interface Props {
+  /**
+   * Note this should be a single node. Passing in a fragment will result in the
+   * trigger not functioning correctly.
+   */
   triggerContent: ReactNode;
   popoverContent: ReactNode;
   popoverClassName?: string;
-  open: boolean;
-  setOpen: (open: boolean) => void;
 }
 
 export function DesktopNavCustomPopover({
   triggerContent,
   popoverContent,
   popoverClassName,
-  open,
-  setOpen,
 }: Props) {
-  const {
-    setTriggerRef,
-    getTriggerProps,
-    setContentRef,
-    contentStyles,
-    getContentProps,
-  } = useHoverPopover({
-    open,
-    onOpenChange: setOpen,
-    placement: 'bottom-start',
-    middleware: [offset({ mainAxis: 6 })],
-  });
-
   return (
-    <>
-      <div ref={setTriggerRef} {...getTriggerProps()}>
-        {triggerContent}
-      </div>
-      {open && (
+    <NavigationMenu.Item>
+      <NavigationMenu.Trigger asChild>{triggerContent}</NavigationMenu.Trigger>
+      <NavigationMenu.Content asChild>
         <NavPopoverContentContainer
-          ref={setContentRef}
-          style={contentStyles}
-          className={popoverClassName}
-          {...getContentProps()}
+          className={joinClassNames('absolute top-8', popoverClassName)}
         >
           {popoverContent}
         </NavPopoverContentContainer>
-      )}
-    </>
+      </NavigationMenu.Content>
+    </NavigationMenu.Item>
   );
 }

@@ -1,11 +1,11 @@
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
-import { useMemo } from 'react';
+import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import {
   OrderFillNotificationData,
   OrderNotificationMetadata,
-} from '../../../types';
+} from 'client/modules/notifications/types';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
+import { useMemo } from 'react';
 
 export function useOrderFilledNotification(data: OrderFillNotificationData) {
   const { data: marketsStaticData } = useAllMarketsStaticData();
@@ -27,10 +27,10 @@ export function useOrderFilledNotification(data: OrderFillNotificationData) {
     const metadata: OrderNotificationMetadata = (() => {
       const priceIncrement = market.priceIncrement;
       const sizeIncrement = market.sizeIncrement;
-      const baseProductMetadata = getBaseProductMetadata(market.metadata);
+      const sharedProductMetadata = getSharedProductMetadata(market.metadata);
 
       return {
-        ...baseProductMetadata,
+        ...sharedProductMetadata,
         marketName: market.metadata.marketName,
         priceIncrement,
         sizeIncrement,

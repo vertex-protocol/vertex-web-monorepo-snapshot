@@ -3,21 +3,18 @@ import { BigDecimals } from '@vertex-protocol/utils';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useLpBalances } from 'client/hooks/subaccount/useLpBalances';
+import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 import { QueryState } from 'client/types/QueryState';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { BaseProductMetadata, Token } from 'common/productMetadata/types';
 import { useMemo } from 'react';
-import { MarginWeightMetrics } from '../../types';
+import { PairMetadata } from 'client/modules/pools/types';
 
 export interface MarginManagerPoolsTableItem {
   marketType: ProductEngineType;
   productId: number;
-  metadata: {
-    base: BaseProductMetadata;
-    quote: Token;
-  };
+  metadata: PairMetadata;
   valueUsd: BigDecimal;
   amounts: {
     lpAmount: BigDecimal;
@@ -34,7 +31,7 @@ export function useMarginManagerPoolsTable(): QueryState<
   const { data: marketsStaticData, isLoading: marketsStaticDataLoading } =
     useAllMarketsStaticData();
   const { balances, isLoading: balancesLoading } = useLpBalances();
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const quoteMetadata = marketsStaticData?.primaryQuote;
 
   const mappedData = useMemo((): MarginManagerPoolsTableItem[] | undefined => {
@@ -51,7 +48,7 @@ export function useMarginManagerPoolsTable(): QueryState<
           return;
         }
 
-        const baseProductMetadata = getBaseProductMetadata(
+        const baseMetadata = getSharedProductMetadata(
           marketStaticData.metadata,
         );
 
@@ -73,7 +70,7 @@ export function useMarginManagerPoolsTable(): QueryState<
           marketType: marketStaticData.type,
           productId: marketStaticData.productId,
           metadata: {
-            base: baseProductMetadata,
+            base: baseMetadata,
             quote: quoteMetadata.metadata.token,
           },
           amounts: {
@@ -83,18 +80,21 @@ export function useMarginManagerPoolsTable(): QueryState<
           },
           valueUsd: balance.lpValueUsd,
           initialHealth: {
-            marginUsd: balance.healthMetrics.initial.multipliedBy(quotePrice),
+            marginUsd:
+              balance.healthMetrics.initial.multipliedBy(primaryQuotePriceUsd),
             weight: healthWeights.initial,
           },
           maintenanceHealth: {
             marginUsd:
-              balance.healthMetrics.maintenance.multipliedBy(quotePrice),
+              balance.healthMetrics.maintenance.multipliedBy(
+                primaryQuotePriceUsd,
+              ),
             weight: healthWeights.maintenance,
           },
         };
       })
       .filter(nonNullFilter);
-  }, [quoteMetadata, balances, marketsStaticData?.all, quotePrice]);
+  }, [quoteMetadata, balances, marketsStaticData?.all, primaryQuotePriceUsd]);
 
   return {
     data: mappedData,

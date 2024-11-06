@@ -1,3 +1,4 @@
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { HeaderCard } from 'client/components/HeaderCard';
 import {
   DEFAULT_SECTION_GAP,
@@ -7,14 +8,13 @@ import {
 } from 'client/consts';
 import { InterfaceCard } from 'client/sections/Interface/components/InterfaceCard';
 import Image from 'next/image';
-import { INTERFACE_DATA } from './data';
+import { INTERFACE_DATA } from 'client/sections/Interface/data';
 
 // Images
 import customize from 'client/sections/Interface/assets/interface-customize.svg';
 import mobile from 'client/sections/Interface/assets/interface-mobile.svg';
 import oneClick from 'client/sections/Interface/assets/interface-one-click.svg';
 import portfolio from 'client/sections/Interface/assets/interface-portfolio.svg';
-import { joinClassNames } from '@vertex-protocol/web-common';
 
 export function DesktopInterface() {
   return (

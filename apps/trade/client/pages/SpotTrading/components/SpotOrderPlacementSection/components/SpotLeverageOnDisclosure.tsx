@@ -4,13 +4,15 @@ import {
   Checkbox,
   DiscList,
   DisclosureCard,
+  LinkButton,
   PrimaryButton,
 } from '@vertex-protocol/web-ui';
-import { LinkButton } from 'client/components/LinkButton';
-import { LINKS } from 'common/brandMetadata/links/links';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
+import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
 import { useState } from 'react';
+
+const OVERLAY_Z_INDEX = 'z-10';
 
 export function SpotLeverageOnDisclosure() {
   const [checked, setChecked] = useState(false);
@@ -28,31 +30,37 @@ export function SpotLeverageOnDisclosure() {
       {/* Overlay */}
       <div
         className={joinClassNames(
-          'absolute inset-0 z-10',
+          'absolute inset-0',
           'cursor-not-allowed backdrop-blur-sm',
+          // This needs a slight z-index adjustment to be above all
+          // the elements in the form
+          OVERLAY_Z_INDEX,
         )}
       />
       <div
         className={joinClassNames(
           'bg-surface-card',
-          'absolute z-20 flex flex-col',
+          'absolute flex flex-col',
           'gap-y-4 p-3 pt-0',
+          // Though further down the tree, this needs a higher z-index
+          // to be above the overlay since it has been adjusted
+          OVERLAY_Z_INDEX,
         )}
       >
         <DisclosureCard
-          title="Switching Leverage ON"
+          title="Turning Margin ON"
           description={
             <div className="flex flex-col gap-y-2.5">
               <p>
-                Leverage spot lets you auto-borrow assets, against your margin,
-                to buy or sell more than you have. Borrowing increases risk.
-                Check the box to continue.
+                Margin spot lets you auto-borrow assets, against your margin, to
+                buy or sell more than you have. Borrowing increases risk. Check
+                the box to continue.
               </p>
               <DiscList.Container>
                 <DiscList.Item>
                   <LinkButton
                     as={Link}
-                    colorVariant="accent"
+                    colorVariant="primary"
                     href={LINKS.spotTradingLearnMore}
                     external
                   >
@@ -62,7 +70,7 @@ export function SpotLeverageOnDisclosure() {
                 <DiscList.Item>
                   <LinkButton
                     as={Link}
-                    colorVariant="accent"
+                    colorVariant="primary"
                     href={LINKS.termsOfUse}
                     external
                   >
@@ -88,7 +96,6 @@ export function SpotLeverageOnDisclosure() {
             </Checkbox.Row>
           </div>
           <PrimaryButton
-            className="w-full"
             disabled={!checked}
             onClick={dismissLeverageDisclosure}
           >

@@ -1,32 +1,27 @@
+import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { Divider, NavCardButton } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from 'client/components/Icons/UpDownChevronIcon';
 import { AppNavItemButton } from 'client/modules/app/navBar/components/AppNavItemButton';
 import { DesktopNavCustomPopover } from 'client/modules/app/navBar/components/DesktopNavCustomPopover';
+import { NavPopoverHeader } from 'client/modules/app/navBar/components/NavPopoverHeader';
+import { useEarnLinks } from 'client/modules/app/navBar/earn/useEarnLinks';
+import { useGetIsActiveRoute } from 'client/modules/app/navBar/hooks/useGetIsActiveRoute';
 import Link from 'next/link';
-import { useState } from 'react';
-import { useGetIsActiveRoute } from '../hooks/useGetIsActiveRoute';
-import { useEarnLinks } from './useEarnLinks';
 
 export function DesktopEarnPopover() {
   const earnLinks = useEarnLinks();
   const getIsActiveRoute = useGetIsActiveRoute();
-  const [open, setOpen] = useState(false);
 
   // Since earnLinks.ecosystem is an external link, it is enough to check earnLinks.products - but if that changes, we need to update this logic too
-  const popoverTriggerIsActive =
-    open || getIsActiveRoute(...earnLinks.products.map(({ href }) => href));
+  const popoverTriggerIsActive = getIsActiveRoute(
+    ...earnLinks.products.map(({ href }) => href),
+  );
 
   const showEcosystemLinks = !!earnLinks.ecosystem.length;
 
   return (
     <DesktopNavCustomPopover
-      open={open}
-      setOpen={setOpen}
       triggerContent={
-        <AppNavItemButton
-          active={popoverTriggerIsActive}
-          endIcon={<UpDownChevronIcon open={open} />}
-        >
+        <AppNavItemButton active={popoverTriggerIsActive} withCaret>
           Earn
         </AppNavItemButton>
       }
@@ -34,20 +29,20 @@ export function DesktopEarnPopover() {
       popoverContent={
         <>
           <div className="flex flex-col gap-y-2">
-            <DesktopEarnHeader title="Products" />
-            <div className="grid grid-cols-2 gap-2">
+            <NavPopoverHeader title="Products" />
+            <div className="grid grid-cols-2">
               {earnLinks.products.map(
-                ({ label, description, icon, href, external }) => {
+                ({ label, description, href, external }, index) => {
                   return (
-                    <NavCardButton
-                      as={Link}
-                      key={label}
-                      icon={icon}
-                      title={label}
-                      description={description}
-                      href={href}
-                      external={external}
-                    />
+                    <NavigationMenu.Link key={index} asChild>
+                      <NavCardButton
+                        as={Link}
+                        title={label}
+                        description={description}
+                        href={href}
+                        external={external}
+                      />
+                    </NavigationMenu.Link>
                   );
                 },
               )}
@@ -57,19 +52,19 @@ export function DesktopEarnPopover() {
             <>
               <Divider />
               <div className="flex flex-col gap-y-2">
-                <DesktopEarnHeader title="Ecosystem" />
-                <div className="grid grid-cols-2 gap-2">
+                <NavPopoverHeader title="Ecosystem" />
+                <div className="grid grid-cols-2">
                   {earnLinks.ecosystem.map(
-                    ({ label, icon, description, href, external }) => (
-                      <NavCardButton
-                        as={Link}
-                        key={label}
-                        icon={icon}
-                        title={label}
-                        description={description}
-                        external={external}
-                        href={href}
-                      />
+                    ({ label, description, href, external }, index) => (
+                      <NavigationMenu.Link key={index} asChild>
+                        <NavCardButton
+                          as={Link}
+                          title={label}
+                          description={description}
+                          external={external}
+                          href={href}
+                        />
+                      </NavigationMenu.Link>
                     ),
                   )}
                 </div>
@@ -80,8 +75,4 @@ export function DesktopEarnPopover() {
       }
     />
   );
-}
-
-function DesktopEarnHeader({ title }: { title: string }) {
-  return <div className="text-text-tertiary px-2 text-xs">{title}</div>;
 }

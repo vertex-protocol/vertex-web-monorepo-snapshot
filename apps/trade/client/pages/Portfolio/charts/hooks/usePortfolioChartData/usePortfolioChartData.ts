@@ -1,72 +1,47 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
-  usePrimaryChainId,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshots } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshots';
+import { useChartQueryTimes } from 'client/pages/Portfolio/charts/hooks/useChartQueryTimes';
+import { calcDecimalAdjustedDeltas } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartData/calcDecimalAdjustedDeltas';
+import { calcDecimalAdjustedUsdValue } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartData/calcDecimalAdjustedUsdValue';
+import {
+  ChartTimespan,
+  PortfolioChartDataItem,
+} from 'client/pages/Portfolio/charts/types';
 import { QueryState } from 'client/types/QueryState';
 import { getSubaccountMetricsFromIndexerSnapshot } from 'client/utils/calcs/getSubaccountMetricsFromIndexerSnapshot';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import { secondsToMilliseconds } from 'date-fns';
-import { ChartTimespan } from '../../types';
-import { useChartQueryTimes } from '../useChartQueryTimes';
-import { calcDecimalAdjustedDeltas } from './calcDecimalAdjustedDeltas';
-import { calcDecimalAdjustedUsdValue } from './calcDecimalAdjustedUsdValue';
-
-export interface PortfolioChartDataItem {
-  timestampMillis: number;
-  portfolioValueUsd: number;
-  cumulativeAccountPnlUsd: number;
-  cumulativeAccountPnlFrac: number | undefined;
-  cumulativeTotalPerpPnlUsd: number;
-  cumulativeTotalPerpPnlFrac: number | undefined;
-  cumulativePerpFundingUsd: number;
-  cumulativePerpFundingFrac: number;
-  cumulativeNetSpotInterestUsd: number;
-  totalNetSpotValueUsd: number;
-  totalDepositsValueUsd: number;
-  totalAbsBorrowsValueUsd: number;
-  averageSpotApr: number;
-  cumulativeLpPnlUsd: number;
-  cumulativeLpPnlFrac: number | undefined;
-  totalLpValueUsd: number;
-  // Deltas to the PREVIOUS item
-  deltas: {
-    cumulativeAccountPnlUsd: number;
-    cumulativeAccountPnlFrac: number | undefined;
-    cumulativeTotalPerpPnlUsd: number;
-    cumulativeTotalPerpPnlFrac: number | undefined;
-    cumulativePerpFundingUsd: number;
-    cumulativePerpFundingFrac: number;
-    cumulativeNetSpotInterestUsd: number;
-    cumulativeNetSpotInterestFrac: number;
-    cumulativeLpPnlUsd: number;
-    cumulativeLpPnlFrac: number | undefined;
-  };
-}
 
 function portfolioChartDataQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   timespan?: ChartTimespan,
   address?: string,
   name?: string,
 ) {
-  return createQueryKey('portfolioChartData', chainId, timespan, address, name);
+  return createQueryKey(
+    'portfolioChartData',
+    chainEnv,
+    timespan,
+    address,
+    name,
+  );
 }
 
 export function usePortfolioChartData(
   timespan: ChartTimespan,
 ): QueryState<PortfolioChartDataItem[]> {
-  const primaryChainId = usePrimaryChainId();
   const {
-    currentSubaccount: { address, name },
+    currentSubaccount: { address, name, chainEnv },
   } = useSubaccountContext();
   const queryTimes = useChartQueryTimes(timespan);
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { data: indexerSummaries, ...rest } = useSubaccountIndexerSnapshots({
     secondsBeforeNow: queryTimes?.secondsBeforeNow,
     // Longer refetch as we need quite a lot of data
@@ -91,8 +66,6 @@ export function usePortfolioChartData(
             cumulativeTotalPerpPnlUsd: 0,
             cumulativePerpFundingUsd: 0,
             cumulativePerpFundingFrac: 0,
-            cumulativeNetSpotInterestUsd: 0,
-            cumulativeNetSpotInterestFrac: 0,
             cumulativeLpPnlUsd: 0,
             totalLpValueUsd: 0,
             cumulativeLpPnlFrac: undefined,
@@ -112,7 +85,7 @@ export function usePortfolioChartData(
         } = calcDecimalAdjustedDeltas(
           metrics.cumulativeAccountPnl,
           prevMetrics.cumulativeAccountPnl,
-          quotePrice,
+          primaryQuotePriceUsd,
         );
 
         // Perpetual Deltas
@@ -122,7 +95,7 @@ export function usePortfolioChartData(
         } = calcDecimalAdjustedDeltas(
           metrics.cumulativeTotalPerpPnl,
           prevMetrics.cumulativeTotalPerpPnl,
-          quotePrice,
+          primaryQuotePriceUsd,
         );
 
         const {
@@ -131,17 +104,7 @@ export function usePortfolioChartData(
         } = calcDecimalAdjustedDeltas(
           metrics.cumulativePerpFunding,
           prevMetrics.cumulativePerpFunding,
-          quotePrice,
-        );
-
-        // Spot Deltas
-        const {
-          deltaUsd: cumulativeNetSpotInterestDeltaUsd,
-          deltaFraction: cumulativeNetSpotInterestDeltaFrac,
-        } = calcDecimalAdjustedDeltas(
-          metrics.cumulativeNetSpotInterest,
-          prevMetrics.cumulativeNetSpotInterest,
-          quotePrice,
+          primaryQuotePriceUsd,
         );
 
         // LP Deltas
@@ -151,7 +114,7 @@ export function usePortfolioChartData(
         } = calcDecimalAdjustedDeltas(
           metrics.cumulativeTotalLpPnl,
           prevMetrics.cumulativeTotalLpPnl,
-          quotePrice,
+          primaryQuotePriceUsd,
         );
 
         return {
@@ -161,8 +124,6 @@ export function usePortfolioChartData(
           cumulativeTotalPerpPnlFrac: cumulativeTotalPerpPnlDeltaFrac,
           cumulativePerpFundingUsd: cumulativePerpFundingDeltaUsd,
           cumulativePerpFundingFrac: cumulativePerpFundingDeltaFrac,
-          cumulativeNetSpotInterestUsd: cumulativeNetSpotInterestDeltaUsd,
-          cumulativeNetSpotInterestFrac: cumulativeNetSpotInterestDeltaFrac,
           cumulativeLpPnlUsd: cumulativeLpPnlDeltaUsd,
           cumulativeLpPnlFrac: cumulativeLpPnlDeltaFrac,
         };
@@ -171,54 +132,54 @@ export function usePortfolioChartData(
       // Overview
       const portfolioValueUsd = calcDecimalAdjustedUsdValue(
         metrics.portfolioValue,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       const cumulativeAccountPnlUsd = calcDecimalAdjustedUsdValue(
         metrics.cumulativeAccountPnl,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       // Perpetuals
       const cumulativeTotalPerpPnlUsd = calcDecimalAdjustedUsdValue(
         metrics.cumulativeTotalPerpPnl,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       const cumulativePerpFundingUsd = calcDecimalAdjustedUsdValue(
         metrics.cumulativePerpFunding,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       // Spot Balances
       const cumulativeNetSpotInterestUsd = calcDecimalAdjustedUsdValue(
-        metrics.cumulativeNetSpotInterest,
-        quotePrice,
+        metrics.cumulativeNetSpotInterestValue,
+        primaryQuotePriceUsd,
       );
 
       const totalNetSpotValueUsd = calcDecimalAdjustedUsdValue(
         metrics.totalNetSpotValue,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       const totalDepositsValueUsd = calcDecimalAdjustedUsdValue(
         metrics.totalDepositsValue,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       const totalBorrowsValueUsd = calcDecimalAdjustedUsdValue(
         metrics.totalBorrowsValue,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       const cumulativeLpPnlUsd = calcDecimalAdjustedUsdValue(
         metrics.cumulativeTotalLpPnl,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       const totalLpValueUsd = calcDecimalAdjustedUsdValue(
         metrics.totalLpValue,
-        quotePrice,
+        primaryQuotePriceUsd,
       );
 
       return {
@@ -236,7 +197,6 @@ export function usePortfolioChartData(
         totalNetSpotValueUsd,
         totalDepositsValueUsd,
         totalAbsBorrowsValueUsd: Math.abs(totalBorrowsValueUsd),
-        averageSpotApr: metrics.averageSpotApr.toNumber(),
         cumulativeLpPnlUsd,
         cumulativeLpPnlFrac: metrics.cumulativeTotalLpPnlFrac?.toNumber(),
         totalLpValueUsd,
@@ -246,12 +206,7 @@ export function usePortfolioChartData(
   };
 
   const { data: portfolioChartData } = useQuery({
-    queryKey: portfolioChartDataQueryKey(
-      primaryChainId,
-      timespan,
-      address,
-      name,
-    ),
+    queryKey: portfolioChartDataQueryKey(chainEnv, timespan, address, name),
     queryFn,
     enabled: !disabled,
     gcTime: REACT_QUERY_CONFIG.computeQueryGcTime,

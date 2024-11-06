@@ -1,4 +1,4 @@
-import { getTruncatedAddress } from 'client/utils/getTruncatedAddress';
+import { truncateAddress } from '@vertex-protocol/web-common';
 import { isAddress } from 'ethers';
 
 /**
@@ -13,7 +13,5 @@ export function formatReferralCode(referralCode: string | undefined): string {
     return '';
   }
 
-  return isAddress(referralCode)
-    ? getTruncatedAddress(referralCode, 4)
-    : referralCode;
+  return isAddress(referralCode) ? truncateAddress(referralCode) : referralCode;
 }

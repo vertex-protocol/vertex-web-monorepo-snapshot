@@ -1,6 +1,5 @@
 import { BalanceSide } from '@vertex-protocol/contracts';
 import { InputValidatorFn } from '@vertex-protocol/web-common';
-import { OrderFormAmountSource } from 'client/store/trading/types';
 
 export type EnginePlaceOrderPriceType = 'market' | 'limit';
 
@@ -44,6 +43,8 @@ export interface OrderFormValidators {
 }
 
 export type TimeInForceType = 'good_until' | 'ioc' | 'fok';
+
+export type OrderFormAmountSource = 'asset' | 'quote' | 'percentage';
 
 export interface BaseOrderFormValues {
   side: BalanceSide;

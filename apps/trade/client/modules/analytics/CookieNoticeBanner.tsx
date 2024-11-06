@@ -1,6 +1,5 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { LinkButton } from 'client/components/LinkButton';
+import { LinkButton, SecondaryButton } from '@vertex-protocol/web-ui';
 import { useCookiePreference } from 'client/modules/analytics/useCookiePreference';
 import { LINKS } from 'common/brandMetadata/links/links';
 import { clientEnv } from 'common/environment/clientEnv';
@@ -28,7 +27,7 @@ export function CookieNoticeBanner() {
         'fixed bottom-4 mx-4 sm:bottom-10 sm:mx-10',
       )}
     >
-      <div className="flex flex-col gap-y-2 ">
+      <div className="flex flex-col gap-y-2">
         <p className="text-sm text-white">Manage Cookies</p>
         <p className="text-text-tertiary text-xs">
           {clientEnv.brandMetadata.displayName} may collect and disclose cookie

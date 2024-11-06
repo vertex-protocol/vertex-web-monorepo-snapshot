@@ -6,29 +6,30 @@ import { getKeyedBigDecimalSortFn } from 'client/components/DataTable/utils/sort
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
-import { useMemo } from 'react';
-import { FavoriteHeaderCell } from '../components/FavoriteHeaderCell';
-import { FundingRateCell } from '../components/FundingRateCell';
-import { FundingRateCountdown } from '../components/FundingRateCountdown';
-import { FundingRatePeriodSelect } from '../components/FundingRatePeriodSelect';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
+import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
+import { FundingRateCell } from 'client/pages/Markets/components/FundingRateCell';
+import { FundingRateCountdown } from 'client/pages/Markets/components/FundingRateCountdown';
+import { FundingRatePeriodSelect } from 'client/pages/Markets/components/FundingRatePeriodSelect';
 import {
   FundingRateTableItem,
   useFundingRateMarketsTable,
-} from '../hooks/useFundingRateMarketsTable';
-import { FundingRatePeriodID } from '../hooks/useFundingRatePeriodSelect';
-import { favoriteSortFn } from '../utils/sortingFns';
+} from 'client/pages/Markets/hooks/useFundingRateMarketsTable';
+import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
+import { FundingRateTimespan } from 'client/utils/calcs/funding';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<FundingRateTableItem>();
 // Always sort funding rates by hourly rate as order is equivalent regardless of display rate (e.g. daily/yearly)
-const FUNDING_PERIOD_SORT_KEY: FundingRatePeriodID = 'hourly';
+const FUNDING_PERIOD_SORT_KEY: FundingRateTimespan = 'hourly';
 
-export function FundingRateMarketsTable() {
+export function FundingRateMarketsTable({ query }: { query: string }) {
   const {
     isLoading,
     fundingRateData,
     disableFavoriteButton,
     toggleIsFavoritedMarket,
-  } = useFundingRateMarketsTable();
+  } = useFundingRateMarketsTable({ query });
   const pushTradePage = usePushTradePage();
 
   const columns: ColumnDef<FundingRateTableItem, any>[] = useMemo(() => {
@@ -64,7 +65,7 @@ export function FundingRateMarketsTable() {
           const value = context.getValue<FundingRateTableItem['metadata']>();
           return (
             <MarketProductInfoCell
-              name={value.name}
+              symbol={value.marketName}
               iconSrc={value.icon.asset}
               isNewMarket={context.row.original.isNewMarket}
             />
@@ -187,6 +188,7 @@ export function FundingRateMarketsTable() {
         columns={columns}
         data={fundingRateData}
         onRowClicked={onRowClicked}
+        emptyState={query && <EmptyTablePlaceholder type="no_search_results" />}
       />
     </>
   );

@@ -1,8 +1,8 @@
+import { Play } from '@phosphor-icons/react/dist/ssr/Play';
 import { ColorBorderButton } from 'client/components/Button/ColorBorderButton';
 import { HeaderCard } from 'client/components/HeaderCard';
 import { EXTERNAL_LINKS } from 'client/consts';
 import Link from 'next/link';
-import { MdPlayArrow } from 'react-icons/md';
 
 export const FlexibilityHeader = () => {
   return (
@@ -28,7 +28,7 @@ export const FlexibilityHeader = () => {
       <ColorBorderButton
         as={Link}
         href={EXTERNAL_LINKS.youtube}
-        startIcon={<MdPlayArrow size={24} className="-mt-px" />}
+        startIcon={<Play weight="fill" />}
         className="flex items-center py-4 pl-9 pr-10 text-lg font-bold"
         external
       >

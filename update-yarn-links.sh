@@ -6,7 +6,6 @@ PACKAGES=(
 "@vertex-protocol/indexer-client"
 "@vertex-protocol/trigger-client"
 "@vertex-protocol/client"
-"@vertex-protocol/react-client"
 )
 
 # Check UNLINK env var as a quick way to use a "flag"

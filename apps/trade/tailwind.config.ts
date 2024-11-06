@@ -4,6 +4,7 @@ import {
 } from '@vertex-protocol/web-ui/tailwind';
 import { Config } from 'tailwindcss';
 
+// eslint-disable-next-line no-relative-import-paths/no-relative-import-paths
 import brandName from './common/environment/envBrandName';
 
 const preset = {
@@ -16,21 +17,22 @@ console.log(`Initializing TW Config for ${brandName}.`);
 const config: Config = {
   darkMode: 'class',
   content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
+    './app/**/*.{js,ts,jsx,tsx}',
     './client/**/*.{js,ts,jsx,tsx}',
+    '../../packages/ui/consts/**/*.{js,ts,jsx,tsx}',
     '../../packages/ui/components/**/*.{js,ts,jsx,tsx}',
     '../../packages/ui/utils/**/*.{js,ts,jsx,tsx}',
+    '../../packages/ui/hooks/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
       padding: {
         'mobile-bottom-sheet': '80px',
       },
-      minWidth: {
+      maxWidth: {
         'trade-sidebar': '320px',
       },
       width: {
-        'subnav-menu': '150px',
         'market-orders': '260px',
         'trade-sidebar': '320px',
       },

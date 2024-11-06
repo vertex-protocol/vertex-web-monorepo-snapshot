@@ -1,20 +1,24 @@
+'use client';
+
 import { isSpotBalance } from '@vertex-protocol/client';
+import {
+  AnnotatedSpotBalanceWithProduct,
+  useVertexMetadataContext,
+} from '@vertex-protocol/metadata';
 import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { Card, PrimaryButton } from '@vertex-protocol/web-ui';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useExecuteMintTokens } from 'client/hooks/execute/useExecuteMintTokens';
 import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
-import { useCurrentSubaccountSummary } from 'client/hooks/query/subaccount/useCurrentSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
 import { CollateralAssetSelect } from 'client/modules/collateral/components/CollateralAssetSelect';
 import { CollateralSpotProduct } from 'client/modules/collateral/types';
-import { AnnotatedSpotBalanceWithProduct } from 'common/productMetadata/types';
 import { useEffect, useMemo, useState } from 'react';
 
 export const Faucet = () => {
   const { primaryQuoteToken } = useVertexMetadataContext();
   const [selectedProductId, setSelectedProductId] = useState<number>(0);
-  const { data: subaccountSummary } = useCurrentSubaccountSummary();
+  const { data: subaccountSummary } = useSubaccountSummary();
   const { data: depositableTokenBalances } = useAllDepositableTokenBalances();
 
   const availableProducts: (CollateralSpotProduct & {

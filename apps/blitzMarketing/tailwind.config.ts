@@ -1,4 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
+
+// eslint-disable-next-line no-relative-import-paths/no-relative-import-paths
 import { COLORS } from './styles/colors';
 
 /** @type {import('tailwindcss').Config} */

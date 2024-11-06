@@ -1,8 +1,9 @@
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { useTpSlPlaceOrderForm } from '../hooks/useTpSlPlaceOrderForm/useTpSlPlaceOrderForm';
-import { TpSlCancelOrderButton } from './TpSlCancelOrderButton';
-import { TpSlOrderInfo } from './TpSlOrderInfo/TpSlOrderInfo';
-import { TpSlPlaceOrderForm } from './TpSlPlaceOrderForm/TpSlPlaceOrderForm';
+import { TpSlCancelOrderButton } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlCancelOrderButton';
+import { TpSlOrderInfo } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlOrderInfo/TpSlOrderInfo';
+import { TpSlTriggerCriteriaPriceTypeSelect } from 'client/modules/trading/tpsl/components/TpSlTriggerCriteriaPriceTypeSelect';
+import { TpSlPlaceOrderForm } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlPlaceOrderForm/TpSlPlaceOrderForm';
+import { useTpSlDialogOrderForm } from 'client/modules/trading/tpsl/tpslDialog/hooks/useTpSlDialogOrderForm';
 
 interface Props {
   productId: number;
@@ -14,39 +15,39 @@ export function TpSlOrderManagement({ productId, isTakeProfit }: Props) {
     form,
     formError,
     onSubmit,
-    pnlFrac,
-    setPnlFrac,
+    triggerCriteriaPriceType,
     referencePrice,
     isTriggerPriceAbove,
-    triggerCriteriaPriceType,
-    setTriggerCriteriaPriceType,
     validateTriggerPrice,
-    triggerPrice,
+    validTriggerPrice,
     buttonState,
     estimatedPnlUsd,
     priceFormatSpecifier,
     sizeFormatSpecifier,
-    relevantOrder,
+    existingTriggerOrder,
     priceIncrement,
     positionSize,
     marketName,
-  } = useTpSlPlaceOrderForm({ productId, isTakeProfit });
+  } = useTpSlDialogOrderForm({ productId, isTakeProfit });
 
   return (
     <div className="text-text-secondary flex flex-col gap-y-2">
-      <div className="text-text-primary flex items-center justify-between text-sm">
+      <div className="text-text-primary flex items-center justify-between">
         <DefinitionTooltip definitionId={isTakeProfit ? 'perpTp' : 'perpSl'}>
           {isTakeProfit ? 'Take Profit' : 'Stop Loss'}
         </DefinitionTooltip>
-        {relevantOrder && <TpSlCancelOrderButton order={relevantOrder} />}
+        {existingTriggerOrder ? (
+          <TpSlCancelOrderButton order={existingTriggerOrder} />
+        ) : (
+          <TpSlTriggerCriteriaPriceTypeSelect form={form} />
+        )}
       </div>
-      {relevantOrder ? (
+      {existingTriggerOrder ? (
         <TpSlOrderInfo
           productId={productId}
           isTakeProfit={isTakeProfit}
-          relevantOrder={relevantOrder}
+          existingTpSlOrder={existingTriggerOrder}
           priceFormatSpecifier={priceFormatSpecifier}
-          sizeFormatSpecifier={sizeFormatSpecifier}
           marketName={marketName}
         />
       ) : (
@@ -55,14 +56,11 @@ export function TpSlOrderManagement({ productId, isTakeProfit }: Props) {
           form={form}
           formError={formError}
           onSubmit={onSubmit}
-          pnlFrac={pnlFrac}
-          setPnlFrac={setPnlFrac}
           referencePrice={referencePrice}
           isTriggerPriceAbove={isTriggerPriceAbove}
           triggerCriteriaPriceType={triggerCriteriaPriceType}
-          setTriggerCriteriaPriceType={setTriggerCriteriaPriceType}
           validateTriggerPrice={validateTriggerPrice}
-          triggerPrice={triggerPrice}
+          validTriggerPrice={validTriggerPrice}
           buttonState={buttonState}
           estimatedPnlUsd={estimatedPnlUsd}
           priceFormatSpecifier={priceFormatSpecifier}

@@ -6,9 +6,9 @@ export function RepayConvertInputWrapper({
   labelContent,
 }: WithChildren<{ labelContent: ReactNode }>) {
   return (
-    <div className="flex flex-col gap-y-2.5">
+    <div className="flex flex-col gap-y-4">
       <div className="text-text-secondary text-sm">{labelContent}</div>
-      <div>{children}</div>
+      <div className="flex flex-col gap-y-1.5">{children}</div>
     </div>
   );
 }

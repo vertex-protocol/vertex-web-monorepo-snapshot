@@ -5,10 +5,10 @@ import {
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
+import { accountFoundationRewardsClaimStateQueryKey } from 'client/hooks/query/foundationRewards/useAccountFoundationRewardsClaimState';
+import { allDepositableTokenBalancesQueryKey } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
 import { useCallback } from 'react';
 import { EmptyObject } from 'type-fest';
-import { allDepositableTokenBalancesQueryKey } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
-import { accountFoundationRewardsClaimStateQueryKey } from 'client/hooks/query/foundationRewards/useAccountFoundationRewardsClaimState';
 
 const REFETCH_QUERY_KEYS: string[][] = [
   allDepositableTokenBalancesQueryKey(),
@@ -20,8 +20,7 @@ const REFETCH_QUERY_KEYS: string[][] = [
  */
 export function useExecuteClaimFoundationRewards() {
   const mutationFn = useExecuteInValidContext(
-    useCallback(async (params: EmptyObject, context: ValidExecuteContext) => {
-      console.log('Claiming Foundation Rewards', params);
+    useCallback(async (_: EmptyObject, context: ValidExecuteContext) => {
       return context.vertexClient.rewards.claimFoundationRewards();
     }, []),
   );

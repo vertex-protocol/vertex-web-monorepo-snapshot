@@ -1,64 +1,67 @@
 import * as Tabs from '@radix-ui/react-tabs';
+import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import {
   Icons,
   SecondaryButton,
   SegmentedControl,
 } from '@vertex-protocol/web-ui';
-import { BaseDialog } from 'client/components/BaseDialog/BaseDialog';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RepayConvertTab } from 'client/modules/collateral/repay/components/RepayConvertTab';
 import { RepayDepositTab } from 'client/modules/collateral/repay/components/RepayDepositTab';
 import { useHasRepayableBalances } from 'client/modules/collateral/repay/hooks/useHasRepayableBalances';
-import { useEffect } from 'react';
-
-const TABS = [
-  {
-    id: 'deposit',
-    content: <RepayDepositTab />,
-  },
-  {
-    id: 'convert',
-    content: <RepayConvertTab />,
-  },
-] as const;
+import { useMemo } from 'react';
 
 /**
  * Tabs for repay / convert
  */
-export function RepayDialog() {
+export interface RepayDialogParams {
+  initialProductId?: number;
+}
+
+export function RepayDialog({ initialProductId }: RepayDialogParams) {
   const { hide } = useDialog();
   const canRepay = useHasRepayableBalances();
 
   return (
-    <BaseAppDialog onClose={hide}>
-      <BaseDialog.Title onClose={hide}>Repay</BaseDialog.Title>
+    <BaseAppDialog.Container onClose={hide}>
+      <BaseAppDialog.Title onClose={hide}>Repay</BaseAppDialog.Title>
       {/*Relative required for the RepayConvertDisclosure*/}
-      <BaseDialog.Body className="relative">
-        {canRepay ? <RepayTabs /> : <NoBorrows />}
-      </BaseDialog.Body>
-    </BaseAppDialog>
+      <BaseAppDialog.Body className="relative" asChild>
+        {canRepay ? (
+          <RepayTabs initialProductId={initialProductId} />
+        ) : (
+          <NoBorrows />
+        )}
+      </BaseAppDialog.Body>
+    </BaseAppDialog.Container>
   );
 }
 
-function RepayTabs() {
-  const { setSelectedUntypedTabId, selectedTabId, tabs } = useTabs(TABS);
-  const { trackEvent } = useAnalyticsContext();
-
-  useEffect(() => {
-    trackEvent({
-      type: 'repay_tab_view',
-      data: {
-        repayDialogTab: selectedTabId,
-      },
-    });
-  }, [selectedTabId, trackEvent]);
+function RepayTabs({
+  className,
+  initialProductId,
+}: WithClassnames<{ initialProductId: number | undefined }>) {
+  const { setSelectedUntypedTabId, selectedTabId, tabs } = useTabs(
+    useMemo(
+      () => [
+        {
+          id: 'deposit',
+          content: <RepayDepositTab initialProductId={initialProductId} />,
+        },
+        {
+          id: 'convert',
+          content: <RepayConvertTab initialProductId={initialProductId} />,
+        },
+      ],
+      [initialProductId],
+    ),
+  );
 
   return (
     <Tabs.Root
-      className="flex flex-col gap-y-4"
+      className={joinClassNames('flex flex-col gap-y-4', className)}
       value={selectedTabId}
       onValueChange={setSelectedUntypedTabId}
     >
@@ -89,12 +92,12 @@ function RepayTabs() {
   );
 }
 
-function NoBorrows() {
+function NoBorrows({ className }: WithClassnames) {
   const { hide } = useDialog();
   return (
-    <div className="flex flex-col">
+    <div className={joinClassNames('flex flex-col', className)}>
       <div className="text-text-primary flex flex-col items-center gap-y-2 text-center text-sm">
-        <Icons.MdTaskAlt size={97} className="text-positive" />
+        <Icons.CheckCircle size={97} className="text-positive" />
         <div>You have no borrows at the moment.</div>
       </div>
       <SecondaryButton onClick={hide} className="mt-6 w-full">

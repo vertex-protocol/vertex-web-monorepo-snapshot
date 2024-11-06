@@ -35,7 +35,8 @@ export function ProvideLiquiditySummary({
         valueEndElement="LP Tokens"
       />
       <Summary.Item
-        label="Fee:"
+        label="Gas Fee:"
+        definitionTooltipId="gasFee"
         value={feeAmount}
         defaultValue={0}
         numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}

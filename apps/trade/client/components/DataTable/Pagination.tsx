@@ -23,7 +23,7 @@ export function Pagination({
         size="xs"
         onClick={() => previousPage()}
         disabled={!canPreviousPage}
-        startIcon={<Icons.FiChevronLeft size={20} />}
+        startIcon={<Icons.CaretLeft size={20} />}
       >
         Prev
       </SecondaryButton>
@@ -34,7 +34,7 @@ export function Pagination({
         size="xs"
         onClick={() => nextPage()}
         disabled={!canNextPage}
-        endIcon={<Icons.FiChevronRight size={20} />}
+        endIcon={<Icons.CaretRight size={20} />}
       >
         Next
       </SecondaryButton>

@@ -6,7 +6,7 @@ import {
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { REWARDS_NOT_CONNECTED_QUERY_ADDRESS } from 'client/hooks/query/consts/rewardsNotConnectedQueryAddress';
+import { NOT_CONNECTED_ALT_QUERY_ADDRESS } from 'client/hooks/query/consts/notConnectedAltQueryAddress';
 
 export function addressPaginatedRewardsQueryKey(
   address?: string,
@@ -27,7 +27,7 @@ export function useAddressPaginatedRewards({ pageSize = 10 }: Params) {
 
   const disabled = !vertexClient;
 
-  const addressForQuery = address ?? REWARDS_NOT_CONNECTED_QUERY_ADDRESS;
+  const addressForQuery = address ?? NOT_CONNECTED_ALT_QUERY_ADDRESS;
 
   return useInfiniteQuery({
     queryKey: addressPaginatedRewardsQueryKey(addressForQuery, pageSize),

@@ -40,7 +40,7 @@ Sentry.init({
   // replaysOnErrorSampleRate: 0.1,
   // replaysSessionSampleRate: 0.01,
   integrations: [
-    // new Sentry.Replay({
+    // Sentry.replayIntegration({
     //   // Additional Replay configuration goes in here, for example:
     //   maskAllText: true,
     //   blockAllMedia: true,

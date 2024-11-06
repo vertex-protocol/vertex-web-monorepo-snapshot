@@ -1,4 +1,8 @@
-import { IconBaseProps as BaseProps, IconType as BaseType } from 'react-icons';
+import { ReactNode, SVGAttributes } from 'react';
 
-export type IconBaseProps = BaseProps;
-export type IconType = BaseType;
+export interface IconBaseProps extends SVGAttributes<SVGElement> {
+  size?: string | number;
+  color?: string;
+}
+
+export type IconComponent = (props: IconBaseProps) => ReactNode;

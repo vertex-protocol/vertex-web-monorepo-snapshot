@@ -1,10 +1,14 @@
-import { TpSlPlaceOrderSubmitButton } from './TpSlPlaceOrderSubmitButton';
-import { TpSlPlaceOrderInputs } from './TpSlPlaceOrderInputs';
-import { UseTpSlPlaceOrderForm } from '../../hooks/useTpSlPlaceOrderForm/types';
-import { TpSlOrderEstimate } from '../TpSlOrderEstimate';
 import { Form } from 'client/components/Form';
+import { TpSlOrderEstimate } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlOrderEstimate';
+import { TpSlPlaceOrderInputs } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlPlaceOrderForm/TpSlPlaceOrderInputs';
+import { TpSlPlaceOrderSubmitButton } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlPlaceOrderForm/TpSlPlaceOrderSubmitButton';
+import { UseTpSlDialogOrderForm } from 'client/modules/trading/tpsl/tpslDialog/hooks/useTpSlDialogOrderForm';
 
-interface Props extends Omit<UseTpSlPlaceOrderForm, 'relevantOrder'> {
+interface Props
+  extends Omit<
+    UseTpSlDialogOrderForm,
+    'existingTriggerOrder' | 'hasExistingPosition'
+  > {
   isTakeProfit: boolean;
 }
 
@@ -13,19 +17,14 @@ export function TpSlPlaceOrderForm({
   form,
   formError,
   onSubmit,
-  pnlFrac,
-  setPnlFrac,
   isTriggerPriceAbove,
   triggerCriteriaPriceType,
-  setTriggerCriteriaPriceType,
   validateTriggerPrice,
-  triggerPrice,
+  validTriggerPrice,
   buttonState,
   estimatedPnlUsd,
   priceFormatSpecifier,
-  sizeFormatSpecifier,
   priceIncrement,
-  positionSize,
   referencePrice,
   marketName,
 }: Props) {
@@ -36,10 +35,7 @@ export function TpSlPlaceOrderForm({
         formError={formError}
         isTakeProfit={isTakeProfit}
         triggerCriteriaPriceType={triggerCriteriaPriceType}
-        setTriggerCriteriaPriceType={setTriggerCriteriaPriceType}
         validateTriggerPrice={validateTriggerPrice}
-        pnlFrac={pnlFrac}
-        setPnlFrac={setPnlFrac}
         priceIncrement={priceIncrement}
         referencePrice={referencePrice}
         priceFormatSpecifier={priceFormatSpecifier}
@@ -49,10 +45,8 @@ export function TpSlPlaceOrderForm({
           isTriggerPriceAbove={isTriggerPriceAbove}
           triggerCriteriaPriceType={triggerCriteriaPriceType}
           estimatedPnlUsd={estimatedPnlUsd}
-          triggerPrice={triggerPrice}
+          triggerPrice={validTriggerPrice}
           priceFormatSpecifier={priceFormatSpecifier}
-          sizeFormatSpecifier={sizeFormatSpecifier}
-          amountCloseSize={positionSize}
           marketName={marketName}
         />
       )}

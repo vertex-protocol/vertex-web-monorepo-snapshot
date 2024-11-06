@@ -40,7 +40,7 @@
 
   /* Gradient Text */
   .gradient-text {
-    @apply text-transparent bg-clip-text;
+    @apply bg-clip-text text-transparent;
   }
 }
 
@@ -57,7 +57,9 @@
       rgba(181, 113, 125, 0.48),
       rgba(89, 77, 248, 1)
     );
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
@@ -74,7 +76,9 @@
       rgba(181, 113, 125, 0.48),
       rgba(89, 77, 248, 1)
     );
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;

@@ -2,10 +2,7 @@ import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import {
-  TimeFormatSpecifier,
-  formatTimestamp,
-} from 'client/utils/formatTimestamp';
+import { formatTimestamp, TimeFormatSpecifier } from '@vertex-protocol/web-ui';
 
 interface Props extends TableCellProps {
   timestampMillis: number;
@@ -20,7 +17,7 @@ export function DateTimeCell({ timestampMillis, className, ...rest }: Props) {
   });
   return (
     <TableCell className={className} {...rest}>
-      <div className="text-text-tertiary flex flex-col gap-y-1">
+      <div className="text-text-tertiary flex flex-col gap-y-0.5">
         <span>{date}</span>
         <span>{time}</span>
       </div>

@@ -3,7 +3,7 @@ import {
   WithClassnames,
   joinClassNames,
 } from '@vertex-protocol/web-common';
-import NextImage, { ImageProps } from 'next/image';
+import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 
 export function GradientText({
   children,
@@ -30,7 +30,8 @@ function InfoCard({ children, className }: WithChildren<WithClassnames>) {
   return (
     <div
       className={joinClassNames(
-        'bg-overlay-accent/5 rounded-xl p-3',
+        'rounded-xl p-3',
+        COMMON_TRANSPARENCY_COLORS.bgAccent,
         className,
       )}
     >
@@ -43,7 +44,8 @@ function InfoPill({ children, className }: WithChildren<WithClassnames>) {
   return (
     <div
       className={joinClassNames(
-        'text-text-primary bg-overlay-accent/20 whitespace-nowrap rounded-3xl px-4 py-1 text-xs',
+        'text-text-primary whitespace-nowrap rounded-3xl px-4 py-1 text-xs',
+        COMMON_TRANSPARENCY_COLORS.bgAccent,
         className,
       )}
     >
@@ -68,19 +70,6 @@ function ContentContainer({
   );
 }
 
-function Image({ className, ...rest }: WithClassnames<ImageProps>) {
-  return (
-    <div
-      className={joinClassNames(
-        'bg-surface-card ring-stroke shrink-0 overflow-hidden rounded-lg ring-2',
-        className,
-      )}
-    >
-      <NextImage {...rest} className={className} />
-    </div>
-  );
-}
-
 function Section({ children, className }: WithChildren<WithClassnames>) {
   return (
     <div className={joinClassNames('flex flex-col gap-y-3', className)}>
@@ -96,6 +85,5 @@ export const MarginManagerDefinition = {
   Description,
   InfoCard,
   InfoPill,
-  Image,
   GradientText,
 };

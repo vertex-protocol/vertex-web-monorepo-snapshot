@@ -6,7 +6,6 @@ import {
 } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
 
 interface Params {
-  depositProductIdAtomValue: number;
   form: UseFormReturn<RepayConvertFormValues>;
   availableSourceProducts: RepayConvertProduct[];
   repayProductIdInput: number;
@@ -14,19 +13,9 @@ interface Params {
 
 export function useRepayConvertOnChangeSideEffects({
   repayProductIdInput,
-  depositProductIdAtomValue,
   form,
   availableSourceProducts,
 }: Params) {
-  // When the repay product ID atom changes, update form value
-  useEffect(() => {
-    if (depositProductIdAtomValue == null) {
-      return;
-    }
-    form.setValue('repayProductId', depositProductIdAtomValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [depositProductIdAtomValue]);
-
   // Reset source product if there are no available source products
   useEffect(
     () => {

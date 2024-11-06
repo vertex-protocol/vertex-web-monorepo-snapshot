@@ -5,9 +5,11 @@ function alertUpcomingMaintenanceWindowQueryKey() {
   return ['alertUpcomingMaintenanceWindow'];
 }
 
+// UNIX timestamps for the reference times of the maintenance windows
+const MON_MAINT_REF_TIME = 1724076000; // Monday, Aug 19, 2pm GMT
+const THU_MAINT_REF_TIME = 1724335200; // Thursday, Aug 22, 2pm GMT
+
 const ONE_WEEK = TimeInSeconds.DAY * 7;
-const MON_MAINT_REF_TIME = 1683597600; // Monday, May 8, 10pm Eastern in seconds
-const THU_MAINT_REF_TIME = 1683856800; // Thursday, May 11, 10pm Eastern in seconds
 
 // The expression; ONE_WEEK - (NOW - MAINT_WINDOW_REF_TIME) % ONE_WEEK < ONE_DAY
 // checks if the difference between maintenance reference time (MAINT_WINDOW_REF_TIME)

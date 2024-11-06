@@ -1,16 +1,13 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { BrandIconLoadingIndicator } from 'client/components/BrandIconLoadingIndicator';
+import { BrandLoadingWrapper } from 'client/components/BrandIconLoadingWrapper/BrandLoadingWrapper';
+import { WIDGET_CONTAINER_ID } from 'client/modules/trading/chart/config/widgetConfig';
 import { useTradingViewChart } from 'client/modules/trading/chart/hooks/useTradingViewChart';
-import { WIDGET_CONTAINER_ID } from './config/widgetConfig';
 
-interface Props {
-  productId?: number;
+interface Props extends WithClassnames {
+  productId: number | undefined;
 }
 
-export function TradingViewChart({
-  className,
-  productId,
-}: WithClassnames<Props>) {
+export function TradingViewChart({ className, productId }: Props) {
   const { isReady, chartContainerRef } = useTradingViewChart(productId);
 
   return (
@@ -20,14 +17,12 @@ export function TradingViewChart({
         className,
       )}
     >
-      {!isReady && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <BrandIconLoadingIndicator
-            size={72}
-            className="opacity-10 saturate-0"
-          />
-        </div>
-      )}
+      {/* We don't wrap the chart container here because it needs to be present in the DOM for `isReady` to trigger */}
+      <BrandLoadingWrapper
+        isLoading={!isReady}
+        indicatorContainerClassName="absolute inset-0"
+        grayscale
+      />
       <div
         id={WIDGET_CONTAINER_ID}
         ref={chartContainerRef}

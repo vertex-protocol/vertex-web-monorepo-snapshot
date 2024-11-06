@@ -1,7 +1,7 @@
+import { LiquidationRiskNotification } from 'client/modules/notifications/components/risk/LiquidationRiskNotification';
+import { LiquidationRiskNotificationData } from 'client/modules/notifications/types';
 import { createToastId } from 'client/utils/createToastId';
 import { toast } from 'react-hot-toast';
-import { LiquidationRiskNotification } from '../components/risk/LiquidationRiskNotification';
-import { LiquidationRiskNotificationData } from '../types';
 
 export function handleLiquidationRiskNotificationDispatch(
   liquidationRiskNotificationData: LiquidationRiskNotificationData,

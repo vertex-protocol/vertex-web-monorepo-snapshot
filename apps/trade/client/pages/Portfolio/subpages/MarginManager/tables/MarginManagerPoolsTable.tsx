@@ -1,4 +1,7 @@
+'use client';
+
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
@@ -9,16 +12,15 @@ import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymb
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { StackedTokenPairCell } from 'client/modules/tables/cells/StackedTokenPairCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { useMemo } from 'react';
-import { CalculatorIconHeaderCell } from './cells/CalculatorIconHeaderCell';
-import { MarginManagerActionsCell } from './cells/MarginManagerActionsCell';
-import { MarginWeightCell } from './cells/MarginWeightCell';
-import { MarginWeightHeaderCell } from './cells/MarginWeightHeaderCell';
+import { CalculatorIconHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/CalculatorIconHeaderCell';
+import { MarginManagerActionsCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginManagerActionsCell';
+import { MarginWeightCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginWeightCell';
+import { MarginWeightHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginWeightHeaderCell';
 import {
   MarginManagerPoolsTableItem,
   useMarginManagerPoolsTable,
-} from './hooks/useMarginManagerPoolsTable';
+} from 'client/pages/Portfolio/subpages/MarginManager/tables//hooks/useMarginManagerPoolsTable';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarginManagerPoolsTableItem>();
 

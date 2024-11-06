@@ -1,33 +1,27 @@
+'use client';
+
 import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
 import { usePortfolioCharts } from 'client/pages/Portfolio/charts/hooks/usePortfolioCharts';
 import { PortfolioChartTab } from 'client/pages/Portfolio/charts/types';
 import { PortfolioHeroSection } from 'client/pages/Portfolio/components/PortfolioHeroSection';
-import { PortfolioBalancesDepositsBorrowsChart } from '../charts/PortfolioBalancesDepositsBorrowsChart';
-import { PortfolioBalancesInterestChart } from '../charts/PortfolioBalancesInterestChart';
-import { PortfolioBalancesNetBalanceAprChart } from '../charts/PortfolioBalancesNetBalanceAprChart';
-import { BalancesHeroMetricsHeader } from './BalancesHeroMetricsHeader';
-import { BalancesHeroMetricsItems } from './BalancesHeroMetricsItems';
+import { PortfolioBalancesDepositsBorrowsChart } from 'client/pages/Portfolio/subpages/Balances/charts/PortfolioBalancesDepositsBorrowsChart';
+import { PortfolioBalancesNetBalanceInterestChart } from 'client/pages/Portfolio/subpages/Balances/charts/PortfolioBalancesNetBalanceInterestChart';
+import { BalancesHeroMetricsHeader } from 'client/pages/Portfolio/subpages/Balances/components/BalancesHeroMetricsHeader';
+import { BalancesHeroMetricsItems } from 'client/pages/Portfolio/subpages/Balances/components/BalancesHeroMetricsItems';
 
-type BalancesChartTabID =
-  | 'balance_and_apr'
-  | 'deposits_and_borrows'
-  | 'interest';
+type BalancesChartTabID = 'balance_and_interest' | 'deposits_and_borrows';
 
 const BALANCES_CHART_TABS: PortfolioChartTab<BalancesChartTabID>[] = [
   {
-    id: 'balance_and_apr',
-    ChartComponent: PortfolioBalancesNetBalanceAprChart,
-    label: 'Balance/APR',
+    id: 'balance_and_interest',
+    ChartComponent: PortfolioBalancesNetBalanceInterestChart,
+    label: 'Balance/Interest',
+    labelDefinitionId: 'balancesInterestChartAccuracy',
   },
   {
     id: 'deposits_and_borrows',
     ChartComponent: PortfolioBalancesDepositsBorrowsChart,
     label: 'Deposits/Borrows',
-  },
-  {
-    id: 'interest',
-    ChartComponent: PortfolioBalancesInterestChart,
-    label: 'Interest',
   },
 ];
 

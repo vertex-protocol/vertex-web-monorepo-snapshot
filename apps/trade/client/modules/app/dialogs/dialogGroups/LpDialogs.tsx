@@ -8,10 +8,10 @@ export function LpDialogs() {
   return (
     <>
       {currentDialog?.type === 'provide_liquidity' && (
-        <ProvideLiquidityDialog />
+        <ProvideLiquidityDialog {...currentDialog.params} />
       )}
       {currentDialog?.type === 'withdraw_liquidity' && (
-        <WithdrawLiquidityDialog />
+        <WithdrawLiquidityDialog {...currentDialog.params} />
       )}
     </>
   );

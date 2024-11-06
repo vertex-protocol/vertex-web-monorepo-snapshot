@@ -6,30 +6,32 @@ import {
 import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
+import {
+  TpSlOrderInfo,
+  TriggerCriteriaPriceType,
+} from 'client/modules/trading/tpsl/tpslDialog/types';
+import { getIsTriggerPriceAbove } from 'client/modules/trading/tpsl/triggerCriteriaUtils';
 import { calcIndexerSummaryUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
-import { safeDiv } from 'client/utils/safeDiv';
 import { useMemo } from 'react';
-import { getIsTriggerPriceAbove } from '../../triggerCriteriaUtils';
-import { TpSlOrderInfo, TriggerCriteriaPriceType } from '../types';
 
 interface Params {
   productId: number;
-  relevantOrder: TriggerOrderInfo;
+  existingTpSlOrder: TriggerOrderInfo;
 }
 
 export function useTpSlOrderInfo({
   productId,
-  relevantOrder,
+  existingTpSlOrder,
 }: Params): TpSlOrderInfo {
-  const quotePrice = usePrimaryQuotePriceUsd();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { data: indexerSnapshot } = useSubaccountIndexerSnapshot();
 
   return useMemo(() => {
     const triggerPrice = toBigDecimal(
-      relevantOrder.order.triggerCriteria.triggerPrice,
+      existingTpSlOrder.order.triggerCriteria.triggerPrice,
     );
 
-    const amountCloseSize = relevantOrder.order.amount.abs();
+    const amountCloseSize = existingTpSlOrder.order.amount.abs();
 
     const unrealizedPnl = (() => {
       const indexerSnapshotBalance = indexerSnapshot?.balances.find(
@@ -42,33 +44,37 @@ export function useTpSlOrderInfo({
         return BigDecimals.ZERO;
       }
 
-      // Adjust to fraction of unrealizedPnl in case when TP/SL is set before limit order is fully filled (TP/SL Order Amount < Position Size).
-      const fractionToClose = safeDiv(
-        amountCloseSize,
-        indexerSnapshotBalance.state.postBalance.amount.abs(),
-      );
-
+      // Due to us using a max number for TP/SL order size, we can assume 100%
+      // of the order is closed and use this value directly.
       const unrealizedPnl = calcIndexerSummaryUnrealizedPnl(
         indexerSnapshotBalance,
         triggerPrice,
-      ).times(fractionToClose);
+      );
 
       return removeDecimals(unrealizedPnl);
     })();
 
     return {
-      productId: relevantOrder.order.productId,
+      productId: existingTpSlOrder.order.productId,
       triggerPrice,
       isTriggerPriceAbove: getIsTriggerPriceAbove(
-        relevantOrder.order.triggerCriteria.type,
+        existingTpSlOrder.order.triggerCriteria.type,
       ),
       triggerCriteriaPriceType: getTriggerCriteriaPriceType(
-        relevantOrder.order.triggerCriteria.type,
+        existingTpSlOrder.order.triggerCriteria.type,
       ),
       amountCloseSize: removeDecimals(amountCloseSize),
-      estimatedPnlUsd: unrealizedPnl.multipliedBy(quotePrice),
+      estimatedPnlUsd: unrealizedPnl.multipliedBy(primaryQuotePriceUsd),
     };
-  }, [indexerSnapshot?.balances, productId, quotePrice, relevantOrder]);
+  }, [
+    indexerSnapshot?.balances,
+    productId,
+    primaryQuotePriceUsd,
+    existingTpSlOrder.order.amount,
+    existingTpSlOrder.order.productId,
+    existingTpSlOrder.order.triggerCriteria.triggerPrice,
+    existingTpSlOrder.order.triggerCriteria.type,
+  ]);
 }
 
 function getTriggerCriteriaPriceType(

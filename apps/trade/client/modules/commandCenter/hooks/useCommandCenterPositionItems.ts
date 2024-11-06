@@ -3,11 +3,12 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { TokenIconMetadata } from 'common/productMetadata/tokenIcons';
+import { MarketCategory } from '@vertex-protocol/metadata';
+import { TokenIconMetadata } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
 
 export interface PositionsTableItem {
   productId: number;
@@ -34,26 +35,33 @@ export interface PositionsTableItem {
 }
 
 interface Params {
-  marketType: ProductEngineType | undefined;
+  marketCategory: MarketCategory | undefined;
 }
 
-export const useCommandCenterPositionsItems = ({ marketType }: Params) => {
+export const useCommandCenterPositionsItems = ({ marketCategory }: Params) => {
   const { data: perpBalances } = usePerpPositions();
   const { data: staticMarketsData } = useAllMarketsStaticData();
 
   const { show } = useDialog();
   const pushTradePage = usePushTradePage();
 
-  const userActionState = useUserActionState();
-  const isCloseDisabled = userActionState !== 'allow_all';
+  const isConnected = useIsConnected();
+  const isCloseDisabled = !isConnected;
 
   const mappedData: PositionsTableItem[] = useMemo(() => {
-    if (!perpBalances || marketType === ProductEngineType.SPOT) {
+    if (!perpBalances) {
       return [];
     }
 
     return perpBalances
-      .filter((balance) => !balance.amount.isZero())
+      .filter((balance) => {
+        const isMatchingCategory =
+          marketCategory == null ||
+          balance.metadata.marketCategories.has(marketCategory);
+        const isNonZeroBalance = !balance.amount.isZero();
+
+        return isMatchingCategory && isNonZeroBalance;
+      })
       .map((position): PositionsTableItem => {
         const staticMarketData = staticMarketsData?.perp[position.productId];
 
@@ -99,7 +107,7 @@ export const useCommandCenterPositionsItems = ({ marketType }: Params) => {
   }, [
     perpBalances,
     staticMarketsData?.perp,
-    marketType,
+    marketCategory,
     isCloseDisabled,
     show,
     pushTradePage,

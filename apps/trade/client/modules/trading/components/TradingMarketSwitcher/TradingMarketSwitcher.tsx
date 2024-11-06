@@ -1,24 +1,23 @@
 import * as Popover from '@radix-ui/react-popover';
-import { ProductEngineType } from '@vertex-protocol/contracts';
+import { MarketCategory } from '@vertex-protocol/metadata';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Card } from '@vertex-protocol/web-ui';
-import { ProductFilterTabs } from 'client/components/ProductFilterTabs';
-import { SearchBar } from 'client/components/SearchBar';
+import { Card, SearchBar, Z_INDEX } from '@vertex-protocol/web-ui';
+import { MarketCategoryFilter } from 'client/components/MarketCategoryFilter/MarketCategoryFilter';
 import { useIsMobile } from 'client/hooks/ui/breakpoints';
 import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { TradingMarketSwitcherPopoverTrigger } from 'client/modules/trading/components/TradingMarketSwitcher/TradingMarketSwitcherPopoverTrigger';
+import { TradingMarketSwitcherTable } from 'client/modules/trading/components/TradingMarketSwitcher/TradingMarketSwitcherTable';
 import { useTradingMarketSwitcher } from 'client/modules/trading/hooks/useTradingMarketSwitcher';
 import { MarketSwitcherProps } from 'client/modules/trading/layout/types';
-import { TradingMarketSwitcherTable } from 'client/modules/trading/components/TradingMarketSwitcher/TradingMarketSwitcherTable';
 
 interface TradingMarketSwitcherProps extends MarketSwitcherProps {
   productId: number | undefined;
-  defaultMarketType: ProductEngineType;
+  defaultMarketCategory: MarketCategory;
 }
 
 export function TradingMarketSwitcher({
   productId,
-  defaultMarketType,
+  defaultMarketCategory,
   triggerClassName,
 }: TradingMarketSwitcherProps) {
   const { trackEvent } = useAnalyticsContext();
@@ -26,16 +25,17 @@ export function TradingMarketSwitcher({
   const {
     selectedMarket,
     displayedMarkets,
+    isLoading,
     disableMarketSwitcherButton,
-    selectedMarketTypeFilter,
-    setSelectedMarketTypeFilter,
+    selectedMarketCategory,
+    setSelectedMarketCategory,
     toggleIsFavoritedMarket,
     isMarketSwitcherOpen,
     setIsMarketSwitcherOpen,
     query,
     setQuery,
     disableFavoriteButton,
-  } = useTradingMarketSwitcher(productId, defaultMarketType);
+  } = useTradingMarketSwitcher(productId, defaultMarketCategory);
 
   const isMobile = useIsMobile();
 
@@ -44,7 +44,7 @@ export function TradingMarketSwitcher({
       open={isMarketSwitcherOpen}
       onOpenChange={setIsMarketSwitcherOpen}
       // Ensures appropriate body styles are applied so we don't get funky scroll behavior on iOS.
-      modal
+      modal={isMobile}
     >
       <TradingMarketSwitcherPopoverTrigger
         disabled={disableMarketSwitcherButton}
@@ -53,14 +53,14 @@ export function TradingMarketSwitcher({
         className={triggerClassName}
       />
       <Popover.Content
-        className="z-20"
         // Render it flush against the trigger on mobile to save some room.
+        className={Z_INDEX.pagePopover}
         sideOffset={isMobile ? 0 : 6}
         asChild
       >
         <Card
           className={joinClassNames(
-            'flex flex-col overflow-y-auto p-1 shadow-xl shadow-black',
+            'flex flex-col gap-y-3 overflow-y-auto px-1 py-2 shadow-xl shadow-black',
             // See: https://www.radix-ui.com/primitives/docs/components/popover
             // Subtracting "8px" from available height to have a little padding from the screen's edge
             'h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popover-trigger-width)]',
@@ -68,22 +68,26 @@ export function TradingMarketSwitcher({
             'rounded-t-none sm:rounded-t-lg',
           )}
         >
-          <div className="flex flex-col gap-y-1.5 px-2 lg:gap-y-3 lg:py-1">
+          <div className="flex flex-col gap-y-2 px-2">
             <SearchBar
               sizeVariant="xs"
               placeholder="Search"
               query={query}
               setQuery={setQuery}
             />
-            <ProductFilterTabs
-              marketType={selectedMarketTypeFilter}
-              setMarketType={setSelectedMarketTypeFilter}
+            <MarketCategoryFilter
+              marketCategory={selectedMarketCategory}
+              setMarketCategory={setSelectedMarketCategory}
             />
           </div>
           <TradingMarketSwitcherTable
+            // Remount the table on category change so we reset the scroll shadow
+            // class rather than keeping the one used for the previous category.
+            key={selectedMarketCategory}
             disableFavoriteButton={disableFavoriteButton}
             toggleIsFavoritedMarket={toggleIsFavoritedMarket}
             markets={displayedMarkets}
+            isLoading={isLoading}
             onRowClick={() => {
               trackEvent({
                 type: 'market_entrypoint_clicked',

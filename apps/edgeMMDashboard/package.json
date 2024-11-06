@@ -1,0 +1,43 @@
+{
+  "name": "edge-mm-dashboard",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3007",
+    "typecheck": "tsc --noEmit",
+    "build": "next build",
+    "postbuild": "next-sitemap",
+    "start": "next start --port 3007",
+    "lint": "next lint --dir ."
+  },
+  "dependencies": {
+    "@next/third-parties": "*",
+    "@tanstack/react-query": "*",
+    "@vertex-protocol/client": "*",
+    "@vertex-protocol/metadata": "*",
+    "@vertex-protocol/react-client": "*",
+    "@vertex-protocol/web-common": "*",
+    "@vertex-protocol/web-ui": "*",
+    "jotai": "*",
+    "lodash": "*",
+    "next": "*",
+    "next-sitemap": "*",
+    "react": "*",
+    "react-dom": "*",
+    "recharts": "*",
+    "sharp": "*"
+  },
+  "devDependencies": {
+    "@tanstack/react-query-devtools": "*",
+    "@types/lodash": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "autoprefixer": "*",
+    "eslint": "*",
+    "eslint-config-custom": "*",
+    "postcss": "*",
+    "tailwindcss": "*",
+    "ts-config": "*",
+    "typescript": "*"
+  }
+}

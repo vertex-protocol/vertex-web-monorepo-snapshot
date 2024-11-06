@@ -1,9 +1,0 @@
-# *
-User-agent: *
-Allow: /
-
-# Host
-Host: https://stats.vertexprotocol.com/
-
-# Sitemaps
-Sitemap: https://stats.vertexprotocol.com/sitemap.xml

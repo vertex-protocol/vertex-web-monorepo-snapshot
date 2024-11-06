@@ -1,18 +1,18 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import {
-  TableCellProps,
   TableCell,
+  TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import {
-  MarginManagerPopoverAction,
-  MarginManagerTableActionsPopover,
-} from '../components/MarginManagerTableActionsPopover';
-import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
-import { useCallback } from 'react';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
+import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
+import {
+  MarginManagerDropdownAction,
+  MarginManagerTableActionsDropdown,
+} from 'client/pages/Portfolio/subpages/MarginManager/tables/components/MarginManagerTableActionsDropdown';
+import { useCallback } from 'react';
 
 interface Props extends TableCellProps {
-  actions: MarginManagerPopoverAction[];
+  actions: MarginManagerDropdownAction[];
 }
 
 export function MarginManagerActionsCell({
@@ -24,11 +24,14 @@ export function MarginManagerActionsCell({
   const pushTradePage = usePushTradePage();
 
   const performOnClickAction = useCallback(
-    ({ type, productId }: MarginManagerPopoverAction) => {
+    ({ type, productId }: MarginManagerDropdownAction) => {
       if (type === 'trade_spot' || type === 'trade_perp') {
         pushTradePage({ productId });
       } else {
-        showDialogForProduct({ dialogType: type, productId });
+        showDialogForProduct({
+          dialogType: type,
+          productId,
+        });
       }
     },
     [pushTradePage, showDialogForProduct],
@@ -42,7 +45,7 @@ export function MarginManagerActionsCell({
       )}
       {...rest}
     >
-      <MarginManagerTableActionsPopover
+      <MarginManagerTableActionsDropdown
         performOnClickAction={performOnClickAction}
         actions={actions}
       />

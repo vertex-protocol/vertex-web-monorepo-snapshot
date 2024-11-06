@@ -1,24 +1,31 @@
-import { ProductEngineType } from '@vertex-protocol/client';
-import { useEVMContext } from '@vertex-protocol/react-client';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
 import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
 import { useTextSearch } from 'client/hooks/ui/useTextSearch';
+import { useIsConnected } from 'client/hooks/util/useIsConnected';
+import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
+import {
+  getMappedMarket,
+  getSearchString,
+  volumeComparator,
+} from 'client/modules/trading/hooks/useMarketSwitcher/utils';
+import {
+  MarketCategory,
+  useVertexMetadataContext,
+} from '@vertex-protocol/metadata';
 import { get } from 'lodash';
 import { useMemo, useState } from 'react';
-import { MarketSwitcherItem } from './types';
-import { getMappedMarket, getSearchString, volumeComparator } from './utils';
 
 export interface UseMarketSwitcher {
   allMarkets: MarketSwitcherItem[] | undefined;
+  isLoading: boolean;
   displayedMarkets: MarketSwitcherItem[];
   toggleIsFavoritedMarket: (marketId: number) => void;
-  selectedMarketTypeFilter: ProductEngineType | undefined;
-  setSelectedMarketTypeFilter: (
-    productType: ProductEngineType | undefined,
+  selectedMarketCategory: MarketCategory | undefined;
+  setSelectedMarketCategory: (
+    marketCategory: MarketCategory | undefined,
   ) => void;
   query: string;
   setQuery: (query: string) => void;
@@ -26,16 +33,18 @@ export interface UseMarketSwitcher {
 }
 
 export function useMarketSwitcher(
-  defaultMarketType: ProductEngineType | undefined,
+  defaultMarketCategory: MarketCategory | undefined,
 ): UseMarketSwitcher {
   const [query, setQuery] = useState('');
-  const [selectedMarketTypeFilter, setSelectedMarketTypeFilter] =
-    useState(defaultMarketType);
+  const [selectedMarketCategory, setSelectedMarketCategory] = useState(
+    defaultMarketCategory,
+  );
 
-  const { connectionStatus } = useEVMContext();
+  const isConnected = useIsConnected();
   const { getIsHiddenMarket, getIsNewMarket } = useVertexMetadataContext();
 
-  const { data: allMarketsStaticData } = useAllMarketsStaticData();
+  const { data: allMarketsStaticData, isLoading: isLoadingMarketsStaticData } =
+    useAllMarketsStaticData();
   const { data: latestMarketPricesData } = useAllMarketsLatestPrices();
   const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
@@ -73,18 +82,15 @@ export function useMarketSwitcher(
     if (!allMarkets) {
       return [];
     }
-    if (selectedMarketTypeFilter === ProductEngineType.SPOT) {
-      return allMarkets.filter(
-        (item) => item.market.productType === ProductEngineType.SPOT,
-      );
+
+    if (selectedMarketCategory == null) {
+      return allMarkets;
     }
-    if (selectedMarketTypeFilter === ProductEngineType.PERP) {
-      return allMarkets.filter(
-        (item) => item.market.productType === ProductEngineType.PERP,
-      );
-    }
-    return allMarkets;
-  }, [allMarkets, selectedMarketTypeFilter]);
+
+    return allMarkets.filter((item) =>
+      item.market.categories.has(selectedMarketCategory),
+    );
+  }, [allMarkets, selectedMarketCategory]);
 
   const { results: queryFilteredMarkets } = useTextSearch({
     query,
@@ -99,11 +105,12 @@ export function useMarketSwitcher(
   return {
     allMarkets,
     displayedMarkets,
+    isLoading: isLoadingMarketsStaticData,
     toggleIsFavoritedMarket,
-    selectedMarketTypeFilter,
-    setSelectedMarketTypeFilter,
+    selectedMarketCategory,
+    setSelectedMarketCategory,
     query,
     setQuery,
-    disableFavoriteButton: connectionStatus.type !== 'connected',
+    disableFavoriteButton: !isConnected,
   };
 }

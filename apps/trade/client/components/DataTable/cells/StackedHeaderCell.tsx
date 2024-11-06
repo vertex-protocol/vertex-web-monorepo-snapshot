@@ -1,10 +1,9 @@
 import { Header } from '@tanstack/react-table';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
-
+import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
+import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import { ReactNode } from 'react';
-import { HeaderCell } from './HeaderCell';
 
 export function StackedHeaderCell<T>({
   top,

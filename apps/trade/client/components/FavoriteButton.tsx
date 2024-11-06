@@ -13,7 +13,7 @@ export function FavoriteButton({
   isFavorited,
   ...rest
 }: WithClassnames<FavoriteButtonProps>) {
-  const Icon = isFavorited ? Icons.BsStarFill : Icons.BsStar;
+  const Icon = isFavorited ? Icons.StarFill : Icons.Star;
 
   const iconStyle = (() => {
     if (disabled) {

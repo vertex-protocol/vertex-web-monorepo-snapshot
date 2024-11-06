@@ -1,10 +1,10 @@
-import { PrimitiveAtom, useAtom } from 'jotai';
-import { useCallback, useMemo } from 'react';
 import {
   TabIdentifiable,
   TabIdentifiableID,
   TabIdentifiableList,
-} from './types';
+} from 'client/hooks/ui/tabs/types';
+import { PrimitiveAtom, useAtom } from 'jotai';
+import { useCallback, useMemo } from 'react';
 
 export function useAtomControlledTabs<
   TTabID extends string,

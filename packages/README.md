@@ -18,6 +18,10 @@ Different `tsconfig.json` files for different use cases.
 
 A collection of common utils.
 
+### `metadata`
+
+A collection of metadata shared between monorepo apps.
+
 ### `data`
 
 Shared context & hooks for interacting with the Vertex SDK. This package assumes that contexts are children of

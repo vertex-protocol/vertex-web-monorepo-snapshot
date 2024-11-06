@@ -1,24 +1,24 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
+import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
-import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
 import { StackedTokenPairCell } from 'client/modules/tables/cells/StackedTokenPairCell';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { useMemo } from 'react';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
+import { LpEventTypeCell } from 'client/pages/Portfolio/subpages/History/components/cells/LpEventTypeCell';
 import {
-  HistoricalLpEvent,
+  HistoricalLpEventsTableItem,
   useHistoricalLpEventsTable,
-} from '../hooks/useHistoricalLpEventsTable';
-import { LpEventTypeCell } from './cells/LpEventTypeCell';
+} from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLpEventsTable';
+import { useMemo } from 'react';
 
-const columnHelper = createColumnHelper<HistoricalLpEvent>();
+const columnHelper = createColumnHelper<HistoricalLpEventsTableItem>();
 
 export function HistoricalLpEventsTable({ className }: WithClassnames) {
   const {
@@ -29,7 +29,7 @@ export function HistoricalLpEventsTable({ className }: WithClassnames) {
     setPaginationState,
   } = useHistoricalLpEventsTable();
 
-  const columns: ColumnDef<HistoricalLpEvent, any>[] = useMemo(() => {
+  const columns: ColumnDef<HistoricalLpEventsTableItem, any>[] = useMemo(() => {
     return [
       columnHelper.accessor('timestampMillis', {
         header: ({ header }) => <HeaderCell header={header}>Time</HeaderCell>,
@@ -100,7 +100,7 @@ export function HistoricalLpEventsTable({ className }: WithClassnames) {
         ),
         cell: (context) => {
           const { baseAmount, quoteAmount } =
-            context.getValue<HistoricalLpEvent['amountChanges']>();
+            context.getValue<HistoricalLpEventsTableItem['amountChanges']>();
           const metadata = context.row.original.metadata;
           return (
             <StackedTableCell

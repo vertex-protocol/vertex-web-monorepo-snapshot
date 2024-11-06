@@ -1,23 +1,30 @@
+import {
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import BigDecimal from 'bignumber.js';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import {
+  StaticMarketData,
+  StaticMarketQuoteData,
+  useAllMarketsStaticData,
+} from 'client/hooks/markets/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-
 import {
   RealizedPnlEvent,
   RealizedPnlEventsResponse,
   useSubaccountPaginatedRealizedPnlEvents,
 } from 'client/hooks/query/subaccount/useSubaccountPaginatedRealizedPnlEvents';
+import { RealizedPnlEventsTableItem } from 'client/modules/tables/types/RealizedPnlEventsTableItem';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { calcPerpEntryCostBeforeLeverage } from 'client/utils/calcs/perpEntryCostCalcs';
 import { calcPnlFrac } from 'client/utils/calcs/pnlCalcs';
-import { getBaseProductMetadata } from 'client/utils/getBaseProductMetadata';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
-import { RealizedPnlEventItem } from '../types/RealizedPnlEventItem';
 
 interface Params {
   marketFilter?: MarketFilter;
@@ -34,35 +41,40 @@ export const useRealizedPnlEventsTable = ({
   pageSize,
   enablePagination,
 }: Params) => {
-  const quotePrice = usePrimaryQuotePriceUsd();
-  const {
-    filteredMarkets,
-    filteredProductIds,
-    isLoading: loadingFilteredMarkets,
-  } = useFilteredMarkets(marketFilter);
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
+  const { filteredProductIds, isLoading: isLoadingFilteredMarkets } =
+    useFilteredMarkets(marketFilter);
   const {
     data: realizedPnlEvents,
-    isLoading: loadingRealizedPnlEvents,
-    isFetchingNextPage,
+    isLoading: isLoadingRealizedPnlEvents,
     hasNextPage,
     fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
   } = useSubaccountPaginatedRealizedPnlEvents({
     pageSize,
     productIds: filteredProductIds,
   });
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
 
-  const { getPageData, pageCount, paginationState, setPaginationState } =
-    useDataTablePagination<RealizedPnlEventsResponse, RealizedPnlEvent>({
-      pageSize,
-      numPagesFromQuery: realizedPnlEvents?.pages.length,
-      hasNextPage,
-      fetchNextPage,
-      extractItems,
-    });
+  const {
+    getPageData,
+    pageCount,
+    paginationState,
+    setPaginationState,
+    isFetchingCurrPage,
+  } = useDataTablePagination<RealizedPnlEventsResponse, RealizedPnlEvent>({
+    pageSize,
+    numPagesFromQuery: realizedPnlEvents?.pages.length,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    extractItems,
+  });
 
-  const mappedData: RealizedPnlEventItem[] | undefined = useMemo(() => {
-    if (!realizedPnlEvents || !filteredMarkets || !allMarketsStaticData) {
+  const mappedData: RealizedPnlEventsTableItem[] | undefined = useMemo(() => {
+    if (!realizedPnlEvents || !allMarketsStaticData) {
       return;
     }
 
@@ -72,94 +84,119 @@ export const useRealizedPnlEventsTable = ({
       : realizedPnlEvents.pages[0]?.events;
 
     return pageData
-      .map(
-        ({
-          reduceOnlyBaseFilledAmount,
-          productId,
-          realizedPnl,
-          timestamp,
-          preEventTrackedVars,
-          entryPrice,
-          exitPrice,
-          preBalances,
-        }): RealizedPnlEventItem | undefined => {
-          const marketData = filteredMarkets[productId];
-          const quoteData = allMarketsStaticData.quotes[productId];
+      .map((event): RealizedPnlEventsTableItem | undefined => {
+        const staticMarketData = allMarketsStaticData.all[event.productId];
+        const staticQuoteData = allMarketsStaticData.quotes[event.productId];
 
-          if (!marketData || !quoteData) {
-            return;
-          }
+        if (!staticMarketData || !staticQuoteData) {
+          return;
+        }
 
-          const { icon, symbol } = getBaseProductMetadata(marketData.metadata);
-
-          const decimalAdjustedFilledAmount = removeDecimals(
-            reduceOnlyBaseFilledAmount,
-          );
-          const decimalAdjustedPreBalanceAmount = removeDecimals(
-            preBalances.base.amount,
-          );
-          const decimalAdjustedRealizedPnl = removeDecimals(realizedPnl);
-
-          // Scale the entry cost of the position by the % filled
-          const filledFraction = decimalAdjustedFilledAmount
-            .dividedBy(decimalAdjustedPreBalanceAmount)
-            .abs();
-          const filledNetEntryUnrealized =
-            preEventTrackedVars.netEntryUnrealized.multipliedBy(filledFraction);
-          const realizedPnlFrac = calcPnlFrac(
-            realizedPnl,
-            calcPerpEntryCostBeforeLeverage(
-              marketData,
-              filledNetEntryUnrealized,
-            ),
-          );
-          const realizedPnlUsd =
-            decimalAdjustedRealizedPnl.multipliedBy(quotePrice);
-          const marketPriceFormatSpecifier = getMarketPriceFormatSpecifier(
-            marketData.priceIncrement,
-          );
-
-          return {
-            timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
-            marketInfo: {
-              marketName: marketData.metadata.marketName,
-              icon,
-              symbol,
-              quoteSymbol: quoteData.symbol,
-              isPrimaryQuote: quoteData.isPrimaryQuote,
-              amountForSide: decimalAdjustedPreBalanceAmount,
-              productType: marketData.type,
-              priceIncrement: marketData.priceIncrement,
-              sizeIncrement: marketData.sizeIncrement,
-            },
-            pnlInfo: {
-              realizedPnlFrac,
-              realizedPnlUsd,
-            },
-            filledAmountAbs: decimalAdjustedFilledAmount.abs(),
-            marketPriceFormatSpecifier,
-            entryPrice,
-            exitPrice,
-            productId,
-          };
-        },
-      )
+        return getRealizedPnlEventsTableItem({
+          event,
+          staticMarketData,
+          staticQuoteData,
+          primaryQuotePriceUsd,
+        });
+      })
       .filter(nonNullFilter);
   }, [
     allMarketsStaticData,
     enablePagination,
-    filteredMarkets,
     getPageData,
-    quotePrice,
+    primaryQuotePriceUsd,
     realizedPnlEvents,
   ]);
 
   return {
     isLoading:
-      loadingRealizedPnlEvents || loadingFilteredMarkets || isFetchingNextPage,
+      isLoadingRealizedPnlEvents ||
+      isLoadingFilteredMarkets ||
+      isFetchingCurrPage,
     mappedData,
     pageCount,
     paginationState,
     setPaginationState,
   };
 };
+
+interface GetRealizedPnlEventsTableItemParams {
+  event: RealizedPnlEvent;
+  staticMarketData: StaticMarketData;
+  staticQuoteData: StaticMarketQuoteData;
+  primaryQuotePriceUsd: BigDecimal;
+}
+
+export function getRealizedPnlEventsTableItem({
+  event,
+  staticMarketData,
+  staticQuoteData,
+  primaryQuotePriceUsd,
+}: GetRealizedPnlEventsTableItemParams): RealizedPnlEventsTableItem {
+  const {
+    reduceOnlyBaseFilledAmount,
+    productId,
+    realizedPnl,
+    timestamp,
+    preEventTrackedVars,
+    entryPrice,
+    exitPrice,
+    preBalances,
+  } = event;
+  const { icon, symbol } = getSharedProductMetadata(staticMarketData.metadata);
+
+  const decimalAdjustedFilledAmount = removeDecimals(
+    reduceOnlyBaseFilledAmount,
+  );
+  const decimalAdjustedPreBalanceAmount = removeDecimals(
+    preBalances.base.amount,
+  );
+  const decimalAdjustedRealizedPnl = removeDecimals(realizedPnl);
+
+  // Scale the entry cost of the position by the % filled
+  const filledFraction = decimalAdjustedFilledAmount
+    .dividedBy(decimalAdjustedPreBalanceAmount)
+    .abs();
+  const filledNetEntryUnrealized =
+    preEventTrackedVars.netEntryUnrealized.multipliedBy(filledFraction);
+  const realizedPnlFrac = calcPnlFrac(
+    realizedPnl,
+    calcPerpEntryCostBeforeLeverage(
+      staticMarketData.longWeightInitial,
+      filledNetEntryUnrealized,
+    ),
+  );
+  const realizedPnlUsd =
+    decimalAdjustedRealizedPnl.multipliedBy(primaryQuotePriceUsd);
+  const marketPriceFormatSpecifier = getMarketPriceFormatSpecifier(
+    staticMarketData.priceIncrement,
+  );
+  const marketSizeFormatSpecifier = getMarketSizeFormatSpecifier(
+    staticMarketData.sizeIncrement,
+  );
+
+  return {
+    timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
+    marketInfo: {
+      marketName: staticMarketData.metadata.marketName,
+      icon,
+      symbol,
+      quoteSymbol: staticQuoteData.symbol,
+      isPrimaryQuote: staticQuoteData.isPrimaryQuote,
+      amountForSide: decimalAdjustedPreBalanceAmount,
+      productType: staticMarketData.type,
+      priceIncrement: staticMarketData.priceIncrement,
+      sizeIncrement: staticMarketData.sizeIncrement,
+    },
+    pnlInfo: {
+      realizedPnlFrac,
+      realizedPnlUsd,
+    },
+    filledAmountAbs: decimalAdjustedFilledAmount.abs(),
+    marketPriceFormatSpecifier,
+    marketSizeFormatSpecifier,
+    entryPrice,
+    exitPrice,
+    productId,
+  };
+}

@@ -48,7 +48,7 @@ export const commonTooltips = {
   },
   estimatedPositionPnL: {
     title: `Est. PnL`,
-    content: `A position's total Profit or Loss estimation based on average entry and the estimated exit price. This does not include funding.`,
+    content: `A position's total Profit or Loss estimation based on average entry and the estimated exit price. This does not include funding, fees, and slippage.`,
   },
   oraclePrice: {
     title: `Oracle Price`,
@@ -98,5 +98,10 @@ export const commonTooltips = {
       </>
     ),
     content: `The funds you have available to trade. To initiate a new position, users must have a positive balance. This metric is calculated using the sum of initial margin values for assets, borrows, pools, and perpetual positions.`,
+  },
+  gasFee: {
+    title: 'Gas Fee',
+    content:
+      'The fee is used by our sequencer to submit transactions on-chain.',
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;

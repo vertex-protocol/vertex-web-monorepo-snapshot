@@ -1,19 +1,18 @@
 import {
-  PresetNumberFormatSpecifier,
   formatNumber,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
+import { Divider, LinkButton } from '@vertex-protocol/web-ui';
 import { RiskWarningIcon } from 'client/components/Icons/RiskWarningIcon';
-import { LinkButton } from 'client/components/LinkButton';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
+import { OverviewLiquidationRiskBar } from 'client/pages/Portfolio/subpages/Overview/components/OverviewHeroSection/OverviewLiquidationRiskBar';
 import Link from 'next/link';
 import { useMemo } from 'react';
-import { OverviewLiquidationRiskBar } from './OverviewLiquidationRiskBar';
 
 interface Props extends WithClassnames {
   fundsAvailable: BigDecimal | undefined;
@@ -59,6 +58,7 @@ export function OverviewHeroMetricsItems({
             id: 'accountLeverage',
           },
           label: 'Account Leverage',
+          valueClassName: 'gap-x-0',
           valueContent: `${formatNumber(accountLeverage, {
             formatSpecifier: PresetNumberFormatSpecifier.NUMBER_1DP,
           })}x`,
@@ -77,6 +77,7 @@ export function OverviewHeroMetricsItems({
               liquidationRiskFraction={liquidationRiskFraction}
             />
           ),
+          valueClassName: 'items-center',
         },
         {
           tooltip: {

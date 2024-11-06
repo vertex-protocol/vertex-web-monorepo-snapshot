@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import { addDecimals } from '@vertex-protocol/utils';
-import { useExecuteCancelReduceOnlyOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelReduceOnlyOrdersWithNotification';
 import { PLACE_ENGINE_ORDER_QUERY_KEYS } from 'client/hooks/execute/placeOrder/placeEngineOrderQueryKeys';
 import { usePlaceOrderMutationFn } from 'client/hooks/execute/placeOrder/usePlaceOrderMutationFn';
 import { getMarketOrderExecutionPrice } from 'client/hooks/execute/util/getMarketOrderExecutionPrice';
@@ -18,7 +17,6 @@ import { roundToString } from 'client/utils/rounding';
 import { chunk } from 'lodash';
 import { useCallback } from 'react';
 import { EmptyObject } from 'type-fest';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 
 export interface ExecuteCloseAllPositionsResult {
   numFailed: number;
@@ -26,9 +24,6 @@ export interface ExecuteCloseAllPositionsResult {
 }
 
 export function useExecuteCloseAllPositions() {
-  const { trackEvent } = useAnalyticsContext();
-  const { cancelReduceOnlyOrdersWithNotification } =
-    useExecuteCancelReduceOnlyOrdersWithNotification();
   const { data: perpBalances } = usePerpPositions();
   const placeOrderMutationFn = usePlaceOrderMutationFn();
   const refetchPlaceEngineOrderRelatedQueries = useRefetchQueries(
@@ -114,14 +109,10 @@ export function useExecuteCloseAllPositions() {
         await delay(1000);
       }
 
-      // Cancel reduce only orders for closed positions
-      cancelReduceOnlyOrdersWithNotification(closedProductIds);
-
       return { numFailed, numPositionsToClose: positions.length };
     },
     [
       perpBalances,
-      cancelReduceOnlyOrdersWithNotification,
       latestMarketPrices,
       marketSlippageFraction,
       placeOrderMutationFn,
@@ -132,15 +123,8 @@ export function useExecuteCloseAllPositions() {
 
   return useMutation({
     mutationFn,
-    onSuccess(data) {
+    onSuccess() {
       refetchPlaceEngineOrderRelatedQueries();
-
-      trackEvent({
-        type: 'close_all_positions_placed',
-        data: {
-          numPositions: data.numPositionsToClose,
-        },
-      });
     },
     onError(error, variables) {
       logExecuteError('CloseAllPositions', error, variables);

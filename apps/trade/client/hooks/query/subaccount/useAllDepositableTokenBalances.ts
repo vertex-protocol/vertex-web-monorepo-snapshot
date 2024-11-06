@@ -1,12 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { IERC20__factory } from '@vertex-protocol/client';
+import { ChainEnv, IERC20__factory } from '@vertex-protocol/client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
-  PrimaryChainID,
   QueryDisabledError,
   useEVMContext,
-  usePrimaryChainId,
   usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
 import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
@@ -16,11 +14,11 @@ import { useMemo } from 'react';
 import { Address } from 'viem';
 
 export function allDepositableTokenBalancesQueryKey(
-  chainId?: PrimaryChainID,
+  chainEnv?: ChainEnv,
   owner?: string,
   productIds?: number[],
 ) {
-  return createQueryKey('allTokenBalances', chainId, owner, productIds);
+  return createQueryKey('allTokenBalances', chainEnv, owner, productIds);
 }
 
 // Product ID -> balance
@@ -32,10 +30,10 @@ type Data = Record<number, BigDecimal>;
  * individual `IERC20` calls.
  */
 export function useAllDepositableTokenBalances(): QueryState<Data> {
-  const primaryChainId = usePrimaryChainId();
   const publicClient = usePrimaryChainPublicClient();
   const {
     connectionStatus: { address },
+    primaryChainEnv,
   } = useEVMContext();
   const { data: allMarkets } = useAllMarkets();
 
@@ -91,7 +89,7 @@ export function useAllDepositableTokenBalances(): QueryState<Data> {
 
   return useQuery({
     queryKey: allDepositableTokenBalancesQueryKey(
-      primaryChainId,
+      primaryChainEnv,
       address,
       spotProducts.map((p) => p.productId),
     ),

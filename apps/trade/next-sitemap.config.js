@@ -5,28 +5,20 @@ const siteUrl = {
   blitz: 'https://app.blitz.exchange',
 }[brandName];
 
+const brandSpecificExcludedPaths = {
+  vertex: [],
+  blitz: ['/vrtx', '/referrals'],
+}[brandName];
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl,
   generateRobotsTxt: true,
   generateIndexSitemap: false,
+  exclude: [...brandSpecificExcludedPaths, '/competitions/*'],
   additionalPaths: async (config) => {
-    // Dynamic paths aren't picked up by the tool, so needs to be manually specified
-    const paths = [
-      '/portfolio/overview',
-      '/portfolio/balances',
-      '/portfolio/positions',
-      '/portfolio/lp-positions',
-      '/portfolio/orders',
-      '/portfolio/history',
-      '/portfolio/margin-manager',
-      '/portfolio/faq',
-      '/spot',
-      '/perpetuals',
-    ];
-
     const transformedPaths = [];
-    for (const path of paths) {
+    for (const path of ['/spot', '/perpetuals']) {
       transformedPaths.push(await config.transform(config, path));
     }
 

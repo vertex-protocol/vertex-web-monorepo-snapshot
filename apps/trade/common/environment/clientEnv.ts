@@ -2,6 +2,7 @@ import { BRAND_METADATA_BY_BRAND_NAME } from 'common/brandMetadata/brandMetadata
 import { BrandMetadata } from 'common/brandMetadata/types';
 import { baseClientEnv, BaseClientEnv } from 'common/environment/baseClientEnv';
 import { GOOGLE_ANALYTICS_ID_BY_BRAND_NAME } from 'common/environment/integrations/googleAnalyticsIdByBrandName';
+import { MICROSOFT_CLARITY_ANALYTICS_ID_BY_BRAND_NAME } from 'common/environment/integrations/microsoftClarityAnalyticsByBrandName';
 import { WALLETCONNECT_PROJECT_ID_BY_BRAND_NAME } from 'common/environment/integrations/walletConnectProjectIdByBrandName';
 
 export interface ClientEnv {
@@ -10,6 +11,7 @@ export interface ClientEnv {
   integrations: {
     walletConnectProjectId: string;
     googleAnalyticsId: string;
+    microsoftClarityAnalytics: string;
   };
 }
 
@@ -21,5 +23,7 @@ export const clientEnv: ClientEnv = {
       WALLETCONNECT_PROJECT_ID_BY_BRAND_NAME[baseClientEnv.brandName],
     googleAnalyticsId:
       GOOGLE_ANALYTICS_ID_BY_BRAND_NAME[baseClientEnv.brandName],
+    microsoftClarityAnalytics:
+      MICROSOFT_CLARITY_ANALYTICS_ID_BY_BRAND_NAME[baseClientEnv.brandName],
   },
 };

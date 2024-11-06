@@ -1,4 +1,8 @@
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import {
+  useVertexMetadataContext,
+  VRTX_TOKEN_INFO,
+} from '@vertex-protocol/metadata';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
@@ -6,29 +10,26 @@ import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from 'client/context/vertexMetadata/VertexMetadataContext';
-
 import { VrtxRewardEpoch } from 'client/modules/rewards/types';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { VRTX_TOKEN_INFO } from 'common/productMetadata/vertexTokenInfo';
-import { useMemo } from 'react';
-import { EpochNameCell } from './cells/EpochNameCell';
-import { EpochRewardsLiquidClaimActionCell } from './cells/EpochRewardsLiquidClaimActionCell';
-import { EpochRewardsPoolCell } from './cells/EpochRewardsPoolCell';
-import { EpochUnclaimedRewardsAmountCell } from './cells/EpochUnclaimedRewardsAmountCell';
-import { TimeSpanCell } from './cells/TimespanCell';
+import { EpochNameCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochNameCell';
+import { EpochRewardsLiquidClaimActionCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochRewardsLiquidClaimActionCell';
+import { EpochRewardsPoolCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochRewardsPoolCell';
+import { EpochRewardsTimeSpanCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochRewardsTimeSpanCell';
+import { EpochUnclaimedRewardsAmountCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochUnclaimedRewardsAmountCell';
 import {
   EpochRewardsTableData,
   useEpochRewardsTable,
-} from './useEpochRewardsTable';
+} from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/useEpochRewardsTable';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<EpochRewardsTableData>();
 
 export function EpochRewardsTable({
-  isOnProtocolTokenChain,
+  isOnProtocolTokenChainEnv,
 }: {
-  isOnProtocolTokenChain: boolean;
+  isOnProtocolTokenChainEnv: boolean;
 }) {
   const { primaryQuoteToken } = useVertexMetadataContext();
   const { data, pageCount, paginationState, setPaginationState, isLoading } =
@@ -107,7 +108,7 @@ export function EpochRewardsTable({
           const { from, to } =
             context.getValue<VrtxRewardEpoch['epochIntervalMillis']>();
 
-          return <TimeSpanCell start={from} end={to} />;
+          return <EpochRewardsTimeSpanCell start={from} end={to} />;
         },
         // Note: Omitting sorting here as it's an object of key -> numbers, so we don't yet have a sorting fn defined for it.
         // If it doesn't sort well, we can add a custom sorting fn later on.
@@ -186,9 +187,9 @@ export function EpochRewardsTable({
           cellContainerClassName: 'w-36',
         },
       }),
-      ...(isOnProtocolTokenChain ? protocolChainColumns : []),
+      ...(isOnProtocolTokenChainEnv ? protocolChainColumns : []),
     ];
-  }, [isOnProtocolTokenChain, primaryQuoteToken.symbol]);
+  }, [isOnProtocolTokenChainEnv, primaryQuoteToken.symbol]);
 
   return (
     <DataTable

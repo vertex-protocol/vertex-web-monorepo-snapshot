@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "env": [
@@ -9,7 +9,9 @@
         "NEXT_PUBLIC_BRAND_NAME",
         "NEXT_PUBLIC_ENABLE_EXPERIMENTAL_FEATURES",
         "NEXT_PUBLIC_SENTRY_ENV_NAME",
-        "NODE_ENV"
+        "NEXT_RUNTIME",
+        "NODE_ENV",
+        "NEXT_PUBLIC_BUILD_ID"
       ],
       "outputs": ["dist/**", ".next/**"]
     },
@@ -20,7 +22,8 @@
       "outputs": []
     },
     "dev": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     }
   }
 }

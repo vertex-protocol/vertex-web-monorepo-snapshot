@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
-import { Breakpoint } from './breakpoints';
 import { useIsClient, useWindowSize } from '@vertex-protocol/web-common';
+import { Breakpoint } from 'client/hooks/ui/breakpoints/breakpoints';
+import { useMemo } from 'react';
 
 export type SizeClass = 'mobile' | 'tablet' | 'desktop';
 

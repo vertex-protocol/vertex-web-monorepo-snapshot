@@ -1,6 +1,6 @@
 import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
-import { PortfolioHistoryTabID } from 'client/pages/Portfolio/subpages/History/hooks/usePortfolioHistoryTabs';
-import { PortfolioOpenOrdersTabID } from 'client/pages/Portfolio/subpages/OpenOrders/hooks/usePortfolioOpenOrderTabs';
+import { PortfolioHistoryTabID } from 'client/pages/Portfolio/subpages/History/types';
+import { PortfolioOpenOrdersTabID } from 'client/pages/Portfolio/subpages/OpenOrders/types';
 import { atom } from 'jotai';
 
 export const portfolioOpenOrdersTabIdAtom =
