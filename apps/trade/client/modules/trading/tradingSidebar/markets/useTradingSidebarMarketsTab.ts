@@ -1,4 +1,4 @@
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
+import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { useTextSearch } from 'client/hooks/ui/useTextSearch';
 import { useTradingSidebar } from 'client/modules/trading/tradingSidebar/useTradingSidebar';
@@ -8,7 +8,7 @@ import {
   toTradingSidebarMarketData,
   tradingSidebarMarketsVolumeComparator,
 } from 'client/modules/trading/tradingSidebar/markets/utils';
-import { MarketCategory } from '@vertex-protocol/metadata';
+import { MarketCategory } from '@vertex-protocol/react-client';
 import { mapValues } from 'lodash';
 import { useMemo, useState } from 'react';
 
@@ -17,7 +17,7 @@ export function useTradingSidebarMarketsTab() {
     useTradingSidebar();
   const isConnected = useIsConnected();
   const { data: latestMarketPrices } = useAllMarketsLatestPrices();
-  const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
+  const { data: marketStatsData } = useAllMarketsStats();
 
   const [query, setQuery] = useState('');
   const [marketCategory, setMarketCategory] = useState<MarketCategory>();
@@ -31,10 +31,10 @@ export function useTradingSidebarMarketsTab() {
       return toTradingSidebarMarketData(
         market,
         latestMarketPrices,
-        marketMetricsData,
+        marketStatsData,
       );
     });
-  }, [relevantMarkets, latestMarketPrices, marketMetricsData]);
+  }, [relevantMarkets, latestMarketPrices, marketStatsData]);
 
   const categoryFilteredItems = useMemo(() => {
     if (!allMarketsInfoItemsByProductId) {

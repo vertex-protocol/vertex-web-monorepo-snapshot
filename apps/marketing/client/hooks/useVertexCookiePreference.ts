@@ -4,7 +4,7 @@ import {
 } from '@vertex-protocol/web-common';
 
 const cookiePreferenceAtom = createLocalStorageAtom<boolean | null>(
-  'vertex',
+  'marketing',
   'areCookiesAccepted',
   null,
 );

@@ -1,14 +1,14 @@
 import { BigDecimal, removeDecimals } from '@vertex-protocol/client';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
-import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
+import { AnnotatedSpotMarket } from '@vertex-protocol/react-client';
 import { useMarket } from 'client/hooks/markets/useMarket';
-import { RepayConvertProduct } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
+import { RepayConvertProductSelectValue } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
 import { roundToIncrement } from 'client/utils/rounding';
 import { useCallback, useMemo } from 'react';
 
 interface Params {
-  selectedSourceProduct: RepayConvertProduct | undefined;
-  selectedRepayProduct: RepayConvertProduct | undefined;
+  selectedSourceProduct: RepayConvertProductSelectValue | undefined;
+  selectedRepayProduct: RepayConvertProductSelectValue | undefined;
 }
 
 // The market product is the product, either repay or source, with an associated market

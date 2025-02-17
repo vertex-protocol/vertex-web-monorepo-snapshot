@@ -11,6 +11,7 @@ import {
   TriggerCriteriaPriceType,
 } from 'client/modules/trading/tpsl/tpslDialog/types';
 import { getIsTriggerPriceAbove } from 'client/modules/trading/tpsl/triggerCriteriaUtils';
+import { getIsIsoTriggerOrder } from 'client/modules/trading/utils/isoOrderChecks';
 import { calcIndexerSummaryUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
 import { useMemo } from 'react';
 
@@ -32,11 +33,13 @@ export function useTpSlOrderInfo({
     );
 
     const amountCloseSize = existingTpSlOrder.order.amount.abs();
+    const isIso = getIsIsoTriggerOrder(existingTpSlOrder);
 
     const unrealizedPnl = (() => {
       const indexerSnapshotBalance = indexerSnapshot?.balances.find(
         (indexerBalance) => {
-          return indexerBalance.productId === productId;
+          const matchesMarginMode = indexerBalance.isolated === isIso;
+          return indexerBalance.productId === productId && matchesMarginMode;
         },
       );
 
@@ -67,13 +70,10 @@ export function useTpSlOrderInfo({
       estimatedPnlUsd: unrealizedPnl.multipliedBy(primaryQuotePriceUsd),
     };
   }, [
+    existingTpSlOrder,
+    primaryQuotePriceUsd,
     indexerSnapshot?.balances,
     productId,
-    primaryQuotePriceUsd,
-    existingTpSlOrder.order.amount,
-    existingTpSlOrder.order.productId,
-    existingTpSlOrder.order.triggerCriteria.triggerPrice,
-    existingTpSlOrder.order.triggerCriteria.type,
   ]);
 }
 

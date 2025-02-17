@@ -1,5 +1,5 @@
 import { ProductEngineType } from '@vertex-protocol/client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { mapValues } from 'lodash';
 import { useMemo } from 'react';
@@ -23,7 +23,7 @@ export function useProductTradingLinks() {
             ? ROUTES.spotTrading
             : ROUTES.perpTrading;
 
-        const link = `${baseRoute}/${marketName}`;
+        const link = `${baseRoute}?market=${marketName}`;
 
         return {
           link,

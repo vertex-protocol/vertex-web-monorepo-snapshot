@@ -9,13 +9,15 @@ import {
   toBigDecimal,
 } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useSubaccountPaginatedHistoricalTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountPaginatedHistoricalTriggerOrders';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
+import { getIsIsoTriggerOrder } from 'client/modules/trading/utils/isoOrderChecks';
 
 export interface HistoricalTriggerOrdersTableItem {
   timestampMillis: number;
@@ -23,6 +25,7 @@ export interface HistoricalTriggerOrdersTableItem {
   marketInfo: MarketInfoCellData;
   price: BigDecimal;
   totalSize: BigDecimal;
+  marginModeType: MarginModeType;
 }
 
 /**
@@ -110,6 +113,9 @@ export function useHistoricalTriggerOrdersTable() {
                 sizeIncrement: marketData.sizeIncrement,
                 priceIncrement: marketData.priceIncrement,
               },
+              marginModeType: getIsIsoTriggerOrder(triggerOrderInfo)
+                ? 'isolated'
+                : 'cross',
               price: triggerPrice,
               totalSize: totalAmount.abs(),
             };

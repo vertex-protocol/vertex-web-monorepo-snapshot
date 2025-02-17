@@ -83,7 +83,10 @@ function CheckboxRow({ children, className }: WithChildren<WithClassnames>) {
   return (
     <div
       className={joinClassNames(
-        'text-text-primary flex items-center gap-x-2',
+        // `relative` crucial here, as Radix applies absolute positioning and a
+        // transform to the checkbox `input`, which in some cases may break layout.
+        // See: https://github.com/radix-ui/primitives/issues/2778 for an example.
+        'text-text-primary relative flex items-center gap-x-2',
         'has-[:disabled]:text-text-tertiary',
         className,
       )}

@@ -8,7 +8,7 @@ import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface Props extends TableCellProps {
   amount: BigDecimal;
@@ -28,8 +28,7 @@ export function SpreadCell({ className, symbol, amount, ...rest }: Props) {
           negative: <Icons.CaretDownFill size={10} className="text-negative" />,
           zero: null,
         })}
-        {formattedAmount}{' '}
-        <div className="text-text-tertiary text-3xs">{symbol}</div>
+        {formattedAmount} <span className="text-3xs">{symbol}</span>
       </div>
     </TableCell>
   );

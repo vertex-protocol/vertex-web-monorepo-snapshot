@@ -1,14 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
+import { subaccountToHex } from '@vertex-protocol/contracts';
+import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   useExecuteInValidContext,
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueries } from 'client/hooks/execute/util/useRefetchQueries';
-import { useCallback } from 'react';
 import { subaccountLinkedSignerQueryKey } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
-import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
-import { Wallet, ZeroAddress } from 'ethers';
-import { subaccountToHex } from '@vertex-protocol/contracts';
+import { Wallet } from 'ethers';
+import { useCallback } from 'react';
+import { zeroAddress } from 'viem';
 
 const REFETCH_QUERY_KEYS = [subaccountLinkedSignerQueryKey()];
 
@@ -44,7 +45,7 @@ export function useExecuteUpdateLinkedSigner() {
          */
 
         if (params.revoke) {
-          if (currentLinkedSignerAddress === ZeroAddress) {
+          if (currentLinkedSignerAddress === zeroAddress) {
             console.debug(
               '[useExecuteCreateLinkedSigner] Skipping revoke, linked signer is zero address',
             );
@@ -53,7 +54,7 @@ export function useExecuteUpdateLinkedSigner() {
 
           await context.vertexClient.subaccount.linkSigner({
             signer: subaccountToHex({
-              subaccountOwner: ZeroAddress,
+              subaccountOwner: zeroAddress,
               subaccountName: '',
             }),
             subaccountName: context.subaccount.name,

@@ -6,14 +6,12 @@ import {
 } from '@radix-ui/react-tabs';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { CounterPill, UnderlinedTabs } from '@vertex-protocol/web-ui';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useOverviewTabs } from 'client/pages/Portfolio/subpages/Overview/hooks/useOverviewTabs';
 
 export function OverviewTabs({
   className,
 }: WithClassnames<{ productId?: number }>) {
   const { selectedTabId, tabs, setSelectedUntypedTabId } = useOverviewTabs();
-  const { trackEvent } = useAnalyticsContext();
 
   return (
     <TabsRoot
@@ -21,12 +19,6 @@ export function OverviewTabs({
       value={selectedTabId}
       onValueChange={(value) => {
         setSelectedUntypedTabId(value);
-        trackEvent({
-          type: 'overview_tabs_clicked',
-          data: {
-            overviewTab: value,
-          },
-        });
       }}
     >
       <TabsList asChild>

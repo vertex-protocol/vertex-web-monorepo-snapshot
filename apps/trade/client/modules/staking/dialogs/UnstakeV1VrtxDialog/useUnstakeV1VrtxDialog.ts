@@ -1,5 +1,5 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { removeDecimals } from '@vertex-protocol/utils';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
+import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { useExecuteUnstakeVrtx } from 'client/hooks/execute/vrtxToken/useExecuteUnstakeVrtx';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 import { useAccountStakingState } from 'client/hooks/query/vrtxToken/useAccountStakingState';
@@ -53,7 +53,7 @@ export function useUnstakeV1VrtxDialog() {
   const { isLoading: isTxLoading, isSuccess: isTxSuccessful } =
     useOnChainMutationStatus({
       mutationStatus: executeUnstakeV2Vrtx.status,
-      txResponse: executeUnstakeV2Vrtx.data,
+      txHash: executeUnstakeV2Vrtx.data,
     });
 
   useRunWithDelayOnCondition({
@@ -66,18 +66,23 @@ export function useUnstakeV1VrtxDialog() {
       return;
     }
 
-    const txResponsePromise = unstakeV1VrtxMutation({
-      amount: currentBalance?.toString(),
+    const txHashPromise = unstakeV1VrtxMutation({
+      amount: addDecimals(currentBalance, protocolTokenDecimals).toFixed(),
     });
 
     dispatchNotification({
       type: 'action_error_handler',
       data: {
         errorNotificationTitle: 'Unstake V1 VRTX Failed',
-        executionData: { txResponsePromise },
+        executionData: { txHashPromise },
       },
     });
-  }, [unstakeV1VrtxMutation, dispatchNotification, currentBalance]);
+  }, [
+    unstakeV1VrtxMutation,
+    dispatchNotification,
+    currentBalance,
+    protocolTokenDecimals,
+  ]);
 
   // Action button state
   const buttonState = useMemo((): BaseActionButtonState => {

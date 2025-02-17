@@ -6,12 +6,13 @@ import type { RepayDialogParams } from 'client/modules/collateral/repay/RepayDia
 import type { WithdrawDialogParams } from 'client/modules/collateral/withdraw/components/WithdrawDialog';
 import type { ProvideLiquidityDialogParams } from 'client/modules/pools/provide/ProvideLiquidityDialog';
 import type { WithdrawLiquidityDialogParams } from 'client/modules/pools/withdraw/WithdrawLiquidityDialog';
-import type { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/staking/ClaimTradingRewardsDialog/types';
+import type { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/ClaimTradingRewardsDialog/types';
 import type { PerpPnlSocialSharingDialogParams } from 'client/modules/socialSharing/PerpPnlSocialSharingDialog';
 import type { EditSubaccountProfileDialogParams } from 'client/modules/subaccounts/components/dialogs/EditSubaccountProfileDialog/EditSubaccountProfileDialog';
 import type { SubaccountQuoteTransferDialogParams } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferDialog';
 import type { LpBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/LpBalanceDetailsDialog';
 import type { LpMarketDetailsDialogParams } from 'client/modules/tables/detailDialogs/LpMarketDetailsDialog';
+import type { MarketDetailsDialogParams } from 'client/modules/tables/detailDialogs/MarketDetailsDialog';
 import type { OpenEngineOrderDetailsDialogParams } from 'client/modules/tables/detailDialogs/OpenEngineOrderDetailsDialog';
 import type { OpenTriggerOrderDetailsDialogParams } from 'client/modules/tables/detailDialogs/OpenTriggerOrderDetailsDialog';
 import type { PerpPositionDetailsDialogParams } from 'client/modules/tables/detailDialogs/PerpPositionDetailsDialog';
@@ -19,10 +20,12 @@ import type { PreLiquidationDetailsDialogParams } from 'client/modules/tables/de
 import type { RealizedPnlDetailsDialogParams } from 'client/modules/tables/detailDialogs/RealizedPnlDetailsDialog';
 import type { SpotBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/SpotBalanceDetailsDialog';
 import type { ClosePositionDialogParams } from 'client/modules/trading/closePosition/ClosePositionDialog';
+import type { IsolatedAdjustMarginDialogParams } from 'client/modules/trading/components/dialogs/IsolatedAdjustMarginDialog/IsolatedAdjustMarginDialog';
 import type { TpSlDialogParams } from 'client/modules/trading/tpsl/tpslDialog/TpSlDialog';
+import type { UtmCampaignDialogParams } from 'client/modules/utm/dialogs/UtmCampaignDialog/UtmCampaignDialog';
 import type { SkateVaultDialogParams } from 'client/modules/vaults/dialogs/types';
-import type { MarketDetailsDialogParams } from 'client/pages/Markets/components/MarketDetailsDialog/MarketDetailsDialog';
 import type { PerpLeverageDialogParams } from 'client/pages/PerpTrading/components/PerpLeverageDialog/PerpLeverageDialog';
+import type { PerpMarginModeDialogParams } from 'client/pages/PerpTrading/components/PerpMarginModeDialog/PerpMarginModeDialog';
 import type { EmptyObject } from 'type-fest';
 
 export type DialogParams =
@@ -111,6 +114,10 @@ export type DialogParams =
       params: PerpLeverageDialogParams;
     }
   | {
+      type: 'perp_margin_mode';
+      params: PerpMarginModeDialogParams;
+    }
+  | {
       type: 'provide_liquidity';
       params: ProvideLiquidityDialogParams;
     }
@@ -163,10 +170,6 @@ export type DialogParams =
       params: EmptyObject;
     }
   | {
-      type: 'stake_vrtx';
-      params: EmptyObject;
-    }
-  | {
       type: 'stake_v2_vrtx';
       params: EmptyObject;
     }
@@ -175,7 +178,7 @@ export type DialogParams =
       params: EmptyObject;
     }
   | {
-      type: 'claim_vrtx_staking_rewards';
+      type: 'staking_set_trading_wallet';
       params: EmptyObject;
     }
   | {
@@ -183,12 +186,12 @@ export type DialogParams =
       params: ClaimTradingRewardsDialogParams;
     }
   | {
-      type: 'unstake_vrtx';
+      type: 'unstake_v1_vrtx';
       params: EmptyObject;
     }
   | {
-      type: 'unstake_v1_vrtx';
-      params: EmptyObject;
+      type: 'utm_campaign_connect';
+      params: UtmCampaignDialogParams;
     }
   | {
       type: 'unstake_v2_vrtx';
@@ -207,15 +210,15 @@ export type DialogParams =
       params: PreLiquidationDetailsDialogParams;
     }
   | {
-      type: 'customize_referral_link';
+      type: 'customize_fuul_referral_link';
       params: EmptyObject;
     }
   | {
-      type: 'confirm_referral';
+      type: 'confirm_fuul_referral';
       params: EmptyObject;
     }
   | {
-      type: 'claim_referral_earnings';
+      type: 'claim_fuul_referral_earnings';
       params: EmptyObject;
     }
   | {
@@ -245,6 +248,10 @@ export type DialogParams =
   | {
       type: 'subaccount_quote_transfer';
       params: SubaccountQuoteTransferDialogParams;
+    }
+  | {
+      type: 'adjust_iso_margin';
+      params: IsolatedAdjustMarginDialogParams;
     }
   | {
       type: 'export_history';

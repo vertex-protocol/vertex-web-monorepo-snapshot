@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
@@ -18,7 +18,7 @@ import {
   MarginManagerQuoteBalanceTableItem,
   useMarginManagerQuoteBalanceTable,
 } from 'client/pages/Portfolio/subpages/MarginManager/tables//hooks/useMarginManagerQuoteBalanceTable';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarginManagerQuoteBalanceTableItem>();

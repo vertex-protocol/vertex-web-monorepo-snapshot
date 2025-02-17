@@ -1,8 +1,8 @@
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DialogType } from 'client/modules/app/dialogs/types';
 import { useEffect } from 'react';
-import { useEVMContext } from '@vertex-protocol/react-client';
 
 /**
  * Manages app-wide flows for automatically showing / hiding dialogs
@@ -23,7 +23,11 @@ export function useAppDialogEffects() {
    */
   useEffect(() => {
     const currentDialogType = currentDialogRef.current?.type;
-    const ignoredDialogTypes: DialogType[] = ['location_restricted', 'connect'];
+    const ignoredDialogTypes: DialogType[] = [
+      'location_restricted',
+      'connect',
+      'utm_campaign_connect',
+    ];
 
     if (
       connectionStatusType === 'disconnected' &&

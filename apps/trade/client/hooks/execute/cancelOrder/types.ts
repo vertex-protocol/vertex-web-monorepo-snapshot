@@ -11,8 +11,7 @@ export interface CancellableOrder {
 }
 
 export interface CancellableOrderWithNotificationInfo extends CancellableOrder {
-  // Decimal adjusted
-  totalAmount: BigDecimal;
+  decimalAdjustedTotalAmount: BigDecimal;
   orderType: OrderType;
 }
 

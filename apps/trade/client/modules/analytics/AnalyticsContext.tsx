@@ -1,5 +1,5 @@
 import { AnalyticsEvent } from 'client/modules/analytics/types';
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 export interface AnalyticsContextData {
   areCookiesAccepted: boolean | null;
@@ -14,4 +14,4 @@ export const AnalyticsContext = createContext<AnalyticsContextData>(
 );
 
 // Hook to consume context
-export const useAnalyticsContext = () => useContext(AnalyticsContext);
+export const useAnalyticsContext = () => use(AnalyticsContext);

@@ -1,22 +1,23 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { SharedProductMetadata } from '@vertex-protocol/react-client';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSpreadBalances } from 'client/pages/Portfolio/subpages/MarginManager/tables/hooks/useSpreadBalances';
 import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { SpotProductMetadata } from '@vertex-protocol/metadata';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 export interface MarginManagerSpreadTableItem {
   spotProductId: number;
   perpProductId: number;
-  spotMetadata: SpotProductMetadata;
+  // Uses the perp metadata. For something like the ETH-PERP & wETH spread, we want ETH as the symbol, not wETH
+  productMetadata: SharedProductMetadata;
   spreadSize: BigDecimal;
   spotSpreadAmount: BigDecimal;
   perpSpreadAmount: BigDecimal;
-  initialHealth: MarginWeightMetrics;
-  maintenanceHealth: MarginWeightMetrics;
+  initialHealthBenefit: MarginWeightMetrics;
+  maintenanceHealthBenefit: MarginWeightMetrics;
 }
 
 export function useMarginManagerSpreadsTable() {
@@ -33,8 +34,8 @@ export function useMarginManagerSpreadsTable() {
     }
 
     return spreadBalances
-      .map((spread) => {
-        const marketStaticData = marketsStaticData?.spot[spread.spotProductId];
+      .map((spread): MarginManagerSpreadTableItem | undefined => {
+        const marketStaticData = marketsStaticData?.perp[spread.perpProductId];
 
         // return if no market static data or if basis amount is zero
         if (!marketStaticData || spread.basisAmount.isZero()) {
@@ -48,18 +49,18 @@ export function useMarginManagerSpreadsTable() {
         return {
           spotProductId: spread.spotProductId,
           perpProductId: spread.perpProductId,
-          spotMetadata: spread.spotMetadata,
+          productMetadata: marketStaticData.metadata,
           spreadSize,
           spotSpreadAmount: spread.basisAmount,
           perpSpreadAmount: spread.basisAmount.multipliedBy(-1),
-          initialHealth: {
+          initialHealthBenefit: {
             marginUsd:
               spread.healthIncreaseMetrics.initial.multipliedBy(
                 primaryQuotePriceUsd,
               ),
             weight: healthWeights.initial,
           },
-          maintenanceHealth: {
+          maintenanceHealthBenefit: {
             marginUsd:
               spread.healthIncreaseMetrics.maintenance.multipliedBy(
                 primaryQuotePriceUsd,

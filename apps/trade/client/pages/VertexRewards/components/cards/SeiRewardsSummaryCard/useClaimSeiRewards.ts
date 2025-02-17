@@ -1,7 +1,7 @@
 import { asyncResult } from '@vertex-protocol/utils';
 import { useExecuteClaimFoundationRewards } from 'client/hooks/execute/foundationToken/useExecuteClaimFoundationRewards';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
-import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
+import { useGetConfirmedTx } from 'client/hooks/util/useGetConfirmedTx';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
@@ -10,12 +10,12 @@ import { useCallback } from 'react';
 export function useClaimSeiRewards() {
   const { show } = useDialog();
   const { dispatchNotification } = useNotificationManagerContext();
-  const getConfirmedTxPromise = useGetConfirmedTxPromise();
+  const getConfirmedTx = useGetConfirmedTx();
 
   const mutation = useExecuteClaimFoundationRewards();
   const { isLoading, isSuccess } = useOnChainMutationStatus({
     mutationStatus: mutation.status,
-    txResponse: mutation.data,
+    txHash: mutation.data,
   });
   useRunWithDelayOnCondition({
     condition: isSuccess,
@@ -23,19 +23,17 @@ export function useClaimSeiRewards() {
   });
 
   const claim = useCallback(async () => {
-    const txResponsePromise = mutation.mutateAsync({});
+    const txHashPromise = mutation.mutateAsync({});
 
     dispatchNotification({
       type: 'action_error_handler',
       data: {
         errorNotificationTitle: 'SEI Rewards Claim Failed',
-        executionData: { txResponsePromise },
+        executionData: { txHashPromise },
       },
     });
 
-    const [, txError] = await asyncResult(
-      getConfirmedTxPromise(txResponsePromise),
-    );
+    const [, txError] = await asyncResult(getConfirmedTx(txHashPromise));
 
     if (!txError) {
       show({
@@ -46,7 +44,7 @@ export function useClaimSeiRewards() {
         },
       });
     }
-  }, [dispatchNotification, getConfirmedTxPromise, mutation, show]);
+  }, [dispatchNotification, getConfirmedTx, mutation, show]);
 
   return {
     claim,

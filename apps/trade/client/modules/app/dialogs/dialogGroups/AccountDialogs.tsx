@@ -15,6 +15,7 @@ import { AddSubaccountDialog } from 'client/modules/subaccounts/components/dialo
 import { EditSubaccountProfileDialog } from 'client/modules/subaccounts/components/dialogs/EditSubaccountProfileDialog/EditSubaccountProfileDialog';
 import { ManageSubaccountsDialog } from 'client/modules/subaccounts/components/dialogs/ManageSubaccountsDialog/ManageSubaccountsDialog';
 import { SubaccountQuoteTransferDialog } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferDialog';
+import { IsolatedAdjustMarginDialog } from 'client/modules/trading/components/dialogs/IsolatedAdjustMarginDialog/IsolatedAdjustMarginDialog';
 
 export function AccountDialogs() {
   const { isBlockedGeolocation } = useGatedAppAccessContext();
@@ -60,6 +61,9 @@ export function AccountDialogs() {
       {currentDialog?.type === 'account_center' && <AccountCenterDialog />}
       {currentDialog?.type === 'settings' && <SettingsDialog />}
       {currentDialog?.type === 'help_center' && <HelpCenterDialog />}
+      {currentDialog?.type === 'adjust_iso_margin' && (
+        <IsolatedAdjustMarginDialog {...currentDialog?.params} />
+      )}
     </>
   );
 }

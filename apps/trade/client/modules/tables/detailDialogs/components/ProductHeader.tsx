@@ -1,7 +1,7 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { NextImageSrc, joinClassNames } from '@vertex-protocol/web-common';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import Image from 'next/image';
 
 interface Props {
@@ -20,7 +20,7 @@ export function ProductHeader({
   return (
     <div className="flex items-center gap-x-2">
       <Image src={iconSrc} width={24} height={24} alt="Asset Icon" />
-      <div className="flex items-center gap-x-1.5 text-sm ">
+      <div className="flex items-center gap-x-1.5 text-sm">
         <div className="text-text-primary">{productName}</div>
         {amountForSide && (
           <div

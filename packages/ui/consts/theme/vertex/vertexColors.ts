@@ -1,3 +1,5 @@
+import { Colors } from '../types';
+
 export const VERTEX_COLORS = {
   background: {
     DEFAULT: '#0A0A0D',
@@ -59,4 +61,4 @@ export const VERTEX_COLORS = {
     high: '#E26D7E',
     extreme: '#CC113F',
   },
-};
+} satisfies Colors;

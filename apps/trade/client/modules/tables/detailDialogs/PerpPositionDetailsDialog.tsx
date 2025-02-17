@@ -1,8 +1,9 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import {
-  PresetNumberFormatSpecifier,
+  formatNumber,
   getMarketPriceFormatSpecifier,
   getMarketSizeFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
@@ -10,8 +11,8 @@ import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel'
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
+import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
 import { PerpPositionsTableItem } from 'client/modules/tables/hooks/usePerpPositionsTable';
 
 export type PerpPositionDetailsDialogParams = PerpPositionsTableItem;
@@ -21,10 +22,12 @@ export function PerpPositionDetailsDialog({
   marketInfo,
   amountInfo,
   netFunding,
-  marginUsedUsd,
+  margin,
   pnlInfo,
-  price,
+  averageEntryPrice,
+  oraclePrice,
   estimatedLiquidationPrice,
+  isoSubaccountName,
 }: PerpPositionDetailsDialogParams) {
   const { primaryQuoteToken } = useVertexMetadataContext();
   const { push, hide } = useDialog();
@@ -32,8 +35,7 @@ export function PerpPositionDetailsDialog({
   const isConnected = useIsConnected();
 
   const { marketName, icon, amountForSide } = marketInfo;
-  const { position, notionalValueUsd, symbol } = amountInfo;
-  const { averageEntryPrice, fastOraclePrice } = price;
+  const { amount, notionalValueUsd, symbol } = amountInfo;
 
   const header = (
     <ProductHeader
@@ -52,11 +54,27 @@ export function PerpPositionDetailsDialog({
   );
 
   const metricItems = (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-2">
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
+        label="Type"
+        valueClassName="capitalize"
+        valueContent={margin.marginModeType}
+        valueEndElement={
+          margin.isoLeverage ? (
+            <span className="text-accent">
+              {formatNumber(margin.isoLeverage, {
+                formatSpecifier: PresetNumberFormatSpecifier.NUMBER_1DP,
+              })}
+              x
+            </span>
+          ) : null
+        }
+      />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Position Size"
-        value={position}
+        value={amount}
         numberFormatSpecifier={sizeFormatSpecifier}
         valueEndElement={symbol}
       />
@@ -68,14 +86,24 @@ export function PerpPositionDetailsDialog({
       />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
+        label="Margin"
+        value={
+          margin.isoMarginUsedUsd
+            ? margin.isoMarginUsedUsd
+            : margin.crossMarginUsedUsd
+        }
+        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
+      />
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
         label="Entry Price"
         value={averageEntryPrice}
         numberFormatSpecifier={priceFormatSpecifier}
       />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
-        label="Mark Price"
-        value={fastOraclePrice}
+        label="Oracle Price"
+        value={oraclePrice}
         numberFormatSpecifier={priceFormatSpecifier}
       />
       <ValueWithLabel.Horizontal
@@ -83,12 +111,6 @@ export function PerpPositionDetailsDialog({
         label="Est. Liq. Price"
         value={estimatedLiquidationPrice ?? undefined}
         numberFormatSpecifier={priceFormatSpecifier}
-      />
-      <ValueWithLabel.Horizontal
-        sizeVariant="xs"
-        label="Margin"
-        value={marginUsedUsd}
-        numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
       />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
@@ -129,10 +151,11 @@ export function PerpPositionDetailsDialog({
             type: 'close_position',
             params: {
               productId,
+              isoSubaccountName,
             },
           });
         }}
-        disabled={!isConnected || position.eq(0)}
+        disabled={!isConnected || amount.eq(0)}
       >
         Market Close
       </SecondaryButton>

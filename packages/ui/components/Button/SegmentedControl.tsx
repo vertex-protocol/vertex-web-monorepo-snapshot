@@ -1,5 +1,5 @@
-import { mergeClassNames } from '@vertex-protocol/web-common';
-import { ComponentPropsWithRef, forwardRef } from 'react';
+import { mergeClassNames, WithRef } from '@vertex-protocol/web-common';
+import { ComponentPropsWithRef } from 'react';
 import { Except } from 'type-fest';
 import { SizeVariant } from '../../types';
 import { Button } from './Button';
@@ -15,13 +15,12 @@ export type SegmentControlButtonProps = Except<ButtonProps, 'isLoading'> & {
   active?: boolean;
 };
 
-const SegmentedControlButton = forwardRef<
-  HTMLButtonElement,
-  SegmentControlButtonProps
->(function SegmentedControlButton(
-  { className, size = 'base', active, ...rest },
-  ref,
-) {
+function SegmentedControlButton({
+  className,
+  size = 'base',
+  active,
+  ...rest
+}: SegmentControlButtonProps) {
   const stateClassNames = (() => {
     if (rest.disabled) {
       return 'text-disabled';
@@ -42,29 +41,28 @@ const SegmentedControlButton = forwardRef<
         stateClassNames,
         className,
       )}
-      ref={ref}
       {...rest}
     />
   );
-});
+}
 
-const SegmentedControlContainer = forwardRef<
-  HTMLDivElement,
-  ComponentPropsWithRef<'div'>
->(function SegmentedControlContainer({ children, className, ...rest }, ref) {
+function SegmentedControlContainer({
+  children,
+  className,
+  ...rest
+}: WithRef<ComponentPropsWithRef<'div'>, HTMLDivElement>) {
   return (
     <div
       className={mergeClassNames(
         'bg-surface-1 flex items-center rounded p-0.5',
         className,
       )}
-      ref={ref}
       {...rest}
     >
       {children}
     </div>
   );
-});
+}
 
 export const SegmentedControl = {
   Button: SegmentedControlButton,

@@ -1,6 +1,6 @@
 'use client';
 
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/react-client';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { AppPage } from 'client/modules/app/AppPage';

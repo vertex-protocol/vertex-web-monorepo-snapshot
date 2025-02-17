@@ -28,7 +28,7 @@ export function DesktopEarnPopover() {
       popoverClassName="flex flex-col gap-y-4 w-[510px]"
       popoverContent={
         <>
-          <div className="flex flex-col gap-y-2">
+          <div className="flex flex-col gap-y-1">
             <NavPopoverHeader title="Products" />
             <div className="grid grid-cols-2">
               {earnLinks.products.map(
@@ -51,7 +51,7 @@ export function DesktopEarnPopover() {
           {showEcosystemLinks && (
             <>
               <Divider />
-              <div className="flex flex-col gap-y-2">
+              <div className="flex flex-col gap-y-1">
                 <NavPopoverHeader title="Ecosystem" />
                 <div className="grid grid-cols-2">
                   {earnLinks.ecosystem.map(

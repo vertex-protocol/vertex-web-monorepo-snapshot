@@ -6,13 +6,13 @@ import {
   IndexerSubaccountSnapshot,
 } from '@vertex-protocol/indexer-client';
 import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
+import { safeDiv } from '@vertex-protocol/web-common';
 import { calcIndexerCumulativePerpEntryCost } from 'client/utils/calcs/perpEntryCostCalcs';
 import {
   calcIndexerSummaryCumulativeLpPnl,
   calcIndexerSummaryCumulativePnl,
   calcPnlFracForNonZeroDenom,
 } from 'client/utils/calcs/pnlCalcs';
-import { safeDiv } from 'client/utils/safeDiv';
 
 // Values are NOT decimal adjusted
 export interface IndexerSubaccountMetrics {
@@ -81,7 +81,7 @@ export function getSubaccountMetricsFromIndexerSnapshot(
       balance.trackedVars.netEntryLpCumulative,
     );
 
-    // Calculate Spot balance values
+    // Calculate spot balance values, this also includes quote balances in an isolated position
     if (balanceType === ProductEngineType.SPOT) {
       const balanceValue = calcIndexerSpotBalanceValue(
         balance.state.postBalance,
@@ -116,12 +116,16 @@ export function getSubaccountMetricsFromIndexerSnapshot(
         cumulativePerpEntryCostWithLeverage.plus(
           balance.trackedVars.netEntryCumulative.abs(),
         );
-      portfolioValue = portfolioValue.plus(
-        calcIndexerPerpBalanceValue(
-          balance.state.postBalance,
-          balanceMarket.product.oraclePrice,
-        ),
+
+      const unsettledQuote = calcIndexerPerpBalanceValue(
+        balance.state.postBalance,
+        balanceMarket.product.oraclePrice,
       );
+      portfolioValue = portfolioValue.plus(unsettledQuote);
+      if (balance.isolated) {
+        // We treat unsettled USDC for isolated positions as part of "total deposits" because we show (net margin = total margin + unsettled usdc) everywhere
+        totalDepositsValue = totalDepositsValue.plus(unsettledQuote);
+      }
     }
   });
 

@@ -1,6 +1,3 @@
-// We can't use Image element from nextjs here. It won't generate images properly.
-/* eslint-disable @next/next/no-img-element */
-
 import { BigDecimal } from '@vertex-protocol/client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { DIALOG_PADDING } from '@vertex-protocol/web-ui';
@@ -62,7 +59,6 @@ export function PerpPnlSocialSharingDialog({
             selectedTheme={theme}
           />
         </BrandSpecificContent>
-
         <div
           className={joinClassNames(
             'flex flex-col gap-y-4',

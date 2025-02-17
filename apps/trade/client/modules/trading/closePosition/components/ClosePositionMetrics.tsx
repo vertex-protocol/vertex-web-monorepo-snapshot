@@ -1,17 +1,11 @@
-import {
-  formatNumber,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import {
-  joinClassNames,
-  NextImageSrc,
-  WithClassnames,
-} from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
+import { joinClassNames, NextImageSrc } from '@vertex-protocol/web-common';
+import { Card, Divider } from '@vertex-protocol/web-ui';
 import { MarketInfoWithSide } from 'client/components/MarketInfoWithSide';
-import { signDependentValue } from 'client/utils/signDependentValue';
-import { ReactNode } from 'react';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { MarginInfoPill } from 'client/components/MarginInfoPill';
+import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
 
 interface ClosePositionMetricsProps {
   iconSrc: NextImageSrc | undefined;
@@ -24,6 +18,8 @@ interface ClosePositionMetricsProps {
   oraclePrice: BigDecimal | undefined;
   notionalValueUsd: BigDecimal | undefined;
   estimatedPnlUsd: BigDecimal | undefined;
+  isoLeverage: number | undefined;
+  estimatedPnlFrac: BigDecimal | undefined;
 }
 
 export function ClosePositionMetrics({
@@ -37,15 +33,17 @@ export function ClosePositionMetrics({
   notionalValueUsd,
   positionAmount,
   estimatedPnlUsd,
+  estimatedPnlFrac,
+  isoLeverage,
 }: ClosePositionMetricsProps) {
   return (
-    <div
+    <Card
       className={joinClassNames(
-        'flex flex-col gap-y-4 px-3.5 py-3',
+        'flex flex-col gap-y-2 px-3.5 py-3',
         'bg-surface-1 rounded',
       )}
     >
-      <div className="grid grid-cols-2">
+      <div className="flex items-center justify-between">
         <MarketInfoWithSide
           isPerp
           alwaysShowOrderDirection={false}
@@ -53,88 +51,46 @@ export function ClosePositionMetrics({
           iconSrc={iconSrc}
           amountForSide={positionAmount}
         />
-        <PositionMetric
-          title="Est. PnL"
-          content={<EstimatedPnlMetric estimatedPnlUsd={estimatedPnlUsd} />}
-        />
+        <MarginInfoPill isoLeverage={isoLeverage} />
       </div>
-      <Divider />
-      <div className="grid grid-cols-2">
-        <PositionMetric
-          title="Size"
-          content={
-            <>
-              {formatNumber(positionAmount?.abs(), {
-                formatSpecifier: marketSizeFormatSpecifier,
-              })}
-              <span className="text-text-tertiary text-2xs">{symbol}</span>
-            </>
+      <div className="flex flex-col gap-y-1.5">
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
+          label="Est. Current PnL"
+          valueContent={
+            <PnlValueWithPercentage
+              pnlFrac={estimatedPnlFrac}
+              pnlUsd={estimatedPnlUsd}
+            />
           }
         />
-        <PositionMetric
-          title="Notional"
-          content={formatNumber(notionalValueUsd, {
-            formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-          })}
+        <Divider />
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
+          label="Size"
+          value={positionAmount?.abs()}
+          numberFormatSpecifier={marketSizeFormatSpecifier}
+          valueEndElement={<span className="text-2xs">{symbol}</span>}
+        />
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
+          label="Avg. Entry"
+          value={averageEntryPrice}
+          numberFormatSpecifier={marketPriceFormatSpecifier}
+        />
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
+          label="Notional"
+          value={notionalValueUsd}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
+        />
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
+          label="Oracle Price"
+          value={oraclePrice}
+          numberFormatSpecifier={marketPriceFormatSpecifier}
         />
       </div>
-      <div className="grid grid-cols-2">
-        <PositionMetric
-          title="Avg. Entry"
-          content={formatNumber(averageEntryPrice, {
-            formatSpecifier: marketPriceFormatSpecifier,
-          })}
-        />
-        <PositionMetric
-          title="Oracle Price"
-          content={formatNumber(oraclePrice, {
-            formatSpecifier: marketPriceFormatSpecifier,
-          })}
-        />
-      </div>
-    </div>
-  );
-}
-
-function EstimatedPnlMetric({
-  estimatedPnlUsd,
-}: {
-  estimatedPnlUsd?: BigDecimal;
-}) {
-  return (
-    <p
-      className={joinClassNames(
-        'text-xs',
-        signDependentValue(estimatedPnlUsd, {
-          positive: 'text-positive',
-          negative: 'text-negative',
-          zero: 'text-text-secondary',
-        }),
-      )}
-    >
-      {formatNumber(estimatedPnlUsd, {
-        formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-      })}
-    </p>
-  );
-}
-
-function PositionMetric({
-  title,
-  content,
-  className,
-}: WithClassnames<{
-  title: string;
-  content: ReactNode;
-}>) {
-  return (
-    <div className={joinClassNames('flex flex-col', className)}>
-      <div className="text-text-tertiary flex items-center gap-x-1 text-xs">
-        {title}
-      </div>
-      <div className="text-text-primary flex items-center gap-x-1 text-xs">
-        {content}
-      </div>
-    </div>
+    </Card>
   );
 }

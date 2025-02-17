@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { ChainEnv } from '@vertex-protocol/client';
 import {
-  QueryDisabledError,
   createQueryKey,
+  QueryDisabledError,
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
@@ -71,6 +71,5 @@ export function useAccountFoundationRewardsClaimState() {
     ),
     queryFn,
     enabled: !disabled,
-    refetchInterval: 10000,
   });
 }

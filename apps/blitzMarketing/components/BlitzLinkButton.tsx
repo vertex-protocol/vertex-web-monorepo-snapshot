@@ -1,3 +1,5 @@
+'use client';
+
 import { m, useAnimation } from 'framer-motion';
 import Link from 'next/link';
 import React, { ComponentPropsWithRef } from 'react';

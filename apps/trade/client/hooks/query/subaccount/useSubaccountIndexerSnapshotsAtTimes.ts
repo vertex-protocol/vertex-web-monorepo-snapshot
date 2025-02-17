@@ -8,10 +8,10 @@ import {
   QueryDisabledError,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { ZeroAddress } from 'ethers';
 import { get } from 'lodash';
+import { zeroAddress } from 'viem';
 
 export function subaccountIndexerSnapshotsAtTimesQueryKey(
   chainEnv?: ChainEnv,
@@ -45,7 +45,7 @@ export function useSubaccountIndexerSnapshotsAtTimes(
   const vertexClient = usePrimaryChainVertexClient();
 
   // If no current subaccount, query for a subaccount that does not exist to ensure that we have data
-  const subaccountOwnerForQuery = subaccountOwner ?? ZeroAddress;
+  const subaccountOwnerForQuery = subaccountOwner ?? zeroAddress;
 
   const disabled = !vertexClient || !timestampsInSeconds?.length;
 

@@ -1,4 +1,4 @@
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { UserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
 import {

@@ -7,6 +7,8 @@ import { useMemo } from 'react';
 
 interface UseSubaccountCountIndicators {
   numPerpPositions: number;
+  numCrossPerpPositions: number;
+  numIsoPerpPositions: number;
   numOpenEngineOrders: number;
   numOpenTriggerOrders: number;
   numOpenOrders: number;
@@ -19,11 +21,30 @@ export function useSubaccountCountIndicators(): UseSubaccountCountIndicators {
   const { data: perpPositions } = usePerpPositions();
   const { balances: lpBalances } = useLpBalances();
 
-  const numPerpPositions = useMemo(() => {
-    return (
-      perpPositions?.filter((position) => !position.amount.isZero()).length ?? 0
-    );
-  }, [perpPositions]);
+  const { numCrossPerpPositions, numIsoPerpPositions, numPerpPositions } =
+    useMemo(() => {
+      let numCross = 0;
+      let numIso = 0;
+
+      perpPositions?.forEach((position) => {
+        if (position.amount.isZero()) {
+          return;
+        }
+
+        if (position.iso) {
+          numIso++;
+        } else {
+          numCross++;
+        }
+      });
+
+      return {
+        numCrossPerpPositions: numCross,
+        numIsoPerpPositions: numIso,
+        numPerpPositions: numCross + numIso,
+      };
+    }, [perpPositions]);
+
   const numLpPositions = useMemo(() => {
     return (
       lpBalances?.filter((balance) => !balance.lpAmount.isZero()).length ?? 0
@@ -50,6 +71,8 @@ export function useSubaccountCountIndicators(): UseSubaccountCountIndicators {
   const numOpenOrders = sum([numOpenEngineOrders, numOpenTriggerOrders]);
 
   return {
+    numCrossPerpPositions,
+    numIsoPerpPositions,
     numPerpPositions,
     numOpenEngineOrders,
     numOpenTriggerOrders,

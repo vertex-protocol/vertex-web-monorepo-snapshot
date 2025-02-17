@@ -4,7 +4,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface ClosePositionSummaryProps {
   productName: string | undefined;

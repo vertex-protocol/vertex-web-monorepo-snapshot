@@ -1,9 +1,14 @@
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { DisclosureCard, Divider } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
 import { InputSummaryItem } from 'client/components/InputSummaryItem';
+import { SLOW_MODE_FEE_AMOUNT_USDC } from 'client/hooks/subaccount/useSlowModeFeeAllowance';
 import { useIsSmartContractWalletConnected } from 'client/hooks/util/useIsSmartContractWalletConnected';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -17,6 +22,7 @@ import { DepositVrtxStakingCta } from 'client/modules/collateral/deposit/compone
 import { BlastNativeYieldDepositDismissible } from 'client/modules/collateral/deposit/components/dismissibles/BlastNativeYieldDepositDismissible';
 import { WethDepositDismissible } from 'client/modules/collateral/deposit/components/dismissibles/WethDepositDismissible';
 import { WmntDepositDismissible } from 'client/modules/collateral/deposit/components/dismissibles/WmntDepositDismissible';
+import { WsDepositDismissible } from 'client/modules/collateral/deposit/components/dismissibles/WsDepositDismissible';
 import { WseiDepositDismissible } from 'client/modules/collateral/deposit/components/dismissibles/WseiDepositDismissible';
 import { useDepositAmountErrorTooltipContent } from 'client/modules/collateral/deposit/hooks/useDepositAmountErrorTooltipContent';
 import { useDepositForm } from 'client/modules/collateral/deposit/hooks/useDepositForm';
@@ -43,6 +49,9 @@ export function DepositDialog({ initialProductId }: DepositDialogParams) {
     onSubmit,
     onMaxAmountSelected,
   } = useDepositForm({ initialProductId });
+  const {
+    primaryQuoteToken: { symbol: primaryQuoteSymbol },
+  } = useVertexMetadataContext();
 
   const { register, setValue } = form;
   const amountErrorTooltipContent = useDepositAmountErrorTooltipContent({
@@ -80,6 +89,7 @@ export function DepositDialog({ initialProductId }: DepositDialogParams) {
           <WseiDepositDismissible
             displayedInfoCardType={displayedInfoCardType}
           />
+          <WsDepositDismissible displayedInfoCardType={displayedInfoCardType} />
           <DepositVrtxStakingCta
             displayedInfoCardType={displayedInfoCardType}
           />
@@ -89,7 +99,21 @@ export function DepositDialog({ initialProductId }: DepositDialogParams) {
           {showOneClickTradingPrompt && (
             <DisclosureCard
               title="Enable 1-Click Trading"
-              description="It looks like you're using a smart contract wallet. Please enable 1-Click Trading after depositing to use the app."
+              description={
+                <>
+                  It looks like you&apos;re using a smart contract wallet.
+                  Please{' '}
+                  <span className="text-text-primary">
+                    enable 1-Click Trading
+                  </span>{' '}
+                  after depositing to use the app. Ensure that you leave at
+                  least{' '}
+                  <span className="text-text-primary">
+                    {SLOW_MODE_FEE_AMOUNT_USDC} {primaryQuoteSymbol}
+                  </span>{' '}
+                  in your wallet to pay the setup fee.
+                </>
+              }
             />
           )}
           <div className="flex flex-col gap-y-1.5">
@@ -112,12 +136,21 @@ export function DepositDialog({ initialProductId }: DepositDialogParams) {
                 setValue('amountSource', 'absolute');
               }}
             />
-            <InputSummaryItem
-              label="Available:"
-              currentValue={selectedProduct?.decimalAdjustedWalletBalance}
-              formatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
-              onValueClick={onMaxAmountSelected}
-            />
+            <div className="flex flex-col gap-y-0.5">
+              <InputSummaryItem
+                label="Available:"
+                currentValue={selectedProduct?.decimalAdjustedWalletBalance}
+                formatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+                onValueClick={onMaxAmountSelected}
+              />
+              <InputSummaryItem
+                label="Deposit APR (Auto):"
+                definitionTooltipId="automaticDepositApr"
+                valueClassName="text-positive"
+                currentValue={selectedProduct?.depositAPR}
+                formatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
+              />
+            </div>
           </div>
           <FractionAmountButtons
             onFractionSelected={onFractionSelected}

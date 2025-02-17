@@ -1,7 +1,9 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
+  useEVMContext,
 } from '@vertex-protocol/react-client';
 import {
   BigDecimal,
@@ -9,13 +11,10 @@ import {
   removeDecimals,
   sumBigDecimalBy,
 } from '@vertex-protocol/utils';
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import {
-  StaticMarketData,
-  useAllMarketsStaticData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+import { StaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
+import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 
 interface MarketsOverviewData {
@@ -27,25 +26,27 @@ interface MarketsOverviewData {
 }
 
 function marketsOverviewQueryKey(
+  chainEnv: ChainEnv,
   marketsUpdatedAt: number,
   marketSnapshotsUpdatedAt: number,
 ) {
   return createQueryKey(
     'marketsOverview',
+    chainEnv,
     marketsUpdatedAt,
     marketSnapshotsUpdatedAt,
   );
 }
 
 export function useMarketsOverview() {
-  const { data: marketMetrics, dataUpdatedAt: marketSnapshotsUpdatedAt } =
-    useAllMarketsHistoricalMetrics();
-  const { data: allMarketsData } = useAllMarkets();
+  const { primaryChainEnv } = useEVMContext();
+  const { data: marketStats, dataUpdatedAt: marketSnapshotsUpdatedAt } =
+    useAllMarketsStats();
   const { data: allMarketsStaticData, dataUpdatedAt: marketsStaticUpdatedAt } =
     useAllMarketsStaticData();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
-  const disabled = !marketMetrics || !allMarketsStaticData;
+  const disabled = !marketStats || !allMarketsStaticData;
 
   const queryFn = (): MarketsOverviewData => {
     if (disabled) {
@@ -57,7 +58,7 @@ export function useMarketsOverview() {
     let maxDailyVolume = BigDecimals.ZERO;
     let hottestMarket: StaticMarketData | undefined;
 
-    Object.values(marketMetrics.metricsByMarket).forEach(
+    Object.values(marketStats.statsByMarket).forEach(
       ({ pastDayVolumeInPrimaryQuote, pastDayNumTrades, productId }) => {
         totalDailyVolumeInPrimaryQuote = totalDailyVolumeInPrimaryQuote.plus(
           pastDayVolumeInPrimaryQuote,
@@ -82,14 +83,14 @@ export function useMarketsOverview() {
     // Total open interest across all perp markets in quote currency
     const openInterestUsd = removeDecimals(
       sumBigDecimalBy(
-        Object.values(allMarketsData?.perpMarkets ?? {}),
-        ({ product }) => product.openInterest.multipliedBy(product.oraclePrice),
+        Object.values(marketStats?.statsByMarket),
+        ({ openInterestQuote }) => openInterestQuote,
       ),
     ).multipliedBy(primaryQuotePriceUsd);
 
     // Total cumulative volume across all markets
     const totalCumulativeVolumeUsd = removeDecimals(
-      marketMetrics.totalCumulativeVolumeInPrimaryQuote,
+      marketStats.totalCumulativeVolumeInPrimaryQuote,
     ).multipliedBy(primaryQuotePriceUsd);
 
     return {
@@ -103,6 +104,7 @@ export function useMarketsOverview() {
 
   return useQuery({
     queryKey: marketsOverviewQueryKey(
+      primaryChainEnv,
       marketsStaticUpdatedAt,
       marketSnapshotsUpdatedAt,
     ),
@@ -110,5 +112,6 @@ export function useMarketsOverview() {
     enabled: !disabled,
     placeholderData: keepPreviousData,
     gcTime: REACT_QUERY_CONFIG.computeQueryGcTime,
+    staleTime: REACT_QUERY_CONFIG.computedQueryStaleTime,
   });
 }

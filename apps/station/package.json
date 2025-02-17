@@ -13,9 +13,9 @@
     "@next/third-parties": "*",
     "@radix-ui/react-popover": "*",
     "@tanstack/react-query": "*",
-    "@uiw/codemirror-extensions-basic-setup": "^4.23.3",
-    "@uiw/codemirror-extensions-langs": "^4.23.3",
-    "@uiw/react-codemirror": "^4.23.3",
+    "@uiw/codemirror-extensions-basic-setup": "^4.23.7",
+    "@uiw/codemirror-extensions-langs": "^4.23.7",
+    "@uiw/react-codemirror": "^4.23.7",
     "@vertex-protocol/client": "*",
     "@vertex-protocol/react-client": "*",
     "@vertex-protocol/web-common": "*",
@@ -39,6 +39,7 @@
     "postcss": "*",
     "tailwindcss": "*",
     "ts-config": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "typescript-eslint": "*"
   }
 }

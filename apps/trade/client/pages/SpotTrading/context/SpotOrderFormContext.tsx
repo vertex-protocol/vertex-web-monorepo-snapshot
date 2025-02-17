@@ -5,7 +5,8 @@ import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecute
 import {
   SpotStaticMarketData,
   StaticMarketQuoteData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+} from 'client/hooks/markets/marketsStaticData/types';
+
 import { useLatestMarketPrice } from 'client/hooks/markets/useLatestMarketPrice';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
@@ -35,7 +36,7 @@ import {
 import { spotPriceInputAtom } from 'client/store/trading/spotTradingStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 
 export interface SpotOrderFormContextData {
@@ -106,8 +107,8 @@ export interface SpotOrderFormContextData {
    */
   maxAssetOrderSize: BigDecimal | undefined;
   /**
-     Whether to enable max size logic
-  */
+   Whether to enable max size logic
+   */
   enableMaxSizeLogic: boolean;
   /**
    * Form submit handler
@@ -120,7 +121,7 @@ const SpotOrderFormContext = createContext<SpotOrderFormContextData>(
 );
 
 // Hook to consume context
-export const useSpotOrderFormContext = () => useContext(SpotOrderFormContext);
+export const useSpotOrderFormContext = () => use(SpotOrderFormContext);
 
 export function SpotOrderFormContextProvider({ children }: WithChildren) {
   const { currentMarket, quoteMetadata } = useOrderFormMarketSelection(
@@ -158,7 +159,8 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
     roundPrice,
     roundAmount,
     minAssetOrderSize,
-    totalLpSupply,
+    // Used for allowAnyOrderSizeIncrement check
+    // totalLpSupply,
   } = useOrderFormProductData({
     form: useSpotForm,
     latestMarketPrices,
@@ -181,9 +183,11 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
   const orderSide = useSpotForm.watch('side');
 
   // Trades for any size are only allowed for market orders in markets where a LP pool is available
-  const allowAnyOrderSizeIncrement = Boolean(
-    priceType === 'market' && totalLpSupply?.gt(0),
-  );
+  // We currently don't have enough LP liquidity anywhere to support this
+  const allowAnyOrderSizeIncrement = false;
+  // const allowAnyOrderSizeIncrement = Boolean(
+  //   priceType === 'market' && totalLpSupply?.gt(0),
+  // );
 
   /**
    * Validate fields
@@ -228,7 +232,10 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
   // Max order size changes frequently, so use a ref for certain dependency arrays
   const maxAssetOrderSize = maxOrderSizes?.asset;
   const maxAssetOrderSizeRef = useSyncedRef(maxAssetOrderSize);
-  const enableMaxSizeLogic = useOrderFormEnableMaxSizeLogic({ priceType });
+  const enableMaxSizeLogic = useOrderFormEnableMaxSizeLogic({
+    priceType,
+    marginMode: null,
+  });
 
   /**
    * Input validation
@@ -359,8 +366,8 @@ export function SpotOrderFormContextProvider({ children }: WithChildren) {
   ]);
 
   return (
-    <SpotOrderFormContext.Provider value={value}>
+    <SpotOrderFormContext value={value}>
       <FormProvider {...useSpotForm}>{children}</FormProvider>
-    </SpotOrderFormContext.Provider>
+    </SpotOrderFormContext>
   );
 }

@@ -10,7 +10,6 @@ export const SENSITIVE_DATA = {
     prod: '',
     staging: '',
   },
-  perpsAiApiKey: '',
   googleAnalyticsId: {
     vertex: '',
     blitz: '',
@@ -31,7 +30,5 @@ export const SENSITIVE_DATA = {
     arbitrumTestnet: '',
   },
   sentryDsn: '',
-  theTieV1ApiKey: '',
   exodusWalletAppId: '',
-  theTieV2ApiKey: '',
 } as const;

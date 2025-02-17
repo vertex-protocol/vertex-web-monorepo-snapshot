@@ -1,4 +1,4 @@
-import { LatestMarketPrice } from 'client/hooks/query/markets/types';
+import { LatestMarketPrice } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 
 interface Params {
   isSell: boolean;

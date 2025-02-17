@@ -2,7 +2,7 @@
   background-color: theme('colors.surface.2');
   font-size: theme('fontSize.xs');
   font-family: inherit;
-  border: none;
+  border-color: theme('colors.stroke.DEFAULT');
 }
 
 .react-datepicker__day-names > *,
@@ -35,7 +35,7 @@
 /* Days outside of the month / outside of allowable range */
 .react-datepicker__day--outside-month,
 .react-datepicker__day--disabled {
-  color: theme('colors.disabled.DEFAULT') !important;
+  color: theme('colors.disabled.DEFAULT');
 }
 
 /* Hover selection effect */

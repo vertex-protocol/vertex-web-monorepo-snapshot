@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ILBA, LBA_AIRDROP_EPOCH } from '@vertex-protocol/client';
-import { nowInSeconds } from '@vertex-protocol/utils';
 import { QueryDisabledError } from '@vertex-protocol/react-client';
+import { nowInSeconds } from '@vertex-protocol/utils';
 import { useLbaConfig } from 'client/hooks/query/vrtxToken/useLbaConfig';
 import { useTokenClaimDeadlines } from 'client/hooks/query/vrtxToken/useTokenClaimDeadlines';
 import { secondsToMilliseconds } from 'date-fns';

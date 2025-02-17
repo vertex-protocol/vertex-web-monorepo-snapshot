@@ -1,8 +1,13 @@
+import {
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
-import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { CancellableOrderWithNotificationInfo } from 'client/hooks/execute/cancelOrder/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useSubaccountOpenEngineOrders } from 'client/hooks/query/subaccount/useSubaccountOpenEngineOrders';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { EngineOrderType } from 'client/modules/trading/types';
 import { MarketFilter } from 'client/types/MarketFilter';
@@ -20,6 +25,8 @@ export interface OpenEngineOrderTableItem {
   totalAmount: BigDecimal;
   totalSize: BigDecimal;
   totalCost: BigDecimal;
+  marginModeType: MarginModeType;
+  isoMarginTransfer: BigDecimal | undefined;
   filled: {
     amount: BigDecimal;
     fraction: BigDecimal;
@@ -30,6 +37,8 @@ export interface OpenEngineOrderTableItem {
   digest: string;
   // This can be derived from marketInfo.sizeIncrement, but is pulled here to reduce duplication
   sizeFormatSpecifier: string;
+  priceFormatSpecifier: string;
+  orderForCancellation: CancellableOrderWithNotificationInfo;
 }
 
 export function useOpenEngineOrdersTable(
@@ -76,11 +85,22 @@ export function useOpenEngineOrdersTable(
             decimalAdjustedTotalAmount,
           );
 
+          const { productId, price, digest } = openEngineOrder;
+          const orderType = 'limit';
+          const isoMarginTransfer = removeDecimals(
+            openEngineOrder.margin ?? undefined,
+          );
+          const marginModeType: MarginModeType = !!isoMarginTransfer
+            ? 'isolated'
+            : 'cross';
+
           return {
             timePlacedMillis: secondsToMilliseconds(
               openEngineOrder.placementTime,
             ),
-            orderType: 'limit',
+            orderType,
+            marginModeType,
+            isoMarginTransfer,
             marketInfo: {
               marketName: market.metadata.marketName,
               icon,
@@ -92,8 +112,8 @@ export function useOpenEngineOrdersTable(
               priceIncrement: market.priceIncrement,
               sizeIncrement: market.sizeIncrement,
             },
-            productId: openEngineOrder.productId,
-            price: openEngineOrder.price,
+            productId,
+            price,
             totalAmount: decimalAdjustedTotalAmount,
             totalSize: decimalAdjustedTotalAmount.abs(),
             totalCost: decimalAdjustedTotalCost.abs(),
@@ -104,10 +124,20 @@ export function useOpenEngineOrdersTable(
             unfilled: {
               amount: decimalAdjustedUnfilledAmount.abs(),
             },
-            digest: openEngineOrder.digest,
+            digest,
             sizeFormatSpecifier: getMarketSizeFormatSpecifier(
               market.sizeIncrement,
             ),
+            priceFormatSpecifier: getMarketPriceFormatSpecifier(
+              market.priceIncrement,
+            ),
+            orderForCancellation: {
+              productId,
+              digest,
+              decimalAdjustedTotalAmount,
+              isTrigger: false,
+              orderType,
+            },
           };
         },
       );

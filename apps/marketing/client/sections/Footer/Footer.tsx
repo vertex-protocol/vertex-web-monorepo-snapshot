@@ -1,59 +1,94 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
-import { DEFAULT_SECTION_WIDTH } from 'client/consts';
-import Image from 'next/image';
-import { ContactLink } from 'client/sections/Footer/components/ContactLink';
-import { FooterLinks } from 'client/sections/Footer/components/FooterLinks';
-import { LegalDisclaimer } from 'client/sections/Footer/components/LegalDisclaimer';
+'use client';
 
-// Images
-import logoWhite from 'client/sections/Footer/assets/logo-white.svg';
+import { joinClassNames } from '@vertex-protocol/web-common';
+import { FooterColumn } from 'client/sections/Footer/FooterColumn';
+import EdgeIcon from 'client/icons/EdgeIcon';
+import Logo from 'client/icons/Logo';
+import { FOOTER_DATA } from 'client/sections/Footer/data';
+import {
+  CONTAINER_VARIANTS,
+  ITEM_VARIANTS,
+} from 'client/sections/Footer/motionVariants';
+import { LINKS } from 'config/links';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+import FooterBg from 'public/img/vertex-footer.png';
 
 export function Footer() {
+  const mainColumns = FOOTER_DATA.slice(0, -1);
+  const lastColumn = FOOTER_DATA[FOOTER_DATA.length - 1];
+  const navClasses = joinClassNames(
+    'border-glass shadow-glass',
+    'rounded-lg border p-4',
+    'backdrop-blur-sm lg:p-8 lg:backdrop-blur-md',
+  );
+  const logoSectionClasses = joinClassNames(
+    'col-span-2 grid grid-cols-2 gap-5',
+    'md:col-span-1 md:flex md:flex-col md:items-start md:items-center',
+  );
+
   return (
-    // Outer container for padding
-    <section
-      className={joinClassNames(
-        'px-4 py-8',
-        'md:px-12',
-        'lg:px-24',
-        DEFAULT_SECTION_WIDTH,
-      )}
-    >
-      <div
-        className={joinClassNames(
-          'bg-black-800 backdrop-blur-nav z-10',
-          'flex w-full flex-col justify-between',
-          'rounded-xl p-6',
-          'md:p-10',
-        )}
-      >
-        <div
-          className={joinClassNames(
-            'flex w-full flex-col items-start justify-between gap-y-4 pb-8',
-            'sm:flex-row sm:items-center sm:gap-y-0',
-          )}
+    <footer className="text-body-gray relative py-16 md:py-32">
+      <Image
+        alt=""
+        src={FooterBg}
+        className="container-custom absolute bottom-0 left-0 right-0 mx-auto h-auto w-full object-contain pb-8"
+        aria-hidden="true"
+      />
+
+      <div className="mx-auto px-4 lg:container lg:px-16">
+        <motion.nav
+          className={navClasses}
+          variants={CONTAINER_VARIANTS}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
         >
-          <Image src={logoWhite} alt="Vertex" className="w-28 py-1.5 lg:w-32" />
-        </div>
-        <div
-          className={joinClassNames(
-            'flex flex-col justify-between gap-y-6 pt-8',
-            'border-white-600 border-t',
-            'md:items-start',
-          )}
-        >
-          <FooterLinks />
-          <div
-            className={joinClassNames(
-              'flex w-full flex-col gap-y-4',
-              'sm:flex-row sm:justify-between',
-            )}
-          >
-            <ContactLink />
-            <LegalDisclaimer />
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+            {/* Logo section */}
+            <motion.div className={logoSectionClasses} variants={ITEM_VARIANTS}>
+              <Link href="/">
+                <Logo className="-ml-1 h-4 w-24 md:-ml-5" />
+              </Link>
+              <Link
+                href={LINKS.edgeDocs}
+                className="text-body-13 flex max-w-max items-center gap-1.5"
+              >
+                Powered by
+                <span className="h-3 w-9 text-white">
+                  <EdgeIcon />
+                </span>
+              </Link>
+            </motion.div>
+
+            {/* First column */}
+            <FooterColumn
+              title={mainColumns[0].title}
+              links={mainColumns[0].links}
+              orderClass="order-1 flex flex-col md:order-none"
+            />
+
+            {/* Last column - second on mobile */}
+            <FooterColumn
+              title={lastColumn.title}
+              links={lastColumn.links}
+              orderClass="order-2 md:order-last"
+              lastColumn
+            />
+
+            {/* Remaining columns */}
+            {mainColumns.slice(1).map(({ title, links }, columnIndex) => (
+              <FooterColumn
+                key={`footer-column-${title}`}
+                title={title}
+                links={links}
+                orderClass={`order-${columnIndex + 3} md:order-none`}
+              />
+            ))}
           </div>
-        </div>
+        </motion.nav>
       </div>
-    </section>
+    </footer>
   );
 }

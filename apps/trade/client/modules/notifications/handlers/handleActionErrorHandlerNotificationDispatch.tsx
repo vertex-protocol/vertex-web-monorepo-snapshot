@@ -8,11 +8,11 @@ import {
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
-import toast from 'react-hot-toast';
+import toast, { Toast } from 'react-hot-toast';
 
 export async function handleActionErrorHandlerNotificationDispatch(
   data: ActionErrorHandlerNotificationData,
-  { getConfirmedTxPromise }: NotificationDispatchContext,
+  { getConfirmedTx }: NotificationDispatchContext,
 ) {
   const toastId = createToastId('action_error_handler');
   const executionData = data.executionData;
@@ -24,15 +24,15 @@ export async function handleActionErrorHandlerNotificationDispatch(
     );
     error = serverError;
   } else {
-    const [, txStatusError] = await asyncResult(
-      getConfirmedTxPromise(executionData.txResponsePromise),
+    const [, txError] = await asyncResult(
+      getConfirmedTx(executionData.txHashPromise),
     );
-    error = txStatusError;
+    error = txError;
   }
 
   if (error && !isUserDeniedError(error)) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <ActionErrorNotification
             title={data.errorNotificationTitle}

@@ -4,13 +4,13 @@ import {
 } from '@vertex-protocol/react-client';
 import { Divider } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
 import { LpTableItem } from 'client/modules/pools/hooks/useLpTable';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
 import { LpCtaButtons } from 'client/modules/tables/detailDialogs/components/LpCtaButtons';
 import { LpHeader } from 'client/modules/tables/detailDialogs/components/LpHeader';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 export type LpMarketDetailsDialogParams = LpTableItem;
 
@@ -41,7 +41,7 @@ export function LpMarketDetailsDialog({
   );
 
   const metricItems = (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-2">
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="APR"

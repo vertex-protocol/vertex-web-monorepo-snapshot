@@ -2,10 +2,11 @@ import {
   ConnectionStatus,
   EVMContextProvider,
   useEVMContext,
+  useWagmiConfig,
   VertexClientContextProvider,
+  VertexMetadataContextProvider,
 } from '@vertex-protocol/react-client';
 import { WithChildren } from '@vertex-protocol/web-common';
-import { VertexMetadataContextProvider } from '@vertex-protocol/metadata';
 import { useTimeout } from 'ahooks';
 import { BrandLoadingWrapper } from 'client/components/BrandIconLoadingWrapper/BrandLoadingWrapper';
 import { getEVMContextParams } from 'client/context/appData/getEVMContextParams';
@@ -13,7 +14,9 @@ import { useChainEnvQueryParam } from 'client/context/appData/hooks/useChainEnvQ
 import { useSavedPrimaryChainEnv } from 'client/context/appData/hooks/useSavedPrimaryChainEnv';
 import { SubaccountContextProvider } from 'client/context/subaccount/SubaccountContextProvider';
 import { AppVersion } from 'client/modules/app/components/AppVersion';
+import { useSavedGlobalState } from 'client/modules/localstorage/globalState/useSavedGlobalState';
 import { useEffect, useState } from 'react';
+import { WagmiProvider } from 'wagmi';
 
 const evmContextParams = getEVMContextParams();
 
@@ -26,6 +29,9 @@ const evmContextParams = getEVMContextParams();
  * than the saved chain env.
  */
 export function AppDataProviders({ children }: WithChildren) {
+  const {
+    savedGlobalState: { readOnlyAddressOverride },
+  } = useSavedGlobalState();
   const {
     savedPrimaryChainEnv,
     setSavedPrimaryChainEnv,
@@ -61,22 +67,31 @@ export function AppDataProviders({ children }: WithChildren) {
     setDidDetermineChainEnv,
   ]);
 
+  const wagmiConfig = useWagmiConfig({
+    supportedChains: evmContextParams.supportedChains,
+    connectorOptions: evmContextParams.connectorOptions,
+  });
+
   return (
-    <EVMContextProvider
-      {...evmContextParams}
-      primaryChainEnv={savedPrimaryChainEnv}
-      setPrimaryChainEnv={setSavedPrimaryChainEnv}
-    >
-      <InitialLoadOverlay didDetermineChainEnv={didDetermineChainEnv}>
-        <VertexClientContextProvider>
-          <SubaccountContextProvider>
-            <VertexMetadataContextProvider>
-              {children}
-            </VertexMetadataContextProvider>
-          </SubaccountContextProvider>
-        </VertexClientContextProvider>
-      </InitialLoadOverlay>
-    </EVMContextProvider>
+    <WagmiProvider config={wagmiConfig}>
+      <EVMContextProvider
+        primaryChainEnv={savedPrimaryChainEnv}
+        setPrimaryChainEnv={setSavedPrimaryChainEnv}
+        supportedChainEnvs={evmContextParams.supportedChainEnvs}
+        supportedChains={evmContextParams.supportedChains}
+        readOnlyAddressOverride={readOnlyAddressOverride}
+      >
+        <InitialLoadOverlay didDetermineChainEnv={didDetermineChainEnv}>
+          <VertexClientContextProvider>
+            <SubaccountContextProvider>
+              <VertexMetadataContextProvider>
+                {children}
+              </VertexMetadataContextProvider>
+            </SubaccountContextProvider>
+          </VertexClientContextProvider>
+        </InitialLoadOverlay>
+      </EVMContextProvider>
+    </WagmiProvider>
   );
 }
 

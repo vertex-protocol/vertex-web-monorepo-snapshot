@@ -17,6 +17,7 @@ interface Props {
   instantUnstakeReceivedAmountFraction: BigDecimal | undefined;
   instantUnstakeBurnAmountFraction: BigDecimal | undefined;
   disableButtons: boolean;
+  protocolTokenSymbol: string;
 }
 
 export function UnstakeV2VrtxRadioGroup({
@@ -25,6 +26,7 @@ export function UnstakeV2VrtxRadioGroup({
   instantUnstakeReceivedAmountFraction,
   selectedRadioId,
   setSelectedRadioId,
+  protocolTokenSymbol,
   unstakedLockPeriodDays,
 }: Props) {
   const formattedUnstakedLockPeriodDays = formatNumber(unstakedLockPeriodDays, {
@@ -53,7 +55,7 @@ export function UnstakeV2VrtxRadioGroup({
         active={selectedRadioId === 'standard'}
         title="Standard"
         value="standard"
-        description={`Wait ${formattedUnstakedLockPeriodDays} days without earning yield before you can withdraw your tokens.`}
+        description={`You can claim the unstaked ${protocolTokenSymbol} after the ${formattedUnstakedLockPeriodDays} day unlocking period.`}
         disabled={disableButtons}
       />
       <Card
@@ -80,7 +82,7 @@ function Card({ description, value, active, ...radioItemProps }: CardProps) {
     <RadioGroup.Card
       value={value}
       active={active}
-      className="flex-1 whitespace-normal"
+      className="text-text-tertiary flex-1 justify-start whitespace-normal text-xs"
       {...radioItemProps}
     >
       {description}

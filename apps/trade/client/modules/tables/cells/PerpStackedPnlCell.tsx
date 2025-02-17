@@ -1,17 +1,17 @@
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
-import { formatNumber } from '@vertex-protocol/react-client';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 
 interface Props extends TableCellProps {
-  pnl: BigDecimal;
-  pnlFrac: BigDecimal;
+  pnl: BigDecimal | undefined;
+  pnlFrac: BigDecimal | undefined;
 }
 
 export function PerpStackedPnlCell({
@@ -20,11 +20,7 @@ export function PerpStackedPnlCell({
   className,
   ...rest
 }: Props) {
-  const color = signDependentValue(pnl, {
-    positive: 'text-positive',
-    negative: 'text-negative',
-    zero: 'text-text-primary',
-  });
+  const color = getSignDependentColorClassName(pnl);
   const formattedPnlFrac = formatNumber(pnlFrac, {
     formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
   });
@@ -35,11 +31,14 @@ export function PerpStackedPnlCell({
   return (
     <StackedTableCell
       className={className}
-      top={<div className={color}>{formattedPnl}</div>}
+      top={<span className={color}>{formattedPnl}</span>}
       bottom={
-        <div className={joinClassNames(color, 'text-2xs')}>
-          ({formattedPnlFrac})
-        </div>
+        // Skip rendering here so we show only a single `-` when we don't have data
+        pnl && (
+          <span className={joinClassNames(color, 'text-2xs')}>
+            ({formattedPnlFrac})
+          </span>
+        )
       }
       {...rest}
     />

@@ -1,5 +1,5 @@
 import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
-import { ComponentPropsWithRef, forwardRef } from 'react';
+import { ComponentPropsWithRef } from 'react';
 import { SizeVariant } from '../../types';
 
 export const CARD_ROUNDED_CLASSNAMES = 'rounded-lg';
@@ -11,16 +11,11 @@ export const CARD_CLASSNAMES = joinClassNames(
   CARD_ROUNDED_CLASSNAMES,
 );
 
-export const Card = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
-  function Card({ className, children, ...divProps }, ref) {
-    return (
-      <div
-        ref={ref}
-        className={mergeClassNames(CARD_CLASSNAMES, className)}
-        {...divProps}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+export function Card({ className, ...divProps }: ComponentPropsWithRef<'div'>) {
+  return (
+    <div
+      className={mergeClassNames(CARD_CLASSNAMES, className)}
+      {...divProps}
+    />
+  );
+}

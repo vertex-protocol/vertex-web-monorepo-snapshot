@@ -4,7 +4,7 @@ import {
   mergeClassNames,
 } from '@vertex-protocol/web-common';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
-import { FavoriteButton } from 'client/components/FavoriteButton';
+import { FavoriteButton } from 'client/components/ActionButtons/FavoriteButton';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 
 interface Props extends WithClassnames {

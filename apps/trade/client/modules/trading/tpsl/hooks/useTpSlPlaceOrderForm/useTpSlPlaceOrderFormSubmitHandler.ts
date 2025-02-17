@@ -8,7 +8,6 @@ import {
 import { useExecuteCancelOrders } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrders';
 import { ExecutePlaceTriggerOrderParams } from 'client/hooks/execute/placeOrder/types';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
 import { TP_SL_ORDER_SIZE_WITH_DECIMALS } from 'client/modules/trading/tpsl/consts';
@@ -20,6 +19,7 @@ import { UseFormReturn } from 'react-hook-form';
 
 interface Params {
   productId: number | undefined;
+  isoSubaccountName: string | undefined | null;
   isTakeProfit: boolean;
   positionSide: BalanceSide | undefined;
   isTriggerPriceAbove: boolean;
@@ -29,14 +29,11 @@ interface Params {
     triggerCriteriaPriceType: TriggerCriteriaPriceType,
   ) => void;
   mutateAsync: ReturnType<typeof useExecutePlaceOrder>['mutateAsync'];
-  /**
-   * Used for analytics to determine what event data to send.
-   */
-  isPerpOrderForm?: boolean;
 }
 
 export function useTpSlPlaceOrderFormSubmitHandler({
   productId,
+  isoSubaccountName,
   isTakeProfit,
   positionSide,
   existingTriggerOrder,
@@ -44,7 +41,6 @@ export function useTpSlPlaceOrderFormSubmitHandler({
   useTpSlPlaceOrderForm,
   setSavedTpSlTriggerPriceType,
   mutateAsync,
-  isPerpOrderForm,
 }: Params) {
   const { dispatchNotification } = useNotificationManagerContext();
   const {
@@ -54,7 +50,6 @@ export function useTpSlPlaceOrderFormSubmitHandler({
     },
   } = useOrderSlippageSettings();
   const { mutateAsync: cancelOrdersAsync } = useExecuteCancelOrders();
-  const { trackEvent } = useAnalyticsContext();
 
   const slippageFraction = isTakeProfit
     ? tpSlippageFraction
@@ -62,17 +57,14 @@ export function useTpSlPlaceOrderFormSubmitHandler({
 
   return useCallback(
     async (values: TpSlPlaceOrderFormValues) => {
-      if (!values.triggerPrice || !productId || !positionSide) {
+      if (
+        !values.triggerPrice ||
+        !productId ||
+        !positionSide ||
+        isoSubaccountName === undefined
+      ) {
         return;
       }
-
-      trackEvent({
-        type: 'tpsl_order_submit',
-        data: {
-          location: isPerpOrderForm ? 'perp_order_form' : 'tpsl_dialog',
-          type: isTakeProfit ? 'take_profit' : 'stop_loss',
-        },
-      });
 
       const triggerCriteriaType: TriggerCriteriaType = (() => {
         if (values.triggerCriteriaPriceType === 'last_price') {
@@ -97,6 +89,7 @@ export function useTpSlPlaceOrderFormSubmitHandler({
         : triggerPrice.times(1 - slippageFraction);
 
       const mutationParams: ExecutePlaceTriggerOrderParams = {
+        subaccountName: isoSubaccountName ?? undefined,
         priceType: 'stop',
         reduceOnly: true,
         triggerCriteriaType,
@@ -156,9 +149,7 @@ export function useTpSlPlaceOrderFormSubmitHandler({
     [
       productId,
       positionSide,
-      trackEvent,
-      isPerpOrderForm,
-      isTakeProfit,
+      isoSubaccountName,
       slippageFraction,
       existingTriggerOrder,
       mutateAsync,

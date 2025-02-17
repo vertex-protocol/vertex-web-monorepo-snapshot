@@ -5,7 +5,7 @@ import { postProcessFormattedNumber } from './postProcessFormattedNumber';
 import { NumberFormatOptions, NumberFormatValue } from './types';
 
 export function formatNumber(
-  val: NumberFormatValue | undefined,
+  val: NumberFormatValue | undefined | null,
   options?: NumberFormatOptions,
 ): string {
   const { defaultValue, defaultFallback, formatSpecifier } = options ?? {};

@@ -3,9 +3,9 @@ import { InputValidatorFn } from '@vertex-protocol/web-common';
 import { OnFractionSelectedHandler } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { EstimatedBridgeRoute } from 'client/modules/collateral/bridge/hooks/query/useEstimatedBridgeRoute';
 import {
-  BridgeChain,
-  BridgeToken,
-  DestinationBridgeToken,
+  BridgeChainSelectValue,
+  BridgeTokenSelectValue,
+  DestinationBridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
@@ -20,7 +20,7 @@ export interface BridgeFormValues extends LinkedPercentageAmountFormValues {
 export type BridgeFormErrorType =
   | 'invalid_input'
   | 'max_exceeded'
-  | 'under_min';
+  | 'below_min';
 
 export type BridgeFormActionButtonState =
   | BaseActionButtonState
@@ -38,21 +38,22 @@ export interface UseBridgeForm {
   estimatedBridgeRoute: EstimatedBridgeRoute | undefined;
   // Inputs
   validPercentageAmount: number | undefined;
-  selectedSourceChain: BridgeChain | undefined;
-  selectedSourceToken: BridgeToken | undefined;
+  selectedSourceChain: BridgeChainSelectValue | undefined;
+  selectedSourceToken: BridgeTokenSelectValue | undefined;
   sourceTokenBalance: BigDecimal | undefined;
   selectedSourceAmount: BigDecimal | undefined;
-  selectedDestinationToken: DestinationBridgeToken | undefined;
-  minimumDepositAmount: BigDecimal | undefined;
+  selectedDestinationToken: DestinationBridgeTokenSelectValue | undefined;
+  minimumInitialDepositAmount: BigDecimal | undefined;
   estimatedSourceValueUsd: BigDecimal | undefined;
   // Data
-  allSourceChains: BridgeChain[];
-  allSourceTokens: BridgeToken[];
-  allDestinationTokens: DestinationBridgeToken[];
+  allSourceChains: BridgeChainSelectValue[];
+  allSourceTokens: BridgeTokenSelectValue[];
+  allDestinationTokens: DestinationBridgeTokenSelectValue[];
   // Validation
   validateAmount: InputValidatorFn<string>;
   // Handlers
   onMaxAmountSelected: () => void;
   onFractionSelected: OnFractionSelectedHandler;
+
   onSubmit(): void;
 }

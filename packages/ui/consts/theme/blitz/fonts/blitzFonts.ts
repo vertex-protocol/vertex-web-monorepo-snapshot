@@ -1,5 +1,6 @@
 import { JetBrains_Mono } from 'next/font/google';
 import localFont from 'next/font/local';
+import { Fonts } from '../../types';
 
 export const TICKERBIT = localFont({
   src: [
@@ -24,4 +25,4 @@ const JETBRAINS_MONO = JetBrains_Mono({
 export const BLITZ_FONTS = {
   title: TICKERBIT,
   default: JETBRAINS_MONO,
-};
+} satisfies Fonts;

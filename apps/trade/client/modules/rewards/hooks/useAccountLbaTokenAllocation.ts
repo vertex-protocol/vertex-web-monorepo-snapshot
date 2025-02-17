@@ -4,7 +4,7 @@ import {
   BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useAccountLbaState } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import { get } from 'lodash';

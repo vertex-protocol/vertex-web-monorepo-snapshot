@@ -3,7 +3,8 @@ import {
   getInvalidTpSlOrdersToCancel,
   useExecuteCancelInvalidTpSlOrders,
 } from 'client/hooks/execute/cancelOrder/useExecuteCancelInvalidTpSlOrders';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useSubaccountIsolatedPositions } from 'client/hooks/query/subaccount/isolatedPositions/useSubaccountIsolatedPositions';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
 import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
 import { delay } from 'client/utils/delay';
@@ -20,6 +21,7 @@ export function TpSlPositionChangeListener() {
     requireActive: true,
   });
   const { data: currentSubaccountSummary } = useSubaccountSummary();
+  const { data: isolatedPositions } = useSubaccountIsolatedPositions();
   const { data: openTriggerOrders } = useSubaccountOpenTriggerOrders();
 
   // Since this hook can run while a cancel request is in flight, we use the following
@@ -49,6 +51,7 @@ export function TpSlPositionChangeListener() {
      */
     if (
       !currentSubaccountSummary ||
+      !isolatedPositions ||
       !openTriggerOrders ||
       !isSingleSignatureSession ||
       isCancelling ||
@@ -56,11 +59,11 @@ export function TpSlPositionChangeListener() {
     ) {
       return;
     }
-
-    const ordersToCancel = getInvalidTpSlOrdersToCancel(
-      currentSubaccountSummary.balances,
+    const ordersToCancel = getInvalidTpSlOrdersToCancel({
+      balances: currentSubaccountSummary?.balances,
+      isolatedPositions,
       openTriggerOrders,
-    );
+    });
 
     if (!ordersToCancel.length) {
       return;
@@ -72,6 +75,7 @@ export function TpSlPositionChangeListener() {
     isCancelling,
     isRetrying,
     isSingleSignatureSession,
+    isolatedPositions,
     openTriggerOrders,
   ]);
 

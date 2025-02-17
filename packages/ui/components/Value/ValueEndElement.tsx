@@ -1,4 +1,4 @@
-import { WithChildren, joinClassNames } from '@vertex-protocol/web-common';
+import { WithChildren } from '@vertex-protocol/web-common';
 import { SizeVariant } from '../../types';
 
 interface ValueEndElementProps {
@@ -16,14 +16,7 @@ export function ValueEndElement({
     lg: 'text-base',
   }[sizeVariant];
 
-  return (
-    <span
-      className={joinClassNames(
-        'text-text-tertiary leading-none',
-        endElementSizeClassNames,
-      )}
-    >
-      {children}
-    </span>
-  );
+  // Line-height has no effect on inline elements such as `span`, so we wrap children in a `div` here for consistency
+  // https://stackoverflow.com/questions/20103076/why-line-height-is-ignored-in-a-span-tag-and-works-in-div-tag
+  return <div className={endElementSizeClassNames}>{children}</div>;
 }

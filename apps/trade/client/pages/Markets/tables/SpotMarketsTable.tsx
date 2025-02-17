@@ -1,25 +1,25 @@
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { LinkButton } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { SeparatedRowDataTable } from 'client/components/DataTable/SeparatedRowDataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { FavoriteHeaderCell } from 'client/modules/tables/cells/FavoriteHeaderCell';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { PercentageChangeCell } from 'client/modules/tables/cells/PercentageChangeCell';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
-import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
 import {
   SpotMarketTableItem,
   useSpotMarketsTable,
 } from 'client/pages/Markets/hooks/useSpotMarketsTable';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
 import { useMemo } from 'react';
-import { LinkButton } from '@vertex-protocol/web-ui';
 
 const columnHelper = createColumnHelper<SpotMarketTableItem>();
 
@@ -106,10 +106,7 @@ export function SpotMarketsTable() {
       columnHelper.accessor('volume24h', {
         header: ({ header }) => (
           <HeaderCell header={header}>
-            24h Vol{' '}
-            <span className="text-text-tertiary">
-              {primaryQuoteToken.symbol}
-            </span>
+            24h Volume {primaryQuoteToken.symbol}
           </HeaderCell>
         ),
         cell: (context) => (

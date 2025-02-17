@@ -1,22 +1,23 @@
 import { useMutation } from '@tanstack/react-query';
+import { getVertexEIP712Values } from '@vertex-protocol/client';
+import { subaccountToHex } from '@vertex-protocol/contracts';
+import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   useExecuteInValidContext,
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
-import { useCallback } from 'react';
 import { subaccountLinkedSignerQueryKey } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
-import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
+import { Wallet } from 'ethers';
+import { useCallback } from 'react';
 import {
-  AbiCoder,
-  ContractTransactionResponse,
-  getBytes,
-  solidityPacked,
-  Wallet,
-  ZeroAddress,
-} from 'ethers';
-import { subaccountToHex } from '@vertex-protocol/contracts';
-import { getVertexEIP712Values } from '@vertex-protocol/client';
+  Address,
+  encodeAbiParameters,
+  encodePacked,
+  parseAbiParameters,
+  toBytes,
+  zeroAddress,
+} from 'viem';
 
 const REFETCH_QUERY_KEYS = [subaccountLinkedSignerQueryKey()];
 
@@ -25,8 +26,8 @@ interface Params {
   wallet: Wallet | null;
 }
 
-// If an on-chain (slow-mode) tx is executed, returns the tx receipt
-type Data = ContractTransactionResponse | undefined;
+// If an on-chain (slow-mode) tx is executed, returns the tx hash
+type Data = string | undefined;
 
 export function useExecuteSlowModeUpdateLinkedSigner() {
   const mutationFn = useExecuteInValidContext(
@@ -49,7 +50,7 @@ export function useExecuteSlowModeUpdateLinkedSigner() {
         const currentLinkedSignerAddress =
           currentLinkedSigner.signer.toLowerCase();
         const newLinkedSignerAddress =
-          wallet?.address.toLowerCase() ?? ZeroAddress;
+          wallet?.address.toLowerCase() ?? zeroAddress;
 
         if (currentLinkedSignerAddress === newLinkedSignerAddress) {
           // No on-chain transaction is needed
@@ -66,18 +67,12 @@ export function useExecuteSlowModeUpdateLinkedSigner() {
           }),
         });
 
-        const encodedTx = AbiCoder.defaultAbiCoder().encode(
-          [
-            // Sender
-            'bytes32',
-            // Signer
-            'bytes32',
-            // Nonce
-            'uint64',
-          ],
-          [tx.sender, tx.signer, tx.nonce],
+        const encodedTx = encodeAbiParameters(
+          // Sender, signer, nonce
+          parseAbiParameters('bytes32, bytes32, uint64'),
+          [tx.sender as Address, tx.signer as Address, BigInt(tx.nonce)],
         );
-        const encodedSlowModeTx = solidityPacked(
+        const encodedSlowModeTx = encodePacked(
           ['uint8', 'bytes'],
           [
             // Link signer transaction enum value
@@ -85,9 +80,12 @@ export function useExecuteSlowModeUpdateLinkedSigner() {
             encodedTx,
           ],
         );
-        return context.vertexClient.context.contracts.endpoint.submitSlowModeTransaction(
-          getBytes(encodedSlowModeTx),
-        );
+
+        const txResponse =
+          await context.vertexClient.context.contracts.endpoint.submitSlowModeTransaction(
+            toBytes(encodedSlowModeTx),
+          );
+        return txResponse.hash;
       },
       [],
     ),

@@ -15,9 +15,13 @@ import { RangeSlider } from 'client/modules/trading/components/RangeSlider';
 
 export interface ClosePositionDialogParams {
   productId: number;
+  isoSubaccountName: string | undefined;
 }
 
-export function ClosePositionDialog({ productId }: ClosePositionDialogParams) {
+export function ClosePositionDialog({
+  productId,
+  isoSubaccountName,
+}: ClosePositionDialogParams) {
   const { hide } = useDialog();
   const {
     buttonState,
@@ -32,6 +36,7 @@ export function ClosePositionDialog({ productId }: ClosePositionDialogParams) {
     onSubmit,
   } = useClosePositionForm({
     productId,
+    isoSubaccountName,
   });
 
   return (
@@ -39,6 +44,7 @@ export function ClosePositionDialog({ productId }: ClosePositionDialogParams) {
       <BaseAppDialog.Title onClose={hide}>Market Close</BaseAppDialog.Title>
       <BaseAppDialog.Body>
         <ClosePositionMetrics
+          isoLeverage={perpPositionItem?.iso?.leverage}
           productName={perpPositionItem?.metadata.marketName}
           iconSrc={perpPositionItem?.metadata.icon.asset}
           symbol={perpPositionItem?.metadata.symbol}
@@ -47,6 +53,7 @@ export function ClosePositionDialog({ productId }: ClosePositionDialogParams) {
           notionalValueUsd={perpPositionItem?.notionalValueUsd}
           positionAmount={perpPositionItem?.amount}
           estimatedPnlUsd={perpPositionItem?.estimatedPnlUsd}
+          estimatedPnlFrac={perpPositionItem?.estimatedPnlFrac}
           marketSizeFormatSpecifier={getMarketSizeFormatSpecifier(
             sizeIncrement,
           )}

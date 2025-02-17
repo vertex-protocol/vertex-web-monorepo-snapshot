@@ -1,6 +1,6 @@
 'use client';
 
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/react-client';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
@@ -17,7 +17,6 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/RewardsSummaryCard';
 import { EpochRewardsTable } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/EpochRewardsTable';
 import { useVrtxSummaryCard } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/useVrtxSummaryCard';
-import { VrtxClaimDeadlineWarning } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/VrtxClaimDeadlineWarning';
 
 export function VrtxCollapsibleSummaryCard() {
   const {
@@ -33,7 +32,6 @@ export function VrtxCollapsibleSummaryCard() {
     totalRewardsEarned,
     nextEpochNumber,
     lastCompletedEpoch,
-    showClaimWarning,
   } = useVrtxSummaryCard();
   const { show } = useDialog();
 
@@ -70,9 +68,6 @@ export function VrtxCollapsibleSummaryCard() {
     <>
       <RewardsSummaryCard.CollapsibleTitle>
         Summary
-        <p className="text-text-secondary text-2xs lg:text-xs">
-          You have 30 days to claim rewards after an epoch is complete.
-        </p>
       </RewardsSummaryCard.CollapsibleTitle>
       <EpochRewardsTable
         isOnProtocolTokenChainEnv={isOnProtocolTokenChainEnv}
@@ -91,7 +86,7 @@ export function VrtxCollapsibleSummaryCard() {
   ) : null;
 
   const action = isOnProtocolTokenChainEnv ? (
-    <RewardsSummaryCard.ActionWithHelperText helperText="Rewards are claimable a few days after each epoch ends. Unclaimed rewards are burned 30 days after the epoch ends.">
+    <RewardsSummaryCard.ActionWithHelperText helperText="Rewards are claimable a few days after each epoch ends. Claim rewards for past epochs in the Summary.">
       <ValidUserStatePrimaryButton
         onClick={() => {
           if (!lastCompletedEpoch || !unclaimedLastEpochRewards) {
@@ -136,11 +131,6 @@ export function VrtxCollapsibleSummaryCard() {
               iconSrc={VRTX_TOKEN_INFO.icon.asset}
               title={VRTX_TOKEN_INFO.symbol}
             />
-            {showClaimWarning && (
-              <VrtxClaimDeadlineWarning
-                lastCompletedEpoch={lastCompletedEpoch}
-              />
-            )}
           </div>
         }
         metricItems={metricItemsContent}

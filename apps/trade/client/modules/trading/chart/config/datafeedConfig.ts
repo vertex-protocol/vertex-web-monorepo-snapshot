@@ -1,6 +1,7 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
 import { CandlestickPeriod } from '@vertex-protocol/indexer-client';
-import { StaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { AnnotatedMarket } from '@vertex-protocol/react-client';
+
 import { clientEnv } from 'common/environment/clientEnv';
 import { precisionFixed } from 'd3-format';
 import {
@@ -71,7 +72,7 @@ export interface TradingViewSymbolInfo
 }
 
 export function getTradingViewSymbolInfo(
-  market: StaticMarketData,
+  market: AnnotatedMarket,
 ): TradingViewSymbolInfo {
   const symbolInfo = ((): TradingViewSymbolInfo => {
     // https://www.tradingview.com/charting-library-docs/latest/connecting_data/Symbology#decimal-format

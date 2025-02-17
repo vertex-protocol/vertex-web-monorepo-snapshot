@@ -1,4 +1,4 @@
-import { usePrimaryChainId } from '@vertex-protocol/react-client';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 import {
   SavedSubaccountSigningPreference,
@@ -28,13 +28,13 @@ interface UseSubaccountSigningPreference {
 export function useSavedSubaccountSigningPreference(
   subaccountName: string,
 ): UseSubaccountSigningPreference {
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
   const { savedUserSettings, setSavedUserSettings, didLoadPersistedValue } =
     useSavedUserSettings();
 
   const subaccountKey = useMemo(() => {
-    return getSubaccountKey(primaryChainId, subaccountName);
-  }, [primaryChainId, subaccountName]);
+    return getSubaccountKey(primaryChainEnv, subaccountName);
+  }, [primaryChainEnv, subaccountName]);
 
   const signingPreference = useMemo(():
     | SubaccountSigningPreference

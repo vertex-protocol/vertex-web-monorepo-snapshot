@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import {
   RepayConvertFormValues,
-  RepayConvertProduct,
+  RepayConvertProductSelectValue,
 } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
 
 interface Params {
   form: UseFormReturn<RepayConvertFormValues>;
-  availableSourceProducts: RepayConvertProduct[];
+  availableSourceProducts: RepayConvertProductSelectValue[];
   repayProductIdInput: number;
 }
 

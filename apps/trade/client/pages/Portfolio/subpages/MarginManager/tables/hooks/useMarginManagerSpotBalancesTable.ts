@@ -1,12 +1,12 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
+import { SpotProductMetadata } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { SpotProductMetadata } from '@vertex-protocol/metadata';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 export interface MarginManagerSpotBalanceTableItem {

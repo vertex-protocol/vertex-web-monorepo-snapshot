@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/client';
 import { createQueryKey, useEVMContext } from '@vertex-protocol/react-client';
 import { clientEnv } from 'common/environment/clientEnv';
-import { ZeroAddress } from 'ethers';
 import { get } from 'lodash';
+import { zeroAddress } from 'viem';
 
 export function skateOlliesQueryKey(address?: string) {
   return createQueryKey('skateOllies', address);
@@ -26,7 +26,7 @@ export function useSkateOllies() {
     connectionStatus: { address },
   } = useEVMContext();
 
-  const userAddressForQuery = address ?? ZeroAddress;
+  const userAddressForQuery = address ?? zeroAddress;
 
   const queryFn = async (): Promise<BigDecimal> => {
     const baseResponse = await fetch(

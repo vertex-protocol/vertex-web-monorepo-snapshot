@@ -1,0 +1,1 @@
+export const STAKING_DESKTOP_ACTION_BUTTON_WIDTH = 'lg:w-44';

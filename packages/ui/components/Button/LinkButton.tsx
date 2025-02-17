@@ -1,21 +1,20 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
-import { ButtonProps } from './types';
-import { Button } from './Button';
 import { Icons } from '../Icons';
-import { forwardRef } from 'react';
+import { Button } from './Button';
+import { ButtonProps } from './types';
 
 export type LinkButtonProps = ButtonProps & {
   colorVariant: 'accent' | 'primary';
   withExternalIcon?: boolean;
 };
 
-export const LinkButton = forwardRef<
-  HTMLAnchorElement | HTMLButtonElement | HTMLDivElement,
-  LinkButtonProps
->(function LinkButton(
-  { className, colorVariant, disabled, withExternalIcon, ...rest },
-  ref,
-) {
+export function LinkButton({
+  className,
+  colorVariant,
+  disabled,
+  withExternalIcon,
+  ...rest
+}: LinkButtonProps) {
   const textColor = {
     accent: 'text-accent',
     primary: 'text-text-secondary',
@@ -37,8 +36,7 @@ export const LinkButton = forwardRef<
       )}
       endIcon={withExternalIcon ? <Icons.ArrowUpRight /> : rest.endIcon}
       disabled={disabled}
-      ref={ref}
       {...rest}
     />
   );
-});
+}

@@ -1,10 +1,10 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { formatNumber } from '@vertex-protocol/react-client';
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
-import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
+import { AnnotatedSpotMarket } from '@vertex-protocol/react-client';
 
 interface Props {
   market: AnnotatedSpotMarket | undefined;

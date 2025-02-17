@@ -11,39 +11,32 @@ interface Props {
   onSelectedValueChange: (table: HistoryExportType) => void;
 }
 
-const OPTIONS: SelectOption<HistoryExportType, HistoryExportType>[] = [
+const OPTIONS: SelectOption<HistoryExportType>[] = [
   {
-    id: 'trades',
     value: 'trades',
     label: 'Trades',
   },
   {
-    id: 'realized_pnl',
     value: 'realized_pnl',
     label: 'Realized PnL',
   },
   {
-    id: 'deposits',
     value: 'deposits',
     label: 'Deposits',
   },
   {
-    id: 'withdrawals',
     value: 'withdrawals',
     label: 'Withdrawals',
   },
   {
-    id: 'transfers',
     value: 'transfers',
     label: 'Transfers',
   },
   {
-    id: 'lp',
     value: 'lp',
     label: 'Pools',
   },
   {
-    id: 'liquidations',
     value: 'liquidations',
     label: 'Liquidations',
   },

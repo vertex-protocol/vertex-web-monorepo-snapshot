@@ -70,10 +70,15 @@ export function PaginatedHistoricalTradesTable({
       }),
       columnHelper.accessor('orderType', {
         header: ({ header }) => <HeaderCell header={header}>Type</HeaderCell>,
-        cell: (context) => <OrderTypeCell value={context.getValue()} />,
+        cell: (context) => (
+          <OrderTypeCell
+            orderType={context.getValue()}
+            marginModeType={context.row.original.marginModeType}
+          />
+        ),
         enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-20',
+          cellContainerClassName: 'w-32',
         },
       }),
       columnHelper.accessor('filledPrice', {

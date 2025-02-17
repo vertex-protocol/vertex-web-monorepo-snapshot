@@ -1,12 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { useExecuteFastWithdrawal } from 'client/hooks/execute/useExecuteFastWithdrawal';
+import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { useFastWithdrawFormData } from 'client/modules/collateral/fastWithdraw/hooks/useFastWithdrawFormData';
+import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { useCallback, useMemo } from 'react';
-import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { useFastWithdrawFormData } from 'client/modules/collateral/fastWithdraw/hooks/useFastWithdrawFormData';
-import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 
 export type FastWithdrawFormError =
   | 'withdrawal_size_below_minimum_value'
@@ -42,7 +42,7 @@ export function useFastWithdrawForm({
   const executeFastWithdrawal = useExecuteFastWithdrawal();
   const { isLoading, isSuccess } = useOnChainMutationStatus({
     mutationStatus: executeFastWithdrawal.status,
-    txResponse: executeFastWithdrawal.data,
+    txHash: executeFastWithdrawal.data,
   });
 
   useRunWithDelayOnCondition({

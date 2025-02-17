@@ -3,7 +3,7 @@ import { TickSpacingSelect } from 'client/modules/trading/marketOrders/orderbook
 import { ToggleViewButton } from 'client/modules/trading/marketOrders/orderbook/components/ToggleViewButton';
 import { TotalAmountDenomSelect } from 'client/modules/trading/marketOrders/orderbook/components/TotalAmountDenomSelect';
 import { OrderbookPriceTickSpacingMultiplier } from 'client/modules/trading/marketOrders/orderbook/types';
-import React from 'react';
+import { memo } from 'react';
 
 interface Props {
   currentTickSpacing: number;
@@ -53,4 +53,4 @@ function BaseOrderbookSettings({
   );
 }
 
-export const OrderbookSettings = React.memo(BaseOrderbookSettings);
+export const OrderbookSettings = memo(BaseOrderbookSettings);

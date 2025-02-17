@@ -4,7 +4,6 @@ import {
   CounterPill,
   getStateOverlayClassNames,
 } from '@vertex-protocol/web-ui';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { PortfolioNavItem } from 'client/pages/Portfolio/components/navigation/types';
 import Link from 'next/link';
 
@@ -16,7 +15,6 @@ export function PortfolioSubNavButton({
   selected,
   associatedCount,
 }: PortfolioSubNavProps) {
-  const { trackEvent } = useAnalyticsContext();
   const stateClassNames = (() => {
     if (selected) {
       return 'border-accent text-text-primary';
@@ -50,14 +48,6 @@ export function PortfolioSubNavButton({
           <CounterPill>{associatedCount.toFixed()}</CounterPill>
         )
       }
-      onClick={() => {
-        trackEvent({
-          type: 'portfolio_nav_item_clicked',
-          data: {
-            portfolioNavItems: label,
-          },
-        });
-      }}
     >
       {label}
     </Button>

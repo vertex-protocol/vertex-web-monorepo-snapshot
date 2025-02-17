@@ -10,7 +10,8 @@ import {
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueries } from 'client/hooks/execute/util/useRefetchQueries';
-import { appSubaccountSummariesQueryKey } from 'client/hooks/query/subaccount/useAppSubaccountSummaries';
+import { subaccountIsolatedPositionsQueryKey } from 'client/hooks/query/subaccount/isolatedPositions/useSubaccountIsolatedPositions';
+import { summariesForAppSubaccountsQueryKey } from 'client/hooks/query/subaccount/subaccountSummary/useSummariesForAppSubaccounts';
 import { listSubaccountsQueryKey } from 'client/hooks/query/subaccount/useListSubaccounts';
 import { subaccountCreationTimeQueryKey } from 'client/hooks/query/subaccount/useSubaccountCreationTime';
 import { subaccountPaginatedCollateralEventsQueryKey } from 'client/hooks/query/subaccount/useSubaccountPaginatedCollateralEvents';
@@ -18,15 +19,20 @@ import { subaccountReferralCodeQueryKey } from 'client/hooks/query/subaccount/us
 import { SubaccountSigningPreference } from 'client/modules/singleSignatureSessions/types';
 import { useCallback } from 'react';
 
-const REFETCH_QUERY_KEYS = [
-  subaccountCreationTimeQueryKey(),
-  subaccountReferralCodeQueryKey(),
-  listSubaccountsQueryKey(),
-  appSubaccountSummariesQueryKey(),
+const COMMON_REFETCH_QUERY_KEYS = [
   subaccountPaginatedCollateralEventsQueryKey(),
   ...SUBACCOUNT_SUMMARY_QUERY_KEYS,
   ...MAX_SIZE_QUERY_KEYS,
 ];
+
+const CROSS_TRANSFER_REFETCH_QUERY_KEYS = [
+  subaccountCreationTimeQueryKey(),
+  subaccountReferralCodeQueryKey(),
+  listSubaccountsQueryKey(),
+  summariesForAppSubaccountsQueryKey(),
+];
+
+const ISO_TRANSFER_REFETCH_QUERY_KEYS = [subaccountIsolatedPositionsQueryKey()];
 
 interface MutationFnParams
   extends Pick<
@@ -36,14 +42,18 @@ interface MutationFnParams
   senderSigningPreference: SubaccountSigningPreference | undefined;
 }
 
-export function useExecuteSubaccountQuoteTransfer() {
+export function useExecuteSubaccountQuoteTransfer({
+  isIsoTransfer,
+}: {
+  isIsoTransfer?: boolean;
+} = {}) {
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (params: MutationFnParams, context: ValidExecuteContext) => {
         console.log('Initiating subaccount quote transfer', params);
 
         // This is a hack, but we need a way to pass the saved linked signer
-        // (or `null` if there is none) for the sender subaccont when it's not
+        // (or `null` if there is none) for the sender subaccount when it's not
         // the current subaccount.
         //
         // So here, we grab the saved linked signer for the sender and set it
@@ -68,7 +78,15 @@ export function useExecuteSubaccountQuoteTransfer() {
     ),
   );
 
-  const refetchQueries = useRefetchQueries(REFETCH_QUERY_KEYS);
+  // We only want to refetch isolated positions if the transfer is to/from an isolated account.
+  const refetchQueryKeys = [
+    ...COMMON_REFETCH_QUERY_KEYS,
+    ...(isIsoTransfer
+      ? ISO_TRANSFER_REFETCH_QUERY_KEYS
+      : CROSS_TRANSFER_REFETCH_QUERY_KEYS),
+  ];
+
+  const refetchQueries = useRefetchQueries(refetchQueryKeys);
 
   const mutation = useMutation({
     mutationFn,

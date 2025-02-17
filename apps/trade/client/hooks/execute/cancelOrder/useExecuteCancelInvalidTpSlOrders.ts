@@ -1,6 +1,11 @@
 import { MutationOptions, useMutation } from '@tanstack/react-query';
+import { BigDecimal } from '@vertex-protocol/client';
 import { ProductEngineType } from '@vertex-protocol/contracts';
-import { AnnotatedBalanceWithProduct } from '@vertex-protocol/metadata';
+import {
+  AnnotatedBalanceWithProduct,
+  AnnotatedIsolatedPositionWithProduct,
+} from '@vertex-protocol/react-client';
+
 import {
   CancellableOrder,
   CancelOrdersResult,
@@ -11,13 +16,15 @@ import {
   useExecuteInValidContext,
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
+import { useSubaccountIsolatedPositions } from 'client/hooks/query/subaccount/isolatedPositions/useSubaccountIsolatedPositions';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import {
   SubaccountOpenTriggerOrdersData,
   useSubaccountOpenTriggerOrders,
 } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { getVertexClientHasLinkedSigner } from 'client/hooks/util/useVertexClientHasLinkedSigner';
 import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
+import { getIsIsoTriggerOrder } from 'client/modules/trading/utils/isoOrderChecks';
 import { useCallback } from 'react';
 import { EmptyObject } from 'type-fest';
 
@@ -37,6 +44,8 @@ export function useExecuteCancelInvalidTpSlOrders(
   const { refetch: refetchOpenTriggerOrders } =
     useSubaccountOpenTriggerOrders();
   const { refetch: refetchSubaccountSummary } = useSubaccountSummary();
+  const { refetch: refetchIsolatedPositions } =
+    useSubaccountIsolatedPositions();
 
   const mutationFn = useExecuteInValidContext(
     useCallback(
@@ -51,7 +60,7 @@ export function useExecuteCancelInvalidTpSlOrders(
           return {};
         }
 
-        const triggerOrders = (
+        const openTriggerOrders = (
           await refetchOpenTriggerOrders({
             throwOnError: true,
           })
@@ -61,17 +70,23 @@ export function useExecuteCancelInvalidTpSlOrders(
             throwOnError: true,
           })
         ).data;
+        const isolatedPositions = (
+          await refetchIsolatedPositions({
+            throwOnError: true,
+          })
+        ).data;
 
-        if (!triggerOrders || !subaccountSummary) {
+        if (!openTriggerOrders || !subaccountSummary || !isolatedPositions) {
           throw new Error(
             'Failed to fetch data for cancelling invalid TP/SL orders',
           );
         }
 
-        const ordersToCancel = getInvalidTpSlOrdersToCancel(
-          subaccountSummary.balances,
-          triggerOrders,
-        );
+        const ordersToCancel = getInvalidTpSlOrdersToCancel({
+          balances: subaccountSummary.balances,
+          isolatedPositions,
+          openTriggerOrders,
+        });
 
         if (!ordersToCancel.length) {
           return {};
@@ -84,7 +99,12 @@ export function useExecuteCancelInvalidTpSlOrders(
 
         return cancelOrdersAsync({ orders: ordersToCancel });
       },
-      [refetchOpenTriggerOrders, refetchSubaccountSummary, cancelOrdersAsync],
+      [
+        refetchOpenTriggerOrders,
+        refetchSubaccountSummary,
+        refetchIsolatedPositions,
+        cancelOrdersAsync,
+      ],
     ),
   );
 
@@ -100,28 +120,56 @@ export function useExecuteCancelInvalidTpSlOrders(
   });
 }
 
+interface GetInvalidTpSlOrdersToCancelParams {
+  balances: AnnotatedBalanceWithProduct[];
+  isolatedPositions: AnnotatedIsolatedPositionWithProduct[];
+  openTriggerOrders: SubaccountOpenTriggerOrdersData;
+}
+
 /**
  * Returns an array of invalid TP/SL orders that should be cancelled.
  * Invalid TP/SL orders can result when a user closes a position, the position
  * has been filled due to a TP/SL triggering, or its side has changed.
- *
- * @param balances
- * @param openTriggerOrders
  */
-export function getInvalidTpSlOrdersToCancel(
-  balances: AnnotatedBalanceWithProduct[],
-  openTriggerOrders: SubaccountOpenTriggerOrdersData,
-): CancellableOrder[] {
+export function getInvalidTpSlOrdersToCancel({
+  balances,
+  isolatedPositions,
+  openTriggerOrders,
+}: GetInvalidTpSlOrdersToCancelParams): CancellableOrder[] {
   const ordersToCancel: CancellableOrder[] = [];
 
+  // Construct all the perp positions that need to be checked
+  const perpPositions: {
+    productId: number;
+    amount: BigDecimal;
+    // Defined for iso positions
+    isoSubaccountName: string | undefined;
+  }[] = [];
+
+  // Check cross balances
   balances.forEach((balance) => {
-    if (balance.type !== ProductEngineType.PERP) {
-      return;
+    if (balance.type === ProductEngineType.PERP) {
+      perpPositions.push({
+        productId: balance.productId,
+        amount: balance.amount,
+        isoSubaccountName: undefined,
+      });
     }
+  });
 
-    const isPositionClosed = balance.amount.isZero();
+  // Check isolated positions
+  isolatedPositions.forEach((position) => {
+    perpPositions.push({
+      productId: position.baseBalance.productId,
+      amount: position.baseBalance.amount,
+      isoSubaccountName: position.subaccount.subaccountName,
+    });
+  });
 
-    openTriggerOrders[balance.productId]?.forEach((triggerOrder) => {
+  perpPositions.forEach((position) => {
+    const isPositionClosed = position.amount.isZero();
+
+    openTriggerOrders[position.productId]?.forEach((triggerOrder) => {
       const triggerOrderType = getTriggerOrderType(triggerOrder);
       if (
         triggerOrderType !== 'stop_loss' &&
@@ -130,16 +178,22 @@ export function getInvalidTpSlOrdersToCancel(
         return;
       }
 
+      // Check that margin mode matches
+      const isIsoTriggerOrder = getIsIsoTriggerOrder(triggerOrder);
+      if (!!position.isoSubaccountName !== isIsoTriggerOrder) {
+        return;
+      }
+
       // The TP/SL amount should have the opposite sign of the position amount.
       // Having the same sign indicates the side has changed.
       const isInvalidOrderSide =
-        balance.amount.s === triggerOrder.order.amount.s;
+        position.amount.s === triggerOrder.order.amount.s;
 
       if (isInvalidOrderSide || isPositionClosed) {
         ordersToCancel.push({
           digest: triggerOrder.order.digest,
           isTrigger: true,
-          productId: balance.productId,
+          productId: position.productId,
         });
       }
     });

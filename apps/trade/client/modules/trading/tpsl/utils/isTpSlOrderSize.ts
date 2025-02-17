@@ -6,9 +6,15 @@ import { TP_SL_ORDER_SIZE_WITH_DECIMALS } from 'client/modules/trading/tpsl/cons
  * used for the size of TP/SL orders.
  */
 export function isTpSlOrderSize(decimalAdjustedAmount: BigDecimal | undefined) {
+  if (!decimalAdjustedAmount) {
+    return false;
+  }
+
   const decimalAdjustedTpSlOrderSize = removeDecimals(
     TP_SL_ORDER_SIZE_WITH_DECIMALS,
   );
-
-  return decimalAdjustedAmount?.abs().eq(decimalAdjustedTpSlOrderSize);
+  // We need to check for "loose" comparison (<1% diff) because orders are rounded to the size increment. For example,
+  // FIL-PERP has a size increment of 3, meaning that the rounded amount !== original placement amount
+  const diff = decimalAdjustedAmount.abs().minus(decimalAdjustedTpSlOrderSize);
+  return diff.div(decimalAdjustedTpSlOrderSize).abs().lt(0.01);
 }

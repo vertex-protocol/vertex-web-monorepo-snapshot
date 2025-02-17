@@ -1,5 +1,5 @@
 import { removeDecimals } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSkateOllies } from 'client/modules/vaults/hooks/query/useSkateOllies';
 import { useSkateVaultApyFraction } from 'client/modules/vaults/hooks/query/useSkateVaultApyFraction';

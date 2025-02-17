@@ -1,0 +1,45 @@
+{
+  "name": "edge-stats-dashboard",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3008",
+    "typecheck": "tsc --noEmit",
+    "build": "next build",
+    "postbuild": "next-sitemap",
+    "start": "next start --port 3008",
+    "lint": "next lint --dir ."
+  },
+  "dependencies": {
+    "@next/third-parties": "*",
+    "@tanstack/react-query": "*",
+    "@vertex-protocol/client": "*",
+    "@vertex-protocol/react-client": "*",
+    "@vertex-protocol/web-common": "*",
+    "@vertex-protocol/web-ui": "*",
+    "d3-interpolate": "^3.0.1",
+    "date-fns": "*",
+    "jotai": "*",
+    "lodash": "*",
+    "next": "*",
+    "next-sitemap": "*",
+    "react": "*",
+    "react-dom": "*",
+    "recharts": "*",
+    "sharp": "*"
+  },
+  "devDependencies": {
+    "@tanstack/react-query-devtools": "*",
+    "@types/lodash": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "autoprefixer": "*",
+    "eslint": "*",
+    "eslint-config-custom": "*",
+    "postcss": "*",
+    "tailwindcss": "*",
+    "ts-config": "*",
+    "typescript": "*",
+    "typescript-eslint": "*"
+  }
+}

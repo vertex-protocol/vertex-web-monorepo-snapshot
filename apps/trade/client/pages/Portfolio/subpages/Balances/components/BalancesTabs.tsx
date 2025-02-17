@@ -8,12 +8,10 @@ import {
 } from '@radix-ui/react-tabs';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { UnderlinedTabs } from '@vertex-protocol/web-ui';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useBalancesTabs } from 'client/pages/Portfolio/subpages/Balances/hooks/useBalancesTabs';
 
 export function BalancesTabs({ className }: WithClassnames) {
   const { selectedTabId, tabs, setSelectedUntypedTabId } = useBalancesTabs();
-  const { trackEvent } = useAnalyticsContext();
 
   return (
     <TabsRoot
@@ -21,12 +19,6 @@ export function BalancesTabs({ className }: WithClassnames) {
       value={selectedTabId}
       onValueChange={(value) => {
         setSelectedUntypedTabId(value);
-        trackEvent({
-          type: 'balances_tabs_clicked',
-          data: {
-            balancesTab: value,
-          },
-        });
       }}
     >
       <TabsList asChild>

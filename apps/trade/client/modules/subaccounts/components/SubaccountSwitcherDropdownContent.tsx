@@ -1,44 +1,45 @@
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import {
+  DropdownMenuContentProps,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@radix-ui/react-dropdown-menu';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { joinClassNames } from '@vertex-protocol/web-common';
+import { joinClassNames, WithRef } from '@vertex-protocol/web-common';
 import {
-  Card,
   Divider,
+  DropdownUi,
   ScrollShadowsContainer,
   TextButton,
-  Z_INDEX,
 } from '@vertex-protocol/web-ui';
 import { SwitcherDropdownItemButton } from 'client/components/SwitcherDropdownItemButton';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { ProfileAvatarIcon } from 'client/modules/subaccounts/components/ProfileAvatarIcon';
 import { useAllSubaccountsWithMetrics } from 'client/modules/subaccounts/hooks/useAllSubaccountsWithMetrics';
-import { forwardRef } from 'react';
 
-export const SubaccountSwitcherDropdownContent = forwardRef<
-  HTMLDivElement,
-  DropdownMenu.DropdownMenuContentProps
->(function SubaccountSwitcherDropdownContent({ className, ...rest }, ref) {
+export function SubaccountSwitcherDropdownContent({
+  className,
+  ...rest
+}: WithRef<DropdownMenuContentProps, HTMLDivElement>) {
   const { currentSubaccount, setCurrentSubaccountName } =
     useSubaccountContext();
   const subaccountsWithMetrics = useAllSubaccountsWithMetrics();
   const { push } = useDialog();
 
   return (
-    <Card
-      className={joinClassNames(
-        'bg-surface-2 flex flex-col gap-y-2 p-3',
-        Z_INDEX.pagePopover,
-        className,
-      )}
-      ref={ref}
+    <DropdownUi.Content
+      className={joinClassNames('gap-y-2 p-3', className)}
+      header={
+        <DropdownMenuLabel className="text-xs">Your Accounts</DropdownMenuLabel>
+      }
       {...rest}
     >
-      <DropdownMenu.Label className="text-xs">Your Accounts</DropdownMenu.Label>
-      <DropdownMenu.Group asChild>
+      <DropdownMenuGroup asChild>
         <ScrollShadowsContainer
           orientation="vertical"
           className="flex max-h-72 flex-col gap-y-0.5 text-sm"
@@ -74,28 +75,30 @@ export const SubaccountSwitcherDropdownContent = forwardRef<
             },
           )}
         </ScrollShadowsContainer>
-      </DropdownMenu.Group>
-      <DropdownMenu.Separator asChild>
+      </DropdownMenuGroup>
+      <DropdownMenuSeparator asChild>
         <Divider />
-      </DropdownMenu.Separator>
-      <DropdownMenu.Group className="flex flex-col items-start gap-y-1.5 text-xs">
-        <DropdownMenu.Item asChild>
+      </DropdownMenuSeparator>
+      <DropdownMenuGroup className="flex flex-col items-start gap-y-1.5 text-xs">
+        <DropdownMenuItem asChild>
           <TextButton
+            colorVariant="secondary"
             onClick={() => push({ type: 'manage_subaccounts', params: {} })}
           >
             Add &amp; Manage Accounts
           </TextButton>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item asChild>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <TextButton
+            colorVariant="secondary"
             onClick={() =>
               push({ type: 'subaccount_quote_transfer', params: {} })
             }
           >
             Transfer Funds
           </TextButton>
-        </DropdownMenu.Item>
-      </DropdownMenu.Group>
-    </Card>
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
+    </DropdownUi.Content>
   );
-});
+}

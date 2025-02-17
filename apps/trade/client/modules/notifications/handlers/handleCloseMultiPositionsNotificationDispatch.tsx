@@ -6,7 +6,7 @@ import { CloseMultiPositionsNotificationData } from 'client/modules/notification
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
-import toast from 'react-hot-toast';
+import toast, { Toast } from 'react-hot-toast';
 
 export async function handleCloseMultiPositionsNotificationDispatch({
   executeResult,
@@ -16,7 +16,7 @@ export async function handleCloseMultiPositionsNotificationDispatch({
 
   if (result?.numFailed) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <CloseMultiPositionsErrorNotification
             numFailed={result.numFailed}
@@ -32,7 +32,7 @@ export async function handleCloseMultiPositionsNotificationDispatch({
     );
   } else if (error && !isUserDeniedError(error)) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <ActionErrorNotification
             title="Positions Failed to Close"

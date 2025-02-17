@@ -3,7 +3,7 @@ import { useExecuteCancelOrders } from 'client/hooks/execute/cancelOrder/useExec
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useSubaccountOpenEngineOrders } from 'client/hooks/query/subaccount/useSubaccountOpenEngineOrders';
 import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useCanUserExecute } from 'client/hooks/subaccount/useCanUserExecute';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
@@ -29,8 +29,7 @@ export function useExecuteCancelAllOrders({
   const { data: engineOrdersData } = useSubaccountOpenEngineOrders();
   const { data: triggerOrdersData } = useSubaccountOpenTriggerOrders();
 
-  const userActionState = useUserActionState();
-  const isExecuteDisabled = userActionState === 'block_all';
+  const canUserExecute = useCanUserExecute();
 
   const ordersToCancel = useMemo(() => {
     const ordersToCancel: CancellableOrder[] = [];
@@ -102,7 +101,7 @@ export function useExecuteCancelAllOrders({
     cancelAllOrders,
     status,
     canCancel: Boolean(
-      ordersToCancel.length && status !== 'pending' && !isExecuteDisabled,
+      ordersToCancel.length && status !== 'pending' && canUserExecute,
     ),
   };
 }

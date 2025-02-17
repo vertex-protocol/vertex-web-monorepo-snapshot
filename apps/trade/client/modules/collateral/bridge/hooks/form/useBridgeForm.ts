@@ -21,7 +21,7 @@ import { useBridgeFormOnChangeSideEffects } from 'client/modules/collateral/brid
 import { useEstimatedBridgeRoute } from 'client/modules/collateral/bridge/hooks/query/useEstimatedBridgeRoute';
 import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { blitzReferralCodeAtom } from 'client/store/referralsStore';
+import { edgeReferralCodeAtom } from 'client/store/referralsStore';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { useAtom } from 'jotai';
@@ -29,10 +29,10 @@ import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 export function useBridgeForm(): UseBridgeForm {
-  // Only blitz uses our backend referral system
-  const [referralCodeAtomValue] = useAtom(blitzReferralCodeAtom);
   const { dispatchNotification } = useNotificationManagerContext();
   const isInitialDeposit = useRequiresInitialDeposit();
+
+  const [edgeReferralCodeAtomValue] = useAtom(edgeReferralCodeAtom);
 
   const {
     switchConnectedChain,
@@ -56,7 +56,7 @@ export function useBridgeForm(): UseBridgeForm {
   const { isLoading: isBridgeTxLoading, isSuccess: isBridgeTxSuccess } =
     useOnChainMutationStatus({
       mutationStatus: executeBridgeTokens.status,
-      txResponse: executeBridgeTokens.data,
+      txHash: executeBridgeTokens.data,
     });
 
   useRunWithDelayOnCondition({
@@ -99,7 +99,7 @@ export function useBridgeForm(): UseBridgeForm {
     sourceTokenBalance,
     allDestinationTokens,
     selectedDestinationToken,
-    minimumDepositAmount,
+    minimumInitialDepositAmount,
   } = useBridgeFormData({
     sourceChainId,
     sourceTokenAddress,
@@ -131,10 +131,10 @@ export function useBridgeForm(): UseBridgeForm {
       amount: validAmount,
       destinationToken: selectedDestinationToken,
       sourceToken: selectedSourceToken,
-      referralCode: referralCodeAtomValue,
+      referralCode: edgeReferralCodeAtomValue,
     };
   }, [
-    referralCodeAtomValue,
+    edgeReferralCodeAtomValue,
     selectedDestinationToken,
     selectedSourceToken,
     validAmount,
@@ -164,20 +164,24 @@ export function useBridgeForm(): UseBridgeForm {
       if (sourceTokenBalance && sourceTokenBalance.lt(parsedAmount)) {
         return 'max_exceeded';
       }
-      if (isInitialDeposit && minimumDepositAmount && estimatedBridgeRoute) {
+      if (
+        isInitialDeposit &&
+        minimumInitialDepositAmount &&
+        estimatedBridgeRoute
+      ) {
         const bridgedAmount = removeDecimals(
           toBigDecimal(estimatedBridgeRoute.route.estimate.toAmount),
           estimatedBridgeRoute.route.estimate.toToken.decimals,
         );
-        if (bridgedAmount.lt(minimumDepositAmount)) {
-          return 'under_min';
+        if (bridgedAmount.lt(minimumInitialDepositAmount)) {
+          return 'below_min';
         }
       }
     },
     [
       estimatedBridgeRoute,
       isInitialDeposit,
-      minimumDepositAmount,
+      minimumInitialDepositAmount,
       sourceTokenBalance,
     ],
   );
@@ -238,8 +242,7 @@ export function useBridgeForm(): UseBridgeForm {
       return;
     }
 
-    const txResponsePromise =
-      executeBridgeTokens.mutateAsync(bridgeRequestParams);
+    const txHashPromise = executeBridgeTokens.mutateAsync(bridgeRequestParams);
 
     dispatchNotification({
       type: 'bridge_deposit',
@@ -247,7 +250,7 @@ export function useBridgeForm(): UseBridgeForm {
         amount: bridgeRequestParams.amount,
         sourceChainName: selectedSourceChain?.chainName ?? '',
         sourceTokenSymbol: bridgeRequestParams.sourceToken.symbol,
-        txResponsePromise,
+        txHashPromise,
       },
     });
   };
@@ -264,7 +267,7 @@ export function useBridgeForm(): UseBridgeForm {
     sourceTokenBalance,
     selectedDestinationToken,
     selectedSourceAmount: validAmount,
-    minimumDepositAmount,
+    minimumInitialDepositAmount,
     buttonState,
     validPercentageAmount,
     estimatedBridgeRoute,

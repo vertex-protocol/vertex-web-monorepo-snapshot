@@ -46,9 +46,9 @@ function Header({
           {title}
         </DefinitionTooltip>
         <PrivacyToggleButton
+          colorVariant="tertiary"
           isPrivate={areAccountValuesPrivate}
           onClick={() => setAreAccountValuesPrivate(!areAccountValuesPrivate)}
-          className="text-text-tertiary"
         />
       </div>
       <div className="flex flex-col">
@@ -65,7 +65,7 @@ function Header({
 }
 
 interface ItemsProps extends WithClassnames<WithChildren> {
-  header: ReactNode;
+  header?: ReactNode;
   childContainerClassNames?: string;
 }
 
@@ -77,8 +77,12 @@ function Items({
 }: ItemsProps) {
   return (
     <div className={joinClassNames('flex flex-col gap-y-2', className)}>
-      <div className="text-text-primary text-sm">{header}</div>
-      <Divider />
+      {!!header && (
+        <>
+          <div className="text-text-primary text-sm">{header}</div>
+          <Divider />
+        </>
+      )}
       <div className={childContainerClassNames}>{children}</div>
     </div>
   );

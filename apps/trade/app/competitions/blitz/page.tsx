@@ -2,6 +2,10 @@ import { TradingCompetitionLandingPage } from 'client/pages/TradingCompetition/T
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+/**
+ * REMINDER: When hiding / unhiding this page, make sure to also update
+ * `BlitzTradingCompetitionOpportunityCard` appropriately.
+ */
 export default function BlitzTradingCompetitionLandingPage() {
   return <TradingCompetitionLandingPage />;
 }

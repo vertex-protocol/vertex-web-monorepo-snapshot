@@ -22,7 +22,8 @@ interface Params {
 
 // Partial<EstimatedBaseSubaccountInfo> is used to override the default behavior of useEstimateSubaccountInfoChange when needed
 // See below comment for details
-export interface AdditionalInfo extends Partial<EstimatedBaseSubaccountInfo> {
+export interface CollateralAdditionalSubaccountInfo
+  extends Partial<EstimatedBaseSubaccountInfo> {
   vertexBalance: BigDecimal | undefined;
   borrowedAmount: BigDecimal | undefined;
   borrowedValueUsd: BigDecimal | undefined;
@@ -35,7 +36,7 @@ export function useCollateralEstimateSubaccountInfoChange({
 }: Params) {
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const additionalInfoFactory = useCallback<
-    AdditionalSubaccountInfoFactory<AdditionalInfo>
+    AdditionalSubaccountInfoFactory<CollateralAdditionalSubaccountInfo>
   >(
     (summary, isEstimate) => {
       const balance = summary?.balances.find(

@@ -1,12 +1,13 @@
-import { BigDecimal } from '@vertex-protocol/utils';
-import { StaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { LatestMarketPrice } from 'client/hooks/query/markets/types';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
+import { StaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+
+import { useMarket } from 'client/hooks/markets/useMarket';
+
+import { LatestMarketPrice } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { BaseOrderFormValues } from 'client/modules/trading/types';
-import { removeDecimals } from '@vertex-protocol/utils';
 import { roundToIncrement } from 'client/utils/rounding';
 import { useCallback, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useMarket } from 'client/hooks/markets/useMarket';
 
 interface Params {
   form: UseFormReturn<BaseOrderFormValues>;

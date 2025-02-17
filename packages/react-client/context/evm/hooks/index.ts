@@ -4,3 +4,4 @@ export * from './useEthersSigner';
 export * from './usePrimaryChainId';
 export * from './usePrimaryChainPublicClient';
 export * from './usePrimaryChainWalletClient';
+export * from './useWagmiConfig';

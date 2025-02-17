@@ -1,4 +1,4 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   BaseDefinitionTooltip,
   BaseDefinitionTooltipDecoration,

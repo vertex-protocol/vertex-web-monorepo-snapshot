@@ -1,6 +1,8 @@
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { DiscList } from '@vertex-protocol/web-ui';
 import { CollapsibleInfoCard } from 'client/components/CollapsibleInfoCard';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { SLOW_MODE_FEE_AMOUNT_USDC } from 'client/hooks/subaccount/useSlowModeFeeAllowance';
+import { clientEnv } from 'common/environment/clientEnv';
 
 export function SlowModeSettingsInfoCollapsible() {
   const { primaryQuoteToken } = useVertexMetadataContext();
@@ -8,32 +10,27 @@ export function SlowModeSettingsInfoCollapsible() {
   const collapsibleContent = (
     <div className="flex flex-col gap-y-2">
       <p>
-        Smart contract wallets, such as Coinbase Smart Wallet, Safe, and Argent,
-        do not support EIP712 signatures. You must delegate a 1-Click Trading
-        key to sign transactions on your behalf.
+        Smart contract wallets, such as Coinbase Wallet, Abstract Global Wallet,
+        and Safe, require 1-Click Trading to interact with the app.
       </p>
       <DiscList.Container>
         <DiscList.Item>
-          Ensure that you have{' '}
-          <span className="text-text-primary">
-            1 {primaryQuoteToken.symbol}
-          </span>{' '}
-          in your wallet to pay the fee for enabling 1CT.
-        </DiscList.Item>
-        <DiscList.Item>
           Generate a private key, or paste one that you have generated
           previously.{' '}
-          <span className="text-text-primary">
+          <span className="text-text-primary font-bold">
             Save the key in a secure place
           </span>
           .
         </DiscList.Item>
         <DiscList.Item>
-          After sending the transaction, you can proceed to use the app within a
-          few minutes.
+          Enabling 1CT with a new key requires a 1-time fee of{' '}
+          <span className="text-text-primary font-bold">
+            {SLOW_MODE_FEE_AMOUNT_USDC} {primaryQuoteToken.symbol}
+          </span>
+          . The fee is deducted from your wallet, not{' '}
+          {clientEnv.brandMetadata.displayName} account.
         </DiscList.Item>
       </DiscList.Container>
-      <p>To disable 1CT, turn off the switch below and send the transaction.</p>
     </div>
   );
 

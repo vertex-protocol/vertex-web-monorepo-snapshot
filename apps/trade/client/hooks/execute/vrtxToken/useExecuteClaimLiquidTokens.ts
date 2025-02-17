@@ -1,19 +1,17 @@
 import { useMutation } from '@tanstack/react-query';
+import { ClaimLiquidTokensParams } from '@vertex-protocol/client';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   useExecuteInValidContext,
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
-import { useCallback } from 'react';
-import { ClaimLiquidTokensParams } from '@vertex-protocol/client';
-import { accountTokenClaimStateQueryKey } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
-import { lbaTokenWalletBalancesQueryKey } from 'client/hooks/query/vrtxToken/useLbaTokenWalletBalances';
 import { allDepositableTokenBalancesQueryKey } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
+import { accountTokenClaimStateQueryKey } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
+import { useCallback } from 'react';
 
 const REFETCH_QUERY_KEYS: string[][] = [
   accountTokenClaimStateQueryKey(),
-  lbaTokenWalletBalancesQueryKey(),
   allDepositableTokenBalancesQueryKey(),
 ];
 
@@ -26,7 +24,9 @@ export function useExecuteClaimLiquidTokens() {
     useCallback(
       async (params: ClaimLiquidTokensParams, context: ValidExecuteContext) => {
         console.log('Claiming Liquid Tokens', params);
-        return context.vertexClient.rewards.claimLiquidTokens(params);
+        const txResponse =
+          await context.vertexClient.rewards.claimLiquidTokens(params);
+        return txResponse.hash;
       },
       [],
     ),

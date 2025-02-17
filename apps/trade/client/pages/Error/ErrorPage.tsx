@@ -5,8 +5,8 @@ import Link from 'next/link';
 export function ErrorPage({ statusCode }: { statusCode: 404 | 500 }) {
   return (
     <div className="flex h-full w-screen flex-col items-center justify-center gap-y-12">
-      <div className="flex flex-col items-center gap-y-2">
-        <div className="text-text-secondary text-8xl leading-none lg:text-[16rem]">
+      <div className="flex flex-col items-center gap-y-6">
+        <div className="text-text-secondary text-8xl lg:text-[16rem]">
           {statusCode}
         </div>
         <p className="text-text-secondary lg:text-3xl">

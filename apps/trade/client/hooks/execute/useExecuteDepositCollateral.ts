@@ -41,12 +41,14 @@ export function useExecuteDepositCollateral() {
       ) => {
         console.log('Depositing Collateral', params);
         const currentSubaccountName = context.subaccount.name;
-        return context.vertexClient.spot.deposit({
+
+        const txResponse = await context.vertexClient.spot.deposit({
           subaccountName: currentSubaccountName,
           productId: params.productId,
           amount: params.amount,
           referralCode: params.referralCode,
         });
+        return txResponse.hash;
       },
       [],
     ),

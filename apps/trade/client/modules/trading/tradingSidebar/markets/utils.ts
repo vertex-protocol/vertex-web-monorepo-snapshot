@@ -1,8 +1,9 @@
 import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
-import { AllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import { AllLatestMarketPricesData } from 'client/hooks/query/markets/types';
-import { TradingSidebarMarketItem } from 'client/modules/trading/tradingSidebar/types';
+import { AllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
+
+import { AllLatestMarketPricesData } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { TradingSidebarMarketData } from 'client/modules/trading/tradingSidebar/markets/types';
+import { TradingSidebarMarketItem } from 'client/modules/trading/tradingSidebar/types';
 import { bigDecimalComparator } from 'client/utils/comparators';
 
 export function getTradingSidebarMarketsSearchString(
@@ -14,14 +15,14 @@ export function getTradingSidebarMarketsSearchString(
 export function toTradingSidebarMarketData(
   market: TradingSidebarMarketItem,
   latestMarketPrices: AllLatestMarketPricesData | undefined,
-  marketMetricsData: AllMarketsHistoricalMetrics | undefined,
+  marketStatsData: AllMarketsStats | undefined,
 ): TradingSidebarMarketData {
   const currentPrice = latestMarketPrices?.[market.productId]?.safeAverage;
 
-  const marketMetrics = marketMetricsData?.metricsByMarket[market.productId];
-  const pastDayPriceChangeFrac = marketMetrics?.pastDayPriceChangeFrac;
+  const marketStats = marketStatsData?.statsByMarket[market.productId];
+  const pastDayPriceChangeFrac = marketStats?.pastDayPriceChangeFrac;
   const pastDayVolumeInPrimaryQuote = removeDecimals(
-    marketMetrics?.pastDayVolumeInPrimaryQuote,
+    marketStats?.pastDayVolumeInPrimaryQuote,
   );
 
   return {

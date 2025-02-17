@@ -1,11 +1,10 @@
-import { sumBigDecimalBy, TimeInSeconds } from '@vertex-protocol/client';
+import { sumBigDecimalBy } from '@vertex-protocol/client';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useSwitchToProtocolTokenChainEnv } from 'client/hooks/util/useSwitchToProtocolTokenChainEnv';
 import { useLatestRewardsEpochs } from 'client/modules/rewards/hooks/useLatestRewardsEpochs';
-import { isBefore, secondsToMilliseconds } from 'date-fns';
-import { get, now } from 'lodash';
+import { get } from 'lodash';
 import { useMemo } from 'react';
 
 export function useVrtxSummaryCard() {
@@ -70,21 +69,11 @@ export function useVrtxSummaryCard() {
       );
     })();
 
-    // Show claim warning 5 days before claiming ends
-    const showClaimWarning =
-      !!lastCompletedEpoch?.subaccountTokenClaim.claimDeadlineMillis &&
-      isBefore(
-        lastCompletedEpoch.subaccountTokenClaim.claimDeadlineMillis -
-          secondsToMilliseconds(TimeInSeconds.DAY * 5),
-        now(),
-      );
-
     return {
       unclaimedLastEpochRewards,
       epochEndTimeMillis: currentEpoch?.epochIntervalMillis.to,
       currentEpochNumber,
       nextEpochNumber,
-      showClaimWarning,
       estimatedNewRewards: currentEpoch?.subaccountRewards.trading,
       totalRewardsEarned,
       lastCompletedEpoch,

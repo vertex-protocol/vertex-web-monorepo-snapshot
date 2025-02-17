@@ -7,18 +7,18 @@ import { SourceChainSelect } from 'client/modules/collateral/bridge/components/B
 import { SourceTokenSelect } from 'client/modules/collateral/bridge/components/BridgeSelect/SourceTokenSelect';
 import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/form/types';
 import {
-  BridgeChain,
-  BridgeToken,
+  BridgeChainSelectValue,
+  BridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
 import { UseFormReturn } from 'react-hook-form';
 
 interface Props {
   form: UseFormReturn<BridgeFormValues>;
-  selectedSourceChain: BridgeChain | undefined;
-  allSourceChains: BridgeChain[];
-  selectedSourceToken: BridgeToken | undefined;
-  allSourceTokens: BridgeToken[];
+  selectedSourceChain: BridgeChainSelectValue | undefined;
+  allSourceChains: BridgeChainSelectValue[];
+  selectedSourceToken: BridgeTokenSelectValue | undefined;
+  allSourceTokens: BridgeTokenSelectValue[];
   sourceTokenBalance: BigDecimal | undefined;
   estimatedSourceValueUsd: BigDecimal | undefined;
   amountErrorTooltipContent: string | null;

@@ -30,6 +30,7 @@ export const ROUTES = {
   moneyMarkets: '/money-markets',
   rewards: '/rewards',
   referrals: '/referrals',
+  staking: '/staking',
+  gems: '/gems',
   vaults: '/vaults',
-  vrtx: '/vrtx',
 } as const;

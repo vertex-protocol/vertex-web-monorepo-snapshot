@@ -1,14 +1,15 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import {
+  SpotProductMetadata,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { SpotProductMetadata } from '@vertex-protocol/metadata';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 export interface MoneyMarketsTableItem {
@@ -28,7 +29,6 @@ export interface MoneyMarketsTableItem {
   };
   depositAPR: BigDecimal | undefined;
   borrowAPR: BigDecimal | undefined;
-  volume24h: BigDecimal | undefined;
   isNewMarket: boolean;
   isFavorited: boolean;
 }
@@ -39,7 +39,6 @@ export function useMoneyMarketsTable() {
 
   const { balances, isLoading: isLoadingBalances } = useSpotBalances();
   const { data: allMarketsData, isLoading: isLoadingMarkets } = useAllMarkets();
-  const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
 
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
 
@@ -50,9 +49,6 @@ export function useMoneyMarketsTable() {
 
     return balances
       .map((balance) => {
-        const marketMetrics =
-          marketMetricsData?.metricsByMarket[balance.productId];
-
         const market =
           balance.productId === QUOTE_PRODUCT_ID
             ? allMarketsData.primaryQuoteProduct
@@ -90,19 +86,12 @@ export function useMoneyMarketsTable() {
           },
           depositAPR: balance.depositAPR,
           borrowAPR: balance.borrowAPR,
-          volume24h: removeDecimals(marketMetrics?.pastDayVolumeInPrimaryQuote),
           isNewMarket: getIsNewMarket(balance.productId),
           isFavorited: favoritedMarketIds.has(balance.productId),
         };
       })
       .filter(nonNullFilter);
-  }, [
-    balances,
-    allMarketsData,
-    marketMetricsData?.metricsByMarket,
-    getIsNewMarket,
-    favoritedMarketIds,
-  ]);
+  }, [balances, allMarketsData, getIsNewMarket, favoritedMarketIds]);
 
   return {
     moneyMarkets: mappedData,

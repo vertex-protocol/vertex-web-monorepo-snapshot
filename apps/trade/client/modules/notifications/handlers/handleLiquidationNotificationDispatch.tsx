@@ -1,7 +1,7 @@
 import { LiquidationNotification } from 'client/modules/notifications/components/risk/LiquidationNotification';
 import { LiquidationNotificationData } from 'client/modules/notifications/types';
 import { createToastId } from 'client/utils/createToastId';
-import toast from 'react-hot-toast';
+import toast, { Toast } from 'react-hot-toast';
 
 export function handleLiquidationNotificationDispatch(
   liquidationNotificationData: LiquidationNotificationData,
@@ -9,7 +9,7 @@ export function handleLiquidationNotificationDispatch(
   const toastId = createToastId('liquidationWarning');
 
   toast.custom(
-    (t) => {
+    (t: Toast['message']) => {
       return (
         <LiquidationNotification
           data={liquidationNotificationData}

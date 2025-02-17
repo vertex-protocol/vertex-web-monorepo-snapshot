@@ -1,6 +1,6 @@
 'use client';
 
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { PortfolioPageContentWrapper } from 'client/pages/Portfolio/components/PortfolioPageContentWrapper';
 import { OverviewHeroSection } from 'client/pages/Portfolio/subpages/Overview/components/OverviewHeroSection/OverviewHeroSection';
 import { OverviewInfoCardButtons } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoCardButtons';
@@ -8,7 +8,7 @@ import { OverviewTabs } from 'client/pages/Portfolio/subpages/Overview/component
 import { OverviewWelcomeHeader } from 'client/pages/Portfolio/subpages/Overview/components/OverviewWelcomeHeader/OverviewWelcomeHeader';
 
 export function PortfolioOverviewPage() {
-  const { data: overview } = useDerivedSubaccountOverview();
+  const { data: overview } = useSubaccountOverview();
 
   return (
     <PortfolioPageContentWrapper>

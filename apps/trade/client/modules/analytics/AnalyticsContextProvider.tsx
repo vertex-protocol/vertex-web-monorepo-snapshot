@@ -1,10 +1,10 @@
 import spindl from '@spindl-xyz/attribution';
-import { useEVMContext } from '@vertex-protocol/react-client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { WithChildren } from '@vertex-protocol/web-common';
 import { useSizeClass } from 'client/hooks/ui/breakpoints';
 import {
-  AnalyticsContextData,
   AnalyticsContext,
+  AnalyticsContextData,
 } from 'client/modules/analytics/AnalyticsContext';
 import { AnalyticsGlobalEventsReporter } from 'client/modules/analytics/AnalyticsGlobalEventsReporter';
 import {
@@ -19,18 +19,21 @@ import { useCallback, useMemo } from 'react';
 const API_KEY = SENSITIVE_DATA.spindlApiKey;
 const DEBUG_LOGGING = false;
 
-spindl.configure({
-  sdkKey: API_KEY,
-  debugMode: DEBUG_LOGGING,
-});
+if (typeof window !== 'undefined') {
+  spindl.configure({
+    sdkKey: API_KEY,
+    debugMode: DEBUG_LOGGING,
+    host: `${window.location.origin}/spindl-ingest`,
+  });
 
-spindl.enableAutoPageViews();
+  spindl.enableAutoPageViews();
+}
 
 export function AnalyticsContextProvider({ children }: WithChildren) {
   const { value: sizeClass } = useSizeClass();
   const {
     primaryChainMetadata: { isTestnet },
-  } = useEVMContext();
+  } = useVertexMetadataContext();
   const { areCookiesAccepted } = useCookiePreference();
   const { buildId } = clientEnv.base;
 
@@ -75,9 +78,9 @@ export function AnalyticsContextProvider({ children }: WithChildren) {
   }, [updateUserAddress, trackEvent, areCookiesAccepted]);
 
   return (
-    <AnalyticsContext.Provider value={value}>
+    <AnalyticsContext value={value}>
       <AnalyticsGlobalEventsReporter />
       {children}
-    </AnalyticsContext.Provider>
+    </AnalyticsContext>
   );
 }

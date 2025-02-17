@@ -13,7 +13,9 @@ export function useSelectedTickSpacingMultiplier(productId?: number) {
   const persistedTickSpacingMultiplierSelection = productId
     ? orderbookTickSpacingMultiplierByProductId[productId]
     : undefined;
-  const tickSpacingMultiplier = persistedTickSpacingMultiplierSelection ?? 1;
+  // Default tick spacing to 10x, this gives a good overview of the orderbook in the UI
+  // Using a default of 1x would show too few price levels
+  const tickSpacingMultiplier = persistedTickSpacingMultiplierSelection ?? 10;
 
   const setTickSpacingMultiplier = useCallback(
     (selectedValue: OrderbookPriceTickSpacingMultiplier) => {

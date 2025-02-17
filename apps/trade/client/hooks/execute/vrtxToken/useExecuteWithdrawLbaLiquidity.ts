@@ -6,7 +6,7 @@ import {
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
-import { subaccountSummaryQueryKey } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { subaccountSummaryQueryKey } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { accountLbaStateQueryKey } from 'client/hooks/query/vrtxToken/useAccountLbaState';
 import { useCallback } from 'react';
 
@@ -23,7 +23,9 @@ export function useExecuteWithdrawLbaLiquidity() {
     useCallback(
       async (params: VrtxTokenAmountParams, context: ValidExecuteContext) => {
         console.log('Withdrawing LBA Liquidity', params);
-        return context.vertexClient.rewards.withdrawLbaLiquidity(params);
+        const txResponse =
+          await context.vertexClient.rewards.withdrawLbaLiquidity(params);
+        return txResponse.hash;
       },
       [],
     ),

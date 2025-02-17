@@ -1,7 +1,7 @@
 import { WithChildren } from '@vertex-protocol/web-common';
 import { useCloudflareRedirect } from 'client/context/gatedAppAccess/hooks/useCloudflareRedirect';
 import { useGeolocationBlock } from 'client/context/gatedAppAccess/hooks/useGeolocationBlock';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 
 export type GatedAppAccessWrapperContextData = {
   isBlockedGeolocation: boolean;
@@ -11,7 +11,7 @@ const GatedAppAccessContext = createContext<GatedAppAccessWrapperContextData>(
   {} as GatedAppAccessWrapperContextData,
 );
 
-export const useGatedAppAccessContext = () => useContext(GatedAppAccessContext);
+export const useGatedAppAccessContext = () => use(GatedAppAccessContext);
 
 export function GatedAppAccessContextProvider({ children }: WithChildren) {
   const { isBlockedGeolocation } = useGeolocationBlock();
@@ -24,8 +24,8 @@ export function GatedAppAccessContextProvider({ children }: WithChildren) {
   }, [isBlockedGeolocation]);
 
   return (
-    <GatedAppAccessContext.Provider value={contextValue}>
+    <GatedAppAccessContext value={contextValue}>
       {children}
-    </GatedAppAccessContext.Provider>
+    </GatedAppAccessContext>
   );
 }

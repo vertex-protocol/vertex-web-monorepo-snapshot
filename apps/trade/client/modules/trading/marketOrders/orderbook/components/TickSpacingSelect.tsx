@@ -1,6 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { Select, useSelect } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { Select, UpDownChevronIcon, useSelect } from '@vertex-protocol/web-ui';
 import {
   ORDERBOOK_PRICE_TICK_SPACING_MULTIPLIERS,
   OrderbookPriceTickSpacingMultiplier,
@@ -24,7 +23,6 @@ export function TickSpacingSelect({
 }: TickSpacingSelectProps) {
   const options = useMemo(() => {
     return ORDERBOOK_PRICE_TICK_SPACING_MULTIPLIERS.map((multiplier) => ({
-      id: multiplier.toFixed(),
       label: priceIncrement?.multipliedBy(multiplier).toFixed() ?? 1,
       value: multiplier,
     }));
@@ -33,7 +31,7 @@ export function TickSpacingSelect({
   const { selectOptions, open, onValueChange, value, onOpenChange } = useSelect(
     {
       selectedValue: tickSpacingMultiplier,
-      onSelectedValueChange: (option) => setTickSpacingMultiplier(option),
+      onSelectedValueChange: setTickSpacingMultiplier,
       options,
     },
   );
@@ -51,7 +49,7 @@ export function TickSpacingSelect({
       >
         {currentTickSpacing}
       </Select.Trigger>
-      <Select.Options className="w-20" align="end">
+      <Select.Options className="min-w-20" align="end">
         {selectOptions.map(({ label, value }) => (
           <Select.Option key={value} value={value}>
             {label}

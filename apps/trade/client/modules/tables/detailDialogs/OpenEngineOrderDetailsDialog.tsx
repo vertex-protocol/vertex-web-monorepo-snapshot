@@ -10,14 +10,15 @@ import {
   TimeFormatSpecifier,
 } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { TableDetailDialog } from 'client/modules/tables/detailDialogs/components/base/TableDetailDialog';
 import { ProductHeader } from 'client/modules/tables/detailDialogs/components/ProductHeader';
 import { useOpenOrderDetailsDialog } from 'client/modules/tables/detailDialogs/hooks/useOpenOrderDetailsDialog';
 import { OpenEngineOrderTableItem } from 'client/modules/tables/hooks/useOpenEngineOrdersTable';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 
 export type OpenEngineOrderDetailsDialogParams = OpenEngineOrderTableItem;
 
@@ -28,11 +29,14 @@ export function OpenEngineOrderDetailsDialog({
   digest,
   price,
   orderType,
+  isoMarginTransfer,
+  marginModeType,
   totalAmount,
   totalCost,
   filled,
   unfilled,
 }: OpenEngineOrderDetailsDialogParams) {
+  const { isIsoMarginEnabled } = useEnabledFeatures();
   const { primaryQuoteToken } = useVertexMetadataContext();
   const {
     sizeFormatSpecifier,
@@ -52,10 +56,10 @@ export function OpenEngineOrderDetailsDialog({
 
   const { amount: filledAmount, fraction: filledFraction } = filled;
   const { amount: unfilledAmount } = unfilled;
-  const { symbol, amountForSide, icon, marketName } = marketInfo;
+  const { symbol, quoteSymbol, amountForSide, icon, marketName } = marketInfo;
 
   const metricItems = (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-2">
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Time"
@@ -70,8 +74,7 @@ export function OpenEngineOrderDetailsDialog({
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Type"
-        valueClassName="text-text-tertiary uppercase"
-        valueContent={getOrderTypeLabel(orderType)}
+        valueContent={getOrderTypeLabel(orderType, marginModeType)}
       />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
@@ -109,6 +112,16 @@ export function OpenEngineOrderDetailsDialog({
         numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
         valueEndElement={primaryQuoteToken.symbol}
       />
+      {isIsoMarginEnabled && (
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
+          label="Margin"
+          value={isoMarginTransfer}
+          numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          // If no margin transfer, show just `-` without the USDC symbol
+          valueEndElement={isoMarginTransfer ? quoteSymbol : ''}
+        />
+      )}
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Filled"

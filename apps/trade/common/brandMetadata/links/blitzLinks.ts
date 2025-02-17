@@ -39,7 +39,6 @@ export const BLITZ_COMMON_LINKS = {
   spotTradingLearnMore: 'https://docs.blitz.exchange/tutorials/spot-trading',
   spreadDocs:
     'https://docs.blitz.exchange/basics/subaccounts-isolated-margin-and-health#special-cases-spreads-lps-and-large-positions',
-  stats: 'https://stats.blitz.exchange/',
   termsOfUse: 'https://blitz.exchange/docs/TermsOfUse.pdf',
   tpslDocs:
     'https://docs.blitz.exchange/tutorials/tp-sl-and-stop-market-orders',

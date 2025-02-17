@@ -4,13 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "@eslint/eslintrc": "^3.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
     "eslint": "*",
     "eslint-config-next": "*",
     "eslint-config-prettier": "*",
     "eslint-config-turbo": "*",
-    "eslint-plugin-import": "^2.30.0",
-    "eslint-plugin-no-relative-import-paths": "^1.5.5"
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-no-relative-import-paths": "^1.5.5",
+    "typescript-eslint": "*"
   },
   "devDependencies": {
     "typescript": "*"

@@ -11,13 +11,15 @@
   "private": true,
   "dependencies": {
     "@phosphor-icons/react": "*",
-    "@radix-ui/react-checkbox": "^1.1.1",
+    "@radix-ui/react-checkbox": "*",
     "@radix-ui/react-dialog": "*",
     "@radix-ui/react-radio-group": "*",
-    "@radix-ui/react-select": "^2.1.1",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-switch": "^1.1.0",
+    "@radix-ui/react-select": "^2.1.4",
+    "@radix-ui/react-slot": "^1.1.1",
+    "@radix-ui/react-switch": "^1.1.2",
     "date-fns": "*",
+    "lodash": "*",
+    "next": "*",
     "react": "*",
     "react-dom": "*",
     "react-merge-refs": "^2.1.1",
@@ -28,6 +30,7 @@
     "eslint-config-custom": "*",
     "ts-config": "*",
     "typescript": "*",
+    "typescript-eslint": "*",
     "typescript-plugin-css-modules": "*"
   }
 }

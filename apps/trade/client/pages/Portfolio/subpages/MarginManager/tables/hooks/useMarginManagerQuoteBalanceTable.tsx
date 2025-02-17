@@ -1,9 +1,9 @@
+import { SpotProductMetadata } from '@vertex-protocol/react-client';
 import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
 import { usePrimaryQuoteBalance } from 'client/hooks/subaccount/usePrimaryQuoteBalance';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
-import { SpotProductMetadata } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface MarginManagerQuoteBalanceTableItem {
@@ -19,7 +19,7 @@ export interface MarginManagerQuoteBalanceTableItem {
 
 export function useMarginManagerQuoteBalanceTable() {
   const { data: derivedOverview, isLoading: isDerivedOverviewLoading } =
-    useDerivedSubaccountOverview();
+    useSubaccountOverview();
   const { data: primaryQuoteBalance, isLoading: isPrimaryQuoteBalanceLoading } =
     usePrimaryQuoteBalance();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
@@ -32,7 +32,7 @@ export function useMarginManagerQuoteBalanceTable() {
 
       const quoteTableItem = (() => {
         const unsettledQuoteUsd =
-          derivedOverview.perp.totalUnsettledQuote.multipliedBy(
+          derivedOverview.perp.cross.totalUnsettledQuote.multipliedBy(
             primaryQuotePriceUsd,
           );
 

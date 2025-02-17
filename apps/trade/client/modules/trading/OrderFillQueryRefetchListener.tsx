@@ -17,7 +17,7 @@ import { useEffect, useRef } from 'react';
 export function OrderFillQueryRefetchListener() {
   const queryClient = useQueryClient();
   const {
-    currentSubaccount: { address, name },
+    currentSubaccount: { address, name, chainEnv },
   } = useSubaccountContext();
   const { data: latestFillOrderEvents } = useSubaccountLatestFillOrderEvents();
 
@@ -27,10 +27,10 @@ export function OrderFillQueryRefetchListener() {
     undefined,
   );
 
-  // Reset on subaccount change
+  // Reset on subaccount & chainenv changes
   useEffect(() => {
     lastFillOrderSubmissionIdx.current = undefined;
-  }, [address, name]);
+  }, [chainEnv, address, name]);
 
   useEffect(
     () => {

@@ -1,12 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   createQueryKey,
+  KNOWN_CONNECTOR_IDS,
   QueryDisabledError,
   useEVMContext,
   usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
-import { KNOWN_CONNECTOR_IDS } from 'client/consts/knownConnectorIds';
 import { Address } from 'viem';
+
+const KNOWN_SC_WALLET_IDS: string[] = [
+  KNOWN_CONNECTOR_IDS.coinbaseWalletSDK,
+  KNOWN_CONNECTOR_IDS.binanceWallet,
+  KNOWN_CONNECTOR_IDS.binanceApp,
+  KNOWN_CONNECTOR_IDS.abstractGw,
+  // Note: no need to include passkeys here as their signatures are compatible with EIP712
+];
 
 /**
  * Returns whether the current wallet is a smart contract wallet. This is not a perfect check, so it is possible for this to return false negatives.
@@ -17,7 +25,11 @@ export function useIsSmartContractWalletConnected() {
     connectionStatus: { connector, address },
   } = useEVMContext();
 
-  const disableQuery = !address || !publicClient;
+  const isKnownSmartContractWallet = KNOWN_SC_WALLET_IDS.includes(
+    connector?.id ?? '',
+  );
+
+  const disableQuery = !address || !publicClient || isKnownSmartContractWallet;
   const { data: isSmartContract } = useQuery({
     queryKey: createQueryKey('isSmartContractWalletCodeCheck', address),
     queryFn: async () => {
@@ -31,9 +43,5 @@ export function useIsSmartContractWalletConnected() {
     enabled: !disableQuery,
   });
 
-  return (
-    isSmartContract ||
-    // Account abstraction wallets don't typically deploy on chain until the first transaction, so check known SC wallet connectors
-    connector?.id === KNOWN_CONNECTOR_IDS.coinbaseWalletSDK
-  );
+  return isKnownSmartContractWallet || isSmartContract;
 }

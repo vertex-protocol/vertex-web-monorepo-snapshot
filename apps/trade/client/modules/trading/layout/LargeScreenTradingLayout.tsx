@@ -59,7 +59,7 @@ export function LargeScreenTradingLayout({
       >
         {/* Order placement */}
         <Card className="w-trade-sidebar">
-          {/* Set min-h to be slightly higher then (orderbook, chart, watchlist) section. */}
+          {/* Set min-h to be slightly higher than (orderbook, chart, watchlist) section. */}
           <OrderPlacement className="min-h-[652px]" />
         </Card>
         <div className="flex flex-1 flex-col gap-y-2.5 overflow-hidden">
@@ -71,9 +71,10 @@ export function LargeScreenTradingLayout({
               flexDirectionByConsolePosition,
             )}
           >
-            {/* Orderbook */}
+            {/* Orderbook/Latest Trades */}
             {showMarketOrderSideBar && (
-              <Card className="w-market-orders">
+              // Overflow hidden to prevent unrounded corners (ex. OrderbookPriceBox) from escaping the card
+              <Card className="w-market-orders overflow-hidden">
                 <MarketDataTabs className="h-full" productId={productId} />
               </Card>
             )}

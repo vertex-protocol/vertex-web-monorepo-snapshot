@@ -1,3 +1,5 @@
+import { Colors } from '../types';
+
 export const BLITZ_COLORS = {
   background: {
     DEFAULT: '#07070A',
@@ -49,10 +51,6 @@ export const BLITZ_COLORS = {
     mid: '#B80165',
     end: '#930161',
   },
-  'grad-nav-surface': {
-    start: '#101014',
-    end: '#07070A',
-  },
   'grad-overlay-dialog': {
     start: '#181623',
     end: '0B0B0E',
@@ -64,4 +62,4 @@ export const BLITZ_COLORS = {
     high: '#E26D7E',
     extreme: '#CC113F',
   },
-};
+} satisfies Colors;

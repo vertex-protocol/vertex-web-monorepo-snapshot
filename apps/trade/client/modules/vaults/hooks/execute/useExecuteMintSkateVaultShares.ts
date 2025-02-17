@@ -72,13 +72,11 @@ export function useExecuteMintSkateVaultShares() {
           .toFixed(0),
       );
 
-      const hash = await context.walletClient.writeContract({
+      return context.walletClient.writeContract({
         ...contractParams,
         functionName: 'mint',
         args: [quoteAmountBigInt, minSharesWithSlippage],
       });
-
-      return { hash };
     }, []),
   );
 

@@ -3,20 +3,20 @@ import {
   ProductEngineType,
   QUOTE_PRODUCT_ID,
 } from '@vertex-protocol/contracts';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
+import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useLpYields } from 'client/hooks/markets/useLpYields';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useLpBalances } from 'client/hooks/subaccount/useLpBalances';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
+import { PairMetadata } from 'client/modules/pools/types';
 import { QueryState } from 'client/types/QueryState';
 import { calcIndexerSummaryUnrealizedLpPnl } from 'client/utils/calcs/pnlCalcs';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { useMemo } from 'react';
-import { PairMetadata } from 'client/modules/pools/types';
 
 export interface LpTableItem {
   marketType: ProductEngineType;
@@ -47,7 +47,7 @@ export function useLpTable({
   });
   const { balances } = useLpBalances();
   // Default these to zero when not available
-  const { data: marketMetrics } = useAllMarketsHistoricalMetrics();
+  const { data: marketStatsData } = useAllMarketsStats();
   const { data: lpYields } = useLpYields();
   const { data: indexerSnapshot } = useSubaccountIndexerSnapshot();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
@@ -70,11 +70,12 @@ export function useLpTable({
       .map((market) => {
         const yieldFraction = lpYields?.[market.productId];
         const volume =
-          marketMetrics?.metricsByMarket[market.productId]
+          marketStatsData?.statsByMarket[market.productId]
             ?.pastDayVolumeInPrimaryQuote;
         const baseMetadata = getSharedProductMetadata(market.metadata);
         const indexerBalance = indexerSnapshot?.balances.find(
-          (bal) => bal.productId === market.productId,
+          // Assume that LPs are not isolated
+          (bal) => bal.productId === market.productId && !bal.isolated,
         );
         const balance = balances?.find(
           (bal) => bal.productId === market.productId,
@@ -109,7 +110,7 @@ export function useLpTable({
     filteredMarkets,
     quoteMetadata,
     lpYields,
-    marketMetrics,
+    marketStatsData,
     indexerSnapshot,
     primaryQuotePriceUsd,
     balances,

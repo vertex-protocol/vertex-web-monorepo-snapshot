@@ -1,12 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
-import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
+  formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
+import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
 
 interface Props extends TableCellProps {
   subaccountShareFrac: BigDecimal;
@@ -18,6 +18,12 @@ export function EpochRewardsPoolCell({
   totalRewards,
   ...rest
 }: Props) {
+  const {
+    protocolTokenMetadata: {
+      token: { symbol: protocolTokenSymbol },
+    },
+  } = useVertexMetadataContext();
+
   const formattedAmount = formatNumber(totalRewards, {
     formatSpecifier: CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED,
   });
@@ -28,9 +34,8 @@ export function EpochRewardsPoolCell({
   return (
     <StackedTableCell
       top={
-        <span className="flex items-center gap-x-1">
-          {formattedAmount}
-          <span className="text-text-tertiary">{VRTX_TOKEN_INFO.symbol}</span>
+        <span className="flex items-center">
+          {formattedAmount} {protocolTokenSymbol}
         </span>
       }
       bottom={formattedPercentage}

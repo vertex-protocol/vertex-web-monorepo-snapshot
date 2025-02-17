@@ -88,7 +88,9 @@ export function useRepayConvertForm({
     });
 
   // Allow orders of any size only if there is an available LP pool with liquidity.
-  const allowAnyOrderSizeIncrement = !!market?.product.totalLpSupply.gt(0);
+  // We currently don't have enough LP liquidity anywhere to support this
+  const allowAnyOrderSizeIncrement = false;
+  // const allowAnyOrderSizeIncrement = !!market?.product.totalLpSupply.gt(0);
 
   const executionConversionPrice = useMemo(() => {
     if (!marketProduct || !marketProduct.marketPrices) {

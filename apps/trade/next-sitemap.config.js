@@ -7,7 +7,7 @@ const siteUrl = {
 
 const brandSpecificExcludedPaths = {
   vertex: [],
-  blitz: ['/vrtx', '/referrals'],
+  blitz: ['/staking', '/referrals', '/gems'],
 }[brandName];
 
 /** @type {import('next-sitemap').IConfig} */

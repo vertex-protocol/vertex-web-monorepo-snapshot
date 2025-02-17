@@ -13,7 +13,7 @@ import {
   validateModifiedTriggerOrderPrice,
 } from 'client/hooks/execute/modifyOrder/validateModifiedOrderPrice';
 import { ValidExecuteContext } from 'client/hooks/execute/util/useExecuteInValidContext';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { useOrderbookAddresses } from 'client/hooks/query/markets/useOrderbookAddresses';
 import { useGetRecvTime } from 'client/hooks/util/useGetRecvTime';
@@ -21,6 +21,7 @@ import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import { useVertexClientHasLinkedSigner } from 'client/hooks/util/useVertexClientHasLinkedSigner';
 import { OrderSlippageSettings } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { useOrderSlippageSettings } from 'client/modules/trading/hooks/useOrderSlippageSettings';
+import { getIsIsoEngineOrder } from 'client/modules/trading/utils/isoOrderChecks';
 import { roundToIncrement } from 'client/utils/rounding';
 import { useCallback } from 'react';
 
@@ -101,7 +102,14 @@ async function cancelAndPlaceOrder({
   ]);
 
   if (!currentOrder) {
-    throw new Error('Could not fetch current order');
+    throw new Error(
+      `Could not find order with digest ${modifyOrderParams.digest}.`,
+    );
+  }
+  if (getIsIsoEngineOrder(currentOrder)) {
+    throw new Error(
+      'Modifying isolated order is not supported. Please cancel and place a new order.',
+    );
   }
 
   // Validate the new order price.

@@ -1,12 +1,12 @@
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
+import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { useLatestPriceChange } from 'client/hooks/markets/useLatestPriceChange';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSpotOrderFormContext } from 'client/pages/SpotTrading/context/SpotOrderFormContext';
-import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
+import { AnnotatedSpotMarket } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 export interface SpotMarketInfo {
@@ -32,7 +32,7 @@ export function useSpotMarketInfoCards(): UseSpotMarketInfoCards {
 
   const { data: spotMarket } = useMarket<AnnotatedSpotMarket>({ productId });
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
-  const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
+  const { data: marketStatsData } = useAllMarketsStats();
   const { data: latestOrderFillPrice } = useLatestOrderFill({ productId });
   const latestPriceChange = useLatestPriceChange(latestOrderFillPrice?.price);
 
@@ -41,8 +41,8 @@ export function useSpotMarketInfoCards(): UseSpotMarketInfoCards {
       return;
     }
 
-    const marketMetrics = marketMetricsData?.metricsByMarket[productId];
-    const marketPriceChange = marketMetrics?.pastDayPriceChange;
+    const marketStats = marketStatsData?.statsByMarket[productId];
+    const marketPriceChange = marketStats?.pastDayPriceChange;
 
     return {
       priceFormatSpecifier: getMarketPriceFormatSpecifier(
@@ -52,16 +52,16 @@ export function useSpotMarketInfoCards(): UseSpotMarketInfoCards {
       currentPriceValueUsd:
         latestOrderFillPrice?.price.multipliedBy(primaryQuotePriceUsd),
       priceChange24hr: marketPriceChange,
-      priceChangeFrac24hr: marketMetrics?.pastDayPriceChangeFrac,
+      priceChangeFrac24hr: marketStats?.pastDayPriceChangeFrac,
       oraclePrice: spotMarket.product.oraclePrice,
-      quoteVolume24hr: removeDecimals(marketMetrics?.pastDayVolumeInQuote),
+      quoteVolume24hr: removeDecimals(marketStats?.pastDayVolumeInQuote),
       latestPriceChange: latestPriceChange ?? marketPriceChange,
       quoteSymbol: quoteMetadata?.symbol,
     };
   }, [
     spotMarket,
     productId,
-    marketMetricsData?.metricsByMarket,
+    marketStatsData?.statsByMarket,
     quoteMetadata?.symbol,
     latestOrderFillPrice?.price,
     primaryQuotePriceUsd,

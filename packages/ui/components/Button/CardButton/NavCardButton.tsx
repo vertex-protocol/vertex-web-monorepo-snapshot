@@ -1,5 +1,4 @@
 import { joinClassNames, mergeClassNames } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
 import { getStateOverlayClassNames } from '../../../utils';
 import { CARD_ROUNDED_CLASSNAMES } from '../../Card';
 import { Icons } from '../../Icons';
@@ -12,19 +11,16 @@ export type NavCardButtonProps = NavCardBaseProps & {
   stateClassNameOverrides?: string;
 };
 
-export const NavCardButton = forwardRef(function NavCardButton(
-  {
-    title,
-    description,
-    icon,
-    active,
-    className,
-    contentClassName,
-    stateClassNameOverrides,
-    ...rest
-  }: NavCardButtonProps,
-  ref,
-) {
+export function NavCardButton({
+  title,
+  description,
+  icon,
+  active,
+  className,
+  contentClassName,
+  stateClassNameOverrides,
+  ...rest
+}: NavCardButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
     borderRadiusVariant: 'lg',
     disabled: rest.disabled,
@@ -34,7 +30,6 @@ export const NavCardButton = forwardRef(function NavCardButton(
 
   return (
     <Button
-      ref={ref}
       className={mergeClassNames(
         'relative px-2 py-1.5',
         CARD_ROUNDED_CLASSNAMES,
@@ -52,4 +47,4 @@ export const NavCardButton = forwardRef(function NavCardButton(
       />
     </Button>
   );
-});
+}

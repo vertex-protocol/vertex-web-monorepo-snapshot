@@ -6,12 +6,12 @@ import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
+import { FixedHeaderDataTable } from 'client/components/FixedHeaderDataTable';
+import { FavoriteHeaderCell } from 'client/modules/tables/cells/FavoriteHeaderCell';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { MarketSwitcherStackedPriceCell } from 'client/modules/trading/components/BaseMarketSwitcherTable/cells/MarketSwitcherStackedPriceCell';
 import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
-import { FixedHeaderDataTable } from 'client/components/FixedHeaderDataTable';
-import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
 import { useMemo } from 'react';
 

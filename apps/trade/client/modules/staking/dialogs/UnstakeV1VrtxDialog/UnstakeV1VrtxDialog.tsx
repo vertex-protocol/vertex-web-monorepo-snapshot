@@ -30,7 +30,6 @@ export function UnstakeV1VrtxDialog() {
       <BaseAppDialog.Title
         onClose={hide}
         endElement={
-          // TODO ensure links are correct
           <LinkButton
             as={Link}
             colorVariant="primary"
@@ -62,7 +61,7 @@ export function UnstakeV1VrtxDialog() {
             >
               Migrate to V2
             </LinkButton>{' '}
-            instead to receive a bonus ✨
+            instead.
           </p>
         </WarningPanel>
         <ValueWithLabel.Horizontal

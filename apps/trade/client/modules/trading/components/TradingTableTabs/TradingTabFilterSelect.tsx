@@ -18,7 +18,6 @@ export function TradingTabFilterSelect({
       options.map(({ id, name }) => ({
         label: name,
         value: id,
-        id,
       })),
     [options],
   );

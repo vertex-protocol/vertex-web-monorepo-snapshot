@@ -7,7 +7,7 @@ import {
   SubaccountContextData,
 } from 'client/context/subaccount/SubaccountContext';
 import {
-  Subaccount,
+  AppSubaccount,
   UpdateSigningPreferenceFn,
 } from 'client/context/subaccount/types';
 import { LinkedSignerSync } from 'client/modules/singleSignatureSessions/components/LinkedSignerSync';
@@ -39,7 +39,7 @@ export function SubaccountContextProvider({ children }: WithChildren) {
     getSavedSubaccountProfile,
   } = useSavedSubaccountSettings();
 
-  const currentSubaccount = useMemo((): Subaccount => {
+  const currentSubaccount = useMemo((): AppSubaccount => {
     return {
       name: selectedSubaccountName ?? PRIMARY_SUBACCOUNT_NAME,
       chainEnv: primaryChainEnv,
@@ -163,9 +163,9 @@ export function SubaccountContextProvider({ children }: WithChildren) {
   ]);
 
   return (
-    <SubaccountContext.Provider value={data}>
+    <SubaccountContext value={data}>
       <LinkedSignerSync />
       {children}
-    </SubaccountContext.Provider>
+    </SubaccountContext>
   );
 }

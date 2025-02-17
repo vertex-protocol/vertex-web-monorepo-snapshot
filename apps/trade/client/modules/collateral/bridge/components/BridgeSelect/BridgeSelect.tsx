@@ -4,19 +4,18 @@ import {
   SelectComponentOption,
   SelectOptionsProps,
   SelectTriggerProps,
+  UpDownChevronIcon,
 } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { BRIDGE_DROPDOWN_CONTENT_CLASSNAME } from 'client/modules/collateral/bridge/components/BridgeSelect/consts';
 import {
-  BridgeChain,
-  BridgeToken,
+  BridgeChainSelectValue,
+  DestinationBridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
 
 interface TriggerProps extends SelectTriggerProps {
-  title: string;
   label: string | undefined;
   labelImgSrc: string | undefined;
   open: boolean;
-  disabled?: boolean;
 }
 
 function Trigger({
@@ -37,7 +36,11 @@ function Trigger({
         <span className="truncate">{label}</span>
         {/* Loading remote images, so can't use Image component */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="size-4 rounded-full" src={labelImgSrc} alt={label} />
+        <img
+          className="h-4 w-auto rounded-full"
+          src={labelImgSrc}
+          alt={label}
+        />
       </div>
     );
   })();
@@ -66,14 +69,12 @@ function Options({
 }: SelectOptionsProps) {
   return (
     <Select.Options
-      className={joinClassNames(
-        'flex flex-col gap-y-1 p-2',
-        'w-[350px] [@media(max-width:400px)]:w-[315px]',
-        'max-h-72',
-        className,
+      className={joinClassNames(BRIDGE_DROPDOWN_CONTENT_CLASSNAME, className)}
+      viewportClassName={joinClassNames(
+        'flex flex-col gap-y-1',
+        viewportClassName,
       )}
-      viewportClassName={viewportClassName}
-      sideOffset={12}
+      sideOffset={8}
       {...rest}
     />
   );
@@ -82,27 +83,32 @@ function Options({
 function Option({
   option,
 }: {
-  option: SelectComponentOption<BridgeChain | BridgeToken>;
+  option: SelectComponentOption<
+    BridgeChainSelectValue | DestinationBridgeTokenSelectValue
+  >;
 }) {
   return (
     <Select.Option
+      className="justify-start"
+      startIcon={
+        // Loading remote images, so can't use Image component
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className="h-5 w-auto rounded-full"
+          alt={option.value}
+          src={option.original.externalIconUrl}
+        />
+      }
       value={option.value}
-      className="justify-stretch gap-x-2 p-2"
       withSelectedCheckmark={false}
     >
-      {/*Loading remote images, so can't use Image component*/}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        className="size-5 rounded-full"
-        alt={option.value}
-        src={option.original.externalIconUrl}
-      />
       {option.label}
     </Select.Option>
   );
 }
 
 export const BridgeSelect = {
+  Root: Select.Root,
   Trigger,
   Options,
   Option,

@@ -2,6 +2,7 @@ import {
   BigDecimal,
   BigDecimalish,
   millisToSeconds,
+  PlaceIsolatedOrderParams,
   PlaceOrderParams,
   PlaceTriggerOrderParams,
   toBigDecimal,
@@ -18,7 +19,7 @@ import {
 } from '@vertex-protocol/utils';
 import { ExecutePlaceOrderParams } from 'client/hooks/execute/placeOrder/types';
 import { ValidExecuteContext } from 'client/hooks/execute/util/useExecuteInValidContext';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useOrderbookAddresses } from 'client/hooks/query/markets/useOrderbookAddresses';
 import { useGetRecvTime } from 'client/hooks/util/useGetRecvTime';
 import { roundToIncrement, roundToString } from 'client/utils/rounding';
@@ -91,8 +92,8 @@ export function usePlaceOrderMutationFn() {
 
       // Order is common across engine & trigger
       const order: PlaceOrderParams['order'] = {
+        subaccountName: params.subaccountName ?? context.subaccount.name,
         subaccountOwner: context.subaccount.address,
-        subaccountName: context.subaccount.name,
         price: roundedPrice,
         amount: roundedAmount,
         expiration: getExpirationTimestamp({
@@ -102,16 +103,23 @@ export function usePlaceOrderMutationFn() {
         }),
       };
 
-      const sharedParams: PlaceTriggerOrderParams | PlaceOrderParams = {
+      const sharedParams:
+        | PlaceTriggerOrderParams
+        | PlaceOrderParams
+        | PlaceIsolatedOrderParams = {
         productId: params.productId,
-        spotLeverage: params.spotLeverage,
         order,
         nonce,
         verifyingAddr: orderbookAddresses?.[params.productId],
         chainId: context.subaccount.chainId,
+        spotLeverage: params.spotLeverage,
       };
 
-      // Mutate depending on whether we are placing a trigger order or not
+      /*
+      Use a different mutation for trigger, isolated engine, and regular engine orders
+       */
+
+      // Trigger order
       if (params.priceType === 'stop') {
         const roundedTriggerPrice = toMutationPriceInput(
           params.triggerPrice,
@@ -136,15 +144,33 @@ export function usePlaceOrderMutationFn() {
         return context.vertexClient.market.placeTriggerOrder(
           triggerOrderParams,
         );
-      } else {
-        const engineOrderParams: PlaceOrderParams = sharedParams;
+      }
+
+      // Engine iso order but NOT reduce-only
+      if (params.iso && !params.reduceOnly) {
+        const engineIsoOrderParams: PlaceIsolatedOrderParams = {
+          ...sharedParams,
+          order: {
+            ...sharedParams.order,
+            margin: toMutationAmountInput(params.iso.margin),
+          },
+          borrowMargin: params.iso.borrowMargin,
+        };
 
         console.log(
-          'Placing engine order',
-          toPrintableObject(engineOrderParams),
+          'Placing isolated engine order',
+          toPrintableObject(engineIsoOrderParams),
         );
-        return context.vertexClient.market.placeOrder(engineOrderParams);
+        return context.vertexClient.market.placeIsolatedOrder(
+          engineIsoOrderParams,
+        );
       }
+
+      // Engine cross order OR reduce-only iso order
+      const engineOrderParams: PlaceOrderParams = sharedParams;
+
+      console.log('Placing engine order', toPrintableObject(engineOrderParams));
+      return context.vertexClient.market.placeOrder(engineOrderParams);
     },
     [getRecvTime, marketDataByProductId?.all, orderbookAddresses],
   );

@@ -1,12 +1,16 @@
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import {
+  useVertexMetadataContext,
+  VRTX_TOKEN_INFO,
+} from '@vertex-protocol/react-client';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { Pill } from '@vertex-protocol/web-ui';
+import { useAccountStakingV2State } from 'client/hooks/query/vrtxToken/useAccountStakingV2State';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { useAccountStakingApr } from 'client/modules/rewards/hooks/useAccountStakingApr';
-import { useAccountStakingMetrics } from 'client/modules/rewards/hooks/useAccountStakingMetrics';
+import { useStakingV2Rewards } from 'client/modules/staking/hooks/useStakingV2Rewards';
 import { OverviewInfoCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoCardButton';
 import Image from 'next/image';
 
@@ -18,12 +22,22 @@ interface Props {
  * This is extracted from OverviewInfoCardButtons so that VRTX specific logic only runs when this is rendered (i.e. within Vertex and not Blitz)
  */
 export function OverviewInfoVrtxCardButton({ isPrivate }: Props) {
-  const { accountStaked, accountStakedValueUsd } = useAccountStakingMetrics();
-  const accountCurrentApr = useAccountStakingApr();
+  const { data: accountV2StakingState } = useAccountStakingV2State();
+  const {
+    protocolTokenMetadata: {
+      token: { tokenDecimals },
+    },
+  } = useVertexMetadataContext();
+  const { apr: stakingApr } = useStakingV2Rewards();
+
+  const currentStakingBalance = removeDecimals(
+    accountV2StakingState?.currentBalance,
+    tokenDecimals,
+  );
 
   return (
     <OverviewInfoCardButton
-      href={ROUTES.vrtx}
+      href={ROUTES.staking}
       title={`${VRTX_TOKEN_INFO.symbol} Staked`}
       value={
         <>
@@ -34,16 +48,11 @@ export function OverviewInfoVrtxCardButton({ isPrivate }: Props) {
               className="h-auto w-4"
             />
             <span>
-              {formatNumber(accountStaked, {
+              {formatNumber(currentStakingBalance, {
                 formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
               })}
             </span>
           </div>
-          <span className="text-text-tertiary text-sm leading-4">
-            {formatNumber(accountStakedValueUsd, {
-              formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-            })}
-          </span>
         </>
       }
       valueClassName="gap-x-2 items-end"
@@ -51,7 +60,7 @@ export function OverviewInfoVrtxCardButton({ isPrivate }: Props) {
         <Pill colorVariant="accent" sizeVariant="xs">
           APR:
           <span>
-            {formatNumber(accountCurrentApr, {
+            {formatNumber(stakingApr, {
               formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
             })}
           </span>

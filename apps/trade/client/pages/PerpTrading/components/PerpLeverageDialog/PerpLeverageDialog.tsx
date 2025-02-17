@@ -3,8 +3,8 @@ import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RangeSlider } from 'client/modules/trading/components/RangeSlider';
 import { PerpLeverageInfoCollapsible } from 'client/pages/PerpTrading/components/PerpLeverageDialog/PerpLeverageInfoCollapsible';
-import { usePerpLeverageDialog } from 'client/pages/PerpTrading/hooks/usePerpLeverageDialog';
-import { useSelectedPerpLeverage } from 'client/pages/PerpTrading/hooks/useSelectedPerpLeverage';
+import { usePerpLeverageDialog } from 'client/pages/PerpTrading/components/PerpLeverageDialog/usePerpLeverageDialog';
+import { useSelectedPerpMarginMode } from 'client/pages/PerpTrading/hooks/useSelectedPerpMarginMode';
 import Image from 'next/image';
 
 export interface PerpLeverageDialogParams {
@@ -22,9 +22,8 @@ export function PerpLeverageDialog({
       initialLeverage,
       productId,
     });
-  const { setSelectedLeverage: setLeverageAtomValue } = useSelectedPerpLeverage(
-    currentMarket?.productId,
-  );
+  const { setSelectedCrossMarginLeverage: setLeverageAtomValue } =
+    useSelectedPerpMarginMode(currentMarket?.productId);
 
   return (
     <BaseAppDialog.Container onClose={hide}>

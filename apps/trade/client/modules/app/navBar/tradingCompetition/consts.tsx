@@ -1,29 +1,16 @@
 import { NavPopoverContestItem } from 'client/modules/app/navBar/tradingCompetition/types';
-import { SEI_TRADING_COMPETITION_ROUTES } from 'client/pages/TradingCompetition/configs/sei/routes';
 
-const SEI_CONTEST_ITEMS: NavPopoverContestItem[] = [
-  {
-    title: 'Round 1',
-    startTimeMillis: 1727712000000,
-    endTimeMillis: 1728144000000,
-    href: SEI_TRADING_COMPETITION_ROUTES.round1Landing,
-  },
-  {
-    title: 'Round 2',
-    startTimeMillis: 1728316800000,
-    endTimeMillis: 1728748800000,
-    href: SEI_TRADING_COMPETITION_ROUTES.round2Landing,
-  },
-  {
-    title: 'Round 3',
-    startTimeMillis: 1728921600000,
-    endTimeMillis: 1729353600000,
-    href: SEI_TRADING_COMPETITION_ROUTES.round3Landing,
-  },
+const VERTEX_ARB_ITEMS: NavPopoverContestItem[] = [
+  // {
+  //   title: 'Round 1',
+  //   startTimeMillis: 1735578000 * 1000,
+  //   endTimeMillis: 1736010000 * 1000,
+  //   href: VERTEX_TRADING_COMP_ROUND_1_ROUTES.base,
+  // },
 ];
 
 export const NAV_POPOVER_CONTEST_ITEMS = {
-  sei: SEI_CONTEST_ITEMS,
+  arbitrum: VERTEX_ARB_ITEMS,
 };
 
 export const NAV_POPOVER_CONTEST_ITEM_HREFS = Object.values(

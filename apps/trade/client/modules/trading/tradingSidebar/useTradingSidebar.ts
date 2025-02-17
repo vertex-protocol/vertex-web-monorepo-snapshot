@@ -1,4 +1,4 @@
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
 import {

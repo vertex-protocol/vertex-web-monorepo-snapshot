@@ -1,6 +1,10 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { isSpotProduct } from '@vertex-protocol/contracts';
 import {
+  AnnotatedSpotBalanceWithProduct,
+  SpotProductMetadata,
+} from '@vertex-protocol/react-client';
+import {
   createQueryKey,
   QueryDisabledError,
 } from '@vertex-protocol/react-client';
@@ -9,18 +13,16 @@ import {
   BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { AppSubaccount } from 'client/context/subaccount/types';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSpotInterestRates } from 'client/hooks/markets/useSpotInterestRates';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import {
   calcSpotBalanceHealth,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
-import {
-  AnnotatedSpotBalanceWithProduct,
-  SpotProductMetadata,
-} from '@vertex-protocol/metadata';
 
 export interface SpotBalanceItem {
   metadata: SpotProductMetadata;
@@ -37,17 +39,27 @@ export interface SpotBalanceItem {
 }
 
 interface UseSpotBalances {
-  balances?: SpotBalanceItem[];
-  isLoading?: boolean;
-  isError?: boolean;
+  balances: SpotBalanceItem[] | undefined;
+  isLoading: boolean;
+  isError: boolean;
 }
 
-function spotBalancesQueryKey(lastUpdated: number) {
-  return createQueryKey('spotBalances', lastUpdated);
+function spotBalancesQueryKey(
+  subaccount: AppSubaccount,
+  subaccountSummaryDataUpdatedAt: number,
+  hasInterestRatesData: boolean,
+) {
+  return createQueryKey(
+    'spotBalances',
+    subaccount,
+    subaccountSummaryDataUpdatedAt,
+    hasInterestRatesData,
+  );
 }
 
 export function useSpotBalances(): UseSpotBalances {
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
+  const { currentSubaccount } = useSubaccountContext();
 
   const {
     data: summaryData,
@@ -106,12 +118,17 @@ export function useSpotBalances(): UseSpotBalances {
   };
 
   const { data: mappedData } = useQuery({
-    queryKey: spotBalancesQueryKey(dataUpdatedAt),
+    queryKey: spotBalancesQueryKey(
+      currentSubaccount,
+      dataUpdatedAt,
+      !!spotInterestRates,
+    ),
     queryFn,
     // Prevents a "flash" in UI when query key changes, which occurs when subaccount overview data updates
     placeholderData: keepPreviousData,
     enabled: !disabled,
     gcTime: REACT_QUERY_CONFIG.computeQueryGcTime,
+    staleTime: REACT_QUERY_CONFIG.computedQueryStaleTime,
   });
 
   return {

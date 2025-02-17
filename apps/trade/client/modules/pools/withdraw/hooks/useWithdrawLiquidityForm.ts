@@ -5,7 +5,7 @@ import {
   safeParseForData,
 } from '@vertex-protocol/web-common';
 import { useExecuteBurnLp } from 'client/hooks/execute/useExecuteBurnLp';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useLpYields } from 'client/hooks/markets/useLpYields';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';

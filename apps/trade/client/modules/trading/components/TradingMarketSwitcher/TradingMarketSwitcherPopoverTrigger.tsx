@@ -1,7 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { Button, getStateOverlayClassNames } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { DropdownUi, UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
 import Image from 'next/image';
 
@@ -37,7 +36,11 @@ export function TradingMarketSwitcherPopoverTrigger({
       );
     })();
 
-    return <div className="text-text-primary flex gap-x-2">{content}</div>;
+    return (
+      <div className="text-text-primary flex flex-1 items-center gap-x-2 text-base">
+        {content}
+      </div>
+    );
   })();
 
   const rightSide = (() => {
@@ -50,26 +53,23 @@ export function TradingMarketSwitcherPopoverTrigger({
     );
   })();
 
-  const stateOverlayClassnames = getStateOverlayClassNames({ disabled });
-
   return (
     <Popover.Trigger asChild>
-      <Button
+      <DropdownUi.Trigger
         className={joinClassNames(
-          'flex items-center p-3',
+          'p-3',
           // On desktop all four corners are rounded, while on mobile only the
           // top two are. To accommodate both styles, we apply `overflow-hidden`
           // here, which prevents the overlay's 0 border radius from overflowing
           // the rounded corners.
-          ['overflow-hidden', stateOverlayClassnames],
+          'overflow-hidden',
           className,
         )}
         disabled={disabled}
       >
         {leftSide}
-        <div className="flex-1" />
         {rightSide}
-      </Button>
+      </DropdownUi.Trigger>
     </Popover.Trigger>
   );
 }

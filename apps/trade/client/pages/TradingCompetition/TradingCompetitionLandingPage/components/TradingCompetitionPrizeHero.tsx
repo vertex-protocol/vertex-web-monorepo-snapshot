@@ -17,7 +17,7 @@ export function TradingCompetitionPrizeHero() {
   return (
     <Image
       className={joinClassNames(
-        'h-auto w-full object-cover',
+        'h-auto w-full',
         currentContestStatus === 'done' && 'grayscale',
       )}
       src={isMobile ? mobileSrc : desktopSrc}

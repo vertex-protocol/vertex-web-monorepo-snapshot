@@ -3,6 +3,7 @@ import {
   HANDLED_BUTTON_USER_STATE_ERRORS,
   useButtonUserStateErrorProps,
 } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { useIsSmartContractWalletConnected } from 'client/hooks/util/useIsSmartContractWalletConnected';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RememberMeSwitch } from 'client/modules/singleSignatureSessions/components/RememberMeSwitch';
@@ -14,12 +15,17 @@ export function SingleSignatureReapprovalDialog() {
   const { hide } = useDialog();
   const { rememberMe, setRememberMe, buttonState, onSubmit } =
     useSingleSignatureReapprovalDialog();
+  const isSmartContractWalletConnected = useIsSmartContractWalletConnected();
 
   const userStateErrorButtonProps = useButtonUserStateErrorProps({
     handledErrors: HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain,
   });
 
   const actionContent = (() => {
+    if (isSmartContractWalletConnected) {
+      // Hide the actions to divert their attention to SignatureModeSlowModeEntrypoint
+      return null;
+    }
     if (userStateErrorButtonProps) {
       return <PrimaryButton {...userStateErrorButtonProps} />;
     }
@@ -50,7 +56,9 @@ export function SingleSignatureReapprovalDialog() {
             Approve 1-Click Trading to enjoy a seamless trading experience and
             to enable TP/SL orders.
           </p>
-          <SignatureModeSlowModeEntrypoint />
+          <SignatureModeSlowModeEntrypoint
+            isSmartContractWalletConnected={isSmartContractWalletConnected}
+          />
         </div>
         {actionContent}
       </BaseAppDialog.Body>

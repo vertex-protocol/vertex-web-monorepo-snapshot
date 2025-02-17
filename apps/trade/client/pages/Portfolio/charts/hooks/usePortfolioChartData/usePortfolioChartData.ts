@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { AppSubaccount } from 'client/context/subaccount/types';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshots } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshots';
 import { useChartQueryTimes } from 'client/pages/Portfolio/charts/hooks/useChartQueryTimes';
@@ -20,26 +20,16 @@ import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 import { secondsToMilliseconds } from 'date-fns';
 
 function portfolioChartDataQueryKey(
-  chainEnv?: ChainEnv,
+  subaccount: AppSubaccount,
   timespan?: ChartTimespan,
-  address?: string,
-  name?: string,
 ) {
-  return createQueryKey(
-    'portfolioChartData',
-    chainEnv,
-    timespan,
-    address,
-    name,
-  );
+  return createQueryKey('portfolioChartData', subaccount, timespan);
 }
 
 export function usePortfolioChartData(
   timespan: ChartTimespan,
 ): QueryState<PortfolioChartDataItem[]> {
-  const {
-    currentSubaccount: { address, name, chainEnv },
-  } = useSubaccountContext();
+  const { currentSubaccount } = useSubaccountContext();
   const queryTimes = useChartQueryTimes(timespan);
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { data: indexerSummaries, ...rest } = useSubaccountIndexerSnapshots({
@@ -206,10 +196,11 @@ export function usePortfolioChartData(
   };
 
   const { data: portfolioChartData } = useQuery({
-    queryKey: portfolioChartDataQueryKey(chainEnv, timespan, address, name),
+    queryKey: portfolioChartDataQueryKey(currentSubaccount, timespan),
     queryFn,
     enabled: !disabled,
     gcTime: REACT_QUERY_CONFIG.computeQueryGcTime,
+    staleTime: REACT_QUERY_CONFIG.computedQueryStaleTime,
   });
 
   return {

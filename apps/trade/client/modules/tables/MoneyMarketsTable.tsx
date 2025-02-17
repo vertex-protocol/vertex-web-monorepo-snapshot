@@ -13,17 +13,17 @@ import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
+import { FavoriteHeaderCell } from 'client/modules/tables/cells/FavoriteHeaderCell';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { PercentageCell } from 'client/modules/tables/cells/PercentageCell';
 import { StackedAmountValueCell } from 'client/modules/tables/cells/StackedAmountValueCell';
-import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
-import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
-import { MoneyMarketActionsCell } from 'client/pages/MoneyMarkets/components/MoneyMarketActionsCell';
-import { useMemo } from 'react';
 import {
   MoneyMarketsTableItem,
   useMoneyMarketsTable,
 } from 'client/modules/tables/hooks/useMoneyMarketsTable';
+import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
+import { MoneyMarketActionsCell } from 'client/pages/MoneyMarkets/components/MoneyMarketActionsCell';
+import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MoneyMarketsTableItem>();
 

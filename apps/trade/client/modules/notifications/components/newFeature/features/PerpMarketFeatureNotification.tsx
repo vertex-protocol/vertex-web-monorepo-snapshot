@@ -1,28 +1,27 @@
+import { LinkButton } from '@vertex-protocol/web-ui';
 import { ToastProps } from 'client/components/Toast/types';
-import { NewFeatureDisclosureKey } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
+import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
+import { FeatureNotificationDisclosureKey } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
 import { TOAST_MARKET_ICON_CLASSNAME } from 'client/modules/notifications/components/consts';
 import { NewFeatureNotification } from 'client/modules/notifications/components/newFeature/NewFeatureNotification';
-import { PerpProductMetadata } from '@vertex-protocol/metadata';
-import Image from 'next/image';
-import { LinkButton } from '@vertex-protocol/web-ui';
-import Link from 'next/link';
-import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
 import { get } from 'lodash';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface Props extends ToastProps {
-  disclosureKey: NewFeatureDisclosureKey;
-  metadata: PerpProductMetadata;
+  disclosureKey: FeatureNotificationDisclosureKey;
   productId: number;
 }
 
 export function PerpMarketFeatureNotification({
   disclosureKey,
-  metadata,
   productId,
   onDismiss: baseOnDismiss,
   ...rest
 }: Props) {
+  const { data: allMarketsStaticData } = useAllMarketsStaticData();
   const { dismiss: dismissNewFeatureNotification } =
     useShowUserDisclosure(disclosureKey);
   const productTradingLinks = useProductTradingLinks();
@@ -35,6 +34,12 @@ export function PerpMarketFeatureNotification({
   const onLinkClick = () => {
     onDismiss();
   };
+
+  const metadata = allMarketsStaticData?.perp[productId]?.metadata;
+
+  if (!metadata) {
+    return null;
+  }
 
   const marketName = metadata.marketName;
   const icon = metadata.icon;

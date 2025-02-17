@@ -1,6 +1,7 @@
 import { DiscList } from '@vertex-protocol/web-ui';
 import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import { PerpMarginModeCrossInfo } from 'client/modules/trading/components/PerpMarginModeCrossInfo';
+import { PerpMarginModeIsolatedInfo } from 'client/modules/trading/components/PerpMarginModeIsolatedInfo';
 
 const settingsTooltips = {
   settingsOrderNotifications: {
@@ -10,6 +11,10 @@ const settingsTooltips = {
   settingsChartOrderLines: {
     title: 'Chart Order Lines',
     content: `Enable order lines on the price chart.`,
+  },
+  settingsDefaultMarginMode: {
+    title: 'Default Margin Mode',
+    content: `The default margin mode used for markets you have not traded before.`,
   },
   settingsSlippageTolerance: {
     title: 'Slippage Tolerance',
@@ -30,6 +35,17 @@ const singleSignatureTooltips = {
     title: `Weekly activations remaining`,
     content:
       'You are allowed to enable 1-Click Trading up to 5 times per week. You can only disable 1CT after you have exceeded the quota, but cannot enable 1CT until the following week.',
+  },
+} as const satisfies Record<string, DefinitionTooltipConfig>;
+
+const perpMarginModeTooltips = {
+  perpMarginModeIsoInfo: {
+    title: 'Isolated Margin',
+    content: <PerpMarginModeIsolatedInfo />,
+  },
+  perpMarginModeCrossInfo: {
+    title: `Cross Margin`,
+    content: <PerpMarginModeCrossInfo />,
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
@@ -89,20 +105,12 @@ const takeProfitStopLossTooltips = {
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
-const withdrawTooltips = {
-  withdrawEnableBorrowsSwitch: {
-    title: `Borrows (on/off)`,
-    content: `Enables you to borrow assets against your existing collateral. Borrowing increases your margin usage and account risk.`,
+const depositTooltips = {
+  automaticDepositApr: {
+    title: `Deposit APR (Auto)`,
+    content: `Your deposits/collateral automatically earn interest. You don't need to do anything extra. You can view the current APR on the balances table.`,
   },
-  withdrawMaxWithBorrow: {
-    title: `Max with borrow`,
-    content: `The combination of your available balance and what you can borrow against your margin. Borrowing is done automatically once you place the withdrawal.`,
-  },
-  withdrawMaxWithdrawal: {
-    title: `Max withdrawal`,
-    content: `Your balance for the asset minus what's being held in open orders or required as margin.`,
-  },
-} as const satisfies Record<string, DefinitionTooltipConfig>;
+};
 
 const repayTooltips = {
   repayConvertEstimatedPrice: {
@@ -124,10 +132,6 @@ const repayTooltips = {
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const bridgeTooltips = {
-  bridgeEstimatedReceiveAmount: {
-    title: `Estimated Receive Amount`,
-    content: `The estimated amount you will receive after bridging. This takes into account the Axelar Fee.`,
-  },
   bridgeEstimatedGas: {
     title: `Estimated Gas Fee`,
     content: `The estimated gas fee for this bridge transaction. Please ensure you have sufficient funds on the source chain to pay for gas.`,
@@ -142,46 +146,20 @@ const bridgeTooltips = {
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
-const stakingTooltips = {
-  stakingEstConversionRate: ({ primaryQuoteToken }) => ({
-    title: `Est. Conversion Rate`,
-    content: `Compounding converts ${primaryQuoteToken.symbol} rewards into ${VRTX_TOKEN_INFO.symbol} using Camelot and then stakes them. The estimated conversion rate is based on the current price for the ${VRTX_TOKEN_INFO.symbol}-${primaryQuoteToken.symbol} market on Camelot.`,
-  }),
-} as const satisfies Record<string, DefinitionTooltipConfig>;
-
 const fastWithdrawTooltips = {
   fastWithdrawalFee: {
     title: `Fast Withdrawal Fee`,
-    content: `The fee deducted from the withdrawal amount for using fast withdraw.`,
+    content: `The fee deducted from the withdrawal amount for using fast withdraw. This fee is used to cover costs for the fast withdrawal service and to prevent abuse from other users.`,
   },
 };
 
-const subaccountQuoteTransferTooltips = {
-  subaccountQuoteTransferEnableBorrowsSwitch: {
-    title: 'Borrows (on/off)',
-    content:
-      'Enables you to borrow assets against your existing collateral. Borrowing increases your margin usage and account risk.',
-  },
-  subaccountQuoteTransferMaxWithBorrow: {
-    title: 'Max with borrow',
-    content:
-      'The combination of your available balance and what you can borrow against your margin. Borrowing is done automatically once you submit the transfer.',
-  },
-  subaccountQuoteTransferMaxTransfer: {
-    title: 'Max transfer',
-    content:
-      "Your balance for the asset minus what's being held in open orders or required as margin.",
-  },
-} as const satisfies Record<string, DefinitionTooltipConfig>;
-
 export const dialogTooltips = {
   ...singleSignatureTooltips,
-  ...withdrawTooltips,
+  ...depositTooltips,
   ...repayTooltips,
+  ...perpMarginModeTooltips,
   ...takeProfitStopLossTooltips,
-  ...stakingTooltips,
   ...bridgeTooltips,
   ...settingsTooltips,
   ...fastWithdrawTooltips,
-  ...subaccountQuoteTransferTooltips,
 } as const satisfies Record<string, DefinitionTooltipConfig>;

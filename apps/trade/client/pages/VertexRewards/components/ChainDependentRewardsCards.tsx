@@ -1,11 +1,11 @@
 'use client';
 
 import {
-  ARB_CHAIN_IDS,
-  MANTLE_CHAIN_IDS,
-  SEI_CHAIN_IDS,
-} from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
+  ARB_CHAIN_ENVS,
+  MANTLE_CHAIN_ENVS,
+  SEI_CHAIN_ENVS,
+} from '@vertex-protocol/react-client';
+import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
 import { ArbRewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/ArbRewardsSummaryCard/ArbRewardsSummaryCard';
 import { LbaPositionCollapsibleSummaryCard } from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/LbaPositionCollapsibleSummaryCard';
 import { MantleRewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/MantleRewardsSummaryCard/MantleRewardsSummaryCard';
@@ -13,9 +13,9 @@ import { SeiRewardsSummaryCard } from 'client/pages/VertexRewards/components/car
 
 export function ChainDependentRewardsCards() {
   // Rewards are chain specific
-  const showArbContent = useIsEnabledForChainIds(ARB_CHAIN_IDS);
-  const showMantleContent = useIsEnabledForChainIds(MANTLE_CHAIN_IDS);
-  const showSeiContent = useIsEnabledForChainIds(SEI_CHAIN_IDS);
+  const showArbContent = useIsEnabledForChainEnvs(ARB_CHAIN_ENVS);
+  const showMantleContent = useIsEnabledForChainEnvs(MANTLE_CHAIN_ENVS);
+  const showSeiContent = useIsEnabledForChainEnvs(SEI_CHAIN_ENVS);
 
   if (showArbContent) {
     return (

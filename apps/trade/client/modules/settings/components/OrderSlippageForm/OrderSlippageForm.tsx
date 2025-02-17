@@ -8,7 +8,7 @@ interface Props {
 
 export function OrderSlippageForm({ forms }: Props) {
   return (
-    <div className="flex flex-col gap-y-2 text-sm">
+    <div className="flex flex-col gap-y-3 text-sm">
       <DefinitionTooltip
         contentWrapperClassName="text-text-primary w-fit"
         definitionId="settingsSlippageTolerance"

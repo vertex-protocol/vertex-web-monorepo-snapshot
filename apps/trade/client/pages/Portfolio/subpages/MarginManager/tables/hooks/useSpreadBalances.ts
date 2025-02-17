@@ -1,24 +1,22 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import {
+  AnnotatedPerpBalanceWithProduct,
+  AnnotatedSpotBalanceWithProduct,
+} from '@vertex-protocol/react-client';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { useHealthGroups } from 'client/hooks/query/markets/useHealthGroups';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import {
   calcSpreadBasisAmount,
   calcSpreadHealthIncrease,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
-import { removeDecimals } from '@vertex-protocol/utils';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import {
-  AnnotatedPerpBalanceWithProduct,
-  AnnotatedSpotBalanceWithProduct,
-  SpotProductMetadata,
-} from '@vertex-protocol/metadata';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 export interface SpreadBalanceItem {
   spotProductId: number;
   perpProductId: number;
-  spotMetadata: SpotProductMetadata;
   basisAmount: BigDecimal;
   healthIncreaseMetrics: InitialMaintMetrics;
 }
@@ -64,7 +62,6 @@ export function useSpreadBalances() {
         return {
           spotProductId: spotBalance.productId,
           perpProductId: perpBalance.productId,
-          spotMetadata: spotBalance.metadata,
           basisAmount: removeDecimals(basisAmount),
           healthIncreaseMetrics: {
             initial: removeDecimals(healthIncreaseMetrics.initial),

@@ -1,4 +1,4 @@
-import { ZeroAddress } from 'ethers';
+import { zeroAddress } from 'viem';
 
 /**
  * Returns an id for use with `IdentityIcon` that allows it to generate a unique
@@ -8,7 +8,7 @@ import { ZeroAddress } from 'ethers';
  * only be invoking this fn when we already have an `address`.
  */
 export function getSubaccountIdentityIconId(
-  address: string | undefined = ZeroAddress,
+  address: string | undefined = zeroAddress,
   subaccountName: string,
 ) {
   return `${address}${subaccountName}`;

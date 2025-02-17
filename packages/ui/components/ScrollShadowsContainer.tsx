@@ -1,11 +1,11 @@
-import { forwardRef, CSSProperties, useMemo } from 'react';
 import { mergeClassNames } from '@vertex-protocol/web-common';
+import { CSSProperties, useMemo } from 'react';
+import { mergeRefs } from 'react-merge-refs';
 import { UseScrollShadowsParams, useScrollShadows } from '../hooks';
 import {
   ConditionalAsChild,
   ConditionalAsChildProps,
 } from './ConditionalAsChild';
-import { mergeRefs } from 'react-merge-refs';
 
 interface Props
   extends UseScrollShadowsParams,
@@ -36,58 +36,51 @@ interface Props
  * overflows will not be visible when a shadow class is applied. For such cases the
  * nested element should be rendered in a `portal`.
  */
-export const ScrollShadowsContainer = forwardRef<HTMLElement, Props>(
-  function ScrollShadowsContainer(
-    {
-      children,
-      className,
-      orientation = 'vertical',
-      threshold,
-      isReversed,
-      shadowSize,
-      disableMask,
-      asChild,
-      ...rest
-    },
-    ref,
-  ) {
-    const { scrollShadowClassName, scrollContainerRef } = useScrollShadows({
-      orientation,
-      threshold,
-      isReversed,
-    });
+export function ScrollShadowsContainer({
+  className,
+  orientation = 'vertical',
+  threshold,
+  isReversed,
+  shadowSize,
+  disableMask,
+  asChild,
+  ref,
+  ...rest
+}: Props) {
+  const { scrollShadowClassName, scrollContainerRef } = useScrollShadows({
+    orientation,
+    threshold,
+    isReversed,
+  });
 
-    const overflowClassNames = {
-      vertical: 'overflow-y-auto overflow-x-hidden',
-      horizontal: 'overflow-x-auto overflow-y-hidden',
-    }[orientation];
+  const overflowClassNames = {
+    vertical: 'overflow-y-auto overflow-x-hidden',
+    horizontal: 'overflow-x-auto overflow-y-hidden',
+  }[orientation];
 
-    const style = useMemo(() => {
-      // Explicit check here so that the consumer can pass in `0` if needed.
-      // The default is set in the CSS so we just return `undefined` to use it.
-      if (shadowSize == null) {
-        return undefined;
-      }
+  const style = useMemo(() => {
+    // Explicit check here so that the consumer can pass in `0` if needed.
+    // The default is set in the CSS so we just return `undefined` to use it.
+    if (shadowSize == null) {
+      return undefined;
+    }
 
-      return { '--scroll-shadow-size': `${shadowSize}px` } as CSSProperties;
-    }, [shadowSize]);
+    return { '--scroll-shadow-size': `${shadowSize}px` } as CSSProperties;
+  }, [shadowSize]);
 
-    return (
-      <ConditionalAsChild
-        className={mergeClassNames(
-          'no-scrollbar',
-          overflowClassNames,
-          !disableMask && scrollShadowClassName,
-          className,
-        )}
-        style={style}
-        ref={mergeRefs([ref, scrollContainerRef])}
-        asChild={asChild}
-        fallback="div"
-        {...rest}
-      >
-        {children}
-      </ConditionalAsChild>
-    );
-  },
-);
+  return (
+    <ConditionalAsChild
+      className={mergeClassNames(
+        'no-scrollbar',
+        overflowClassNames,
+        !disableMask && scrollShadowClassName,
+        className,
+      )}
+      style={style}
+      ref={mergeRefs([ref, scrollContainerRef])}
+      asChild={asChild}
+      fallback="div"
+      {...rest}
+    />
+  );
+}

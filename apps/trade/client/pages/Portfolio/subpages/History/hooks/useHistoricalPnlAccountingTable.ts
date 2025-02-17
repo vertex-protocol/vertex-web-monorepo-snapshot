@@ -5,7 +5,7 @@ import {
 } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import {
   RealizedPnlEvent,
@@ -14,9 +14,10 @@ import {
 } from 'client/hooks/query/subaccount/useSubaccountPaginatedRealizedPnlEvents';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 
 export interface HistoricalPnlAccountingTableItem {
   productId: number;
@@ -28,6 +29,7 @@ export interface HistoricalPnlAccountingTableItem {
   entryPrice: BigDecimal;
   exitPrice: BigDecimal;
   marketPriceFormatSpecifier: NumberFormatSpecifier | string;
+  marginModeType: MarginModeType;
 }
 
 const PAGE_SIZE = 10;
@@ -85,6 +87,7 @@ export function useHistoricalPnlAccountingTable() {
             preEventBalanceAmount,
             entryPrice,
             exitPrice,
+            isolated,
             reduceOnlyBaseFilledAmount,
           }): HistoricalPnlAccountingTableItem | undefined => {
             const marketData = staticMarketsData.all[productId];
@@ -131,6 +134,7 @@ export function useHistoricalPnlAccountingTable() {
               entryPrice,
               exitPrice,
               productId,
+              marginModeType: isolated ? 'isolated' : 'cross',
             };
           },
         )

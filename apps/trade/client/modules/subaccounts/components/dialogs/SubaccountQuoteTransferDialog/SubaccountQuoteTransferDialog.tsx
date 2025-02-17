@@ -1,11 +1,11 @@
 import { ActionSummary } from 'client/components/ActionSummary';
+import { EnableBorrowsSwitch } from 'client/components/EnableBorrowsSwitch';
 import { ErrorPanel } from 'client/components/ErrorPanel';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { SubaccountQuoteTransferAmountInput } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferAmountInput';
-import { SubaccountQuoteTransferEnableBorrowsSwitch } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferEnableBorrowsSwitch';
 import { SubaccountQuoteTransferInputSummary } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferInputSummary';
 import { SubaccountQuoteTransferOverviewCards } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferOverviewCards';
 import { SubaccountQuoteTransferSelect } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferSelect';
@@ -30,6 +30,7 @@ export function SubaccountQuoteTransferDialog({
     validateAmount,
     validPercentageAmount,
     onFractionSelected,
+    onEnableBorrowsChange,
     enableBorrows,
     decimalAdjustedMaxWithdrawableWithFee,
     subaccounts,
@@ -50,7 +51,6 @@ export function SubaccountQuoteTransferDialog({
   const amountErrorTooltipContent =
     useSubaccountQuoteTransferAmountErrorTooltipContent({
       formError,
-      primaryQuoteTokenSymbol: primaryQuoteToken.symbol,
     });
 
   return (
@@ -58,7 +58,7 @@ export function SubaccountQuoteTransferDialog({
       <BaseAppDialog.Title onClose={hide}>Transfer Funds</BaseAppDialog.Title>
       <BaseAppDialog.Body asChild>
         <Form onSubmit={onSubmit}>
-          <div className="grid grid-cols-2">
+          <div className="grid grid-cols-2 text-left">
             <SubaccountQuoteTransferSelect
               id="senderSubaccountName"
               form={form}
@@ -82,9 +82,9 @@ export function SubaccountQuoteTransferDialog({
             <ErrorPanel>You cannot transfer to the same account.</ErrorPanel>
           )}
           <div className="flex flex-col gap-y-3.5">
-            <SubaccountQuoteTransferEnableBorrowsSwitch
+            <EnableBorrowsSwitch
               enableBorrows={enableBorrows}
-              form={form}
+              onEnableBorrowsChange={onEnableBorrowsChange}
             />
             <div className="flex flex-col gap-y-1.5">
               <SubaccountQuoteTransferAmountInput

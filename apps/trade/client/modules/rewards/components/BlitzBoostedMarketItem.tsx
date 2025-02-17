@@ -1,4 +1,4 @@
-import { SharedProductMetadata } from '@vertex-protocol/metadata';
+import { SharedProductMetadata } from '@vertex-protocol/react-client';
 import { LinkButton } from '@vertex-protocol/web-ui';
 import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
 import { get } from 'lodash';
@@ -25,7 +25,7 @@ export function BlitzBoostedMarketItem({
       <Image
         src={metadata.icon.asset}
         alt={metadata.symbol}
-        className="size-6"
+        className="h-6 w-auto"
       />
       <LinkButton
         as={Link}

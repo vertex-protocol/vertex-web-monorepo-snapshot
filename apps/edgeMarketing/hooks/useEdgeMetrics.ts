@@ -10,11 +10,13 @@ import {
   QueryDisabledError,
   useVertexClientContext,
 } from '@vertex-protocol/react-client';
+import { last } from 'lodash';
+import { blast } from 'wagmi/chains';
 
 export function useEdgeMetrics() {
-  const { vertexClientsByChainEnv } = useVertexClientContext();
+  const { primaryChainVertexClient } = useVertexClientContext();
 
-  const disabled = !vertexClientsByChainEnv;
+  const disabled = !primaryChainVertexClient;
 
   return useQuery({
     queryKey: ['edgeMetrics'],
@@ -23,57 +25,29 @@ export function useEdgeMetrics() {
         throw new QueryDisabledError();
       }
 
-      const {
-        blast: blastClient,
-        base: baseClient,
-        arbitrum: arbitrumClient,
-        mantle: mantleClient,
-        sei: seiClient,
-      } = vertexClientsByChainEnv;
-
       const snapshotParams = {
         granularity: TimeInSeconds.DAY,
         limit: 1,
       };
 
-      // Blast chain snapshot
-      const blastSnapshot =
-        blastClient.client.market.getMarketSnapshots(snapshotParams);
-      //Vertex chains snapshots
-      const baseSnapshot =
-        baseClient.client.market.getMarketSnapshots(snapshotParams);
-      const seiSnapshot =
-        seiClient.client.market.getMarketSnapshots(snapshotParams);
-      const mantleSnapshot =
-        mantleClient.client.market.getMarketSnapshots(snapshotParams);
-      const arbitrumSnapshot =
-        arbitrumClient.client.market.getMarketSnapshots(snapshotParams);
+      // All Edge chains snapshots (incl Blast)
+      const edgeSnapshots =
+        await primaryChainVertexClient.client.market.getEdgeMarketSnapshots(
+          snapshotParams,
+        );
 
-      let totalVertexVolume = BigDecimals.ZERO;
       let totalBlitzVolume = BigDecimals.ZERO;
+      let totalVertexVolume = BigDecimals.ZERO;
 
-      const [blastResult, ...vertexResults] = await Promise.allSettled([
-        blastSnapshot,
-        baseSnapshot,
-        seiSnapshot,
-        mantleSnapshot,
-        arbitrumSnapshot,
-      ]);
+      Object.entries(edgeSnapshots).forEach(([chainId, snapshots]) => {
+        const latestSnapshot = last(snapshots);
+        const totalCumulativeVolume =
+          getDecimalAdjustedSnapshotCumulativeVolume(latestSnapshot);
 
-      if (blastResult.status === 'fulfilled') {
-        const [blastSnapshot] = blastResult.value;
-
-        totalBlitzVolume =
-          getDecimalAdjustedSnapshotCumulativeVolume(blastSnapshot);
-      }
-
-      vertexResults.forEach((result) => {
-        if (result.status === 'fulfilled') {
-          const [vertexSnapshot] = result.value;
-
-          totalVertexVolume = totalVertexVolume.plus(
-            getDecimalAdjustedSnapshotCumulativeVolume(vertexSnapshot),
-          );
+        if (chainId === blast.id.toString()) {
+          totalBlitzVolume = totalCumulativeVolume;
+        } else {
+          totalVertexVolume = totalVertexVolume.plus(totalCumulativeVolume);
         }
       });
 

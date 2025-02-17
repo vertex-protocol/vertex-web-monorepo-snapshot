@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   createQueryKey,
   QueryDisabledError,
-  useIsChainType,
+  useIsChainEnvType,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -16,7 +16,7 @@ const NOT_CONNECTED_REWARDS_ADDRESS =
   '0xfffffffffffffffffffffffffffffffffffffffe';
 
 export function useSubaccountTokenRewards() {
-  const { isArb } = useIsChainType();
+  const { isArb } = useIsChainEnvType();
   const { currentSubaccount } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 

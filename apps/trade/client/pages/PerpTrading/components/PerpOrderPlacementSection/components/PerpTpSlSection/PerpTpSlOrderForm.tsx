@@ -61,7 +61,7 @@ export function PerpTpSlOrderForm({ perpTpSlOrderForm }: Props) {
         <TradeInput
           {...form.register('gainOrLossPercentage')}
           label={isTakeProfit ? 'Gain' : 'Loss'}
-          symbol="%"
+          endElement="%"
           type="number"
           min={0}
           error={triggerPriceErrorTooltipContent}

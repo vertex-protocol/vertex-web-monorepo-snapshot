@@ -3,16 +3,17 @@ import {
   GetIndexerInterestFundingPaymentsResponse,
   IndexerProductPayment,
 } from '@vertex-protocol/client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedPaymentEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedPaymentEvents';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 
 export interface FundingPaymentsTableItem {
   timestampMillis: number;
@@ -21,6 +22,7 @@ export interface FundingPaymentsTableItem {
   notionalValueUsd: BigDecimal;
   fundingRateFrac: BigDecimal;
   fundingPaymentQuote: BigDecimal;
+  marginModeType: MarginModeType;
 }
 
 interface Params {
@@ -123,6 +125,7 @@ export function useFundingPaymentsTable({
               .times(primaryQuotePriceUsd),
             fundingRateFrac: hourlyFundingRateFrac,
             fundingPaymentQuote: removeDecimals(item.paymentAmount),
+            marginModeType: item.isolated ? 'isolated' : 'cross',
           };
         },
       )

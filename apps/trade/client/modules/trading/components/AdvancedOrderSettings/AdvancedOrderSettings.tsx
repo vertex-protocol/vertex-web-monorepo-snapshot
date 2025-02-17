@@ -1,7 +1,6 @@
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { Button, Checkbox } from '@vertex-protocol/web-ui';
+import { Button, Checkbox, UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import { CheckboxLabelWithTooltip } from 'client/components/CheckboxLabelWithTooltip';
-import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { useAdvancedOrderSettings } from 'client/modules/trading/components/AdvancedOrderSettings/hooks/useAdvancedOrderSettings';
 import { TimeInForceTypeSelect } from 'client/modules/trading/components/AdvancedOrderSettings/TimeInForceTypeSelect';
@@ -70,7 +69,7 @@ export function AdvancedOrderSettings({
           max={365}
           id={timeInForceRegister.name}
           label="Time"
-          symbol="Days"
+          endElement="Days"
           error={timeInForceInDaysErrorTooltipContent}
         />
       )}

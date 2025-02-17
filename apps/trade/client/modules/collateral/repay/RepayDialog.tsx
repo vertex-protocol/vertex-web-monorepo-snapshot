@@ -1,5 +1,5 @@
 import * as Tabs from '@radix-ui/react-tabs';
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
   Icons,
   SecondaryButton,
@@ -11,6 +11,7 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { RepayConvertTab } from 'client/modules/collateral/repay/components/RepayConvertTab';
 import { RepayDepositTab } from 'client/modules/collateral/repay/components/RepayDepositTab';
 import { useHasRepayableBalances } from 'client/modules/collateral/repay/hooks/useHasRepayableBalances';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { useMemo } from 'react';
 
 /**
@@ -43,6 +44,7 @@ function RepayTabs({
   className,
   initialProductId,
 }: WithClassnames<{ initialProductId: number | undefined }>) {
+  const { isSpotTradingEnabled } = useEnabledFeatures();
   const { setSelectedUntypedTabId, selectedTabId, tabs } = useTabs(
     useMemo(
       () => [
@@ -53,9 +55,10 @@ function RepayTabs({
         {
           id: 'convert',
           content: <RepayConvertTab initialProductId={initialProductId} />,
+          disabled: !isSpotTradingEnabled,
         },
       ],
-      [initialProductId],
+      [initialProductId, isSpotTradingEnabled],
     ),
   );
 
@@ -67,7 +70,7 @@ function RepayTabs({
     >
       <Tabs.List asChild>
         <SegmentedControl.Container>
-          {tabs.map(({ id }) => {
+          {tabs.map(({ id, disabled }) => {
             const isSelected = id === selectedTabId;
             return (
               <Tabs.Trigger value={id} key={id} asChild>
@@ -75,6 +78,7 @@ function RepayTabs({
                   as="div"
                   active={isSelected}
                   className="flex-1 capitalize"
+                  disabled={disabled}
                 >
                   {id}
                 </SegmentedControl.Button>

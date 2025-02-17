@@ -1,24 +1,22 @@
-import { useTextSearch } from 'client/hooks/ui/useTextSearch';
-import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/form/types';
-import { BridgeToken } from 'client/modules/collateral/bridge/types';
-import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
-import { BridgeComboBox } from 'client/modules/collateral/bridge/components/BridgeSelect/BridgeComboBox';
-import { ComboBox } from 'client/components/ComboBox/ComboBox';
-import {
-  ComboBoxComponentOption,
-  ComboBoxOption,
-} from 'client/components/ComboBox/hooks/types';
+import { ComboBoxComponentOption } from 'client/components/ComboBox/hooks/types';
 import { useComboBox } from 'client/components/ComboBox/hooks/useComboBox';
+import { useTextSearch } from 'client/hooks/ui/useTextSearch';
+import { BridgeComboBox } from 'client/modules/collateral/bridge/components/BridgeSelect/BridgeComboBox';
+import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/form/types';
+import { BridgeTokenSelectValue } from 'client/modules/collateral/bridge/types';
+import { useCallback, useMemo } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 
 interface Props {
-  selectedToken: BridgeToken | undefined;
-  allTokens: BridgeToken[];
+  selectedToken: BridgeTokenSelectValue | undefined;
+  allTokens: BridgeTokenSelectValue[];
   form: UseFormReturn<BridgeFormValues>;
   disabled?: boolean;
 }
 
-function getSearchString(option: ComboBoxComponentOption<BridgeToken>) {
+function getSearchString(
+  option: ComboBoxComponentOption<BridgeTokenSelectValue>,
+) {
   return `${option.original.symbol} ${option.original.name}`;
 }
 
@@ -28,32 +26,35 @@ export function SourceTokenSelect({
   disabled,
   form,
 }: Props) {
-  const options = useMemo((): ComboBoxOption<string, BridgeToken>[] => {
+  const options = useMemo(() => {
     return allTokens.map((token) => {
       return {
-        // ID's must be unique, but addresses are shared between different source chains for native tokens (see nativeTokenConstant)
-        // so we need to prefix with the chain ID
-        id: `${token.chainId}_${token.address}`,
         label: token.symbol,
         value: token,
       };
     });
   }, [allTokens]);
 
-  const {
-    query,
-    setQuery,
-    open,
-    onOpenChange,
-    selectOptions,
-    value,
-    onValueChange,
-  } = useComboBox({
-    selectedValue: selectedToken,
-    onSelectedValueChange: (newToken) => {
+  const onSelectedValueChange = useCallback(
+    (newToken: BridgeTokenSelectValue) => {
       form.setValue('sourceTokenAddress', newToken.address);
       form.resetField('amount');
     },
+    [form],
+  );
+
+  const {
+    selectedOption,
+    query,
+    setQuery,
+    open,
+    value,
+    onOpenChange,
+    selectOptions,
+    onValueChange,
+  } = useComboBox({
+    selectedValue: selectedToken,
+    onSelectedValueChange,
     options,
   });
 
@@ -64,17 +65,19 @@ export function SourceTokenSelect({
   });
 
   return (
-    <ComboBox.Root open={open} onOpenChange={onOpenChange}>
+    <BridgeComboBox.Root open={open} onOpenChange={onOpenChange}>
       <BridgeComboBox.Trigger
         title="Asset:"
-        label={selectedToken?.symbol}
-        labelImgSrc={selectedToken?.externalIconUrl}
+        label={selectedOption?.value.symbol}
+        labelImgSrc={selectedOption?.value.externalIconUrl}
         disabled={disabled}
         open={open}
       />
       <BridgeComboBox.Options
         query={query}
+        value={value}
         setQuery={setQuery}
+        onValueChange={onValueChange}
         align="end"
         searchBarPlaceholder="Search Tokens"
       >
@@ -83,10 +86,9 @@ export function SourceTokenSelect({
             option={option}
             key={option.original.address}
             onValueChange={onValueChange}
-            isSelected={option.value === value}
           />
         ))}
       </BridgeComboBox.Options>
-    </ComboBox.Root>
+    </BridgeComboBox.Root>
   );
 }

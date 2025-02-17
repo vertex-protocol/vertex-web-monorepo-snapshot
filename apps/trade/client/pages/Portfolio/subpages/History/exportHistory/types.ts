@@ -1,3 +1,4 @@
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { HistoricalLiquidatedBalanceType } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 import { CsvDataItem } from 'client/utils/downloadCsv';
 
@@ -21,12 +22,18 @@ export interface ExportHistoryCollateralItem extends CsvDataItem {
   // Symbol
   asset: string;
   balanceChange: string;
+  // Defined for subaccount transfers
+  fromSubaccountName?: string;
+  fromSubaccountUsername?: string;
+  toSubaccountName?: string;
+  toSubaccountUsername?: string;
 }
 
 export interface ExportHistoryTradeItem extends CsvDataItem {
   time: string;
   marketName: string;
   orderType: string;
+  marginModeType: MarginModeType;
   avgPrice: string;
   amount: string;
   total: string;
@@ -36,6 +43,7 @@ export interface ExportHistoryTradeItem extends CsvDataItem {
 export interface ExportHistoryRealizedPnlItem extends CsvDataItem {
   time: string;
   marketName: string;
+  marginModeType: MarginModeType;
   // Position amount before the realized pnl event
   preEventBalanceAmount: string;
   entryPrice: string;

@@ -187,15 +187,15 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
       return;
     }
 
-    // TV discourages using localstorage because of size requirements
-    // To prevent excessive storage, we only save up to 5 charts
-    const entriesToSave = Array.from(this.chartsById.entries()).slice(0, 5);
-    const jsonChartsData = JSON.stringify(Object.fromEntries(entriesToSave));
-
     try {
+      // TV discourages using localstorage because of size requirements
+      // To prevent excessive storage, we only save up to 5 charts
+      const entriesToSave = Array.from(this.chartsById.entries()).slice(0, 5);
+      // This is in the try/catch in case there are cyclical structures in entriesToSave
+      const jsonChartsData = JSON.stringify(Object.fromEntries(entriesToSave));
       localStorage.setItem(LOCALSTORAGE_KEY, jsonChartsData);
     } catch (err) {
-      console.warn(
+      console.error(
         '[SaveLoadAdapter] Failed to save charts to localstorage',
         err,
       );

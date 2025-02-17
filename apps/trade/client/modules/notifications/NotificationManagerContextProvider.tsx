@@ -1,27 +1,29 @@
 import { WithChildren } from '@vertex-protocol/web-common';
 import { useSizeClass } from 'client/hooks/ui/breakpoints';
-import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
+import { useGetConfirmedTx } from 'client/hooks/util/useGetConfirmedTx';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
-import { NewFeatureNotificationsEmitter } from 'client/modules/notifications/emitters/NewFeatureNotificationsEmitter';
-import { ReferralNotificationsEmitter } from 'client/modules/notifications/emitters/ReferralNotificationsEmitter';
+import { FeatureNotificationsEmitter } from 'client/modules/notifications/emitters/FeatureNotificationsEmitter';
+import { FuulReferralNotificationsEmitter } from 'client/modules/notifications/emitters/FuulReferralNotificationsEmitter';
+import { SmartContractWalletHelperEventEmitter } from 'client/modules/notifications/emitters/SmartContractWalletHelperEventEmitter';
 import { SubaccountNotificationsEventEmitter } from 'client/modules/notifications/emitters/SubaccountNotificationsEventEmitter';
-import { handleAcceptReferralNotificationDispatch } from 'client/modules/notifications/handlers/handleAcceptReferralNotificationDispatch';
+import { handleAcceptFuulReferralNotificationDispatch } from 'client/modules/notifications/handlers/handleAcceptFuulReferralNotificationDispatch';
 import { handleActionErrorHandlerNotificationDispatch } from 'client/modules/notifications/handlers/handleActionErrorHandlerNotificationDispatch';
 import { handleBridgeDepositNotificationDispatch } from 'client/modules/notifications/handlers/handleBridgeDepositNotificationDispatch';
 import { handleCancelMultiOrdersNotificationDispatch } from 'client/modules/notifications/handlers/handleCancelMultiOrdersNotificationDispatch';
 import { handleCancelOrderNotificationDispatch } from 'client/modules/notifications/handlers/handleCancelOrderNotificationDispatch';
 import { handleCloseMultiPositionsNotificationDispatch } from 'client/modules/notifications/handlers/handleCloseMultiPositionsNotificationDispatch';
 import { handleClosePositionNotificationDispatch } from 'client/modules/notifications/handlers/handleClosePositionNotificationDispatch';
+import { handleFeatureNotificationDispatch } from 'client/modules/notifications/handlers/handleFeatureNotificationDispatch';
 import { handleLiquidationNotificationDispatch } from 'client/modules/notifications/handlers/handleLiquidationNotificationDispatch';
 import { handleLiquidationRiskNotificationDispatch } from 'client/modules/notifications/handlers/handleLiquidationRiskNotificationDispatch';
 import { handleMarginUsageWarningNotificationDispatch } from 'client/modules/notifications/handlers/handleMarginUsageWarningNotificationDispatch';
-import { handleNewFeatureNotificationDispatch } from 'client/modules/notifications/handlers/handleNewFeatureNotificationDispatch';
 import { handleOrderFillNotificationDispatch } from 'client/modules/notifications/handlers/handleOrderFillNotificationDispatch';
 import { handlePlaceOrderNotificationDispatch } from 'client/modules/notifications/handlers/handlePlaceOrderNotificationDispatch';
+import { handleSmartContractWalletHelperNotificationDispatch } from 'client/modules/notifications/handlers/handleSmartContractWalletHelperNotificationDispatch';
 import { useLimitVisibleNotifications } from 'client/modules/notifications/hooks/useLimitVisibleNotifications';
 import {
-  NotificationManagerContextData,
   NotificationManagerContext,
+  NotificationManagerContextData,
 } from 'client/modules/notifications/NotificationManagerContext';
 import {
   DispatchNotificationParams,
@@ -42,17 +44,17 @@ export function NotificationManagerContextProvider({ children }: WithChildren) {
     useEnableTradingNotifications().enableTradingNotifications,
   );
 
-  const getConfirmedTxPromise = useGetConfirmedTxPromise();
+  const getConfirmedTx = useGetConfirmedTx();
 
   const { value: sizeClass } = useSizeClass();
 
   const dispatchContext = useMemo((): NotificationDispatchContext => {
     return {
       isSingleSignature: isSingleSignatureSession,
-      getConfirmedTxPromise,
+      getConfirmedTx,
       sizeClass,
     };
-  }, [getConfirmedTxPromise, isSingleSignatureSession, sizeClass]);
+  }, [getConfirmedTx, isSingleSignatureSession, sizeClass]);
 
   const dispatchNotification = useCallback(
     (params: DispatchNotificationParams) => {
@@ -108,14 +110,17 @@ export function NotificationManagerContextProvider({ children }: WithChildren) {
         case 'margin_usage_warning':
           handleMarginUsageWarningNotificationDispatch();
           break;
+        case 'smart_contract_wallet_helper':
+          handleSmartContractWalletHelperNotificationDispatch();
+          break;
         case 'liquidation':
           handleLiquidationNotificationDispatch(params.data);
           break;
         case 'new_feature':
-          handleNewFeatureNotificationDispatch(params.data);
+          handleFeatureNotificationDispatch(params.data);
           break;
-        case 'accept_referral':
-          handleAcceptReferralNotificationDispatch(params.data);
+        case 'accept_fuul_referral':
+          handleAcceptFuulReferralNotificationDispatch(params.data);
           break;
       }
     },
@@ -129,12 +134,13 @@ export function NotificationManagerContextProvider({ children }: WithChildren) {
   }, [dispatchNotification]);
 
   return (
-    <NotificationManagerContext.Provider value={data}>
+    <NotificationManagerContext value={data}>
       <Toaster position="bottom-right" gutter={8} />
       <SubaccountNotificationsEventEmitter />
-      <NewFeatureNotificationsEmitter />
-      <ReferralNotificationsEmitter />
+      <FeatureNotificationsEmitter />
+      <SmartContractWalletHelperEventEmitter />
+      <FuulReferralNotificationsEmitter />
       {children}
-    </NotificationManagerContext.Provider>
+    </NotificationManagerContext>
   );
 }

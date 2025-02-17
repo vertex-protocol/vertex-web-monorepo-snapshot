@@ -10,13 +10,11 @@ import {
 } from 'client/hooks/execute/cancelOrder/types';
 import { useExecuteCancelOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrdersWithNotification';
 import { useExecuteModifyOrder } from 'client/hooks/execute/modifyOrder/useExecuteModifyOrder';
-import {
-  StaticMarketData,
-  useAllMarketsStaticData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+import { StaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useSubaccountOpenEngineOrders } from 'client/hooks/query/subaccount/useSubaccountOpenEngineOrders';
 import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useCanUserExecute } from 'client/hooks/subaccount/useCanUserExecute';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DialogParams } from 'client/modules/app/dialogs/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
@@ -27,6 +25,10 @@ import { useEnableTradingOrderLines } from 'client/modules/trading/hooks/useEnab
 import { OrderType } from 'client/modules/trading/types';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
 import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
+import {
+  getIsIsoEngineOrder,
+  getIsIsoTriggerOrder,
+} from 'client/modules/trading/utils/isoOrderChecks';
 import { COLORS } from 'common/theme/colors';
 import { FONTS } from 'common/theme/fonts';
 import { debounce, random } from 'lodash';
@@ -49,6 +51,7 @@ interface OrderInfo {
   productId: number;
   digest: string;
   orderType: OrderType;
+  isIso: boolean;
 }
 
 type OrderLineByDigest = Map<string, IOrderLineAdapter>;
@@ -69,8 +72,8 @@ export function useDrawChartOrderLines({ tvWidget, loadedSymbolInfo }: Params) {
 
   const { enableTradingOrderLines } = useEnableTradingOrderLines();
 
-  const userActionState = useUserActionState();
-  const disableTradingOrderLineActions = userActionState !== 'allow_all';
+  const canUserExecute = useCanUserExecute();
+  const disableTradingOrderLineActions = !canUserExecute;
 
   const { data: openEngineOrders } = useSubaccountOpenEngineOrders();
   const { data: openTriggerOrders } = useSubaccountOpenTriggerOrders();
@@ -116,16 +119,19 @@ export function useDrawChartOrderLines({ tvWidget, loadedSymbolInfo }: Params) {
     }
 
     const mappedEngineOrders: OrderInfo[] =
-      openEngineOrders?.[productId]?.map(
-        ({ price, totalAmount, productId, digest }) => ({
+      openEngineOrders?.[productId]?.map((engineOrder) => {
+        const { price, totalAmount, productId, digest } = engineOrder;
+
+        return {
           isTrigger: false,
           price,
           totalAmount,
           productId,
           digest,
           orderType: 'limit',
-        }),
-      ) ?? [];
+          isIso: getIsIsoEngineOrder(engineOrder),
+        };
+      }) ?? [];
 
     const mappedTriggerOrders: OrderInfo[] =
       openTriggerOrders?.[productId]?.map((openTriggerOrder) => {
@@ -138,6 +144,7 @@ export function useDrawChartOrderLines({ tvWidget, loadedSymbolInfo }: Params) {
           productId: order.productId,
           digest: order.digest,
           orderType: getTriggerOrderType(openTriggerOrder),
+          isIso: getIsIsoTriggerOrder(openTriggerOrder),
         };
       }) ?? [];
 
@@ -254,7 +261,7 @@ function createOrderLine(
   order: OrderInfo,
   market: StaticMarketData,
 ): IOrderLineAdapter {
-  const { orderType } = order;
+  const { orderType, isIso } = order;
   const price = order.price.toNumber();
   const amount = order.totalAmount;
 
@@ -267,7 +274,10 @@ function createOrderLine(
         formatSpecifier: getMarketSizeFormatSpecifier(market.sizeIncrement),
       });
 
-  const contentText = getOrderTypeLabel(orderType);
+  const contentText = getOrderTypeLabel(
+    orderType,
+    isIso ? 'isolated' : 'cross',
+  );
 
   const sideColor = amount.gt(0)
     ? COLORS.positive.DEFAULT
@@ -388,7 +398,7 @@ function attachOrderLineActions({
         {
           isTrigger,
           orderType,
-          totalAmount: decimalAdjustedAmount,
+          decimalAdjustedTotalAmount: decimalAdjustedAmount,
           productId,
           digest,
         },

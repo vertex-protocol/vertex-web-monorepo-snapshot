@@ -1,4 +1,4 @@
-import { useEVMContext } from '@vertex-protocol/react-client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { PORTFOLIO_SUBROUTES, ROUTES } from 'client/modules/app/consts/routes';
 import { PortfolioNavItem } from 'client/pages/Portfolio/components/navigation/types';
@@ -8,7 +8,7 @@ import { useCallback, useMemo } from 'react';
 export function usePortfolioNavItems() {
   const {
     primaryChainMetadata: { isTestnet },
-  } = useEVMContext();
+  } = useVertexMetadataContext();
   const pathname = usePathname();
   const { numOpenOrders, numPerpPositions, numLpPositions } =
     useSubaccountCountIndicators();

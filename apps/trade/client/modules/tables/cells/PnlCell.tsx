@@ -6,7 +6,7 @@ import {
 } from 'client/components/DataTable/cells/TableCell';
 import { formatNumber } from '@vertex-protocol/react-client';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface Props extends TableCellProps {
   value: BigDecimal | undefined;

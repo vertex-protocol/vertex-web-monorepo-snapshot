@@ -3,21 +3,20 @@
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
+import { DataTable } from 'client/components/DataTable/DataTable';
 import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { CalculatorIconHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/CalculatorIconHeaderCell';
 import { MarginManagerActionsCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginManagerActionsCell';
 import { MarginWeightCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginWeightCell';
 import { MarginWeightHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginWeightHeaderCell';
-import { SpreadCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/SpreadCell';
 import {
   MarginManagerSpreadTableItem,
   useMarginManagerSpreadsTable,
@@ -32,17 +31,17 @@ export function MarginManagerSpreadsTable({ className }: WithClassnames) {
   const columns: ColumnDef<MarginManagerSpreadTableItem, any>[] =
     useMemo(() => {
       return [
-        columnHelper.accessor('spotMetadata', {
+        columnHelper.accessor('productMetadata', {
           header: ({ header }) => (
             <TitleHeaderCell header={header}>Spreads</TitleHeaderCell>
           ),
           cell: ({ getValue }) => {
             const spotMetadata =
-              getValue<MarginManagerSpreadTableItem['spotMetadata']>();
+              getValue<MarginManagerSpreadTableItem['productMetadata']>();
             return (
               <MarketProductInfoCell
-                symbol={spotMetadata.token.symbol}
-                iconSrc={spotMetadata.token.icon.asset}
+                symbol={spotMetadata.symbol}
+                iconSrc={spotMetadata.icon.asset}
               />
             );
           },
@@ -62,7 +61,7 @@ export function MarginManagerSpreadsTable({ className }: WithClassnames) {
             </HeaderCell>
           ),
           cell: (context) => {
-            const symbol = context.row.original.spotMetadata.token.symbol;
+            const symbol = context.row.original.productMetadata.symbol;
 
             return (
               <AmountWithSymbolCell
@@ -87,9 +86,15 @@ export function MarginManagerSpreadsTable({ className }: WithClassnames) {
             </HeaderCell>
           ),
           cell: (context) => {
-            const { symbol } = context.row.original.spotMetadata.token;
+            const { symbol } = context.row.original.productMetadata;
 
-            return <SpreadCell amount={context.getValue()} symbol={symbol} />;
+            return (
+              <AmountWithSymbolCell
+                amount={context.getValue()}
+                symbol={symbol}
+                formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              />
+            );
           },
           sortingFn: bigDecimalSortFn,
           meta: {
@@ -106,18 +111,28 @@ export function MarginManagerSpreadsTable({ className }: WithClassnames) {
             </HeaderCell>
           ),
           cell: (context) => {
-            const { symbol } = context.row.original.spotMetadata.token;
+            const { symbol } = context.row.original.productMetadata;
 
-            return <SpreadCell amount={context.getValue()} symbol={symbol} />;
+            return (
+              <AmountWithSymbolCell
+                amount={context.getValue()}
+                symbol={symbol}
+                formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              />
+            );
           },
           sortingFn: bigDecimalSortFn,
           meta: {
             cellContainerClassName: 'w-32 grow',
           },
         }),
-        columnHelper.accessor('initialHealth', {
+        columnHelper.accessor('initialHealthBenefit', {
           header: ({ header }) => (
-            <MarginWeightHeaderCell isInitial header={header} />
+            <MarginWeightHeaderCell
+              isInitial
+              header={header}
+              marginLabel="Benefit"
+            />
           ),
           cell: ({ getValue }) => {
             return <MarginWeightCell marginWeightMetrics={getValue()} />;
@@ -127,9 +142,13 @@ export function MarginManagerSpreadsTable({ className }: WithClassnames) {
             cellContainerClassName: 'w-44',
           },
         }),
-        columnHelper.accessor('maintenanceHealth', {
+        columnHelper.accessor('maintenanceHealthBenefit', {
           header: ({ header }) => (
-            <MarginWeightHeaderCell isInitial={false} header={header} />
+            <MarginWeightHeaderCell
+              isInitial={false}
+              header={header}
+              marginLabel="Benefit"
+            />
           ),
           cell: ({ getValue }) => {
             return <MarginWeightCell marginWeightMetrics={getValue()} />;

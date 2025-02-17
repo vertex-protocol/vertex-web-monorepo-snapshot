@@ -6,15 +6,15 @@ import {
 } from '@vertex-protocol/utils';
 import { EstimatedBridgeRoute } from 'client/modules/collateral/bridge/hooks/query/useEstimatedBridgeRoute';
 import {
-  BridgeChain,
-  DestinationBridgeToken,
+  BridgeChainSelectValue,
+  DestinationBridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
 import { first } from 'lodash';
 import { useMemo } from 'react';
 
 interface Params {
-  selectedSourceChain: BridgeChain | undefined;
-  selectedDestinationToken: DestinationBridgeToken | undefined;
+  selectedSourceChain: BridgeChainSelectValue | undefined;
+  selectedDestinationToken: DestinationBridgeTokenSelectValue | undefined;
   estimatedBridgeRoute: EstimatedBridgeRoute | undefined;
 }
 

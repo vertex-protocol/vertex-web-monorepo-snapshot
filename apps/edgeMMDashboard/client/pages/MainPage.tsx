@@ -1,6 +1,6 @@
 'use client';
 
-import { useIsChainType } from '@vertex-protocol/react-client';
+import { useIsChainEnvType } from '@vertex-protocol/react-client';
 import { LinkButton } from '@vertex-protocol/web-ui';
 import { MakerStatisticsCharts } from 'client/components/MakerStatisticsCharts/MakerStatisticsCharts';
 import { MakerMetricsCards } from 'client/components/MakerMetricsCards';
@@ -32,7 +32,7 @@ export function MainPage() {
     setPrimaryChainEnv,
   } = useMakerStatisticsSelectors();
 
-  const { isBlast } = useIsChainType();
+  const { isBlast } = useIsChainEnvType();
 
   return (
     <>

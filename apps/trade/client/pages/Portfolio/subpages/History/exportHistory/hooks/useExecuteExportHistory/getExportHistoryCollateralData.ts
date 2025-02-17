@@ -1,7 +1,10 @@
 import { GetIndexerSubaccountCollateralEventsParams } from '@vertex-protocol/client';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { CollateralEventType } from '@vertex-protocol/indexer-client/dist/types/collateralEventType';
-import { EXPORT_HISTORY_QUERY_PAGE_SIZE } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
+import {
+  EXPORT_HISTORY_QUERY_DELAY_MILLIS,
+  EXPORT_HISTORY_QUERY_PAGE_SIZE,
+} from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
 import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
@@ -9,6 +12,7 @@ import {
   GetExportHistoryDataParams,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 import { getHistoricalCollateralEventsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalCollateralEventsTable';
+import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
 
 export async function getExportHistoryCollateralData(
@@ -20,6 +24,7 @@ export async function getExportHistoryCollateralData(
     vertexClient,
     allMarketsStaticData,
     primaryQuotePriceUsd,
+    getSubaccountProfile,
   } = context;
   const items: ExportHistoryCollateralItem[] = [];
 
@@ -56,19 +61,21 @@ export async function getExportHistoryCollateralData(
 
     for (const event of collateralEventsResponse.events) {
       const productId = event.snapshot.market.productId;
-      const staticMarketData =
+      const staticSpotMarketData =
         productId === QUOTE_PRODUCT_ID
           ? allMarketsStaticData.primaryQuote
           : allMarketsStaticData.spot[productId];
 
-      if (!staticMarketData) {
+      if (!staticSpotMarketData) {
         continue;
       }
 
       const tableItem = getHistoricalCollateralEventsTableItem({
-        staticMarketData,
         event,
+        staticSpotMarketData,
+        allMarketsStaticData,
         primaryQuotePriceUsd,
+        getSubaccountProfile,
         // These are not needed for the export data
         allProductsWithdrawPoolLiquidityData: undefined,
         areWithdrawalsProcessingData: undefined,
@@ -81,8 +88,9 @@ export async function getExportHistoryCollateralData(
 
       items.push({
         time: formatExportHistoryTimestamp(tableItem.timestampMillis),
-        asset: staticMarketData.metadata.token.symbol,
+        asset: staticSpotMarketData.metadata.token.symbol,
         balanceChange: tableItem.amount.toString(),
+        ...tableItem.transferEventData,
       });
     }
 
@@ -92,6 +100,9 @@ export async function getExportHistoryCollateralData(
     if (!collateralEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    // Reduce chance of rate limiting.
+    await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);
   }
 
   return items;

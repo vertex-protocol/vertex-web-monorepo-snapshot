@@ -1,4 +1,3 @@
-import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { LINKS } from 'common/brandMetadata/links/links';
 import { useMemo } from 'react';
 
@@ -9,20 +8,16 @@ interface MoreLink {
   external: boolean;
 }
 
-const STATS_LINK = {
-  label: 'Stats',
-  description: 'Trading & market statistics',
-  href: LINKS.stats,
-  external: true,
-};
-
 // Shared between mobile and desktop more links. Mobile is a Collapsible whereas Desktop is a Popover component.
 export function useMoreLinks(): MoreLink[] {
-  const { isStatsLinkEnabled } = useEnabledFeatures();
-
   return useMemo(
     () => [
-      ...(isStatsLinkEnabled ? [STATS_LINK] : []),
+      {
+        label: 'Stats',
+        description: 'Trading & market statistics',
+        href: LINKS.stats,
+        external: true,
+      },
       {
         label: 'Docs',
         description: 'Get started building',
@@ -66,6 +61,6 @@ export function useMoreLinks(): MoreLink[] {
         external: true,
       },
     ],
-    [isStatsLinkEnabled],
+    [],
   );
 }

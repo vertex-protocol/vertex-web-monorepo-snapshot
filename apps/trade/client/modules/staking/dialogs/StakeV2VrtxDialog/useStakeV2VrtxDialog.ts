@@ -1,5 +1,7 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
+import {
+  usePrimaryChainVertexClient,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import {
   percentageValidator,
@@ -15,15 +17,14 @@ import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useL
 import { useOnFractionSelectedHandler } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { STAKING_BONUS_FRACTION } from 'client/modules/staking/dialogs/StakeV2VrtxDialog/consts';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
 import { OnChainActionButtonStateWithApproval } from 'client/types/OnChainActionButtonStateWithApproval';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { MaxUint256 } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { maxUint256 } from 'viem';
 
 export type StakeVrtxFormErrorType = 'invalid_input' | 'max_exceeded';
 
@@ -96,14 +97,9 @@ export function useStakeV2VrtxDialog() {
   );
 
   const percentageAmountInput = useStakeV2VrtxForm.watch('percentageAmount');
-
   const validPercentageAmount = useMemo(() => {
     return safeParseForData(percentageValidator, percentageAmountInput);
   }, [percentageAmountInput]);
-
-  const migrationBonusPeriodAmount = validAmount?.multipliedBy(
-    STAKING_BONUS_FRACTION,
-  );
 
   const estimatedStakeValueUsd = useMemo(() => {
     if (!validAmount || !vrtxSpotMarket) {
@@ -164,7 +160,7 @@ export function useStakeV2VrtxDialog() {
   const { isLoading: isStakeTxLoading, isSuccess: isStakeTxSuccess } =
     useOnChainMutationStatus({
       mutationStatus: executeStakeV2Vrtx.status,
-      txResponse: executeStakeV2Vrtx.data,
+      txHash: executeStakeV2Vrtx.data,
     });
 
   useRunWithDelayOnCondition({
@@ -190,7 +186,7 @@ export function useStakeV2VrtxDialog() {
       ).toFixed();
 
       if (requiresApproval) {
-        approve(MaxUint256);
+        approve(maxUint256);
         return;
       } else {
         const serverExecutionResult = stakeV2VrtxMutation(
@@ -258,7 +254,6 @@ export function useStakeV2VrtxDialog() {
     validAmount,
     validPercentageAmount,
     estimatedStakeValueUsd,
-    migrationBonusPeriodAmount,
     buttonState,
     protocolTokenSymbol,
     protocolTokenIcon,

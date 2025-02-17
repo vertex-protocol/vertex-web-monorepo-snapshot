@@ -9,6 +9,7 @@ export function OneClickTradingSettingsEntrypoint() {
 
   return (
     <TextButton
+      colorVariant="secondary"
       className="text-sm"
       onClick={() => {
         push({

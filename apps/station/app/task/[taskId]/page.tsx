@@ -1,20 +1,23 @@
 import { TaskPage, TaskPageRouteParams } from 'client/pages/TaskPage/TaskPage';
-import { Metadata } from 'next';
 
-export default function Page({
-  params: { taskId },
+export default async function Page({
+  params,
 }: {
-  params: TaskPageRouteParams;
+  params: Promise<TaskPageRouteParams>;
 }) {
+  const { taskId } = await params;
+
   return <TaskPage taskId={taskId} />;
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: TaskPageRouteParams;
-}): Metadata {
+  params: Promise<TaskPageRouteParams>;
+}) {
+  const { taskId } = await params;
+
   return {
-    title: `Task ${params.taskId}`,
+    title: `Task ${taskId}`,
   };
 }

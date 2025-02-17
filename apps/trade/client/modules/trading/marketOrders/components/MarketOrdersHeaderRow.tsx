@@ -4,7 +4,7 @@ import {
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import React from 'react';
+import { memo } from 'react';
 
 function Item({
   label,
@@ -36,6 +36,6 @@ function Container({ className, children }: WithChildren<WithClassnames>) {
 }
 
 export const MarketOrdersHeaderRow = {
-  Container: React.memo(Container),
-  Item: React.memo(Item),
+  Container: memo(Container),
+  Item: memo(Item),
 };

@@ -52,7 +52,7 @@ export function AccountCenterCollateralHistory() {
                           <Image
                             src={event.token.icon.asset}
                             alt={event.token.symbol}
-                            className="size-6"
+                            className="h-6 w-auto"
                           />
                           <div className="flex flex-col items-start">
                             <span className="text-text-primary">
@@ -103,6 +103,7 @@ export function AccountCenterCollateralHistory() {
       {listContent}
       {eventsWithDate.length !== 0 && (
         <TextButton
+          colorVariant="secondary"
           as={Link}
           href={ROUTES.portfolio.history}
           onClick={hide}

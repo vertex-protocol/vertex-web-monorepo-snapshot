@@ -1,4 +1,3 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   Label,
   Select,
@@ -10,7 +9,7 @@ import {
 interface Props {
   epoch: number | undefined;
   setEpoch: (value: number) => void;
-  epochOptions: SelectOption<string, number>[];
+  epochOptions: SelectOption<number>[];
 }
 
 export function EpochSelect({ epoch, setEpoch, epochOptions }: Props) {
@@ -23,12 +22,9 @@ export function EpochSelect({ epoch, setEpoch, epochOptions }: Props) {
     onOpenChange,
   } = useSelect({
     selectedValue: epoch,
-    onSelectedValueChange: (option) => setEpoch(option),
+    onSelectedValueChange: setEpoch,
     options: epochOptions,
   });
-
-  // min-w used to prevent layout shifts. It's shared between trigger and options to keep them aligned.
-  const sharedClassNames = 'min-w-20';
 
   return (
     <Select.Root
@@ -40,7 +36,8 @@ export function EpochSelect({ epoch, setEpoch, epochOptions }: Props) {
       <div className="flex flex-col gap-y-1">
         <Label>Epoch</Label>
         <Select.Trigger
-          className={sharedClassNames}
+          // min-w is used to prevent layout shifts
+          className="min-w-20"
           endIcon={<UpDownChevronIcon open={open} />}
         >
           {selectedOption?.label ?? 'Select'}
@@ -48,7 +45,7 @@ export function EpochSelect({ epoch, setEpoch, epochOptions }: Props) {
       </div>
       <Select.Options
         // max-h to make it scrollable and prevent going off screen
-        className={joinClassNames(sharedClassNames, 'max-h-80')}
+        className="max-h-80"
       >
         {selectOptions.map(({ label, value }) => (
           <Select.Option key={value} value={value}>

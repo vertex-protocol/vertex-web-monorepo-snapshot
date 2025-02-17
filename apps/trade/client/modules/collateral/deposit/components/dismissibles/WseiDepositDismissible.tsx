@@ -9,7 +9,7 @@ export function WseiDepositDismissible({
 }: {
   displayedInfoCardType: DepositInfoCardType | undefined;
 }) {
-  if (displayedInfoCardType !== 'wsei') {
+  if (displayedInfoCardType !== 'wrap_wsei') {
     return null;
   }
 

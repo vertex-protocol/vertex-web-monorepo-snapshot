@@ -2,13 +2,17 @@ import { GetIndexerSubaccountMatchEventParams } from '@vertex-protocol/indexer-c
 import { removeDecimals } from '@vertex-protocol/utils';
 import { getRealizedPnlEvent } from 'client/hooks/query/subaccount/useSubaccountPaginatedRealizedPnlEvents';
 import { getRealizedPnlEventsTableItem } from 'client/modules/tables/hooks/useRealizedPnlEventsTable';
-import { EXPORT_HISTORY_QUERY_PAGE_SIZE } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
+import {
+  EXPORT_HISTORY_QUERY_PAGE_SIZE,
+  EXPORT_HISTORY_QUERY_DELAY_MILLIS,
+} from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
 import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
   ExportHistoryRealizedPnlItem,
   GetExportHistoryDataParams,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
+import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
 
 export async function getExportHistoryRealizedPnlData(
@@ -71,6 +75,7 @@ export async function getExportHistoryRealizedPnlData(
         preEventBalanceAmount: removeDecimals(
           realizedPnlEvent.preEventBalanceAmount,
         ).toString(),
+        marginModeType: tableItem.marginModeType,
         entryPrice: tableItem.entryPrice.toString(),
         exitPrice: tableItem.exitPrice.toString(),
         filledAmountAbs: tableItem.filledAmountAbs.toString(),
@@ -85,6 +90,9 @@ export async function getExportHistoryRealizedPnlData(
     if (!matchEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    // Reduce chance of rate limiting.
+    await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);
   }
 
   return items;

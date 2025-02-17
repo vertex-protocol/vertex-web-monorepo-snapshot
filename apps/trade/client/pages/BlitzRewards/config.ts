@@ -9,4 +9,6 @@ export const TOTAL_EPOCH_BLITZ_POINTS = 100_000_000;
 // See: https://www.notion.so/vertexprotocol/Token-Points-887fa9f386cf45f6984d508ebce4c79f
 export const TOTAL_BLAST_GOLD_PER_EPOCH: Record<number, number | undefined> = {
   4: undefined,
+  5: 471_023,
+  6: 528_900,
 };

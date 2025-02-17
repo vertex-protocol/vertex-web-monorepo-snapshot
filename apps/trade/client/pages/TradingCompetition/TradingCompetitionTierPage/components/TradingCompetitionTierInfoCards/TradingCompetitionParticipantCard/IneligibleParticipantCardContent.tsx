@@ -12,6 +12,7 @@ import { useButtonUserStateErrorProps } from 'client/components/ValidUserStatePr
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { LeaderboardContest } from 'client/hooks/query/tradingCompetition/useLeaderboardContests';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { UseTradingCompetitionData } from 'client/modules/tradingCompetition/hooks/useTradingCompetitionData';
 import { TradingCompetitionCard } from 'client/pages/TradingCompetition/components/TradingCompetitionInfoCards/TradingCompetitionCard';
@@ -34,13 +35,14 @@ export function IneligibleParticipantCardContent({
   contestStatus,
 }: Props) {
   const showDialogForProduct = useShowDialogForProduct();
+  const { show } = useDialog();
 
   const buttonUserStateErrorProps = useButtonUserStateErrorProps({
     handledErrors: {
       not_connected: true,
       incorrect_connected_chain: true,
       incorrect_chain_env: false,
-      requires_deposit: false,
+      requires_initial_deposit: false,
       requires_sign_once_approval: false,
       requires_single_signature_setup: false,
     },
@@ -50,7 +52,8 @@ export function IneligibleParticipantCardContent({
     currentContestTierData,
     accountValueUsd,
     productBalance,
-    config: { tierDataByContestId, requiredProductBalanceMetadata },
+    stakedVrtx,
+    config: { tierDataByContestId, eligibilityRequirement },
   } = useTradingCompetitionContext();
 
   if (!currentContestTierData || !participantByContestId) {
@@ -80,6 +83,8 @@ export function IneligibleParticipantCardContent({
     return { eligibleTier, eligibleTierData, eligibleForHigherTier };
   })();
 
+  const { eligibilityType, productMetadata } = eligibilityRequirement;
+
   const { message, buttonProps, footer } = (() => {
     if (eligibleForHigherTier && eligibleTierData) {
       return {
@@ -102,10 +107,8 @@ export function IneligibleParticipantCardContent({
       };
     }
 
-    // If we've reached here and the contest is active, we either show a deposit
-    // CTA or user state error CTA if necessary (not connected, invalid chain).
-    // If this is a market-specific contest, we open the deposit dialog with
-    // the relevant market selected.
+    // If we've reached here and the contest is active, we either show a user
+    // state error CTA (e.g. if not connected, invalid chain) or action CTA.
     const buttonProps = (() => {
       if (contestStatus === 'pending') {
         return;
@@ -115,52 +118,63 @@ export function IneligibleParticipantCardContent({
         return buttonUserStateErrorProps;
       }
 
-      return {
-        size: 'base' as const,
-        onClick: () =>
-          showDialogForProduct({
-            productId:
-              requiredProductBalanceMetadata?.productId ?? QUOTE_PRODUCT_ID,
-            dialogType: 'deposit',
-          }),
+      const onClick =
+        eligibilityType === 'staked_vrtx'
+          ? () => show({ type: 'stake_v2_vrtx', params: {} })
+          : () =>
+              showDialogForProduct({
+                productId: productMetadata?.productId ?? QUOTE_PRODUCT_ID,
+                dialogType: 'deposit',
+              });
 
-        children: 'Deposit to Join',
-      };
+      const children = `${eligibilityType === 'staked_vrtx' ? 'Stake' : 'Deposit'} to Join`;
+
+      return { size: 'base' as const, onClick, children };
     })();
 
     const formattedMinEligibilityThreshold = formatNumber(
       currentContest.minEligibilityThreshold,
       {
-        formatSpecifier: requiredProductBalanceMetadata
-          ? PresetNumberFormatSpecifier.NUMBER_INT
-          : PresetNumberFormatSpecifier.CURRENCY_INT,
+        formatSpecifier:
+          eligibilityType === 'account_value'
+            ? PresetNumberFormatSpecifier.CURRENCY_INT
+            : PresetNumberFormatSpecifier.NUMBER_INT,
       },
     );
 
-    const message = requiredProductBalanceMetadata
-      ? `Min. ${requiredProductBalanceMetadata.symbol} Balance: ${formattedMinEligibilityThreshold}`
-      : `Min. Account Size: ${formattedMinEligibilityThreshold}`;
+    const message = {
+      account_value: `Min. Account Size: ${formattedMinEligibilityThreshold}`,
+      product_balance: `Min. ${productMetadata?.symbol} Balance: ${formattedMinEligibilityThreshold}`,
+      staked_vrtx: `Min. ${productMetadata?.symbol} Staked: ${formattedMinEligibilityThreshold}`,
+    }[eligibilityType];
 
     return {
       message,
       buttonProps,
       footer: (
         <DefinitionTooltip definitionId="tradingCompetitionEligibilityInfo">
-          Eligibility Info
+          Eligibility updates every 3 hours
         </DefinitionTooltip>
       ),
     };
   })();
 
-  const balanceOrSizeLabel = requiredProductBalanceMetadata
-    ? 'Current Balance:'
-    : 'Current Size:';
-  const balanceOrSizeValue = requiredProductBalanceMetadata
-    ? productBalance
-    : accountValueUsd;
-  const balanceOrSizeFormatSpecifier = requiredProductBalanceMetadata
-    ? CustomNumberFormatSpecifier.NUMBER_PRECISE
-    : PresetNumberFormatSpecifier.CURRENCY_2DP;
+  const userEligibilityAmountLabel = {
+    account_value: 'Current Size:',
+    product_balance: 'Current Balance:',
+    staked_vrtx: 'Current Staked:',
+  }[eligibilityType];
+
+  const userEligibilityAmount = {
+    account_value: accountValueUsd,
+    product_balance: productBalance,
+    staked_vrtx: stakedVrtx,
+  }[eligibilityType];
+
+  const userEligibilityAmountFormatSpecifier =
+    eligibilityType === 'account_value'
+      ? PresetNumberFormatSpecifier.CURRENCY_2DP
+      : CustomNumberFormatSpecifier.NUMBER_PRECISE;
 
   return (
     <>
@@ -168,24 +182,26 @@ export function IneligibleParticipantCardContent({
         <div className="flex flex-col">
           <span className="text-text-primary text-xl">{message}</span>
           <ValueWithLabel.Horizontal
-            sizeVariant="sm"
-            label={balanceOrSizeLabel}
-            value={balanceOrSizeValue}
-            numberFormatSpecifier={balanceOrSizeFormatSpecifier}
+            sizeVariant="xs"
+            label={userEligibilityAmountLabel}
+            value={userEligibilityAmount}
+            numberFormatSpecifier={userEligibilityAmountFormatSpecifier}
             valueClassName="items-center gap-x-2"
             valueEndElement={
-              requiredProductBalanceMetadata ? (
+              productMetadata ? (
                 <Image
-                  src={requiredProductBalanceMetadata.iconSrc}
-                  className="size-4"
-                  alt={requiredProductBalanceMetadata.symbol}
+                  src={productMetadata.iconSrc}
+                  className="h-4 w-auto"
+                  alt={productMetadata.symbol}
                 />
               ) : undefined
             }
             fitWidth
           />
         </div>
-        {buttonProps && <PrimaryButton {...buttonProps} />}
+        {buttonProps && (
+          <PrimaryButton className="w-full sm:w-auto" {...buttonProps} />
+        )}
       </TradingCompetitionCard.Body>
       <TradingCompetitionCard.Footer>{footer}</TradingCompetitionCard.Footer>
     </>

@@ -8,15 +8,19 @@ import {
   mergeClassNames,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { Select, useSelect } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
-import { CollateralSpotProduct } from 'client/modules/collateral/types';
+import {
+  Pill,
+  Select,
+  UpDownChevronIcon,
+  useSelect,
+} from '@vertex-protocol/web-ui';
+import { CollateralSpotProductSelectValue } from 'client/modules/collateral/types';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export interface AssetSelectProps extends WithClassnames {
-  availableProducts: CollateralSpotProduct[];
-  selectedProduct?: CollateralSpotProduct;
+  availableProducts: CollateralSpotProductSelectValue[];
+  selectedProduct?: CollateralSpotProductSelectValue;
   assetAmountTitle?: string;
   disabled?: boolean;
   optionsClassName?: string;
@@ -38,19 +42,29 @@ export function CollateralAssetSelect({
     () =>
       availableProducts.map((product) => ({
         label: product.symbol,
-        id: product.symbol,
         value: product,
       })),
     [availableProducts],
   );
 
-  const { selectOptions, open, onValueChange, value, onOpenChange } = useSelect(
-    {
-      selectedValue: selectedProduct,
-      onSelectedValueChange: (product) => onProductSelected(product.productId),
-      options,
-    },
+  const onSelectedValueChange = useCallback(
+    (product: CollateralSpotProductSelectValue) =>
+      onProductSelected(product.productId),
+    [onProductSelected],
   );
+
+  const {
+    selectOptions,
+    selectedOption,
+    open,
+    onValueChange,
+    value,
+    onOpenChange,
+  } = useSelect({
+    selectedValue: selectedProduct,
+    onSelectedValueChange,
+    options,
+  });
 
   return (
     <Select.Root
@@ -75,7 +89,7 @@ export function CollateralAssetSelect({
           />
         }
       >
-        <SelectedAsset selectedProduct={selectedProduct} />
+        <SelectedAsset selectedProduct={selectedOption?.value} />
       </Select.Trigger>
       <Select.Options
         className={mergeClassNames(
@@ -120,7 +134,7 @@ function AssetSelectOption({
   value,
 }: {
   value: string;
-  product: CollateralSpotProduct;
+  product: CollateralSpotProductSelectValue;
 }) {
   return (
     <Select.Option
@@ -128,7 +142,7 @@ function AssetSelectOption({
       className="flex items-center justify-between px-3 py-1"
       withSelectedCheckmark={false}
     >
-      <div className="flex w-full items-center gap-x-2">
+      <div className="flex flex-1 items-center gap-x-2">
         <Image
           src={product.icon.asset}
           alt="Asset Icon"
@@ -137,6 +151,18 @@ function AssetSelectOption({
           className="inline"
         />
         <span>{product.symbol}</span>
+        {product.depositAPR && (
+          <Pill
+            borderRadiusVariant="full"
+            sizeVariant="xs"
+            colorVariant="positive"
+          >
+            APR:{' '}
+            {formatNumber(product.depositAPR, {
+              formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
+            })}
+          </Pill>
+        )}
       </div>
       <div className="flex flex-col items-end">
         <span className="w-max">
@@ -157,7 +183,7 @@ function AssetSelectOption({
 function SelectedAsset({
   selectedProduct,
 }: {
-  selectedProduct?: CollateralSpotProduct;
+  selectedProduct?: CollateralSpotProductSelectValue;
 }) {
   if (!selectedProduct) {
     return <p className="text-text-tertiary px-2">Select</p>;

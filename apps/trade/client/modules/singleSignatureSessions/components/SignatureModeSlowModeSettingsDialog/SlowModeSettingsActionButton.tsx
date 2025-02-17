@@ -9,7 +9,7 @@ import {
 
 interface Props {
   buttonState: SignatureModeSlowModeSettingsActionButtonState;
-  userAction: SignatureModeSlowModeSettingsAction;
+  userAction: SignatureModeSlowModeSettingsAction | undefined;
 }
 
 export function SlowModeSettingsActionButton({
@@ -24,26 +24,23 @@ export function SlowModeSettingsActionButton({
         return <ButtonStateContent.Success message="Fee Approved" />;
       case 'idle':
         switch (userAction) {
-          case 'approve':
+          case 'requires_fee_approval':
             return `Approve Fee`;
-          case 'save_locally':
-            return 'Save';
           case 'execute_slow_mode':
             return 'Save & Send Transaction';
-          // This shouldn't be a valid case
-          case 'no_action_required':
+          case 'save_without_tx':
+            return 'Save';
+          case undefined:
+            // This shouldn't ever be the case
             return '';
         }
-      case 'disabled':
-        if (userAction === 'no_action_required') {
-          return 'Configure Signature Mode';
-        }
-        return 'Enter 1CT Private Key';
       case 'loading':
-        if (userAction === 'save_locally') {
+        if (userAction === 'save_without_tx') {
           return 'Saving';
         }
         return 'Confirm Transaction';
+      case 'disabled':
+        return 'Save';
     }
   })();
 
@@ -61,8 +58,8 @@ export function SlowModeSettingsActionButton({
       </ValidUserStatePrimaryButton>
       {buttonState === 'success' && (
         <ButtonHelperInfo.Content>
-          You may now close this dialog. It may take a minute for your trading
-          mode to update.
+          You may now close this dialog. It may take a minute for 1CT to be
+          enabled.
         </ButtonHelperInfo.Content>
       )}
     </ButtonHelperInfo.Container>

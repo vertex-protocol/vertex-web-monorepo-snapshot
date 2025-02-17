@@ -35,7 +35,7 @@ export const commonTooltips = {
     ),
   },
   triggerPrice: {
-    title: 'Trigger Price',
+    title: `Trigger Price`,
     content: `The price at which a market order will be executed.`,
   },
   lastPrice: {
@@ -55,7 +55,7 @@ export const commonTooltips = {
     content: `The price of the perpetual contract across other exchanges.`,
   },
   noFundsAvailable: {
-    title: 'No Funds Available',
+    title: `No Funds Available`,
     content: `You've run out of initial margin / funds available. You cannot initiate new positions or withdraw collateral. Deposit more collateral or close existing positions to trade.`,
   },
   extremeLiquidationRisk: {
@@ -71,8 +71,8 @@ export const commonTooltips = {
     content: (
       <>
         <p>
-          Margin usage is a tool to gauge what percentage of your tradeable
-          funds you are using.
+          Margin Usage represents the percentage of your account margin that is
+          being actively consumed by your cross perpetual positions and borrows.
         </p>
         <DiscList.Container>
           <DiscList.Item>
@@ -97,11 +97,31 @@ export const commonTooltips = {
         <p>(Initial Margin / Free Collateral)</p>
       </>
     ),
-    content: `The funds you have available to trade. To initiate a new position, users must have a positive balance. This metric is calculated using the sum of initial margin values for assets, borrows, pools, and perpetual positions.`,
+    content: `The funds you have available to trade with. This is calculated using the sum of initial margin values for assets, borrows, pools, and cross-margin perpetual positions.`,
+  },
+  fundsUntilLiquidation: {
+    title: (
+      <>
+        <p>Funds until Liquidation</p>
+        <p>(Maintenance Margin)</p>
+      </>
+    ),
+    content: `The amount of funds an account has until it is eligible for liquidation. If this value falls to zero, your positions will be liquidated until a positive balance is restored. This metric is calculated using the sum of maintenance margin values for assets, borrows, pools and cross-margin perpetual positions.`,
   },
   gasFee: {
-    title: 'Gas Fee',
-    content:
-      'The fee is used by our sequencer to submit transactions on-chain.',
+    title: `Gas Fee`,
+    content: `The fee is used by our sequencer to submit transactions on-chain.`,
+  },
+  maxWithBorrow: {
+    title: `Max with borrow`,
+    content: `The combination of your available balance and what you can borrow against your margin. Borrowing is done automatically.`,
+  },
+  maxAmount: {
+    title: `Max amount`,
+    content: `Your balance of the asset minus what's being held in open orders or required as margin.`,
+  },
+  enableBorrowsSwitch: {
+    title: `Borrows (on/off)`,
+    content: `Enables you to borrow assets against your existing collateral. Borrowing increases your margin usage and account risk.`,
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;

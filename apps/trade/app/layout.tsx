@@ -3,15 +3,13 @@ import { TooltipPortalRoot, Z_INDEX } from '@vertex-protocol/web-ui';
 import { ClientLayout } from 'app/ClientLayout';
 import { AppBottomSheet } from 'client/modules/app/AppBottomSheet';
 import { AppFooter } from 'client/modules/app/AppFooter';
-import { BlitzPointsBanner } from 'client/modules/app/components/BlitzPointsBanner';
-import { SeiRewardsBanner } from 'client/modules/app/components/SeiRewardsBanner/SeiRewardsBanner';
+import { AbstractLaunchPromoBanner } from 'client/modules/app/components/banners/AbstractLaunchPromoBanner/AbstractLaunchPromoBanner';
+import { AbstractUpvoteDiscoverPromoBanner } from 'client/modules/app/components/banners/AbstractUpvoteDiscoverPromoBanner';
 import { AppNavBar } from 'client/modules/app/navBar/AppNavBar';
 import { BRAND_SEO_METADATA } from 'common/brandMetadata/seoInfo';
 import { clientEnv } from 'common/environment/clientEnv';
 import { FONTS } from 'common/theme/fonts';
 import { Metadata, Viewport } from 'next';
-import { ArbitrumRewardsBanner } from 'client/modules/app/components/ArbitrumRewardsBanner/ArbitrumRewardsBanner';
-import { BaseTradeDegenRewardsBanner } from 'client/modules/app/components/BaseTradeDegenRewardsBanner/BaseTradeDegenRewardsBanner';
 
 export default function AppLayout({ children }: WithChildren) {
   return (
@@ -36,10 +34,8 @@ export default function AppLayout({ children }: WithChildren) {
         )}
       >
         <ClientLayout>
-          <ArbitrumRewardsBanner className="border-stroke border-b" />
-          <BaseTradeDegenRewardsBanner className="border-stroke border-b" />
-          <SeiRewardsBanner className="border-stroke border-b" />
-          <BlitzPointsBanner className="border-stroke border-b" />
+          <AbstractLaunchPromoBanner className="border-stroke border-b" />
+          <AbstractUpvoteDiscoverPromoBanner className="border-stroke border-b" />
           <AppNavBar className={Z_INDEX.navbar} />
           <div
             // Hide horizontal overflow to ensure that tables never expand fully, but allow vertical scrolling
@@ -62,40 +58,18 @@ export const metadata: Metadata = {
     default: BRAND_SEO_METADATA.title,
     template: `%s | ${clientEnv.brandMetadata.displayName}`,
   },
-  manifest: '/site.webmanifest',
   description: BRAND_SEO_METADATA.description,
+  manifest: BRAND_SEO_METADATA.siteManifest,
   icons: {
     apple: BRAND_SEO_METADATA.appleTouchIcon,
-    icon: BRAND_SEO_METADATA.favicon16x16,
-    shortcut: BRAND_SEO_METADATA.favicon32x32,
+    icon: BRAND_SEO_METADATA.faviconSvg,
     other: [
-      //Favicon
       {
-        url: BRAND_SEO_METADATA.favicon,
+        url: BRAND_SEO_METADATA.faviconIco,
       },
-      {
-        rel: 'icon',
-        type: 'image/png',
-        sizes: '32x32',
-        url: BRAND_SEO_METADATA.favicon32x32,
-      },
-      {
-        rel: 'icon',
-        type: 'image/png',
-        sizes: '16x16',
-        url: BRAND_SEO_METADATA.favicon16x16,
-      },
-      // Apple touch icon
       {
         rel: 'apple-touch-icon',
-        sizes: '180x180',
         url: BRAND_SEO_METADATA.appleTouchIcon,
-      },
-      {
-        rel: 'mask-icon',
-        url: BRAND_SEO_METADATA.safariPinnedTab,
-        sizes: 'any',
-        type: 'image/svg+xml',
       },
     ],
   },
@@ -108,7 +82,7 @@ export const metadata: Metadata = {
   },
   // Twitter
   twitter: {
-    site: '@vertex_protocol',
+    site: BRAND_SEO_METADATA.xUsername,
     title: BRAND_SEO_METADATA.title,
     description: BRAND_SEO_METADATA.description,
     images: BRAND_SEO_METADATA.bannerImage,

@@ -2,8 +2,8 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
 import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/form/types';
 import {
-  BridgeToken,
-  DestinationBridgeToken,
+  BridgeTokenSelectValue,
+  DestinationBridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
 import { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -13,8 +13,8 @@ interface Params {
   validAmount: BigDecimal | undefined;
   validPercentageAmount: number | undefined;
   sourceTokenBalance: BigDecimal | undefined;
-  selectedSourceToken: BridgeToken | undefined;
-  allDestinationTokens: DestinationBridgeToken[] | undefined;
+  selectedSourceToken: BridgeTokenSelectValue | undefined;
+  allDestinationTokens: DestinationBridgeTokenSelectValue[] | undefined;
   sourceChainId: number;
   sourceTokenAddress: string;
 }

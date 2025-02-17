@@ -15,13 +15,8 @@ import {
 import { TradingSidebarTabID } from 'client/modules/localstorage/userState/types/userTradingSidebarTypes';
 import { EmptyWatchlistPlaceholder } from 'client/modules/trading/tradingSidebar/EmptyWatchlistPlaceholder';
 import { TradingSidebarMarketsTab } from 'client/modules/trading/tradingSidebar/markets/TradingSidebarMarketsTab';
-import { TradingSidebarNewsTab } from 'client/modules/trading/tradingSidebar/news/TradingSidebarNewsTab';
-import { TradingSidebarSentimentTab } from 'client/modules/trading/tradingSidebar/sentiment/TradingSidebarSentimentTab';
 import { TradingSidebarWatchlistTabButtons } from 'client/modules/trading/tradingSidebar/TradingSidebarWatchlistTabButtons';
 import { useTradingSidebar } from 'client/modules/trading/tradingSidebar/useTradingSidebar';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { MARKET_NEWS_PROVIDER } from 'common/environment/integrations/marketNewsProvider';
-import { MARKET_SENTIMENT_PROVIDER } from 'common/environment/integrations/marketSentimentProvider';
 import { useMemo } from 'react';
 
 interface Props extends WithClassnames {
@@ -44,33 +39,13 @@ export function TradingSidebar({
   } = useTradingSidebar();
 
   const tabs = useMemo(() => {
-    const commonLayoutClassName = 'flex-1';
-
     return [
       {
         id: 'market_info' as TradingSidebarTabID,
         Icon: Icons.ListMagnifyingGlass,
-        content: <TradingSidebarMarketsTab className={commonLayoutClassName} />,
+        content: <TradingSidebarMarketsTab className="flex-1" />,
       },
-      MARKET_SENTIMENT_PROVIDER.enabled
-        ? {
-            id: 'sentiment' as TradingSidebarTabID,
-            Icon: Icons.Gauge,
-            content: (
-              <TradingSidebarSentimentTab className={commonLayoutClassName} />
-            ),
-          }
-        : null,
-      MARKET_NEWS_PROVIDER.enabled
-        ? {
-            id: 'news' as TradingSidebarTabID,
-            Icon: Icons.Newspaper,
-            content: (
-              <TradingSidebarNewsTab className={commonLayoutClassName} />
-            ),
-          }
-        : null,
-    ].filter(nonNullFilter);
+    ];
   }, []);
 
   const isSidebarOnRight = flexDirectionByConsolePosition === 'flex-row';
@@ -123,8 +98,9 @@ export function TradingSidebar({
           {tabs.map(({ id, Icon }) => (
             <TabsTrigger value={id} key={id} asChild>
               <TextButton
+                colorVariant="tertiary"
                 className={joinClassNames(
-                  'text-text-tertiary p-2',
+                  'p-2',
 
                   // subtle highlight for active tab even when sidebar is closed
                   // this help user know which tab to expect if they open the sidebar from chevron button
@@ -147,6 +123,7 @@ export function TradingSidebar({
         </TabsList>
         <Divider />
         <TextButton
+          colorVariant="secondary"
           className="p-2"
           endIcon={
             <UpDownChevronIcon

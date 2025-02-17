@@ -1,15 +1,15 @@
 import { BigDecimal, ProductEngineType } from '@vertex-protocol/client';
 import { BigDecimals } from '@vertex-protocol/utils';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useLpBalances } from 'client/hooks/subaccount/useLpBalances';
+import { PairMetadata } from 'client/modules/pools/types';
 import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 import { QueryState } from 'client/types/QueryState';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
-import { PairMetadata } from 'client/modules/pools/types';
 
 export interface MarginManagerPoolsTableItem {
   marketType: ProductEngineType;

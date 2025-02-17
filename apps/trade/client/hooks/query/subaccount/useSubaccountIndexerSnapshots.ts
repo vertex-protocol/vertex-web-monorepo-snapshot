@@ -4,17 +4,17 @@ import {
   GetIndexerMultiSubaccountSnapshotsParams,
 } from '@vertex-protocol/client';
 import { IndexerSubaccountSnapshot } from '@vertex-protocol/indexer-client';
-import { nowInSeconds } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   QueryDisabledError,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { nowInSeconds } from '@vertex-protocol/utils';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { ZeroAddress } from 'ethers';
 import { get } from 'lodash';
+import { zeroAddress } from 'viem';
 
 export function subaccountIndexerSnapshotsQueryKey(
   chainEnv?: ChainEnv,
@@ -61,9 +61,10 @@ export function useSubaccountIndexerSnapshots<TSelectedData = Data>({
   const vertexClient = usePrimaryChainVertexClient();
 
   // If no current subaccount, query for a subaccount that does not exist to ensure that we have data
-  const subaccountOwnerForQuery = subaccountOwner ?? ZeroAddress;
+  const subaccountOwnerForQuery = subaccountOwner ?? zeroAddress;
 
   const disabled = !vertexClient || !secondsBeforeNow?.length;
+  const defaultRefetchInterval = subaccountOwner ? 30000 : undefined;
 
   const queryFn = async () => {
     if (disabled) {
@@ -112,7 +113,7 @@ export function useSubaccountIndexerSnapshots<TSelectedData = Data>({
     ),
     queryFn,
     enabled: !disabled,
-    refetchInterval: refetchInterval ?? 10000,
+    refetchInterval: refetchInterval ?? defaultRefetchInterval,
     select,
   });
 }

@@ -63,7 +63,8 @@ export function RepayConvertTab({
             <div className="flex items-center justify-between">
               <p>Repay</p>
               <TextButton
-                className="text-accent text-xs"
+                colorVariant="accent"
+                className="text-xs"
                 onClick={onMaxRepayClicked}
                 disabled={disableMaxRepayButton}
               >

@@ -1,10 +1,13 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  getMarketPriceFormatSpecifier,
+  PerpProductMetadata,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
+import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
@@ -12,7 +15,6 @@ import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPri
 import { useTextSearch } from 'client/hooks/ui/useTextSearch';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
-import { PerpProductMetadata } from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface PerpMarketTableItem {
@@ -37,7 +39,7 @@ export function usePerpMarketsTable({ query }: { query: string }) {
     useAllMarkets();
   const { data: latestPerpPricesData } = useLatestPerpPrices();
   const { data: latestOraclePricesData } = useLatestOraclePrices();
-  const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
+  const { data: marketStatsData } = useAllMarketsStats();
   const { data: latestMarketPricesData } = useAllMarketsLatestPrices();
   const { data: fundingRateData } = useAllMarkets24HrFundingRates();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
@@ -53,16 +55,11 @@ export function usePerpMarketsTable({ query }: { query: string }) {
       .filter((market) => !getIsHiddenMarket(market.productId))
       .map((market) => {
         const productId = market.productId;
-        const marketMetrics = marketMetricsData?.metricsByMarket[productId];
+        const marketStats = marketStatsData?.statsByMarket[productId];
         const latestMarketPrices = latestMarketPricesData?.[productId];
         const latestPerpPrices = latestPerpPricesData?.[productId];
 
         const oraclePrice = latestOraclePricesData?.[productId]?.oraclePrice;
-        const openInterestQuote = oraclePrice
-          ? removeDecimals(
-              market.product.openInterest.multipliedBy(oraclePrice),
-            )
-          : undefined;
         const dailyFundingRate = fundingRateData?.[productId]?.fundingRate;
 
         return {
@@ -71,10 +68,10 @@ export function usePerpMarketsTable({ query }: { query: string }) {
           currentPrice: latestMarketPrices?.safeAverage,
           oraclePrice,
           indexPrice: latestPerpPrices?.indexPrice,
-          priceChange24hr: marketMetrics?.pastDayPriceChange,
-          priceChangeFrac24hr: marketMetrics?.pastDayPriceChangeFrac,
-          volume24h: removeDecimals(marketMetrics?.pastDayVolumeInPrimaryQuote),
-          openInterestQuote: openInterestQuote,
+          priceChange24hr: marketStats?.pastDayPriceChange,
+          priceChangeFrac24hr: marketStats?.pastDayPriceChangeFrac,
+          volume24h: removeDecimals(marketStats?.pastDayVolumeInPrimaryQuote),
+          openInterestQuote: removeDecimals(marketStats?.openInterestQuote),
           isNewMarket: getIsNewMarket(productId),
           isFavorited: favoritedMarketIds.has(productId),
           fundingRates: dailyFundingRate
@@ -88,7 +85,7 @@ export function usePerpMarketsTable({ query }: { query: string }) {
   }, [
     perpMarkets,
     getIsHiddenMarket,
-    marketMetricsData?.metricsByMarket,
+    marketStatsData?.statsByMarket,
     latestMarketPricesData,
     latestPerpPricesData,
     latestOraclePricesData,

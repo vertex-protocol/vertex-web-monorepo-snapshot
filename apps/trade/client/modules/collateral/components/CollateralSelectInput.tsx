@@ -1,5 +1,9 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import {
+  joinClassNames,
+  WithClassnames,
+  WithRef,
+} from '@vertex-protocol/web-common';
 import {
   COMMON_TRANSPARENCY_COLORS,
   CompactInput,
@@ -10,21 +14,22 @@ import {
   CollateralAssetSelect,
 } from 'client/modules/collateral/components/CollateralAssetSelect';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-interface Props extends CompactInputProps {
+interface Props
+  extends WithClassnames<WithRef<CompactInputProps, HTMLInputElement>> {
   selectProps: AssetSelectProps;
   estimatedValueUsd: BigDecimal | undefined;
   error?: ReactNode;
 }
 
-export const CollateralSelectInput = React.forwardRef<
-  HTMLInputElement,
-  WithClassnames<Props>
->(function CollateralSelectInputBase(
-  { className, selectProps, estimatedValueUsd, error, ...rest },
-  ref,
-) {
+export function CollateralSelectInput({
+  className,
+  selectProps,
+  estimatedValueUsd,
+  error,
+  ...rest
+}: Props) {
   const {
     availableProducts,
     selectedProduct,
@@ -57,8 +62,7 @@ export const CollateralSelectInput = React.forwardRef<
       endElement={
         <EstimatedCurrencyValueItem estimatedValueUsd={estimatedValueUsd} />
       }
-      ref={ref}
       {...rest}
     />
   );
-});
+}

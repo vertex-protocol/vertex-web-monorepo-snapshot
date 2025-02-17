@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   createQueryKey,
   QueryDisabledError,
-  useIsChainType,
+  useIsChainEnvType,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -13,7 +13,7 @@ export function addressBlitzInitialPointsDropStatusQueryKey(sender?: string) {
 }
 
 export function useAddressBlitzInitialPointsDropStatus() {
-  const { isBlast } = useIsChainType();
+  const { isBlast } = useIsChainEnvType();
   const { currentSubaccount } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 

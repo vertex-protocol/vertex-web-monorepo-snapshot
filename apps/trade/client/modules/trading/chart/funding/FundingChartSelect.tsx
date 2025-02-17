@@ -1,5 +1,4 @@
-import { Select, useSelect } from '@vertex-protocol/web-ui';
-import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { Select, UpDownChevronIcon, useSelect } from '@vertex-protocol/web-ui';
 import {
   FUNDING_RATE_TIMESPANS,
   FundingRateTimespan,
@@ -21,7 +20,6 @@ export function FundingChartSelect({ timespan, setTimespan }: Props) {
       }[timespan];
 
       return {
-        id: timespan,
         label,
         value: timespan,
       };
@@ -48,7 +46,10 @@ export function FundingChartSelect({ timespan, setTimespan }: Props) {
       onValueChange={onValueChange}
       onOpenChange={onOpenChange}
     >
-      <Select.Trigger endIcon={<UpDownChevronIcon open={open} />}>
+      <Select.Trigger
+        className="min-w-28"
+        endIcon={<UpDownChevronIcon open={open} />}
+      >
         {selectedOption?.label}
       </Select.Trigger>
       <Select.Options align="end">

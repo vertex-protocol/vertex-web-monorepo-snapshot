@@ -4,7 +4,7 @@ import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
-  useIsChainType,
+  useIsChainEnvType,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { ChainEnv } from '@vertex-protocol/client';
@@ -19,7 +19,7 @@ export function tokenClaimDeadlinesQueryKey(chainEnv?: ChainEnv) {
  * Deadlines start at LBA_AIRDROP_EPOCH, because LBA_AIRDROP_EPOCH is the airdrop epoch for LBA
  */
 export function useTokenClaimDeadlines() {
-  const { isArb } = useIsChainType();
+  const { isArb } = useIsChainEnvType();
   const vertexClient = usePrimaryChainVertexClient();
   const { primaryChainEnv } = useEVMContext();
 

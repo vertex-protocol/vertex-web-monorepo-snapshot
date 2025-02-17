@@ -2,7 +2,7 @@ import {
   HistoricalTradesTab,
   historicalTradesTableFilters,
 } from 'client/modules/trading/components/HistoricalTradesTab';
-import { MobileTradeTab } from 'client/modules/trading/components/MobileTradeTab';
+import { MobileTradingTabTrade } from 'client/modules/trading/components/MobileTradingTab/MobileTradingTabTrade';
 import {
   OpenEngineOrdersTab,
   openEngineOrdersTableFilters,
@@ -22,14 +22,7 @@ import {
   positionsTableFilters,
 } from 'client/pages/PerpTrading/components/PerpPositionsTab';
 import { SpotBalancesTab } from 'client/pages/SpotTrading/components/SpotBalancesTab';
-import { MarketFilter } from 'client/types/MarketFilter';
 import { useMemo } from 'react';
-
-const SHOW_ALL_FILTER = undefined;
-
-const PERP_ONLY_FILTER: MarketFilter = {
-  marketCategory: 'perp',
-};
 
 export function usePerpTradingTableTabs(productId: number | undefined) {
   const mobileTradingTabs = useMemo((): TradingTab[] => {
@@ -38,81 +31,43 @@ export function usePerpTradingTableTabs(productId: number | undefined) {
         id: 'trade',
         label: 'Trade',
         content: (
-          <MobileTradeTab OrderPlacementSection={PerpOrderPlacementSection} />
+          <MobileTradingTabTrade
+            OrderPlacementSection={PerpOrderPlacementSection}
+          />
         ),
       },
       {
         id: 'positions',
         label: 'Positions',
         countIndicatorKey: 'numPerpPositions',
-        content: (
-          <PerpPositionsTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            productId={productId}
-          />
-        ),
+        content: <PerpPositionsTab productId={productId} />,
       },
       {
         id: 'balances',
         label: 'Balances',
-        content: (
-          <SpotBalancesTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            productId={undefined}
-          />
-        ),
+        content: <SpotBalancesTab productId={undefined} />,
       },
       {
         id: 'engine_orders',
         label: 'Limit Orders',
         countIndicatorKey: 'numOpenEngineOrders',
-        content: (
-          <OpenEngineOrdersTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            productId={productId}
-            isDesktop={false}
-          />
-        ),
+        content: <OpenEngineOrdersTab productId={productId} />,
       },
       {
         id: 'trigger_orders',
         label: 'Trigger Orders',
         countIndicatorKey: 'numOpenTriggerOrders',
-        content: (
-          <OpenTriggerOrdersTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            productId={productId}
-            isDesktop={false}
-          />
-        ),
+        content: <OpenTriggerOrdersTab productId={productId} />,
       },
       {
         id: 'history',
         label: 'History',
-        content: (
-          <HistoricalTradesTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            isDesktop={false}
-            productId={productId}
-          />
-        ),
+        content: <HistoricalTradesTab productId={productId} />,
       },
       {
         id: 'realized_pnl',
         label: 'Realized PnL',
-        content: (
-          <RealizedPnlEventsTab
-            enableUserFiltering={false}
-            defaultFilter={PERP_ONLY_FILTER}
-            productId={productId}
-            isDesktop={false}
-          />
-        ),
+        content: <RealizedPnlEventsTab productId={productId} />,
       },
     ];
   }, [productId]);
@@ -123,78 +78,38 @@ export function usePerpTradingTableTabs(productId: number | undefined) {
         id: 'positions',
         label: 'Positions',
         countIndicatorKey: 'numPerpPositions',
-        content: (
-          <PerpPositionsTab
-            enableUserFiltering
-            productId={productId}
-            defaultFilter={SHOW_ALL_FILTER}
-          />
-        ),
+        content: <PerpPositionsTab productId={productId} isDesktop />,
         filters: positionsTableFilters,
       },
       {
         id: 'balances',
         label: 'Balances',
-        content: (
-          <SpotBalancesTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            productId={undefined}
-          />
-        ),
+        content: <SpotBalancesTab productId={undefined} isDesktop />,
       },
       {
         id: 'engine_orders',
         label: 'Limit Orders',
         countIndicatorKey: 'numOpenEngineOrders',
-        content: (
-          <OpenEngineOrdersTab
-            enableUserFiltering
-            productId={productId}
-            defaultFilter={SHOW_ALL_FILTER}
-            isDesktop
-          />
-        ),
+        content: <OpenEngineOrdersTab productId={productId} isDesktop />,
         filters: openEngineOrdersTableFilters,
       },
       {
         id: 'trigger_orders',
         label: 'Trigger Orders',
         countIndicatorKey: 'numOpenTriggerOrders',
-        content: (
-          <OpenTriggerOrdersTab
-            enableUserFiltering
-            productId={productId}
-            defaultFilter={SHOW_ALL_FILTER}
-            isDesktop
-          />
-        ),
+        content: <OpenTriggerOrdersTab productId={productId} isDesktop />,
         filters: openTriggerOrdersTableFilters,
       },
       {
         id: 'history',
         label: 'History',
-        content: (
-          <HistoricalTradesTab
-            enableUserFiltering
-            isDesktop
-            productId={productId}
-            defaultFilter={SHOW_ALL_FILTER}
-          />
-        ),
+        content: <HistoricalTradesTab productId={productId} isDesktop />,
         filters: historicalTradesTableFilters,
       },
       {
         id: 'realized_pnl',
         label: 'Realized PnL',
-        content: (
-          <RealizedPnlEventsTab
-            enableUserFiltering
-            isDesktop
-            productId={productId}
-            defaultFilter={PERP_ONLY_FILTER}
-          />
-        ),
+        content: <RealizedPnlEventsTab productId={productId} isDesktop />,
         filters: realizedPnlEventsTableFilters,
       },
     ];

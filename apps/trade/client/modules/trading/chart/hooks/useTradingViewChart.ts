@@ -7,11 +7,11 @@ import { useSyncWidgetSymbol } from 'client/modules/trading/chart/hooks/useSyncW
 import { useTradingViewData } from 'client/modules/trading/chart/hooks/useTradingViewData/useTradingViewData';
 import { useTradingViewWidget } from 'client/modules/trading/chart/hooks/useTradingViewWidget';
 import { useUpdateLimitPriceOnCrosshairClick } from 'client/modules/trading/chart/hooks/useUpdateLimitPriceOnCrosshairClick';
-import { MutableRefObject, useState } from 'react';
+import { RefObject, useState } from 'react';
 
 interface UseTradingViewChart {
   isReady: boolean;
-  chartContainerRef: MutableRefObject<HTMLDivElement | null>;
+  chartContainerRef: RefObject<HTMLDivElement | null>;
 }
 
 export function useTradingViewChart(productId?: number): UseTradingViewChart {
@@ -57,7 +57,7 @@ export function useTradingViewChart(productId?: number): UseTradingViewChart {
   });
 
   // Add entry lines to the chart
-  const drawEntryLine = useDrawChartEntryLines({
+  const drawEntryLines = useDrawChartEntryLines({
     tvWidget,
     loadedSymbolInfo,
   });
@@ -67,7 +67,7 @@ export function useTradingViewChart(productId?: number): UseTradingViewChart {
     tvWidget,
     loadedSymbolInfo,
     drawOrderLines,
-    drawEntryLine,
+    drawEntryLines,
   });
 
   return { isReady: !!tvWidget, chartContainerRef };

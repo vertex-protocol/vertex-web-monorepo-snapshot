@@ -16,7 +16,7 @@ import Link from 'next/link';
 export function TradingCompetitionSubheader() {
   const {
     currentContest,
-    config: { docsHref },
+    config: { docsHref, rounds },
   } = useTradingCompetitionContext();
 
   if (!currentContest) {
@@ -28,6 +28,18 @@ export function TradingCompetitionSubheader() {
     currentContest.startTimeMillis,
   );
 
+  const roundInfo = rounds ? (
+    <>
+      <span>
+        Round{' '}
+        <span className="text-text-primary">
+          {rounds.current}/{rounds.total}
+        </span>
+      </span>
+      <Divider className="h-3" vertical />
+    </>
+  ) : null;
+
   return (
     <div
       className={joinClassNames(
@@ -37,6 +49,7 @@ export function TradingCompetitionSubheader() {
     >
       <Timeline contest={currentContest} />
       <Divider className="h-3" vertical />
+      {roundInfo}
       <div>
         Duration{' '}
         <span className="text-text-primary">
@@ -54,7 +67,7 @@ export function TradingCompetitionSubheader() {
           withExternalIcon
           external
         >
-          Competition Docs
+          Docs
         </LinkButton>
       </div>
     </div>
@@ -79,10 +92,10 @@ function Timeline({ contest }: { contest: LeaderboardContest | undefined }) {
         <span className="text-text-primary text-sm">{startMonthDay}</span>
       }
       newValue={
-        <>
-          <span className="text-text-primary text-sm">{endMonthDay}</span>
-          <span className="text-text-tertiary text-sm">{endHrMin}</span>
-        </>
+        <span className="text-sm">
+          <span className="text-text-primary">{endMonthDay}</span>{' '}
+          <span className="text-text-tertiary">{endHrMin}</span>
+        </span>
       }
     />
   );

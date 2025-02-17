@@ -1,9 +1,10 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
+import { AnnotatedSpotMarket } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { InputValidatorFn } from '@vertex-protocol/web-common';
-import { LatestMarketPrice } from 'client/hooks/query/markets/types';
-import { CollateralSpotProduct } from 'client/modules/collateral/types';
+
+import { LatestMarketPrice } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
+import { CollateralSpotProductSelectValue } from 'client/modules/collateral/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -25,7 +26,8 @@ export interface RepayConvertFormValues {
   sourceProductId: number | undefined;
 }
 
-export interface RepayConvertProduct extends CollateralSpotProduct {
+export interface RepayConvertProductSelectValue
+  extends CollateralSpotProductSelectValue {
   marketName: string;
   // Absolute
   amountBorrowed: BigDecimal;
@@ -40,10 +42,10 @@ export interface UseRepayConvertForm {
   formError: RepayConvertFormErrorType | undefined;
   validateRepayAmount: InputValidatorFn<string, RepayConvertFormErrorType>;
   // Select
-  selectedRepayProduct: RepayConvertProduct | undefined;
-  selectedSourceProduct: RepayConvertProduct | undefined;
-  availableRepayProducts: RepayConvertProduct[];
-  availableSourceProducts: RepayConvertProduct[];
+  selectedRepayProduct: RepayConvertProductSelectValue | undefined;
+  selectedSourceProduct: RepayConvertProductSelectValue | undefined;
+  availableRepayProducts: RepayConvertProductSelectValue[];
+  availableSourceProducts: RepayConvertProductSelectValue[];
   estimateStateTxs: SubaccountTx[];
   // Source Product UI
   sourceAmount: BigDecimal | undefined;

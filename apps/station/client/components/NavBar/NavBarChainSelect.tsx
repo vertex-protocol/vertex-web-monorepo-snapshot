@@ -7,56 +7,62 @@ import {
   useSelect,
 } from '@vertex-protocol/web-ui';
 
-const CHAIN_OPTIONS: SelectOption<ChainEnv, ChainEnv>[] = [
+const CHAIN_OPTIONS: SelectOption<ChainEnv>[] = [
   {
-    id: 'arbitrum',
     value: 'arbitrum',
     label: 'Arbitrum',
   },
   {
-    id: 'blast',
     value: 'blast',
     label: 'Blast',
   },
   {
-    id: 'mantle',
     value: 'mantle',
     label: 'Mantle',
   },
   {
-    id: 'sei',
     value: 'sei',
     label: 'Sei',
   },
   {
-    id: 'base',
     value: 'base',
     label: 'Base',
   },
   {
-    id: 'arbitrumTestnet',
+    value: 'sonic',
+    label: 'Sonic',
+  },
+  {
+    value: 'abstract',
+    label: 'Abstract',
+  },
+  {
     value: 'arbitrumTestnet',
     label: 'Arbitrum Testnet',
   },
   {
-    id: 'blastTestnet',
     value: 'blastTestnet',
     label: 'Blast Testnet',
   },
   {
-    id: 'mantleTestnet',
     value: 'mantleTestnet',
     label: 'Mantle Testnet',
   },
   {
-    id: 'seiTestnet',
     value: 'seiTestnet',
     label: 'Sei Testnet',
   },
   {
-    id: 'baseTestnet',
     value: 'baseTestnet',
     label: 'Base Testnet',
+  },
+  {
+    value: 'sonicTestnet',
+    label: 'Sonic Testnet',
+  },
+  {
+    value: 'abstractTestnet',
+    label: 'Abstract Testnet',
   },
 ];
 

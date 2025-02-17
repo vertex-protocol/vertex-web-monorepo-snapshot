@@ -1,20 +1,21 @@
 import { BalanceSide } from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { UseMaxOrderSizeParams } from 'client/hooks/query/subaccount/useMaxOrderSize';
+import { useMaxOrderSizeEstimation } from 'client/hooks/subaccount/useMaxOrderSizeEstimation';
 import { useDebounceFalsy } from 'client/hooks/util/useDebounceFalsy';
 import { useMemo } from 'react';
-import { useMaxOrderSizeEstimation } from 'client/hooks/subaccount/useMaxOrderSizeEstimation';
 
-interface Params {
+export interface UseOrderFormMaxOrderSizesParams {
   // For conversion to max quote order size
-  inputConversionPrice?: BigDecimal;
+  inputConversionPrice: BigDecimal | undefined;
   // For the actual query itself
-  executionConversionPrice?: BigDecimal;
+  executionConversionPrice: BigDecimal | undefined;
   orderSide: BalanceSide;
   productId: number | undefined;
   spotLeverageEnabled?: boolean;
   allowAnyOrderSizeIncrement: boolean;
   roundAmount: (amount: BigDecimal) => BigDecimal;
+  disabled?: boolean;
 }
 
 export interface OrderFormMaxOrderSizes {
@@ -30,9 +31,10 @@ export function useOrderFormMaxOrderSizes({
   spotLeverageEnabled,
   roundAmount,
   allowAnyOrderSizeIncrement,
-}: Params) {
+  disabled,
+}: UseOrderFormMaxOrderSizesParams) {
   const maxOrderSizeParams = useMemo<UseMaxOrderSizeParams | undefined>(() => {
-    if (!executionConversionPrice || !productId) {
+    if (!executionConversionPrice || !productId || disabled) {
       return;
     }
 
@@ -42,7 +44,13 @@ export function useOrderFormMaxOrderSizes({
       productId: productId,
       spotLeverage: spotLeverageEnabled,
     };
-  }, [executionConversionPrice, orderSide, productId, spotLeverageEnabled]);
+  }, [
+    disabled,
+    executionConversionPrice,
+    orderSide,
+    productId,
+    spotLeverageEnabled,
+  ]);
 
   const { data: maxAssetOrderSize } =
     useMaxOrderSizeEstimation(maxOrderSizeParams);

@@ -7,11 +7,11 @@ import {
 } from '@vertex-protocol/react-client';
 import {
   Card,
-  Pill,
-  ValueWithChange,
-  TimeFormatSpecifier,
   formatTimestamp,
   LinkButton,
+  Pill,
+  TimeFormatSpecifier,
+  ValueWithChange,
 } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
@@ -83,9 +83,10 @@ export function BlitzRewardsOverviewCard() {
           numberFormatSpecifier={
             CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED
           }
+          valueClassName="items-center"
           valueEndElement={
             <Image
-              className="bg-surface-2 size-4 rounded p-0.5"
+              className="bg-surface-2 h-4 w-auto rounded p-0.5"
               src={IMAGES.brandIcon}
               alt=""
             />
@@ -102,6 +103,7 @@ export function BlitzRewardsOverviewCard() {
               })}
             </PrivateContent>
           }
+          valueClassName="items-center"
           valueEndElement={
             <Image
               src={BLITZ_SPECIFIC_IMAGES.blastGoldIcon}

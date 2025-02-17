@@ -1,16 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { ILBA__factory } from '@vertex-protocol/client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
-  useIsChainType,
+  useIsChainEnvType,
   usePrimaryChainPublicClient,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { ZeroAddress } from 'ethers';
-import { Address } from 'viem';
+import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { Address, zeroAddress } from 'viem';
 
 export function accountLbaStateQueryKey(address?: string) {
   return createQueryKey('accountLbaState', address);
@@ -28,7 +27,7 @@ export interface AccountLbaState {
  * A multicall query that returns a summary of an address' state in the LBA pool
  */
 export function useAccountLbaState() {
-  const { isArb } = useIsChainType();
+  const { isArb } = useIsChainEnvType();
   const vertexClient = usePrimaryChainVertexClient();
   const publicClient = usePrimaryChainPublicClient();
   const {
@@ -36,7 +35,7 @@ export function useAccountLbaState() {
   } = useEVMContext();
 
   const disabled = !vertexClient || !publicClient || !isArb;
-  const addressForQuery = address ?? ZeroAddress;
+  const addressForQuery = address ?? zeroAddress;
 
   const queryFn = async (): Promise<AccountLbaState> => {
     if (disabled) {
@@ -89,6 +88,6 @@ export function useAccountLbaState() {
     queryKey: accountLbaStateQueryKey(addressForQuery),
     queryFn,
     enabled: !disabled,
-    refetchInterval: 10000,
+    refetchInterval: address ? 10000 : undefined,
   });
 }

@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { ChainEnv, createVertexClient } from '@vertex-protocol/client';
 import { getPublicClient } from '@wagmi/core';
-import { JsonRpcSigner, Provider, Signer } from 'ethers';
+import { JsonRpcSigner } from 'ethers';
 import { useEffect, useMemo } from 'react';
 import { useConfig } from 'wagmi';
 import { PrimaryChain } from '../../../types';
-import { createQueryKey } from '../../../utils';
-import { getPrimaryChain, publicClientToProvider } from '../../evm';
+import { createQueryKey, getPrimaryChain } from '../../../utils';
+import { publicClientToProvider } from '../../evm';
 import { VertexClientWithMetadata } from '../types';
 
 interface Params {
@@ -17,23 +17,6 @@ interface Params {
 
 function vertexClientsQueryKey(supportedChainEnvs?: ChainEnv[]) {
   return createQueryKey('vertexClients', supportedChainEnvs);
-}
-
-/**
- * Sets the signer or provider on the client, and logs any errors
- */
-function safeSetSignerOrProvider(
-  clientWithMetadata: VertexClientWithMetadata,
-  signerOrProvider: Signer | Provider,
-) {
-  clientWithMetadata.client
-    .setSignerOrProvider(signerOrProvider)
-    .catch((err) => {
-      console.error(
-        `[useVertexClientsQuery] Error calling setSignerOrProvider for ${clientWithMetadata.chainEnv}`,
-        err,
-      );
-    });
 }
 
 export function useVertexClientsQuery({
@@ -55,9 +38,9 @@ export function useVertexClientsQuery({
 
   const { data: vertexClientsByChainEnv, error } = useQuery({
     queryKey: vertexClientsQueryKey(supportedChainEnvs),
-    queryFn: async () => {
-      const clientPromises = supportedChainEnvs.map(
-        async (chainEnv): Promise<VertexClientWithMetadata> => {
+    queryFn: () => {
+      return supportedChainEnvs.reduce(
+        (prev, chainEnv) => {
           const primaryChain = chainEnvToPrimaryChain[chainEnv];
           const publicClient = getPublicClient(wagmiConfig, {
             chainId: primaryChain.id,
@@ -76,33 +59,16 @@ export function useVertexClientsQuery({
           const useSigner =
             signer && signerChainId && signerChainId === primaryChain.id;
           const signerOrProvider = useSigner ? signer : publicProvider;
-          const client = await createVertexClient(chainEnv, {
+          const client = createVertexClient(chainEnv, {
             signerOrProvider,
           });
 
-          return {
+          prev[chainEnv] = {
             chainEnv,
             primaryChain,
             client,
             provider: publicProvider,
           };
-        },
-      );
-
-      const clientPromiseResults = await Promise.allSettled(clientPromises);
-
-      return clientPromiseResults.reduce(
-        (prev, result, currentIndex) => {
-          if (result.status === 'rejected') {
-            console.error(
-              `[useVertexClientsQuery] Error creating Vertex client for ${supportedChainEnvs[currentIndex]}`,
-              result.reason,
-            );
-            return prev;
-          }
-
-          const clientWithMetadata = result.value;
-          prev[clientWithMetadata.chainEnv] = clientWithMetadata;
           return prev;
         },
         {} as Record<ChainEnv, VertexClientWithMetadata>,
@@ -122,7 +88,7 @@ export function useVertexClientsQuery({
         error,
       );
     } else if (vertexClientsByChainEnv) {
-      console.log(
+      console.debug(
         '[useVertexClientsQuery] Vertex clients initialized',
         Object.keys(vertexClientsByChainEnv),
       );
@@ -152,7 +118,7 @@ export function useVertexClientsQuery({
 
       const signerOrProvider = useSigner ? signer : clientWithMetadata.provider;
 
-      safeSetSignerOrProvider(clientWithMetadata, signerOrProvider);
+      clientWithMetadata.client.setSignerOrProvider(signerOrProvider);
     });
   }, [signer, signerChainId, vertexClientsByChainEnv]);
 

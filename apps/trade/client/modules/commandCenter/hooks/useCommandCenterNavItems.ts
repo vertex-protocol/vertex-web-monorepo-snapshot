@@ -147,7 +147,7 @@ export function useCommandCenterNavItems() {
             {
               label: 'Stake',
               icon: VertexIcon,
-              action: () => show({ type: 'stake_vrtx', params: {} }),
+              action: () => show({ type: 'stake_v2_vrtx', params: {} }),
               actionText: 'Open Dialog',
               searchKey: 'Stake',
               type: 'navItems' as const,

@@ -1,4 +1,4 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { LinkButton } from '@vertex-protocol/web-ui';
 import { TablePlaceholder } from 'client/components/DataTable/TablePlaceholder';
@@ -6,7 +6,7 @@ import { ROUTES } from 'client/modules/app/consts/routes';
 import { TriggerOrderEnableOneClickTradingInfo } from 'client/modules/trading/components/TriggerOrderEnableOneClickTradingInfo';
 import Link from 'next/link';
 
-type TableType =
+export type EmptyPlaceholderTableType =
   | 'trades_history'
   | 'deposits_history'
   | 'withdrawals_history'
@@ -36,7 +36,7 @@ export function EmptyTablePlaceholder({
   type,
   className,
 }: WithClassnames<{
-  type: TableType;
+  type: EmptyPlaceholderTableType;
 }>) {
   const { primaryQuoteToken } = useVertexMetadataContext();
 

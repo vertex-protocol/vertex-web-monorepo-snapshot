@@ -1,5 +1,6 @@
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { Card, Divider } from '@vertex-protocol/web-ui';
+import { MarginInfoPill } from 'client/components/MarginInfoPill';
 import { MarketInfoWithSide } from 'client/components/MarketInfoWithSide';
 import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
@@ -7,11 +8,13 @@ import { useTpSlPositionData } from 'client/modules/trading/tpsl/tpslDialog/hook
 
 interface Props {
   productId: number;
+  isoSubaccountName: string | null;
 }
 
-export function TpSlMetricsCard({ productId }: Props) {
+export function TpSlMetricsCard({ productId, isoSubaccountName }: Props) {
   const tpSlPositionData = useTpSlPositionData({
     productId,
+    isoSubaccountName,
   });
 
   const priceFormatSpecifier = getMarketPriceFormatSpecifier(
@@ -20,26 +23,29 @@ export function TpSlMetricsCard({ productId }: Props) {
 
   return (
     <Card className="bg-surface-1 flex flex-col gap-y-2 rounded px-3.5 py-3">
-      <MarketInfoWithSide
-        isPerp
-        alwaysShowOrderDirection={false}
-        marketName={tpSlPositionData?.metadata?.marketName}
-        iconSrc={tpSlPositionData?.metadata?.icon.asset}
-        amountForSide={tpSlPositionData?.amount}
-      />
-      <div className="flex flex-col gap-2">
-        <ValueWithLabel.Horizontal
-          sizeVariant="xs"
-          label="Est. Current PnL"
-          valueContent={
-            <PnlValueWithPercentage
-              pnlFrac={tpSlPositionData?.pnlInfo.estimatedPnlFrac}
-              pnlUsd={tpSlPositionData?.pnlInfo.estimatedPnlUsd}
-            />
-          }
-          tooltip={{ id: 'estimatedPositionPnL' }}
+      <div className="flex items-center justify-between">
+        <MarketInfoWithSide
+          isPerp
+          alwaysShowOrderDirection={false}
+          marketName={tpSlPositionData?.metadata?.marketName}
+          iconSrc={tpSlPositionData?.metadata?.icon.asset}
+          amountForSide={tpSlPositionData?.amount}
         />
-        <Divider />
+        <MarginInfoPill isoLeverage={tpSlPositionData?.isoLeverage} />
+      </div>
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
+        label="Est. Current PnL"
+        valueContent={
+          <PnlValueWithPercentage
+            pnlFrac={tpSlPositionData?.pnlInfo.estimatedPnlFrac}
+            pnlUsd={tpSlPositionData?.pnlInfo.estimatedPnlUsd}
+          />
+        }
+        tooltip={{ id: 'estimatedPositionPnL' }}
+      />
+      <Divider />
+      <div className="flex flex-col gap-y-1.5">
         <ValueWithLabel.Horizontal
           sizeVariant="xs"
           label="Avg. Entry"

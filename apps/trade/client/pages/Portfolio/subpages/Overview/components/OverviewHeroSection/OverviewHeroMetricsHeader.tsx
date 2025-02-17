@@ -12,7 +12,7 @@ import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/Def
 import { PORTFOLIO_CHART_TIMESPAN_METADATA } from 'client/pages/Portfolio/charts/consts';
 import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface OverviewHeroHeaderProps {
   timespan: ChartTimespan;

@@ -1,4 +1,5 @@
 import { OpenTriggerOrdersTable } from 'client/modules/tables/OpenTriggerOrdersTable';
+import { MobileTradingTabTriggerOrders } from 'client/modules/trading/components/MobileTradingTab/MobileTradingTabTriggerOrders';
 import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
 import { OpenOrdersFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
@@ -35,15 +36,11 @@ export const openTriggerOrdersTableFilters: TradingTabFilters<OpenOrdersFilterOp
   };
 
 export function OpenTriggerOrdersTab({
-  enableUserFiltering,
   productId,
-  defaultFilter,
   isDesktop,
 }: {
-  enableUserFiltering: boolean;
   productId: number | undefined;
-  defaultFilter: MarketFilter | undefined;
-  isDesktop: boolean;
+  isDesktop?: boolean;
 }) {
   const { selectedFilter } =
     useSelectedFilterByTradingTableTabSetting<OpenOrdersFilterOptionID>({
@@ -63,10 +60,14 @@ export function OpenTriggerOrdersTab({
     }
   }, [selectedFilter, productId]);
 
+  if (isDesktop) {
+    return <OpenTriggerOrdersTable marketFilter={userFilter} />;
+  }
+
   return (
-    <OpenTriggerOrdersTable
-      marketFilter={enableUserFiltering ? userFilter : defaultFilter}
-      pageSize={isDesktop ? undefined : 5}
+    <MobileTradingTabTriggerOrders
+      marketFilter={userFilter}
+      tradingTabFilters={openTriggerOrdersTableFilters}
     />
   );
 }

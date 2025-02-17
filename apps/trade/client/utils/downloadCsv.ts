@@ -14,7 +14,7 @@ function downloadBlob(content: string, filename: string, contentType: string) {
 }
 
 export type CsvFileName = `${string}.csv`;
-export type CsvDataItem = Record<string, string>;
+export type CsvDataItem = Record<string, string | undefined>;
 
 /**
  * Downloads an array of objects as a .csv file.

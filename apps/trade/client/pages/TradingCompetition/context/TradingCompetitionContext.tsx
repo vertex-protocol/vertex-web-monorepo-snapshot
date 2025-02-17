@@ -11,8 +11,8 @@ import {
   TRADING_COMPETITION_CONFIGS_BY_KEY,
   TradingCompetitionConfigKey,
 } from 'client/pages/TradingCompetition/configs/configs';
-import { createContext, useContext, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
+import { createContext, use, useMemo } from 'react';
 
 interface TradingCompetitionContextData extends UseTradingCompetitionData {
   config: TradingCompetitionConfig;
@@ -24,7 +24,7 @@ const TradingCompetitionContext = createContext<TradingCompetitionContextData>(
 );
 
 export const useTradingCompetitionContext = () =>
-  useContext(TradingCompetitionContext);
+  use(TradingCompetitionContext);
 
 export function TradingCompetitionContextProvider({
   children,
@@ -57,8 +57,8 @@ export function TradingCompetitionContextProvider({
   }, [config, tradingCompetitionData, primaryChainEnv]);
 
   return (
-    <TradingCompetitionContext.Provider value={data}>
+    <TradingCompetitionContext value={data}>
       {children}
-    </TradingCompetitionContext.Provider>
+    </TradingCompetitionContext>
   );
 }

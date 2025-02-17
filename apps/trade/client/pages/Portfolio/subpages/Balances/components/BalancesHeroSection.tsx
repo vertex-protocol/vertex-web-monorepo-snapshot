@@ -1,6 +1,6 @@
 'use client';
 
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { usePortfolioCharts } from 'client/pages/Portfolio/charts/hooks/usePortfolioCharts';
 import { PortfolioChartTab } from 'client/pages/Portfolio/charts/types';
 import { PortfolioHeroSection } from 'client/pages/Portfolio/components/PortfolioHeroSection';
@@ -35,7 +35,7 @@ export function BalancesHeroSection() {
     setSelectedUntypedTabId,
     areAccountValuesPrivate,
   } = usePortfolioCharts(BALANCES_CHART_TABS);
-  const { data: overview } = useDerivedSubaccountOverview();
+  const { data: overview } = useSubaccountOverview();
 
   return (
     <PortfolioHeroSection.Container>

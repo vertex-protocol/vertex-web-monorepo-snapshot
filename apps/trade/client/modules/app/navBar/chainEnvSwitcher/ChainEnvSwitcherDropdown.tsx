@@ -1,11 +1,9 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { ChainEnv } from '@vertex-protocol/client';
-import { PrimaryChainID, useEVMContext } from '@vertex-protocol/react-client';
 import {
-  joinClassNames,
-  NextImageSrc,
-  WithChildren,
-} from '@vertex-protocol/web-common';
+  useEVMContext,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
+import { joinClassNames, WithChildren } from '@vertex-protocol/web-common';
 import {
   Divider,
   Icons,
@@ -13,115 +11,33 @@ import {
   PrimaryButton,
   Z_INDEX,
 } from '@vertex-protocol/web-ui';
-import { CHAIN_ICON_BY_CHAIN } from 'client/assets/chains/chainIcons';
 import { SwitcherDropdownItemButton } from 'client/components/SwitcherDropdownItemButton';
 import blitzIcon from 'client/modules/app/navBar/chainEnvSwitcher/assets/blitz-chain-env-switcher-icon.svg';
+import { CHAIN_ENV_SWITCHER_OPTIONS } from 'client/modules/app/navBar/chainEnvSwitcher/chainEnvSwitcherOptions';
 import { NavPopoverContentContainer } from 'client/modules/app/navBar/components/NavPopoverContentContainer';
 import { NavPopoverHeader } from 'client/modules/app/navBar/components/NavPopoverHeader';
 import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
-import { clientEnv } from 'common/environment/clientEnv';
 import { startCase } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  arbitrum,
-  arbitrumSepolia,
-  base,
-  baseSepolia,
-  mantle,
-  mantleSepoliaTestnet,
-  sei,
-  seiTestnet,
-} from 'viem/chains';
-
-interface NetworkOption {
-  icon: NextImageSrc;
-  label: string;
-  primaryChainId: PrimaryChainID;
-  chainEnv: ChainEnv;
-}
-
-const NETWORK_OPTIONS = ((): NetworkOption[] => {
-  switch (clientEnv.base.dataEnv) {
-    case 'vertexTestnet':
-      return [
-        {
-          icon: CHAIN_ICON_BY_CHAIN[arbitrumSepolia.id],
-          label: 'Arbitrum',
-          primaryChainId: arbitrumSepolia.id,
-          chainEnv: 'arbitrumTestnet',
-        },
-        {
-          icon: CHAIN_ICON_BY_CHAIN[baseSepolia.id],
-          label: 'Base',
-          primaryChainId: baseSepolia.id,
-          chainEnv: 'baseTestnet',
-        },
-        {
-          icon: CHAIN_ICON_BY_CHAIN[mantleSepoliaTestnet.id],
-          label: 'Mantle',
-          primaryChainId: mantleSepoliaTestnet.id,
-          chainEnv: 'mantleTestnet',
-        },
-        {
-          icon: CHAIN_ICON_BY_CHAIN[seiTestnet.id],
-          label: 'Sei',
-          primaryChainId: seiTestnet.id,
-          chainEnv: 'seiTestnet',
-        },
-      ];
-    case 'vertexMainnet':
-      return [
-        {
-          icon: CHAIN_ICON_BY_CHAIN[arbitrum.id],
-          label: 'Arbitrum',
-          primaryChainId: arbitrum.id,
-          chainEnv: 'arbitrum',
-        },
-        {
-          icon: CHAIN_ICON_BY_CHAIN[base.id],
-          label: 'Base',
-          primaryChainId: base.id,
-          chainEnv: 'base',
-        },
-        {
-          icon: CHAIN_ICON_BY_CHAIN[mantle.id],
-          label: 'Mantle',
-          primaryChainId: mantle.id,
-          chainEnv: 'mantle',
-        },
-        {
-          icon: CHAIN_ICON_BY_CHAIN[sei.id],
-          label: 'Sei',
-          primaryChainId: sei.id,
-          chainEnv: 'sei',
-        },
-      ];
-    default:
-      console.log(
-        '[ChainEnvSwitcherDropdown] Invalid dataEnv for chain switcher',
-        clientEnv.base.dataEnv,
-      );
-      return [];
-  }
-})();
 
 export function ChainEnvSwitcherDropdown() {
   const {
     primaryChain,
-    primaryChainMetadata: { isTestnet },
+    primaryChainEnv,
     setPrimaryChainEnv,
     chainStatus: { isIncorrectChain },
     switchConnectedChain,
   } = useEVMContext();
 
+  const {
+    primaryChainMetadata: { isTestnet, chainIcon },
+    getChainMetadata,
+  } = useVertexMetadataContext();
+
   const triggerChainIcon = (
     <div className="relative">
-      <Image
-        src={CHAIN_ICON_BY_CHAIN[primaryChain.id]}
-        alt={primaryChain.name}
-        className="h-5 w-auto"
-      />
+      <Image src={chainIcon} alt={primaryChainEnv} className="h-5 w-auto" />
       {isIncorrectChain && (
         <Icons.ExclamationMark
           className="bg-warning-muted text-warning absolute -bottom-0.5 -right-0.5 rounded-full"
@@ -159,19 +75,19 @@ export function ChainEnvSwitcherDropdown() {
         <NavPopoverContentContainer
           className={joinClassNames(
             'flex min-w-[180px] flex-col gap-y-2 p-1 text-sm',
-            Z_INDEX.pagePopover,
+            Z_INDEX.popover,
           )}
         >
           {switchConnectedChainCta}
           <Section title="Network">
-            {NETWORK_OPTIONS.map((option) => {
-              const isActive = option.primaryChainId === primaryChain.id;
-
+            {CHAIN_ENV_SWITCHER_OPTIONS.map((option) => {
+              const isActive = option.chainEnv === primaryChainEnv;
+              const { chainIcon } = getChainMetadata(option.chainEnv);
               return (
                 <SwitcherDropdownItemButton
                   key={option.label}
                   startIcon={
-                    <Image src={option.icon} alt="" className="h-4 w-auto" />
+                    <Image src={chainIcon} alt="" className="h-4 w-auto" />
                   }
                   label={option.label}
                   active={isActive}
@@ -189,6 +105,7 @@ export function ChainEnvSwitcherDropdown() {
           </DropdownMenu.Separator>
           <Section title="Apps on other networks">
             <SwitcherDropdownItemButton
+              label="Blitz on Blast"
               as={Link}
               external
               href={
@@ -196,10 +113,7 @@ export function ChainEnvSwitcherDropdown() {
                   ? VERTEX_SPECIFIC_LINKS.blitzTestnetApp
                   : VERTEX_SPECIFIC_LINKS.blitzApp
               }
-              startIcon={
-                <Image src={blitzIcon} alt="" className="h-4 w-auto" />
-              }
-              label="Blitz on Blast"
+              startIcon={<Image src={blitzIcon} alt="" className="size-4" />}
             />
           </Section>
         </NavPopoverContentContainer>
@@ -210,7 +124,7 @@ export function ChainEnvSwitcherDropdown() {
 
 function Section({ title, children }: WithChildren<{ title: string }>) {
   return (
-    <div className="flex flex-col gap-y-1.5">
+    <div className="flex flex-col gap-y-1">
       <DropdownMenu.Label asChild>
         <NavPopoverHeader title={title} />
       </DropdownMenu.Label>

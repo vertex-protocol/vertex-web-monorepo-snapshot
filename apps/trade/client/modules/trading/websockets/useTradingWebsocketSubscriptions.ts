@@ -83,7 +83,8 @@ export function useTradingWebsocketSubscriptions(productId?: number) {
           refetchInterval: false,
         }
       : {
-          staleTime: 5000,
+          // Reset stale time to inherit query client defaults
+          staleTime: undefined,
           refetchInterval: 5000,
         };
 

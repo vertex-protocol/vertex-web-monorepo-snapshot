@@ -1,4 +1,8 @@
-import { KNOWN_CONNECTOR_IDS } from 'client/consts/knownConnectorIds';
+import {
+  getIsConnectorEnabledForChainEnv,
+  KNOWN_CONNECTOR_IDS,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
 import {
   ConnectorMetadata,
   CUSTOM_CONNECTOR_METADATA_BY_ID,
@@ -6,7 +10,6 @@ import {
 import { get, partition, remove } from 'lodash';
 import { useMemo } from 'react';
 import { Connector } from 'wagmi';
-import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 
 interface ConnectorWithMetadata {
   connector: Connector;
@@ -17,15 +20,12 @@ interface ConnectorWithMetadata {
  * A hook to reorder connectors that are given by wagmi, and overrides metadata for known connectors when needed
  */
 export function useResolvedConnectors(connectors: readonly Connector[]) {
-  const { isExodusEnabled } = useEnabledFeatures();
+  const { primaryChainEnv } = useEVMContext();
 
   return useMemo(() => {
-    // Exodus passkeys is only available on Arbitrum and Mantle
-    const filteredConnectors = isExodusEnabled
-      ? connectors
-      : connectors.filter(
-          (connector) => connector.id !== KNOWN_CONNECTOR_IDS.passKeys,
-        );
+    const filteredConnectors = connectors.filter((connector) =>
+      getIsConnectorEnabledForChainEnv(connector.id, primaryChainEnv),
+    );
 
     const [injectedConnectors, otherConnectors] = partition(
       filteredConnectors,
@@ -33,12 +33,14 @@ export function useResolvedConnectors(connectors: readonly Connector[]) {
         return connector.type === 'injected';
       },
     );
+
     // Extract the "generic" injected connector - we only show this if no other injected connector is present
     // We only expect 1 generic injected connector
     const genericInjectedConnectors = remove(
       injectedConnectors,
       (connector) => connector.id === 'injected',
     );
+
     if (injectedConnectors.length === 0) {
       injectedConnectors.push(...genericInjectedConnectors);
     }
@@ -75,5 +77,5 @@ export function useResolvedConnectors(connectors: readonly Connector[]) {
       connectorsWithMetadata,
       coinbaseConnector,
     };
-  }, [connectors, isExodusEnabled]);
+  }, [connectors, primaryChainEnv]);
 }

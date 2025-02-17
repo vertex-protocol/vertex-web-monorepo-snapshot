@@ -1,10 +1,10 @@
-import { useAtom } from 'jotai';
-import { spotPriceInputAtom } from 'client/store/trading/spotTradingStore';
-import { perpPriceInputAtom } from 'client/store/trading/perpTradingStore';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { useCallback } from 'react';
-import { BigDecimal } from '@vertex-protocol/utils';
 import { ProductEngineType } from '@vertex-protocol/contracts';
+import { BigDecimal } from '@vertex-protocol/utils';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
+import { perpPriceInputAtom } from 'client/store/trading/perpTradingStore';
+import { spotPriceInputAtom } from 'client/store/trading/spotTradingStore';
+import { useAtom } from 'jotai';
+import { useCallback } from 'react';
 
 export function useSetPriceInput() {
   const [, setSpotPriceInput] = useAtom(spotPriceInputAtom);

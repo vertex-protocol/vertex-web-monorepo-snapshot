@@ -11,17 +11,17 @@ import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel'
 import { useBridgeEstimatedSubaccountInfoChange } from 'client/modules/collateral/bridge/hooks/useBridgeEstimatedSubaccountInfoChange';
 import { BridgeRouteSummary } from 'client/modules/collateral/bridge/hooks/useBridgeRouteSummary';
 import {
-  BridgeChain,
-  BridgeToken,
-  DestinationBridgeToken,
+  BridgeChainSelectValue,
+  BridgeTokenSelectValue,
+  DestinationBridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
 import Image from 'next/image';
 
 interface Props {
   selectedSourceAmount: BigDecimal | undefined;
-  selectedSourceToken: BridgeToken | undefined;
-  selectedSourceChain: BridgeChain | undefined;
-  selectedDestinationToken: DestinationBridgeToken | undefined;
+  selectedSourceToken: BridgeTokenSelectValue | undefined;
+  selectedSourceChain: BridgeChainSelectValue | undefined;
+  selectedDestinationToken: DestinationBridgeTokenSelectValue | undefined;
   bridgeRouteSummary: BridgeRouteSummary | undefined;
 }
 
@@ -52,7 +52,7 @@ export function BridgeSummaryDisclosure({
                 <img
                   src={selectedSourceChain.externalIconUrl}
                   alt={selectedSourceChain.chainName}
-                  className="size-4 rounded-full"
+                  className="h-4 w-auto rounded-full"
                 />
                 <span>{selectedSourceChain.chainName}</span>
               </div>
@@ -73,7 +73,7 @@ export function BridgeSummaryDisclosure({
               <img
                 src={selectedSourceToken.externalIconUrl}
                 alt={selectedSourceToken.symbol}
-                className="size-4"
+                className="h-4 w-auto"
               />
             </>
           )
@@ -99,7 +99,7 @@ export function BridgeSummaryDisclosure({
                     .asset
                 }
                 alt={selectedDestinationToken.symbol}
-                className="size-4"
+                className="h-4 w-auto"
               />
             </>
           )

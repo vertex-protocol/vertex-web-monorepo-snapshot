@@ -14,6 +14,7 @@ import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTab
 
 interface Props extends TableCellProps {
   productId: number;
+  isoSubaccountName: string | undefined;
   reduceOnlyOrders: PerpPositionsTableItem['reduceOnlyOrders'] | undefined;
   formatSpecifier: string;
 }
@@ -21,6 +22,7 @@ interface Props extends TableCellProps {
 export function PerpTpSlCell({
   productId,
   reduceOnlyOrders,
+  isoSubaccountName,
   className,
   formatSpecifier,
   ...rest
@@ -57,7 +59,13 @@ export function PerpTpSlCell({
             size="sm"
             startIcon={<Icons.PencilSimple size={14} />}
             onClick={getTableButtonOnClickHandler(() =>
-              show({ type: 'tp_sl', params: { productId } }),
+              show({
+                type: 'tp_sl',
+                params: {
+                  productId,
+                  isoSubaccountName: isoSubaccountName ?? null,
+                },
+              }),
             )}
           />
         </>
@@ -83,7 +91,14 @@ export function PerpTpSlCell({
         return {
           startIcon: <Icons.Plus size={14} />,
           message: `Add`,
-          onClick: () => show({ type: 'tp_sl', params: { productId } }),
+          onClick: () =>
+            show({
+              type: 'tp_sl',
+              params: {
+                productId,
+                isoSubaccountName: isoSubaccountName ?? null,
+              },
+            }),
         };
       }
     })();

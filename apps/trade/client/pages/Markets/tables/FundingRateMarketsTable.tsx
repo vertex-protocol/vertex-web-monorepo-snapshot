@@ -4,17 +4,17 @@ import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketP
 import { SeparatedRowDataTable } from 'client/components/DataTable/SeparatedRowDataTable';
 import { getKeyedBigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
+import { FavoriteHeaderCell } from 'client/modules/tables/cells/FavoriteHeaderCell';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
-import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
-import { FundingRateCell } from 'client/pages/Markets/components/FundingRateCell';
 import { FundingRateCountdown } from 'client/pages/Markets/components/FundingRateCountdown';
-import { FundingRatePeriodSelect } from 'client/pages/Markets/components/FundingRatePeriodSelect';
 import {
   FundingRateTableItem,
   useFundingRateMarketsTable,
 } from 'client/pages/Markets/hooks/useFundingRateMarketsTable';
+import { FundingRateCell } from 'client/pages/Markets/tables/components/FundingRateCell';
+import { FundingRatePeriodSelect } from 'client/pages/Markets/tables/components/FundingRatePeriodSelect';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
 import { FundingRateTimespan } from 'client/utils/calcs/funding';
 import { useMemo } from 'react';

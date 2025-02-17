@@ -2,7 +2,7 @@ import { BigDecimal } from '@vertex-protocol/client';
 import { NewPill } from 'client/components/NewPill';
 import { formatNumber } from '@vertex-protocol/react-client';
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { TokenIconMetadata } from '@vertex-protocol/metadata';
+import { TokenIconMetadata } from '@vertex-protocol/react-client';
 import Image from 'next/image';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 

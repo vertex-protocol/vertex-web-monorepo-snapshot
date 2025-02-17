@@ -1,8 +1,8 @@
 import {
-  ARB_CHAIN_IDS,
-  BLAST_CHAIN_IDS,
-  MANTLE_CHAIN_IDS,
-} from 'client/modules/envSpecificContent/consts/chainIds';
+  ARB_CHAIN_ENVS,
+  BLAST_CHAIN_ENVS,
+  MANTLE_CHAIN_ENVS,
+} from '@vertex-protocol/react-client';
 import { RedirectOnInvalidChainEnvListener } from 'client/modules/envSpecificContent/RedirectOnInvalidChainEnvListener';
 import { VaultsPage } from 'client/pages/Vaults/VaultsPage';
 import { Metadata } from 'next';
@@ -11,10 +11,10 @@ export default function Vaults() {
   return (
     <>
       <RedirectOnInvalidChainEnvListener
-        validChainIds={[
-          ...ARB_CHAIN_IDS,
-          ...BLAST_CHAIN_IDS,
-          ...MANTLE_CHAIN_IDS,
+        validChainEnvs={[
+          ...ARB_CHAIN_ENVS,
+          ...BLAST_CHAIN_ENVS,
+          ...MANTLE_CHAIN_ENVS,
         ]}
       />
       <VaultsPage />

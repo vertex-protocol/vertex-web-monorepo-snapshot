@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { ChainEnv, IERC20__factory } from '@vertex-protocol/client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
   usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { QueryState } from 'client/types/QueryState';
 
 import { useMemo } from 'react';

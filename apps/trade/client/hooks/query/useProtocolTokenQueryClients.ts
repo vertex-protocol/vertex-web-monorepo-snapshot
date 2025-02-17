@@ -1,4 +1,4 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useVertexClientForChainEnv } from '@vertex-protocol/react-client';
 import { usePublicClient } from 'wagmi';
 

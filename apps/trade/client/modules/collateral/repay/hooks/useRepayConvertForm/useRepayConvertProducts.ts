@@ -1,11 +1,13 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
-import { LatestMarketPrice } from 'client/hooks/query/markets/types';
-import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
+import {
+  LatestMarketPrice,
+  useAllMarketsLatestPrices,
+} from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import {
   SpotBalanceItem,
   useSpotBalances,
 } from 'client/hooks/subaccount/useSpotBalances';
-import { RepayConvertProduct } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
+import { RepayConvertProductSelectValue } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
 import { sortByDisplayedAssetValue } from 'client/modules/collateral/utils/sortByDisplayedAssetValue';
 import { useMemo } from 'react';
 
@@ -21,24 +23,25 @@ export function useRepayConvertProducts({
   const { balances } = useSpotBalances();
   const { data: allMarketPrices } = useAllMarketsLatestPrices();
 
-  const availableRepayProducts = useMemo((): RepayConvertProduct[] => {
-    return (
-      balances
-        ?.filter(
-          // Only negative balances with quote = primary quote
-          (balance) =>
-            balance.amount.isNegative() &&
-            balance.metadata.quoteProductId === QUOTE_PRODUCT_ID,
-        )
-        .map((balance) => {
-          return toRepayConvertProduct(
-            balance,
-            false,
-            allMarketPrices?.[balance.productId],
-          );
-        }) ?? []
-    ).sort(sortByDisplayedAssetValue);
-  }, [allMarketPrices, balances]);
+  const availableRepayProducts =
+    useMemo((): RepayConvertProductSelectValue[] => {
+      return (
+        balances
+          ?.filter(
+            // Only negative balances with quote = primary quote
+            (balance) =>
+              balance.amount.isNegative() &&
+              balance.metadata.quoteProductId === QUOTE_PRODUCT_ID,
+          )
+          .map((balance) => {
+            return toRepayConvertProduct(
+              balance,
+              false,
+              allMarketPrices?.[balance.productId],
+            );
+          }) ?? []
+      ).sort(sortByDisplayedAssetValue);
+    }, [allMarketPrices, balances]);
 
   const selectedRepayProduct = useMemo(() => {
     return availableRepayProducts.find(
@@ -47,35 +50,36 @@ export function useRepayConvertProducts({
   }, [availableRepayProducts, repayProductIdInput]);
 
   // Given the selected repay product, what are the available source products?
-  const availableSourceProducts = useMemo((): RepayConvertProduct[] => {
-    if (!selectedRepayProduct) {
-      return [];
-    }
+  const availableSourceProducts =
+    useMemo((): RepayConvertProductSelectValue[] => {
+      if (!selectedRepayProduct) {
+        return [];
+      }
 
-    return (
-      balances
-        ?.filter((balance) => {
-          // Only positive balances with quote = primary quote are allowed
-          if (
-            balance.amount.lte(0) ||
-            balance.metadata.quoteProductId !== QUOTE_PRODUCT_ID
-          ) {
-            return false;
-          }
-          // If repaying USDC, can't sell USDC, if repaying asset, can only sell USDC
-          return selectedRepayProduct.productId === QUOTE_PRODUCT_ID
-            ? balance.productId !== QUOTE_PRODUCT_ID
-            : balance.productId === QUOTE_PRODUCT_ID;
-        })
-        .map((balance) => {
-          return toRepayConvertProduct(
-            balance,
-            true,
-            allMarketPrices?.[balance.productId],
-          );
-        }) ?? []
-    );
-  }, [selectedRepayProduct, balances, allMarketPrices]);
+      return (
+        balances
+          ?.filter((balance) => {
+            // Only positive balances with quote = primary quote are allowed
+            if (
+              balance.amount.lte(0) ||
+              balance.metadata.quoteProductId !== QUOTE_PRODUCT_ID
+            ) {
+              return false;
+            }
+            // If repaying USDC, can't sell USDC, if repaying asset, can only sell USDC
+            return selectedRepayProduct.productId === QUOTE_PRODUCT_ID
+              ? balance.productId !== QUOTE_PRODUCT_ID
+              : balance.productId === QUOTE_PRODUCT_ID;
+          })
+          .map((balance) => {
+            return toRepayConvertProduct(
+              balance,
+              true,
+              allMarketPrices?.[balance.productId],
+            );
+          }) ?? []
+      );
+    }, [selectedRepayProduct, balances, allMarketPrices]);
 
   const selectedSourceProduct = useMemo(() => {
     return availableSourceProducts.find(
@@ -95,7 +99,7 @@ function toRepayConvertProduct(
   balance: SpotBalanceItem,
   isSourceProduct: boolean,
   marketPrices: LatestMarketPrice | undefined,
-): RepayConvertProduct {
+): RepayConvertProductSelectValue {
   const token = balance.metadata.token;
   const amountBorrowed = balance.amountBorrowed.abs();
   const amountDeposited = balance.amountDeposited;
@@ -104,6 +108,7 @@ function toRepayConvertProduct(
     : amountBorrowed;
 
   return {
+    selectId: token.symbol,
     productId: balance.productId,
     icon: token.icon,
     marketName: balance.metadata.marketName,

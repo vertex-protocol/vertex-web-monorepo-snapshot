@@ -4,7 +4,7 @@ import {
 } from '@vertex-protocol/react-client';
 import { ChartTooltip } from 'client/components/ChartTooltip';
 import { FundingChartItem } from 'client/modules/trading/chart/funding/useFundingChart';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import { first } from 'lodash';
 import { TooltipProps } from 'recharts';
 import {

@@ -8,7 +8,7 @@ import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabe
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { formatNumber } from '@vertex-protocol/react-client';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import { isTpSlOrderSize } from 'client/modules/trading/tpsl/utils/isTpSlOrderSize';
 
 interface CancelOrderNotificationProps extends ToastProps {

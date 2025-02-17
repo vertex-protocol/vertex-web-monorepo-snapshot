@@ -3,7 +3,7 @@ import {
   useMarketSwitcher,
   UseMarketSwitcher,
 } from 'client/modules/trading/hooks/useMarketSwitcher/useMarketSwitcher';
-import { MarketCategory } from '@vertex-protocol/metadata';
+import { MarketCategory } from '@vertex-protocol/react-client';
 import { useMemo, useState } from 'react';
 
 interface UseTradingMarketSwitcher extends UseMarketSwitcher {

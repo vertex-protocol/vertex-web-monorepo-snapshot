@@ -11,6 +11,7 @@ import { DataTable } from 'client/components/DataTable/DataTable';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
+import { MarginModeTypeCell } from 'client/modules/tables/cells/MarginModeTypeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { PercentageCell } from 'client/modules/tables/cells/PercentageCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
@@ -51,7 +52,7 @@ export const PaginatedFundingPaymentsTable = ({
       }),
       columnHelper.accessor('marketInfo', {
         header: ({ header }) => (
-          <HeaderCell header={header}>Market / Side</HeaderCell>
+          <HeaderCell header={header}>Market/Side</HeaderCell>
         ),
         cell: ({ getValue }) => {
           const marketInfo = getValue<FundingPaymentsTableItem['marketInfo']>();
@@ -87,7 +88,17 @@ export const PaginatedFundingPaymentsTable = ({
         },
         enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-36',
+          cellContainerClassName: 'w-24',
+        },
+      }),
+      columnHelper.accessor('marginModeType', {
+        header: ({ header }) => <HeaderCell header={header}>Type</HeaderCell>,
+        cell: (context) => {
+          return <MarginModeTypeCell marginModeType={context.getValue()} />;
+        },
+        enableSorting: false,
+        meta: {
+          cellContainerClassName: 'w-20',
         },
       }),
       columnHelper.accessor('notionalValueUsd', {

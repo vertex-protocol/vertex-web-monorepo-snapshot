@@ -1,5 +1,7 @@
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { LinkButton } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
@@ -8,26 +10,24 @@ import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { FavoriteHeaderCell } from 'client/modules/tables/cells/FavoriteHeaderCell';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { PercentageChangeCell } from 'client/modules/tables/cells/PercentageChangeCell';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
-import { FundingRateCell } from 'client/pages/Markets/components/FundingRateCell';
-import { FundingRatePeriodSelect } from 'client/pages/Markets/components/FundingRatePeriodSelect';
 import {
   PerpMarketTableItem,
   usePerpMarketsTable,
 } from 'client/pages/Markets/hooks/usePerpMarketsTable';
+import { FundingRateCell } from 'client/pages/Markets/tables/components/FundingRateCell';
+import { FundingRatePeriodSelect } from 'client/pages/Markets/tables/components/FundingRatePeriodSelect';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
 import { FundingRateTimespan } from 'client/utils/calcs/funding';
 import { useMemo } from 'react';
-import { LinkButton } from '@vertex-protocol/web-ui';
 
 const columnHelper = createColumnHelper<PerpMarketTableItem>();
 const FUNDING_PERIOD_SORT_KEY: FundingRateTimespan = 'hourly';
@@ -115,10 +115,7 @@ export function PerpMarketsTable({ query }: { query: string }) {
       columnHelper.accessor('volume24h', {
         header: ({ header }) => (
           <HeaderCell header={header}>
-            24h Vol.{' '}
-            <span className="text-text-tertiary">
-              {primaryQuoteToken.symbol}
-            </span>
+            24h Volume {primaryQuoteToken.symbol}
           </HeaderCell>
         ),
         cell: (context) => (
@@ -169,10 +166,7 @@ export function PerpMarketsTable({ query }: { query: string }) {
       columnHelper.accessor('openInterestQuote', {
         header: ({ header }) => (
           <HeaderCell header={header}>
-            Open Int.{' '}
-            <span className="text-text-tertiary">
-              {primaryQuoteToken.symbol}
-            </span>
+            Open Int. {primaryQuoteToken.symbol}
           </HeaderCell>
         ),
         cell: (context) => (

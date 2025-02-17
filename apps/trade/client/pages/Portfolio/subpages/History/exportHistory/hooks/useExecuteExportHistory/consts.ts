@@ -9,6 +9,8 @@ import {
 
 export const EXPORT_HISTORY_QUERY_PAGE_SIZE = 100;
 
+export const EXPORT_HISTORY_QUERY_DELAY_MILLIS = 100;
+
 /*
  * CSV Headings
  * IMPORTANT: These must be declared in the order that the columns should appear in the CSV.
@@ -21,6 +23,12 @@ const COLLATERAL_HEADINGS: HeadingsForItem<ExportHistoryCollateralItem> = {
   time: 'Time',
   asset: 'Asset',
   balanceChange: 'Balance Change',
+};
+
+const TRANSFER_HEADINGS: HeadingsForItem<ExportHistoryCollateralItem> = {
+  ...COLLATERAL_HEADINGS,
+  fromSubaccountName: 'From',
+  toSubaccountName: 'To',
 };
 
 const LIQUIDATION_HEADINGS: HeadingsForItem<ExportHistoryLiquidationItem> = {
@@ -44,6 +52,7 @@ const TRADES_HEADINGS: HeadingsForItem<ExportHistoryTradeItem> = {
   time: 'Time',
   marketName: 'Market',
   orderType: 'Type',
+  marginModeType: 'Margin Type',
   amount: 'Amount',
   avgPrice: 'Avg. Price',
   fee: 'Fee',
@@ -53,6 +62,7 @@ const TRADES_HEADINGS: HeadingsForItem<ExportHistoryTradeItem> = {
 const REALIZED_PNL_HEADINGS: HeadingsForItem<ExportHistoryRealizedPnlItem> = {
   time: 'Time',
   marketName: 'Market',
+  marginModeType: 'Margin Type',
   preEventBalanceAmount: 'Pre-Fill Balance',
   filledAmountAbs: 'Size',
   entryPrice: 'Entry',
@@ -63,7 +73,7 @@ const REALIZED_PNL_HEADINGS: HeadingsForItem<ExportHistoryRealizedPnlItem> = {
 export const EXPORT_HISTORY_HEADINGS_BY_TYPE = {
   deposits: COLLATERAL_HEADINGS,
   withdrawals: COLLATERAL_HEADINGS,
-  transfers: COLLATERAL_HEADINGS,
+  transfers: TRANSFER_HEADINGS,
   lp: LP_HEADINGS,
   liquidations: LIQUIDATION_HEADINGS,
   realized_pnl: REALIZED_PNL_HEADINGS,

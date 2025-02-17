@@ -3,6 +3,7 @@ import {
   HANDLED_BUTTON_USER_STATE_ERRORS,
   useButtonUserStateErrorProps,
 } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { useIsSmartContractWalletConnected } from 'client/hooks/util/useIsSmartContractWalletConnected';
 import { RememberMeSwitch } from 'client/modules/singleSignatureSessions/components/RememberMeSwitch';
 import { SignatureModeDisable1CTSubmitButton } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeDisable1CTDialogContent/SignatureModeDisable1CTSubmitButton';
 import { SignatureModeNumSwitchesRemaining } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeDisable1CTDialogContent/SignatureModeNumSwitchesRemaining';
@@ -10,7 +11,7 @@ import { SignatureModeSaveRememberMeButton } from 'client/modules/singleSignatur
 import { SignatureModeUserStateWarning } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeDisable1CTDialogContent/SignatureModeUserWarning';
 import { useSignatureModeDisable1CTDialogContent } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeDisable1CTDialogContent/useSignatureModeDisable1CTDialogContent';
 import { useSignatureModeRememberMe } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeDisable1CTDialogContent/useSignatureModeRememberMe';
-import { SignatureModeSlowModeEntrypoint } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeEntrypoint';
+import { SignatureModeInfo } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeInfo';
 
 interface Props {
   onDisableSuccess(): void;
@@ -28,6 +29,7 @@ export function SignatureModeDisable1CTDialogContent({
   } = useSignatureModeDisable1CTDialogContent({
     onDisableSuccess,
   });
+  const isSmartContractWalletConnected = useIsSmartContractWalletConnected();
 
   const {
     buttonState: rememberMeButtonState,
@@ -63,26 +65,26 @@ export function SignatureModeDisable1CTDialogContent({
           buttonState={disable1CTButtonState}
           onSubmit={onSubmitDisable1CT}
         />
+        <SignatureModeNumSwitchesRemaining
+          numSwitchesRemaining={numSwitchesRemaining}
+          totalTxLimit={totalTxLimit}
+        />
       </div>
     );
   })();
 
   return (
     <>
-      <div className="text-text-tertiary flex flex-col gap-y-2">
-        <p>
-          Enjoy a seamless trading experience with 1-Click Trading. Sign one
-          approval transaction at the start of your trading session and you
-          won’t need to sign again.
-        </p>
-        <SignatureModeSlowModeEntrypoint />
-      </div>
-      <SignatureModeUserStateWarning userStateWarning={userStateWarning} />
-      {actionContent}
-      <SignatureModeNumSwitchesRemaining
-        numSwitchesRemaining={numSwitchesRemaining}
-        totalTxLimit={totalTxLimit}
+      <SignatureModeInfo
+        isSmartContractWalletConnected={isSmartContractWalletConnected}
       />
+      {/*Only show the setup content if the user is using a normal wallet, otherwise, divert their attention to the slow mode settings in SignatureModeInfo*/}
+      {!isSmartContractWalletConnected && (
+        <>
+          <SignatureModeUserStateWarning userStateWarning={userStateWarning} />
+          {actionContent}
+        </>
+      )}
     </>
   );
 }

@@ -7,6 +7,7 @@ import {
   OrderFormError,
   OrderFormValidators,
 } from 'client/modules/trading/types';
+import { roundToIncrement } from 'client/utils/rounding';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -14,6 +15,7 @@ interface Params {
   formError: OrderFormError | undefined;
   validators: OrderFormValidators;
   minAssetOrderSize: BigDecimal | undefined;
+  lastFillPrice: BigDecimal | undefined;
   inputIncrements: {
     price: BigDecimal | undefined;
     size: BigDecimal | undefined;
@@ -23,6 +25,7 @@ interface Params {
 export function useOrderFormInputs({
   formError,
   validators,
+  lastFillPrice,
   inputIncrements,
   minAssetOrderSize,
 }: Params) {
@@ -92,6 +95,16 @@ export function useOrderFormInputs({
     [setValue],
   );
 
+  // Show `Last` price button for limit orders
+  const showLastPriceButton = priceType === 'limit' && !!lastFillPrice;
+  const onLastPriceClick = useCallback(() => {
+    if (!lastFillPrice || !inputIncrements.price) return;
+    setValue(
+      'price',
+      roundToIncrement(lastFillPrice, inputIncrements.price).toString(),
+    );
+  }, [inputIncrements.price, lastFillPrice, setValue]);
+
   return {
     assetAmountInputRegister,
     quoteAmountInputRegister,
@@ -108,5 +121,7 @@ export function useOrderFormInputs({
     },
     onFractionChange,
     onFocusAmountSource,
+    showLastPriceButton,
+    onLastPriceClick,
   };
 }

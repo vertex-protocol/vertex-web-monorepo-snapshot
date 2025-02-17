@@ -1,4 +1,4 @@
-import { MarketCategory } from '@vertex-protocol/metadata';
+import { MarketCategory } from '@vertex-protocol/react-client';
 
 export type BalanceAmountMarketFilter = 'nonzero' | 'positive' | 'negative';
 

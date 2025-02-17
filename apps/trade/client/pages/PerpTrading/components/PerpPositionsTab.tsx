@@ -1,4 +1,5 @@
 import { PerpPositionsTable } from 'client/modules/tables/PerpPositionsTable';
+import { MobileTradingTabPositions } from 'client/modules/trading/components/MobileTradingTab/MobileTradingTabPositions/MobileTradingTabPositions';
 import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
 import { PositionsFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
@@ -27,13 +28,11 @@ export const positionsTableFilters: TradingTabFilters<PositionsFilterOptionID> =
   };
 
 export function PerpPositionsTab({
-  enableUserFiltering,
-  defaultFilter,
   productId,
+  isDesktop,
 }: {
-  enableUserFiltering: boolean;
-  defaultFilter: MarketFilter | undefined;
   productId: number | undefined;
+  isDesktop?: boolean;
 }) {
   const { selectedFilter } =
     useSelectedFilterByTradingTableTabSetting<PositionsFilterOptionID>({
@@ -49,9 +48,15 @@ export function PerpPositionsTab({
     }
   }, [selectedFilter, productId]);
 
+  if (isDesktop) {
+    return <PerpPositionsTable marketFilter={userFilter} />;
+  }
+
   return (
-    <PerpPositionsTable
-      marketFilter={enableUserFiltering ? userFilter : defaultFilter}
+    <MobileTradingTabPositions
+      marketFilter={userFilter}
+      // If there's no `productId` we're currently on a spot market and ignore user filtering.
+      tradingTabFilters={productId ? positionsTableFilters : undefined}
     />
   );
 }

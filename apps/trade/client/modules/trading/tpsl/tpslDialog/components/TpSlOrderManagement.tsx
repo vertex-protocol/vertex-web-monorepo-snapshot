@@ -1,16 +1,21 @@
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
+import { TpSlTriggerCriteriaPriceTypeSelect } from 'client/modules/trading/tpsl/components/TpSlTriggerCriteriaPriceTypeSelect';
 import { TpSlCancelOrderButton } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlCancelOrderButton';
 import { TpSlOrderInfo } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlOrderInfo/TpSlOrderInfo';
-import { TpSlTriggerCriteriaPriceTypeSelect } from 'client/modules/trading/tpsl/components/TpSlTriggerCriteriaPriceTypeSelect';
 import { TpSlPlaceOrderForm } from 'client/modules/trading/tpsl/tpslDialog/components/TpSlPlaceOrderForm/TpSlPlaceOrderForm';
 import { useTpSlDialogOrderForm } from 'client/modules/trading/tpsl/tpslDialog/hooks/useTpSlDialogOrderForm';
 
 interface Props {
   productId: number;
+  isoSubaccountName: string | null;
   isTakeProfit: boolean;
 }
 
-export function TpSlOrderManagement({ productId, isTakeProfit }: Props) {
+export function TpSlOrderManagement({
+  productId,
+  isTakeProfit,
+  isoSubaccountName,
+}: Props) {
   const {
     form,
     formError,
@@ -28,7 +33,7 @@ export function TpSlOrderManagement({ productId, isTakeProfit }: Props) {
     priceIncrement,
     positionSize,
     marketName,
-  } = useTpSlDialogOrderForm({ productId, isTakeProfit });
+  } = useTpSlDialogOrderForm({ productId, isTakeProfit, isoSubaccountName });
 
   return (
     <div className="text-text-secondary flex flex-col gap-y-2">

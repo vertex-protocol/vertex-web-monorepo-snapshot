@@ -13,7 +13,7 @@ interface Props extends WithChildren<WithClassnames> {
 export function WarningPanel({ title, children, className }: Props) {
   const warningTitle = (
     <span className="text-text-primary flex items-center gap-x-1.5">
-      <Icons.WarningCircle className="bg-surface-2 size-5 rounded-full" />
+      <Icons.WarningCircle className="bg-surface-2 size-4 rounded-full" />
       {title}
     </span>
   );
@@ -21,7 +21,7 @@ export function WarningPanel({ title, children, className }: Props) {
   return (
     <div
       className={mergeClassNames(
-        'flex flex-col items-start gap-y-2',
+        'flex flex-col items-start gap-y-1.5',
         'rounded px-3 py-2',
         'text-text-secondary text-xs',
         'bg-surface-1',

@@ -1,14 +1,16 @@
 import { ProductEngineType } from '@vertex-protocol/client';
-import { BigDecimal } from '@vertex-protocol/utils';
+import {
+  MarketCategory,
+  TokenIconMetadata,
+} from '@vertex-protocol/react-client';
 import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { BigDecimal } from '@vertex-protocol/utils';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
-import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { MarketCategory } from '@vertex-protocol/metadata';
-import { TokenIconMetadata } from '@vertex-protocol/metadata';
-import { useMemo } from 'react';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { useMemo } from 'react';
 
 export interface PositionsTableItem {
   productId: number;
@@ -24,8 +26,8 @@ export interface PositionsTableItem {
     notionalValueUsd: BigDecimal;
   };
   pnlInfo: {
-    estimatedPnlUsd: BigDecimal;
-    estimatedPnlFrac: BigDecimal;
+    estimatedPnlUsd: BigDecimal | undefined;
+    estimatedPnlFrac: BigDecimal | undefined;
   };
   sizeFormatSpecifier: string;
   searchKey: string;
@@ -74,7 +76,10 @@ export const useCommandCenterPositionsItems = ({ marketCategory }: Params) => {
           return () =>
             show({
               type: 'close_position',
-              params: { productId: position.productId },
+              params: {
+                productId: position.productId,
+                isoSubaccountName: position.iso?.subaccountName,
+              },
             });
         })();
 

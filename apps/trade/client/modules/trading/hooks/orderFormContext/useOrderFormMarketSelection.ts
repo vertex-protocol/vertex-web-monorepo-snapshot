@@ -3,11 +3,11 @@ import {
   PerpStaticMarketData,
   SpotStaticMarketData,
   StaticMarketQuoteData,
-  useAllMarketsStaticData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+} from 'client/hooks/markets/marketsStaticData/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { first } from 'lodash';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface UseOrderFormMarketSelection<TMarketType extends ProductEngineType> {
@@ -36,7 +36,7 @@ export function useOrderFormMarketSelection<
   const [currentMarketId, setCurrentMarketId] = useState<number>();
 
   const pushTradePage = usePushTradePage();
-  const sanitizedRouteMarketName = useMarketNameFromRoute();
+  const sanitizedSearchParamsMarketName = useMarketNameFromSearchParams();
 
   const availableMarketsByProductId = (
     marketType === ProductEngineType.SPOT
@@ -67,23 +67,26 @@ export function useOrderFormMarketSelection<
     ? allMarketsStaticData?.quotes?.[currentMarketId]
     : undefined;
 
-  const routeProductId = useMemo(() => {
+  const searchParamsProductId = useMemo(() => {
     return availableMarkets?.find(
       (mkt) =>
         mkt.metadata.marketName.toLowerCase() ===
-        sanitizedRouteMarketName?.toLowerCase(),
+        sanitizedSearchParamsMarketName?.toLowerCase(),
     )?.productId;
-  }, [availableMarkets, sanitizedRouteMarketName]);
+  }, [availableMarkets, sanitizedSearchParamsMarketName]);
 
   useEffect(() => {
-    // If we have a route product ID and it's different from the current market, set the current market using the route as source of truth
-    if (routeProductId && currentMarket?.productId !== routeProductId) {
-      setCurrentMarket(routeProductId);
+    // If we have a search params product ID and it's different from the current market, set the current market using the search params as source of truth
+    if (
+      searchParamsProductId &&
+      currentMarket?.productId !== searchParamsProductId
+    ) {
+      setCurrentMarket(searchParamsProductId);
       return;
     }
     // If there isn't a valid current market and we have market data, default to the first available market
     // We need to use pushTradePage here because we want the URL to update to reflect the selected market
-    // This is important in chain switching, let's say you are on `spot/wBTC-USDC`, then switch chain to Mantle, where this market doesn't exist
+    // This is important in chain switching, let's say you are on `spot?market=wBTC-USDC`, then switch chain to Mantle, where this market doesn't exist
     // Then, it is insufficient to just update the selected market, we also need to update the URL to reflect the new market
     if (!currentMarket && availableMarkets) {
       const firstMarket = first(availableMarkets);
@@ -99,7 +102,7 @@ export function useOrderFormMarketSelection<
     currentMarket,
     currentMarketId,
     pushTradePage,
-    routeProductId,
+    searchParamsProductId,
     setCurrentMarket,
   ]);
 
@@ -109,7 +112,9 @@ export function useOrderFormMarketSelection<
   };
 }
 
-function useMarketNameFromRoute() {
-  const { marketName } = useParams();
-  return first(marketName)?.toLowerCase();
+function useMarketNameFromSearchParams() {
+  const searchParams = useSearchParams();
+  const marketName = searchParams.get('market');
+
+  return marketName?.toLowerCase();
 }

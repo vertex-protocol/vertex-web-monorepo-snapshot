@@ -1,5 +1,6 @@
 import { ButtonHelperInfo, LinkButton } from '@vertex-protocol/web-ui';
 import { ActionSummary } from 'client/components/ActionSummary';
+import { EnableBorrowsSwitch } from 'client/components/EnableBorrowsSwitch';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
 import { usePushHistoryPage } from 'client/hooks/ui/navigation/usePushHistoryPage';
@@ -7,8 +8,8 @@ import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { CollateralSelectInput } from 'client/modules/collateral/components/CollateralSelectInput';
 import { DelayedWithdrawalWarning } from 'client/modules/collateral/components/DelayedWithdrawalWarning';
+import { SlowMode1CTSetupPrompt } from 'client/modules/collateral/components/SlowMode1CTSetupPrompt';
 import { BorrowingFundsDismissible } from 'client/modules/collateral/withdraw/components/BorrowingFundsDismissible';
-import { EnableBorrowsSwitch } from 'client/modules/collateral/withdraw/components/EnableBorrowsSwitch';
 import { WithdrawButton } from 'client/modules/collateral/withdraw/components/WithdrawButton';
 import { WithdrawInputSummary } from 'client/modules/collateral/withdraw/components/WithdrawInputSummary';
 import { WithdrawSummaryDisclosure } from 'client/modules/collateral/withdraw/components/WithdrawSummaryDisclosure';
@@ -33,6 +34,7 @@ export function WithdrawDialog({
     formError,
     suggestBorrowing,
     showGasWarning,
+    showOneClickTradingPrompt,
     selectedProduct,
     selectedProductMaxWithdrawable,
     availableProducts,
@@ -62,6 +64,7 @@ export function WithdrawDialog({
       <BaseAppDialog.Body asChild>
         <Form onSubmit={onSubmit}>
           <BorrowingFundsDismissible enableBorrows={enableBorrows} />
+          {showOneClickTradingPrompt && <SlowMode1CTSetupPrompt />}
           <div className="flex flex-col gap-y-3.5">
             <EnableBorrowsSwitch
               enableBorrows={enableBorrows}
@@ -114,9 +117,9 @@ export function WithdrawDialog({
               />
             </ActionSummary.Container>
             {buttonState === 'success' && (
-              <ButtonHelperInfo.Content className="flex flex-col gap-y-3">
+              <ButtonHelperInfo.Content>
                 Withdrawals will be submitted on-chain once the gas threshold is{' '}
-                reached.
+                reached.{' '}
                 <LinkButton
                   colorVariant="primary"
                   className="w-max self-start"

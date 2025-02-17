@@ -1,16 +1,16 @@
 import {
-  Subaccount,
+  AppSubaccount,
   UpdateSigningPreferenceFn,
 } from 'client/context/subaccount/types';
 import { SubaccountSigningPreference } from 'client/modules/singleSignatureSessions/types';
 import { SubaccountProfile } from 'client/modules/subaccounts/types';
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 export interface SubaccountContextData {
   /**
    * Subaccount Name defaults to `default`.
    */
-  currentSubaccount: Subaccount;
+  currentSubaccount: AppSubaccount;
   /**
    * Returns the current subaccount's saved profile or the default
    * profile if not found.
@@ -49,4 +49,4 @@ export const SubaccountContext = createContext<SubaccountContextData>(
   {} as SubaccountContextData,
 );
 
-export const useSubaccountContext = () => useContext(SubaccountContext);
+export const useSubaccountContext = () => use(SubaccountContext);

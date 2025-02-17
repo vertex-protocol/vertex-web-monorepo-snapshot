@@ -1,114 +1,134 @@
 import {
+  SelectItemProps as BaseSelectItemProps,
+  SelectTriggerProps as BaseSelectTriggerProps,
   Root,
   SelectContent,
   SelectContentProps,
   SelectItem,
   SelectItemIndicator,
-  SelectItemProps,
   SelectTrigger,
   SelectViewport,
 } from '@radix-ui/react-select';
 import {
-  WithChildren,
-  WithClassnames,
+  joinClassNames,
   mergeClassNames,
+  WithRef,
 } from '@vertex-protocol/web-common';
-import { ReactNode, forwardRef } from 'react';
-import { getStateOverlayClassNames } from '../../utils';
+import { ReactNode } from 'react';
+import { Merge } from 'type-fest';
 import {
-  DropdownPillTrigger,
-  DropdownTrigger,
-  DropdownTriggerProps,
-} from '../DropdownTrigger';
-import { ScrollShadowsContainer } from '../ScrollShadowsContainer';
+  DropdownUi,
+  DropdownUiItemProps,
+  DropdownUiTriggerProps,
+} from '../DropdownUi/DropdownUi';
 import { Icons } from '../Icons';
+import { ScrollShadowsContainer } from '../ScrollShadowsContainer';
 
-export interface SelectTriggerProps
-  extends Omit<DropdownTriggerProps, 'trigger'> {}
+export type SelectTriggerProps = Merge<
+  DropdownUiTriggerProps,
+  BaseSelectTriggerProps
+>;
 
-const Trigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  function Trigger(props, ref) {
-    return <DropdownTrigger {...props} trigger={SelectTrigger} ref={ref} />;
-  },
-);
+function Trigger({
+  disabled,
+  borderRadiusVariant,
+  stateClassNameOverrides,
+  endIcon,
+  className,
+  children,
+  ...rest
+}: WithRef<SelectTriggerProps, HTMLButtonElement>) {
+  return (
+    <SelectTrigger asChild {...rest}>
+      <DropdownUi.Trigger
+        className={mergeClassNames('bg-surface-1', className)}
+        disabled={disabled}
+        borderRadiusVariant={borderRadiusVariant}
+        stateClassNameOverrides={stateClassNameOverrides}
+        endIcon={endIcon}
+      >
+        {children}
+      </DropdownUi.Trigger>
+    </SelectTrigger>
+  );
+}
 
-const PillTrigger = forwardRef<
-  HTMLButtonElement,
-  Omit<SelectTriggerProps, 'stateClassNameOverrides'>
->(function PillTrigger(props, ref) {
-  return <DropdownPillTrigger {...props} trigger={Trigger} ref={ref} />;
-});
+function PillTrigger({
+  children,
+  className,
+  disabled,
+  endIcon,
+  stateClassNameOverrides,
+  ...rest
+}: WithRef<SelectTriggerProps, HTMLButtonElement>) {
+  return (
+    <SelectTrigger asChild {...rest}>
+      <DropdownUi.PillTrigger
+        className={className}
+        disabled={disabled}
+        stateClassNameOverrides={stateClassNameOverrides}
+        endIcon={endIcon}
+      >
+        {children}
+      </DropdownUi.PillTrigger>
+    </SelectTrigger>
+  );
+}
 
-export interface SelectOptionsProps
-  extends WithChildren<WithClassnames<SelectContentProps>> {
+export interface SelectOptionsProps extends SelectContentProps {
   header?: ReactNode;
   viewportClassName?: string;
 }
 
-const Options = forwardRef<HTMLDivElement, SelectOptionsProps>(function Options(
-  {
-    children,
-    header,
-    className,
-    position = 'popper',
-    viewportClassName,
-    ...rest
-  },
-  ref,
-) {
+function Options({
+  children,
+  header,
+  className,
+  position = 'popper',
+  viewportClassName,
+  ...rest
+}: WithRef<SelectOptionsProps, HTMLDivElement>) {
   return (
-    <SelectContent
-      className={mergeClassNames(
-        'bg-surface-2 z-10 rounded p-1',
-        'border-stroke shadow-elevation border',
-        className,
-      )}
-      position={position}
-      sideOffset={5}
-      ref={ref}
-      {...rest}
-    >
-      {header}
-      <ScrollShadowsContainer
-        asChild
-        ref={(ref) => {
-          // Hack: https://github.com/radix-ui/primitives/issues/1658#issuecomment-1695422917
-          ref?.addEventListener('touchend', (e) => e.preventDefault());
-        }}
+    <SelectContent asChild position={position} sideOffset={5} {...rest}>
+      <DropdownUi.Content
+        header={header}
+        className={joinClassNames(
+          'min-w-[var(--radix-select-trigger-width)] rounded',
+          className,
+        )}
       >
-        <SelectViewport className={viewportClassName}>
-          {children}
-        </SelectViewport>
-      </ScrollShadowsContainer>
+        {/*Smaller shadow as selects are usually in smaller containers*/}
+        <ScrollShadowsContainer asChild shadowSize={10}>
+          <SelectViewport
+            className={joinClassNames('flex flex-col', viewportClassName)}
+          >
+            {children}
+          </SelectViewport>
+        </ScrollShadowsContainer>
+      </DropdownUi.Content>
     </SelectContent>
   );
-});
+}
 
-export interface SelectOptionProps extends WithClassnames<SelectItemProps> {
+export interface SelectOptionProps
+  extends BaseSelectItemProps,
+    Pick<DropdownUiItemProps, 'startIcon' | 'endIcon'> {
   selectionStartIcon?: ReactNode;
   selectionEndIcon?: ReactNode;
   withSelectedCheckmark?: boolean;
 }
 
-const Option = forwardRef<HTMLDivElement, SelectOptionProps>(function Option(
-  {
-    children,
-    value,
-    disabled,
-    className,
-    selectionStartIcon,
-    selectionEndIcon,
-    withSelectedCheckmark = true,
-    ...rest
-  },
-  ref,
-) {
-  const hoverStateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
-    // Applies overlay class when item is highlighted via keyboard nav.
-    stateClassNameOverrides: 'data-[highlighted]:before:bg-overlay-hover',
-  });
-
+function Option({
+  children,
+  className,
+  value,
+  startIcon,
+  endIcon,
+  selectionStartIcon,
+  selectionEndIcon,
+  withSelectedCheckmark = true,
+  ...rest
+}: WithRef<SelectOptionProps, HTMLDivElement>) {
   const endIndicator = (() => {
     if (withSelectedCheckmark) {
       return <Icons.Check />;
@@ -117,30 +137,25 @@ const Option = forwardRef<HTMLDivElement, SelectOptionProps>(function Option(
   })();
 
   return (
-    <SelectItem
-      className={mergeClassNames(
-        'flex items-center justify-between gap-x-1',
-        'select-none rounded p-1',
-        'text-text-secondary text-xs',
-        'data-[state=checked]:text-text-primary',
-        disabled ? 'cursor-not-allowed' : 'cursor-pointer',
-        hoverStateOverlayClassNames,
-        className,
-      )}
-      ref={ref}
-      value={value}
-      {...rest}
-    >
-      {selectionStartIcon && (
-        <SelectItemIndicator>{selectionStartIcon}</SelectItemIndicator>
-      )}
-      {children}
-      {endIndicator && (
-        <SelectItemIndicator>{endIndicator}</SelectItemIndicator>
-      )}
+    <SelectItem asChild value={value} {...rest}>
+      <DropdownUi.Item
+        className={className}
+        startIcon={startIcon}
+        endIcon={endIcon}
+      >
+        {selectionStartIcon && (
+          <SelectItemIndicator>{selectionStartIcon}</SelectItemIndicator>
+        )}
+        {children}
+        {endIndicator && (
+          <SelectItemIndicator className="ml-auto">
+            {endIndicator}
+          </SelectItemIndicator>
+        )}
+      </DropdownUi.Item>
     </SelectItem>
   );
-});
+}
 
 export const Select = {
   Root,

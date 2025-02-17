@@ -82,7 +82,9 @@ function ActionButtons({
   return (
     <div className="flex flex-col gap-y-3">
       {actionButton}
-      <TextButton onClick={hide}>Cancel</TextButton>
+      <TextButton colorVariant="secondary" onClick={hide}>
+        Cancel
+      </TextButton>
     </div>
   );
 }

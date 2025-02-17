@@ -8,9 +8,10 @@ import {
   TextButton,
   TimeFormatSpecifier,
 } from '@vertex-protocol/web-ui';
-import { forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
+
 import 'react-datepicker/dist/react-datepicker.css';
+// This file needs to be imported lastly to override the styles of react-datepicker
 import 'client/components/DateInput/DateInput.css';
 
 interface DateInputTriggerProps extends ButtonAsHTMLButtonProps {
@@ -19,35 +20,35 @@ interface DateInputTriggerProps extends ButtonAsHTMLButtonProps {
   placeholder: string;
 }
 
-const DateInputTrigger = forwardRef<HTMLButtonElement, DateInputTriggerProps>(
-  function DateInputTrigger(
-    { label, value, className, placeholder, ...rest },
-    ref,
-  ) {
-    return (
-      <SecondaryButton
-        className={joinClassNames(
-          // w-full is to fill width of .react-datepicker__input-container
-          'w-full justify-between',
-          'text-text-tertiary px-3 text-xs',
-          className,
+function DateInputTrigger({
+  label,
+  value,
+  className,
+  placeholder,
+  ...rest
+}: DateInputTriggerProps) {
+  return (
+    <SecondaryButton
+      className={joinClassNames(
+        // w-full is to fill width of .react-datepicker__input-container
+        'w-full justify-between',
+        'text-text-tertiary px-3 text-xs',
+        className,
+      )}
+      {...rest}
+    >
+      <span>{label}</span>
+      <div className="flex items-center gap-x-2">
+        {!!value ? (
+          <span className="text-text-primary">{value}</span>
+        ) : (
+          <span>{placeholder}</span>
         )}
-        ref={ref}
-        {...rest}
-      >
-        <span>{label}</span>
-        <div className="flex items-center gap-x-2">
-          {!!value ? (
-            <span className="text-text-primary">{value}</span>
-          ) : (
-            <span>{placeholder}</span>
-          )}
-          <Icons.CalendarBlank className="text-text-secondary size-4" />
-        </div>
-      </SecondaryButton>
-    );
-  },
-);
+        <Icons.CalendarBlank className="text-text-secondary size-4" />
+      </div>
+    </SecondaryButton>
+  );
+}
 
 interface DateInputProps {
   value: Date | undefined;
@@ -111,6 +112,7 @@ export function DateInput({
             })}
           </span>
           <TextButton
+            colorVariant="secondary"
             className="px-1"
             onClick={decreaseMonth}
             disabled={prevMonthButtonDisabled}
@@ -118,6 +120,7 @@ export function DateInput({
             <Icons.CaretLeft />
           </TextButton>
           <TextButton
+            colorVariant="secondary"
             className="-mr-1 px-1"
             onClick={increaseMonth}
             disabled={nextMonthButtonDisabled}

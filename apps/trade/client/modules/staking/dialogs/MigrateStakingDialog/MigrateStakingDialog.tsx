@@ -1,29 +1,19 @@
-import {
-  CustomNumberFormatSpecifier,
-  formatNumber,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
-import {
-  DiscList,
-  formatTimestamp,
-  Icons,
-  TimeFormatSpecifier,
-} from '@vertex-protocol/web-ui';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { DiscList, Icons, LinkButton } from '@vertex-protocol/web-ui';
+import { CollapsibleInfoCard } from 'client/components/CollapsibleInfoCard';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { WarningPanel } from 'client/components/WarningPanel';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { MigrateStakingSubmitButton } from 'client/modules/staking/dialogs/MigrateStakingDialog/MigrateStakingSubmitButton';
 import { useMigrateStakingDialog } from 'client/modules/staking/dialogs/MigrateStakingDialog/useMigrateStakingDialog';
+import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
+import Link from 'next/link';
 
 export function MigrateStakingDialog() {
   const { hide } = useDialog();
   const {
-    bonusDeadlineMillis,
-    migrationBonus,
     currentV1AmountStaked,
     estimatedV2Balance,
-    migrationBonusFraction,
     buttonState,
     migrate,
     protocolTokenSymbol,
@@ -35,16 +25,13 @@ export function MigrateStakingDialog() {
         {protocolTokenSymbol} V2 Migration
       </BaseAppDialog.Title>
       <BaseAppDialog.Body>
-        <DiscListWarningPanel
-          protocolTokenSymbol={protocolTokenSymbol}
-          bonusDeadlineMillis={bonusDeadlineMillis}
-        />
+        <DiscListCollapsibleInfoCard />
         <div className="flex items-center justify-between">
           <ValueWithLabel.Vertical
             label="V1 Staking Balance"
             value={currentV1AmountStaked}
             valueEndElement={protocolTokenSymbol}
-            numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           />
           <Icons.ArrowRight size={24} className="text-positive" />
           <ValueWithLabel.Vertical
@@ -52,18 +39,9 @@ export function MigrateStakingDialog() {
             value={estimatedV2Balance}
             className="items-end"
             valueEndElement={protocolTokenSymbol}
-            numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           />
         </div>
-        <ValueWithLabel.Horizontal
-          label="💫 Eligible Bonus"
-          sizeVariant="sm"
-          value={migrationBonusFraction}
-          valueEndElement={`(${formatNumber(migrationBonus, {
-            formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
-          })} ${protocolTokenSymbol})`}
-          numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
-        />
         <MigrateStakingSubmitButton
           buttonState={buttonState}
           onClick={migrate}
@@ -73,32 +51,31 @@ export function MigrateStakingDialog() {
   );
 }
 
-function DiscListWarningPanel({
-  protocolTokenSymbol,
-  bonusDeadlineMillis,
-}: {
-  protocolTokenSymbol: string;
-  bonusDeadlineMillis: number | undefined;
-}) {
+function DiscListCollapsibleInfoCard() {
   return (
-    <WarningPanel>
-      <DiscList.Container>
-        <DiscList.Item>
-          {protocolTokenSymbol} staking has been upgraded
-        </DiscList.Item>
-        <DiscList.Item>V1 positions no longer receive rewards</DiscList.Item>
-        <DiscList.Item>
-          Your existing V1 position will remain until you migrate or unstake
-        </DiscList.Item>
-        <DiscList.Item>
-          If you migrate before{' '}
-          {formatTimestamp(bonusDeadlineMillis, {
-            formatSpecifier: TimeFormatSpecifier.E_MMM_D_HH_12H,
-          })}
-          , you will be eligible for a bonus of 2.5 - 7% based on your current
-          multiplier.
-        </DiscList.Item>
-      </DiscList.Container>
-    </WarningPanel>
+    <CollapsibleInfoCard
+      isInitialOpen
+      title="About Migration"
+      collapsibleContent={
+        <div className="flex flex-col items-start gap-y-2.5">
+          <DiscList.Container className="text-text-tertiary items-start">
+            <DiscList.Item>
+              Your V1 position will remain until you migrate or unstake.
+            </DiscList.Item>
+            <DiscList.Item>V1 Positions no longer earn rewards.</DiscList.Item>
+          </DiscList.Container>
+          <LinkButton
+            as={Link}
+            href={VERTEX_SPECIFIC_LINKS.stakeVrtxDocs}
+            colorVariant="primary"
+            className="text-xs"
+            withExternalIcon
+            external
+          >
+            Learn more
+          </LinkButton>
+        </div>
+      }
+    />
   );
 }

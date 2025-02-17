@@ -1,7 +1,7 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
-  Button,
+  DropdownUi,
   getStateOverlayClassNames,
   UpDownChevronIcon,
 } from '@vertex-protocol/web-ui';
@@ -27,7 +27,7 @@ export function PortfolioSubNavSubaccountSwitcher({
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
       <DropdownMenu.Trigger asChild>
-        <Button
+        <DropdownUi.Trigger
           className={joinClassNames(
             'justify-stretch rounded-lg px-3 py-2',
             stateOverlayClassNames,
@@ -42,7 +42,7 @@ export function PortfolioSubNavSubaccountSwitcher({
               {username}
             </div>
           </div>
-        </Button>
+        </DropdownUi.Trigger>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content sideOffset={8} align="start" asChild>
         <SubaccountSwitcherDropdownContent className="w-48" />

@@ -13,17 +13,17 @@ type Props = TableCellProps &
     EpochRewardsTableData,
     | 'epochNumber'
     | 'isCurrent'
-    | 'isPastClaimDeadline'
     | 'rewardsUnclaimed'
     | 'rewardsEarned'
+    | 'isPreLbaAirdropEpoch'
   >;
 
 export function EpochRewardsLiquidClaimActionCell({
   epochNumber,
   isCurrent,
-  isPastClaimDeadline,
   rewardsEarned,
   rewardsUnclaimed,
+  isPreLbaAirdropEpoch,
   className,
   ...rest
 }: Props) {
@@ -32,10 +32,9 @@ export function EpochRewardsLiquidClaimActionCell({
 
   const hasClaimedRewards = rewardsEarned?.gt(0) && rewardsUnclaimed?.isZero();
 
-  const isProcessing = !isPastClaimDeadline && !rewardsUnclaimed;
+  const isProcessing = !rewardsUnclaimed;
 
-  const canClaim =
-    !isCurrent && !isPastClaimDeadline && rewardsUnclaimed?.gt(0);
+  const canClaim = !isCurrent && rewardsUnclaimed?.gt(0);
 
   const isDisabled = !canClaim || !isConnected;
 
@@ -44,6 +43,9 @@ export function EpochRewardsLiquidClaimActionCell({
     if (isCurrent) {
       return 'Pending';
     }
+    if (isPreLbaAirdropEpoch) {
+      return 'Pre-LBA';
+    }
     // Recently completed epoch, but we don't have merkle proofs/rewards data yet
     if (isProcessing) {
       return 'Processing';
@@ -51,10 +53,6 @@ export function EpochRewardsLiquidClaimActionCell({
     // User has claimed rewards
     if (hasClaimedRewards) {
       return 'Claimed';
-    }
-    // Claim deadline has passed (with or without) unclaimed rewards
-    if (isPastClaimDeadline) {
-      return 'Claim Ended';
     }
     return 'Claim';
   })();

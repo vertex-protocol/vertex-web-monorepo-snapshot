@@ -5,7 +5,7 @@ import {
 import { BigDecimal } from '@vertex-protocol/utils';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { Divider, LinkButton } from '@vertex-protocol/web-ui';
-import { RiskWarningIcon } from 'client/components/Icons/RiskWarningIcon';
+import { UserRiskWarningIcon } from 'client/components/Icons/UserRiskWarningIcon';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
 import { ROUTES } from 'client/modules/app/consts/routes';
@@ -81,7 +81,7 @@ export function OverviewHeroMetricsItems({
         },
         {
           tooltip: {
-            id: 'overviewFundsUntilLiquidation',
+            id: 'fundsUntilLiquidation',
           },
           label: 'Funds until Liq.',
           value: fundsUntilLiquidation,
@@ -95,7 +95,7 @@ export function OverviewHeroMetricsItems({
     <div className="flex items-end justify-between">
       <div className="flex items-center gap-x-2">
         Details
-        <RiskWarningIcon
+        <UserRiskWarningIcon
           userRiskWarningState={userRiskWarningState}
           size="md"
         />

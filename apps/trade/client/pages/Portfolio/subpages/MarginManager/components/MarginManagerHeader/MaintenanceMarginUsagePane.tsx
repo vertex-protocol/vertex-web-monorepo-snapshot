@@ -5,7 +5,7 @@ import {
 } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
-import { RiskWarningIcon } from 'client/components/Icons/RiskWarningIcon';
+import { UserRiskWarningIcon } from 'client/components/Icons/UserRiskWarningIcon';
 import { LiquidationRiskBar } from 'client/components/LiquidationRiskBar';
 import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
 import { MarginManagerHeaderInfo } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerHeader/MarginManagerHeaderInfo';
@@ -65,7 +65,7 @@ function MaintenanceMarginUsageWarning() {
 
   return (
     <div className="flex items-center gap-x-4 px-4 text-xs lg:px-6">
-      <RiskWarningIcon
+      <UserRiskWarningIcon
         size="lg"
         userRiskWarningState="extreme_liquidation_risk"
       />

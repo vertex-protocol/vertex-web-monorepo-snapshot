@@ -1,15 +1,15 @@
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
-import { DerivedSubaccountOverviewData } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { SubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/types';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 export function PoolsHeroMetricsItems({
   className,
   overview,
-}: WithClassnames<{ overview?: DerivedSubaccountOverviewData }>) {
+}: WithClassnames<{ overview?: SubaccountOverview }>) {
   const poolsMetricsItems = useMemo(
     () =>
       [

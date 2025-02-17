@@ -1,5 +1,5 @@
 import { BigDecimal, EnginePriceTickLiquidity } from '@vertex-protocol/client';
-import { AnnotatedMarket } from '@vertex-protocol/metadata';
+import { AnnotatedMarket } from '@vertex-protocol/react-client';
 import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { MarketLiquidityData } from 'client/hooks/query/markets/useMarketLiquidity';
 import {
@@ -7,7 +7,7 @@ import {
   OrderbookRowItem,
 } from 'client/modules/trading/marketOrders/orderbook/hooks/types';
 import { OrderbookPriceTickSpacingMultiplier } from 'client/modules/trading/marketOrders/orderbook/types';
-import { isHighSpread } from 'client/modules/trading/utils/isHighSpread';
+import { getIsHighSpread } from 'client/modules/trading/utils/getIsHighSpread';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { first, get, last } from 'lodash';
 
@@ -176,21 +176,21 @@ export function mapOrderbookDataFromQueries({
     ? BigDecimals.ZERO
     : spreadAmount.div(bidAskAvg);
 
-  const cumulativeTotalAmount = BigDecimal.max(
+  const maxCumulativeTotalAmount = BigDecimal.max(
     bidCumulativeAmount,
     askCumulativeAmount,
   );
 
   return {
     productMetadata: sharedProductMetadata,
-    cumulativeTotalAmount,
+    maxCumulativeTotalAmount,
     quoteSymbol,
     asks,
     bids,
     spread: {
       amount: spreadAmount,
       frac: spreadFrac,
-      isHigh: isHighSpread(spreadFrac),
+      isHigh: getIsHighSpread(spreadFrac),
     },
     sizeIncrement: marketData.sizeIncrement,
     priceIncrement: marketData.priceIncrement,

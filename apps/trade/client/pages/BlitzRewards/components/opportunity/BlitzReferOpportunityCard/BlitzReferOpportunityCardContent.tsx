@@ -2,19 +2,20 @@
 
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useAddressTakerRewards } from 'client/hooks/query/rewards/useAddressTakerRewards';
+import { useAddressBlitzPoints } from 'client/hooks/query/points/useAddressBlitzPoints';
 import { useSubaccountReferralCode } from 'client/hooks/query/subaccount/useSubaccountReferralCode';
 import { useRequiresInitialDeposit } from 'client/hooks/subaccount/useRequiresInitialDeposit';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
-import { ReferralLinkBar } from 'client/modules/referrals/components/ReferralLink/ReferralLinkBar';
-import { useReferralLink } from 'client/modules/referrals/hooks/useReferralLink';
+import { ReferralLinkBar } from 'client/modules/referrals/ReferralLinkBar';
+import { useReferralLink } from 'client/modules/referrals/useReferralLink';
 
 export function BlitzReferOpportunityCardContent() {
   const { data: referralCodeData } = useSubaccountReferralCode();
-  const { data: takerRewardsData } = useAddressTakerRewards();
+  const { data: blitzPointsData } = useAddressBlitzPoints();
 
   const { baseUrlWithQueryParam, referralLink } = useReferralLink({
     referralCode: referralCodeData?.referralCode,
+    isFuul: false,
   });
   const isConnected = useIsConnected();
   const requiresFirstDeposit = useRequiresInitialDeposit();
@@ -31,7 +32,7 @@ export function BlitzReferOpportunityCardContent() {
       />
       <ValueWithLabel.Vertical
         label="Users Referred"
-        value={takerRewardsData?.totalReferrals}
+        value={blitzPointsData?.blitz.usersReferred}
         numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
       />
     </div>

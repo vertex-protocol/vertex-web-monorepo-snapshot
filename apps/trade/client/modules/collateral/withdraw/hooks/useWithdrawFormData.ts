@@ -4,7 +4,7 @@ import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/us
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { sortByDisplayedAssetValue } from 'client/modules/collateral/utils/sortByDisplayedAssetValue';
-import { WithdrawProduct } from 'client/modules/collateral/withdraw/types';
+import { WithdrawProductSelectValue } from 'client/modules/collateral/withdraw/types';
 import { useMemo } from 'react';
 
 interface Params {
@@ -18,7 +18,7 @@ export function useWithdrawFormData({ productIdInput }: Params) {
   const { data: feeRates } = useSubaccountFeeRates();
 
   // All available products for withdrawal
-  const availableProducts: WithdrawProduct[] = useMemo(() => {
+  const availableProducts: WithdrawProductSelectValue[] = useMemo(() => {
     if (!balances?.length) {
       return [];
     }
@@ -40,6 +40,7 @@ export function useWithdrawFormData({ productIdInput }: Params) {
         );
 
         return {
+          selectId: token.symbol,
           productId: balance.productId,
           icon: token.icon,
           symbol: token.symbol,

@@ -16,7 +16,7 @@ export function AmountWithSymbol({
       )}
     >
       {formattedSize}
-      <div className="text-text-tertiary text-2xs">{symbol ?? ''}</div>
+      <div className="text-2xs empty:hidden">{symbol ?? ''}</div>
     </div>
   );
 }

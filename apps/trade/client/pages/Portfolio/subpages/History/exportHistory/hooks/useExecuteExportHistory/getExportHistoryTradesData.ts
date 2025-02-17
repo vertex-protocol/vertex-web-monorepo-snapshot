@@ -1,12 +1,16 @@
 import { GetIndexerSubaccountMatchEventParams } from '@vertex-protocol/indexer-client';
 import { getHistoricalTradesTableItem } from 'client/modules/tables/hooks/useHistoricalTradesTable';
-import { EXPORT_HISTORY_QUERY_PAGE_SIZE } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
+import {
+  EXPORT_HISTORY_QUERY_DELAY_MILLIS,
+  EXPORT_HISTORY_QUERY_PAGE_SIZE,
+} from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
 import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
   ExportHistoryTradeItem,
   GetExportHistoryDataParams,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
+import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
 
 export async function getExportHistoryTradesData(
@@ -25,6 +29,9 @@ export async function getExportHistoryTradesData(
       maxTimestampInclusive: millisecondsToSeconds(params.endTimeMillis),
       limit: EXPORT_HISTORY_QUERY_PAGE_SIZE,
       startCursor,
+      // Only fetch non-isolated events to avoid duplication with isolated events
+      // Cross account events include the isolated transfers as well
+      isolated: false,
     };
 
     const matchEventsResponse =
@@ -55,6 +62,7 @@ export async function getExportHistoryTradesData(
         time: formatExportHistoryTimestamp(tableItem.timestampMillis),
         marketName: tableItem.marketInfo.marketName,
         orderType: tableItem.orderType,
+        marginModeType: tableItem.marginModeType,
         amount: tableItem.filledAmount.toString(),
         avgPrice: tableItem.filledPrice.toString(),
         fee: tableItem.tradeFeeQuote.toString(),
@@ -68,6 +76,9 @@ export async function getExportHistoryTradesData(
     if (!matchEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    // Reduce chance of rate limiting.
+    await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);
   }
 
   return items;

@@ -1,21 +1,23 @@
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { addDecimals } from '@vertex-protocol/utils';
 import { useExecuteApproveAllowanceForProduct } from 'client/hooks/execute/useExecuteApproveAllowanceForProduct';
 import { useExecuteDepositCollateral } from 'client/hooks/execute/useExecuteDepositCollateral';
+import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import {
   DepositFormValues,
-  DepositProduct,
+  DepositProductSelectValue,
 } from 'client/modules/collateral/deposit/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { blitzReferralCodeAtom } from 'client/store/referralsStore';
+import { edgeReferralCodeAtom } from 'client/store/referralsStore';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { roundToString } from 'client/utils/rounding';
-import { MaxUint256 } from 'ethers';
 import { useAtom } from 'jotai';
 import { UseFormReturn } from 'react-hook-form';
+import { maxUint256 } from 'viem';
 
 interface Params {
   useDepositForm: UseFormReturn<DepositFormValues>;
-  selectedProduct: DepositProduct | undefined;
+  selectedProduct: DepositProductSelectValue | undefined;
   isApprove: boolean;
   mutateApproveAllowanceAsync: ReturnType<
     typeof useExecuteApproveAllowanceForProduct
@@ -32,9 +34,11 @@ export function useDepositFormSubmitHandler({
   mutateApproveAllowanceAsync,
   mutateDepositCollateralAsync,
 }: Params) {
+  const { primaryChainEnv } = useEVMContext();
+
+  const { trackEvent } = useAnalyticsContext();
   const { dispatchNotification } = useNotificationManagerContext();
-  // Only blitz uses our backend referral system
-  const [referralCodeAtomValue] = useAtom(blitzReferralCodeAtom);
+  const [edgeReferralCodeAtomValue] = useAtom(edgeReferralCodeAtom);
 
   return (values: DepositFormValues) => {
     if (selectedProduct == null) {
@@ -58,25 +62,25 @@ export function useDepositFormSubmitHandler({
     );
 
     if (isApprove) {
-      const txResponsePromise = mutateApproveAllowanceAsync({
+      const txHashPromise = mutateApproveAllowanceAsync({
         productId: selectedProduct.productId,
-        amount: MaxUint256,
+        amount: maxUint256,
       });
       dispatchNotification({
         type: 'action_error_handler',
         data: {
           errorNotificationTitle: 'Approval Failed',
           executionData: {
-            txResponsePromise,
+            txHashPromise,
           },
         },
       });
     } else {
-      const txResponsePromise = mutateDepositCollateralAsync(
+      const txHashPromise = mutateDepositCollateralAsync(
         {
           productId: selectedProduct.productId,
           amount: roundToString(amountWithAddedDecimals, 0),
-          referralCode: referralCodeAtomValue,
+          referralCode: edgeReferralCodeAtomValue,
         },
         {
           // Reset the form on success
@@ -84,6 +88,18 @@ export function useDepositFormSubmitHandler({
             useDepositForm.setValue('percentageAmount', 0);
             useDepositForm.resetField('amount');
             useDepositForm.resetField('amountSource');
+
+            trackEvent({
+              type: 'deposit_success',
+              data: {
+                depositAmount: amount.toNumber(),
+                depositValue: selectedProduct.oraclePriceUsd
+                  .multipliedBy(amount)
+                  .toNumber(),
+                productId: selectedProduct.productId,
+                chainEnv: primaryChainEnv,
+              },
+            });
           },
         },
       );
@@ -92,7 +108,7 @@ export function useDepositFormSubmitHandler({
         data: {
           errorNotificationTitle: 'Deposit Failed',
           executionData: {
-            txResponsePromise,
+            txHashPromise,
           },
         },
       });

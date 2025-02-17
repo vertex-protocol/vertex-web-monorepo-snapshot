@@ -11,6 +11,7 @@ import { RealizedPnlEventsTableItem } from 'client/modules/tables/types/Realized
 export type RealizedPnlDetailsDialogParams = RealizedPnlEventsTableItem;
 
 export function RealizedPnlDetailsDialog({
+  marginModeType,
   marketInfo,
   pnlInfo,
   entryPrice,
@@ -34,7 +35,13 @@ export function RealizedPnlDetailsDialog({
   );
 
   const metricItems = (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-2">
+      <ValueWithLabel.Horizontal
+        sizeVariant="xs"
+        label="Type"
+        valueClassName="capitalize"
+        valueContent={marginModeType}
+      />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Entry Price"

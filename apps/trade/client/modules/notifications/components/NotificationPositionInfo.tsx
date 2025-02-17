@@ -2,7 +2,7 @@ import { ProductEngineType } from '@vertex-protocol/contracts';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { TOAST_MARKET_ICON_CLASSNAME } from 'client/modules/notifications/components/consts';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
-import { TokenIconMetadata } from '@vertex-protocol/metadata';
+import { TokenIconMetadata } from '@vertex-protocol/react-client';
 import Image from 'next/image';
 
 interface Props extends WithClassnames {

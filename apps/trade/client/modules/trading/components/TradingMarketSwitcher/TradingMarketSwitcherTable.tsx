@@ -5,11 +5,11 @@ import {
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
 import { FixedHeaderDataTable } from 'client/components/FixedHeaderDataTable';
+import { FavoriteHeaderCell } from 'client/modules/tables/cells/FavoriteHeaderCell';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { MarketSwitcherStackedPriceCell } from 'client/modules/trading/components/BaseMarketSwitcherTable/cells/MarketSwitcherStackedPriceCell';
 import { TradingMarketSwitcherProductInfoCell } from 'client/modules/trading/components/TradingMarketSwitcher/TradingMarketSwitcherProductInfoCell';
 import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
-import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
 import { useMemo } from 'react';
 

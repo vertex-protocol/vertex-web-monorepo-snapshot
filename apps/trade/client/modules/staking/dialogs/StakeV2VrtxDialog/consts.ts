@@ -1,1 +1,0 @@
-export const STAKING_BONUS_FRACTION = 0.025;

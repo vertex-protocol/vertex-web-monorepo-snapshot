@@ -11,8 +11,7 @@ import {
   toBigDecimal,
 } from '@vertex-protocol/utils';
 import { useProtocolTokenQueryClients } from 'client/hooks/query/useProtocolTokenQueryClients';
-import { ZeroAddress } from 'ethers';
-import { Address } from 'viem';
+import { Address, zeroAddress } from 'viem';
 
 export function accountStakingStateQueryKey(address?: string) {
   return createQueryKey('accountStakingState', address);
@@ -45,7 +44,7 @@ export function useAccountStakingState() {
 
   const disabled = !vertexClient || !publicClient;
 
-  const addressForQuery = address ?? ZeroAddress;
+  const addressForQuery = address ?? zeroAddress;
 
   const queryFn = async (): Promise<AccountStakingState> => {
     if (disabled) {
@@ -116,7 +115,7 @@ export function useAccountStakingState() {
     queryKey: accountStakingStateQueryKey(addressForQuery),
     queryFn,
     enabled: !disabled,
-    refetchInterval: 10000,
+    // Refetch logic should handle query updates
   });
 }
 

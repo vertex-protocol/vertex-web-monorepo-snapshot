@@ -1,7 +1,9 @@
-type ButtonOnClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => void;
+import { MouseEvent } from 'react';
+
+type ButtonOnClickHandler = (e: MouseEvent<HTMLButtonElement>) => void;
 
 export function getTableButtonOnClickHandler(handler: ButtonOnClickHandler) {
-  return (e: React.MouseEvent<HTMLButtonElement>) => {
+  return (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
     handler(e);

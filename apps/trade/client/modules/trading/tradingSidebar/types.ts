@@ -1,5 +1,5 @@
-import { SharedProductMetadata } from '@vertex-protocol/metadata';
-import { StaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { SharedProductMetadata } from '@vertex-protocol/react-client';
+import { StaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 
 export interface TradingSidebarMarketItem {
   productId: number;

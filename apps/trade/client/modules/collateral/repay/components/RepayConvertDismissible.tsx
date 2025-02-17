@@ -1,6 +1,6 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { UserDisclosureDismissibleCard } from 'client/components/Disclosure/UserDisclosureDismissibleCard';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 
 export function RepayConvertDismissible({ className }: WithClassnames) {
   const {

@@ -52,6 +52,6 @@ export function usePaginatedLeaderboard({
       return lastPage.meta.nextCursor;
     },
     enabled: !disabled,
-    refetchInterval: 30000,
+    refetchInterval: 60000,
   });
 }

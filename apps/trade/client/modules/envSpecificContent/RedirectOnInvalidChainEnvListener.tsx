@@ -1,28 +1,40 @@
 'use client';
 
-import { PrimaryChainID } from '@vertex-protocol/react-client';
+import { ChainEnv } from '@vertex-protocol/client';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
+import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 interface Props {
-  validChainIds: PrimaryChainID[];
+  // If provided, the page will redirect to the portfolio page if the chain env IS NOT in this list
+  validChainEnvs?: ChainEnv[];
+  // If provided, the page will redirect to the portfolio page if the chain env IS in this list
+  invalidChainEnvs?: ChainEnv[];
 }
 
 /**
  * Not all pages are accessible on all chains. This will replace the current route with the portfolio page
- * if the current primary chain is not supported by the page.
+ * if the current chain env is not supported by the page.
  */
-export function RedirectOnInvalidChainEnvListener({ validChainIds }: Props) {
-  const isEnabled = useIsEnabledForChainIds(validChainIds);
+export function RedirectOnInvalidChainEnvListener({
+  validChainEnvs = [],
+  invalidChainEnvs = [],
+}: Props) {
+  const hasValidChainIds = validChainEnvs.length;
+  const isEnabled = useIsEnabledForChainEnvs(validChainEnvs);
+  const hasInvalidChainIds = invalidChainEnvs.length;
+  const isDisabled = useIsEnabledForChainEnvs(invalidChainEnvs);
   const { replace } = useRouter();
 
   useEffect(() => {
-    if (!isEnabled) {
+    if (
+      (hasValidChainIds && !isEnabled) ||
+      (hasInvalidChainIds && isDisabled)
+    ) {
       replace(ROUTES.portfolio.overview);
     }
-  }, [isEnabled, replace]);
+  }, [isEnabled, isDisabled, replace, hasValidChainIds, hasInvalidChainIds]);
 
   return null;
 }

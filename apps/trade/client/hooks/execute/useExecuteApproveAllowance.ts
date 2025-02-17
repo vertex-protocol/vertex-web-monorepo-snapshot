@@ -8,14 +8,14 @@ import {
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { tokenAllowanceQueryKey } from 'client/hooks/query/useTokenAllowance';
-import { BigNumberish, ContractTransactionResponse } from 'ethers';
 import { useCallback, useRef } from 'react';
+import { Address } from 'viem';
 
 interface Params {
   /**
-   * Includes decimals - ie. not a float
+   * Includes decimals
    */
-  amount: BigNumberish;
+  amount: bigint;
   /**
    * Address that wants to receive/spend the token
    */
@@ -34,31 +34,25 @@ export function useExecuteApproveAllowance() {
   const refetchQueryKeysRef = useRef<string[][]>([tokenAllowanceQueryKey()]);
 
   const mutationFn = useExecuteInValidContext(
-    useCallback(
-      async (
-        params: Params,
-        context: ValidExecuteContext,
-      ): Promise<ContractTransactionResponse> => {
-        console.log('Approve Allowance', toPrintableObject(params));
+    useCallback(async (params: Params, context: ValidExecuteContext) => {
+      console.log('Approve Allowance', toPrintableObject(params));
 
-        refetchQueryKeysRef.current = [
-          tokenAllowanceQueryKey(
-            context.subaccount.chainEnv,
-            context.subaccount.address,
-            params.spenderAddress,
-            params.tokenAddress,
-          ),
-        ];
-
-        const token = IERC20__factory.connect(
+      refetchQueryKeysRef.current = [
+        tokenAllowanceQueryKey(
+          context.subaccount.chainEnv,
+          context.subaccount.address,
+          params.spenderAddress,
           params.tokenAddress,
-          context.signer,
-        );
+        ),
+      ];
 
-        return token.approve(params.spenderAddress, params.amount.toString());
-      },
-      [],
-    ),
+      return context.walletClient.writeContract({
+        abi: IERC20__factory.abi,
+        functionName: 'approve',
+        address: params.tokenAddress as Address,
+        args: [params.spenderAddress as Address, params.amount],
+      });
+    }, []),
   );
 
   const mutation = useMutation({

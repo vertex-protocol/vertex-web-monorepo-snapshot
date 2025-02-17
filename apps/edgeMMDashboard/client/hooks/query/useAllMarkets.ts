@@ -14,7 +14,7 @@ import {
   AnnotatedPerpMarket,
   AnnotatedSpotMarket,
   useVertexMetadataContext,
-} from '@vertex-protocol/metadata';
+} from '@vertex-protocol/react-client';
 
 export type AllMarketsSelectFn<TSelectedData> = (
   data: AllMarketsData,

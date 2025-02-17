@@ -3,7 +3,7 @@ import {
   getMarketPriceFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { useDebounce } from 'ahooks';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { clientEnv } from 'common/environment/clientEnv';
 import { useLayoutEffect } from 'react';

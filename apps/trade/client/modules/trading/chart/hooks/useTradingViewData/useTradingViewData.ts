@@ -1,7 +1,8 @@
 import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
 import { nowInSeconds, toPrintableObject } from '@vertex-protocol/utils';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsByChainEnv } from 'client/hooks/query/markets/allMarkets/useAllMarketsByChainEnv';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
+import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import {
   DATAFEED_CONFIGURATION,
   getTradingViewSymbolInfo,
@@ -16,7 +17,7 @@ import {
   toTVCandlestick,
   toTVCandlesticks,
 } from 'client/modules/trading/chart/hooks/useTradingViewData/utils';
-import { first, last, mapValues } from 'lodash';
+import { first, last } from 'lodash';
 import type { Bar, IBasicDataFeed } from 'public/charting_library';
 import { useMemo, useRef } from 'react';
 
@@ -37,17 +38,29 @@ export function useTradingViewData({
     false,
   );
   const vertexClient = usePrimaryChainVertexClient();
-  const { data: staticMarketData } = useAllMarketsStaticData();
+  const vertexClientRef = useSyncedRef(vertexClient);
+  const hasLoadedVertexClient = !!vertexClient;
+  const { data: allMarketsByChainEnv } = useAllMarketsByChainEnv();
 
+  // Construct symbol info for all markets across edge. This means that we don't need to reload the datafeed when changing chain env
   const symbolInfoByProductId = useMemo(
     () => {
-      return mapValues(staticMarketData?.all, (market) => {
-        return getTradingViewSymbolInfo(market);
+      if (!allMarketsByChainEnv) {
+        return;
+      }
+
+      const mapping: Record<number, TradingViewSymbolInfo> = {};
+      Object.values(allMarketsByChainEnv).forEach((marketsForChainEnv) => {
+        Object.values(marketsForChainEnv.allMarkets).forEach((market) => {
+          mapping[market.productId] = getTradingViewSymbolInfo(market);
+        });
       });
+
+      return mapping;
     },
-    // We want this to run ONCE when market data is loaded, not more often
+    // We want this to run ONCE when all edge markets are loaded
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [staticMarketData == null],
+    [allMarketsByChainEnv == null],
   );
 
   const subscriberUIDToBarSubscriber = useRef<Map<string, BarSubscriber>>(
@@ -66,7 +79,7 @@ export function useTradingViewData({
   });
 
   const datafeed = useMemo((): IBasicDataFeed | undefined => {
-    if (!vertexClient || !symbolInfoByProductId) {
+    if (!hasLoadedVertexClient || !symbolInfoByProductId) {
       return;
     }
     console.debug('[useTradingViewData] Reconstructing TV Datafeed');
@@ -122,8 +135,8 @@ export function useTradingViewData({
 
         const chartIntervalSeconds = RESOLUTIONS_TO_INTERVALS[resolution];
 
-        vertexClient?.market
-          .getCandlesticks({
+        vertexClientRef.current?.market
+          .getEdgeCandlesticks({
             productId: marketInfo.productId,
             maxTimeInclusive: beforeTime,
             period: chartIntervalSeconds,
@@ -186,8 +199,8 @@ export function useTradingViewData({
         const chartIntervalSeconds = RESOLUTIONS_TO_INTERVALS[resolution];
 
         const refetchLatestBar = () => {
-          vertexClient?.market
-            .getCandlesticks({
+          vertexClientRef.current?.market
+            .getEdgeCandlesticks({
               productId: marketInfo.productId,
               maxTimeInclusive: nowInSeconds(),
               period: RESOLUTIONS_TO_INTERVALS[resolution],
@@ -351,7 +364,13 @@ export function useTradingViewData({
         chartKeyToLastBar.current.delete(lastBarKey);
       },
     };
-  }, [endProfiling, startProfiling, symbolInfoByProductId, vertexClient]);
+  }, [
+    endProfiling,
+    startProfiling,
+    symbolInfoByProductId,
+    vertexClientRef,
+    hasLoadedVertexClient,
+  ]);
 
   return {
     datafeed,

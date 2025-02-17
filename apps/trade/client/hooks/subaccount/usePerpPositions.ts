@@ -1,83 +1,122 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { Subaccount } from '@vertex-protocol/client';
 import {
   calcPerpBalanceNotionalValue,
   calcPerpBalanceValue,
   isPerpBalance,
 } from '@vertex-protocol/contracts';
 import {
+  AnnotatedPerpBalanceWithProduct,
+  AnnotatedSpotBalanceWithProduct,
   createQueryKey,
+  PerpProductMetadata,
   QueryDisabledError,
 } from '@vertex-protocol/react-client';
 import {
+  addDecimals,
   BigDecimal,
-  BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
+import { safeDiv } from '@vertex-protocol/web-common';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { AppSubaccount } from 'client/context/subaccount/types';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useSubaccountIsolatedPositions } from 'client/hooks/query/subaccount/isolatedPositions/useSubaccountIsolatedPositions';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
 import { QueryState } from 'client/types/QueryState';
-import { calcEstimatedLiquidationPrice } from 'client/utils/calcs/calcEstimatedLiquidationPrice';
-import { calcPositionMarginWithoutPnl } from 'client/utils/calcs/calcPositionMarginWithoutPnl';
+import { calcCrossPositionMarginWithoutPnl } from 'client/utils/calcs/calcCrossPositionMarginWithoutPnl';
+import { calcIsoPositionLeverage } from 'client/utils/calcs/calcIsoPositionLeverage';
+import { calcIsoPositionNetMargin } from 'client/utils/calcs/calcIsoPositionNetMargin';
 import {
-  calcPerpBalanceHealth,
+  calcPerpBalanceHealthWithoutPnl,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
+import { calcEstimatedLiquidationPriceFromBalance } from 'client/utils/calcs/liquidationPriceCalcs';
 import { calcIndexerUnrealizedPerpEntryCost } from 'client/utils/calcs/perpEntryCostCalcs';
 import {
   calcIndexerSummaryUnrealizedPnl,
   calcPnlFrac,
 } from 'client/utils/calcs/pnlCalcs';
+import { getEstimatedExitPrice } from 'client/utils/getEstimatedExitPrice';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
-import { safeDiv } from 'client/utils/safeDiv';
-import {
-  AnnotatedPerpBalanceWithProduct,
-  PerpProductMetadata,
-} from '@vertex-protocol/metadata';
+
+export interface PerpPositionItemIsoData {
+  // Subaccount for the isolated position
+  subaccountName: string;
+  // Total margin deposited for the isolated position
+  totalMargin: BigDecimal;
+  // Total margin + unsettled quote
+  netMargin: BigDecimal;
+  // Leverage for the isolated position = total notional / net margin
+  leverage: number;
+}
 
 export interface PerpPositionItem {
   metadata: PerpProductMetadata;
   productId: number;
   amount: BigDecimal;
   price: {
-    averageEntryPrice: BigDecimal;
-    // Latest oracle price from the indexer, not from clearinghouse state
+    averageEntryPrice: BigDecimal | undefined;
+    // If available, the latest oracle price from the indexer. Defaults to the "slow" oracle price in the clearinghouse state
     fastOraclePriceUsd: BigDecimal;
     fastOraclePrice: BigDecimal;
   };
   notionalValueUsd: BigDecimal;
-  netFunding: BigDecimal;
+  netFunding: BigDecimal | undefined;
   unsettledQuoteAmount: BigDecimal;
   // Calculated with current market prices
-  estimatedPnlUsd: BigDecimal;
-  estimatedPnlFrac: BigDecimal;
-  marginUsedUsd: BigDecimal;
+  estimatedPnlUsd: BigDecimal | undefined;
+  estimatedPnlFrac: BigDecimal | undefined;
+  // Not defined for an iso position
+  crossMarginUsedUsd: BigDecimal | undefined;
   estimatedLiquidationPrice: BigDecimal | null;
   healthMetrics: InitialMaintMetrics;
+  // Defined if the position is an isolated position
+  iso: PerpPositionItemIsoData | undefined;
 }
 
 function perpPositionsQueryKey(
+  subaccount: AppSubaccount,
   // Update times for important queries
   dataUpdateTimes: number[],
-  hasOraclePriceData: boolean,
-  hasMarketPriceData: boolean,
+  hasOraclePricesData: boolean,
+  hasMarketPricesData: boolean,
 ) {
   return createQueryKey(
     'perpPositions',
+    subaccount,
     dataUpdateTimes,
-    hasOraclePriceData,
-    hasMarketPriceData,
+    hasOraclePricesData,
+    hasMarketPricesData,
   );
 }
 
+// Common interface used for processing iso / cross positions
+interface PerpPositionToProcess extends AnnotatedPerpBalanceWithProduct {
+  iso?: {
+    subaccount: Subaccount;
+    quoteBalance: AnnotatedSpotBalanceWithProduct;
+  };
+}
+
 export function usePerpPositions(): QueryState<PerpPositionItem[]> {
+  const { currentSubaccount } = useSubaccountContext();
+
   const {
     data: subaccountSummary,
-    dataUpdatedAt,
-    ...rest
+    dataUpdatedAt: subaccountSummaryDataUpdatedAt,
+    isLoading: isLoadingSubaccountSummary,
+    isError: isSubaccountSummaryError,
   } = useSubaccountSummary();
+  const {
+    data: isolatedPositions,
+    dataUpdatedAt: isolatedPositionsDataUpdatedAt,
+    isLoading: isLoadingIsolatedPositions,
+    isError: isIsolatedPositionsError,
+  } = useSubaccountIsolatedPositions();
   const { data: latestOraclePrices } = useLatestOraclePrices();
   const { data: latestMarketPrices } = useAllMarketsLatestPrices();
 
@@ -87,36 +126,57 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
 
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
-  const disabled = !subaccountSummary;
+  const disabled = !subaccountSummary || !isolatedPositions;
 
   const queryFn = () => {
     if (disabled) {
       throw new QueryDisabledError();
     }
 
-    return subaccountSummary.balances
-      .filter(isPerpBalance)
-      .map((balance): PerpPositionItem => {
-        const balanceWithProduct = balance as AnnotatedPerpBalanceWithProduct;
+    const crossPerpBalances: PerpPositionToProcess[] =
+      subaccountSummary.balances.filter(
+        isPerpBalance,
+      ) as PerpPositionToProcess[];
+
+    const isoPerpBalances = isolatedPositions.map(
+      (isoPosition): PerpPositionToProcess => {
+        return {
+          ...isoPosition.baseBalance,
+          iso: {
+            quoteBalance: isoPosition.quoteBalance,
+            subaccount: isoPosition.subaccount,
+          },
+        };
+      },
+    );
+
+    return [...crossPerpBalances, ...isoPerpBalances].map(
+      (position): PerpPositionItem => {
+        const isIso = !!position.iso;
+        const productId = position.productId;
+        const metadata = position.metadata;
+        const slowOraclePrice = position.oraclePrice;
+        const amount = position.amount;
+
         const indexerSnapshotBalance = indexerSnapshot?.balances.find(
           (indexerBalance) => {
-            return indexerBalance.productId === balanceWithProduct.productId;
+            const matchesMarginMode = indexerBalance.isolated === isIso;
+            return indexerBalance.productId === productId && matchesMarginMode;
           },
         );
-        const metadata = balanceWithProduct.metadata;
 
-        const productLatestMarketPrices =
-          latestMarketPrices?.[balanceWithProduct.productId];
+        const productLatestMarketPrices = latestMarketPrices?.[productId];
 
         const oraclePrice =
-          latestOraclePrices?.[balanceWithProduct.productId]?.oraclePrice ??
-          balanceWithProduct.oraclePrice;
+          latestOraclePrices?.[productId]?.oraclePrice ?? slowOraclePrice;
 
-        const decimalAdjustedSize = removeDecimals(balanceWithProduct.amount);
-
-        const balanceNotionalValue =
-          calcPerpBalanceNotionalValue(balanceWithProduct);
-        const balanceValue = calcPerpBalanceValue(balanceWithProduct);
+        const decimalAdjustedAmount = removeDecimals(amount);
+        const decimalAdjustedNotionalValue = removeDecimals(
+          calcPerpBalanceNotionalValue(position),
+        );
+        const decimalAdjustedUnsettledQuoteAmount = removeDecimals(
+          calcPerpBalanceValue(position),
+        );
 
         const {
           netFunding,
@@ -125,12 +185,7 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
           averageEntryPrice,
         } = (() => {
           if (!indexerSnapshotBalance) {
-            return {
-              unrealizedPnl: BigDecimals.ZERO,
-              unrealizedPnlFrac: BigDecimals.ZERO,
-              netFunding: BigDecimals.ZERO,
-              averageEntryPrice: BigDecimals.ZERO,
-            };
+            return {};
           }
 
           const indexerBalanceAmount =
@@ -144,14 +199,15 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
             indexerBalanceAmount,
           ).abs();
 
-          // If current amount is positive, use ask since we are selling & vice versa,
-          const estimatedExitPrice = balanceWithProduct.amount.isPositive()
-            ? productLatestMarketPrices?.safeAsk
-            : productLatestMarketPrices?.safeBid;
+          const estimatedExitPrice =
+            getEstimatedExitPrice(
+              amount.isPositive(),
+              productLatestMarketPrices,
+            ) ?? oraclePrice;
 
           const unrealizedPnl = calcIndexerSummaryUnrealizedPnl(
             indexerSnapshotBalance,
-            estimatedExitPrice ?? oraclePrice, // fallback to oraclePrice
+            estimatedExitPrice,
           );
 
           const unrealizedPnlFrac = calcPnlFrac(
@@ -169,43 +225,82 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
           };
         })();
 
-        const healthMetrics = calcPerpBalanceHealth(balanceWithProduct);
+        const healthMetrics = calcPerpBalanceHealthWithoutPnl(position);
+
+        const iso: PerpPositionItemIsoData | undefined = (() => {
+          if (!position.iso) {
+            return;
+          }
+
+          const totalMargin = removeDecimals(position.iso.quoteBalance.amount);
+          const netMargin = removeDecimals(
+            calcIsoPositionNetMargin(position, position.iso.quoteBalance),
+          );
+
+          return {
+            subaccountName: position.iso.subaccount.subaccountName,
+            totalMargin,
+            netMargin,
+            leverage: calcIsoPositionLeverage(
+              netMargin,
+              decimalAdjustedNotionalValue,
+            ).toNumber(),
+          };
+        })();
+
+        const estimatedLiquidationPrice =
+          calcEstimatedLiquidationPriceFromBalance(
+            position,
+            // Current available margin for iso position is just the net margin, otherwise use the maint. health for cross
+            iso
+              ? addDecimals(iso.netMargin)
+              : subaccountSummary.health.maintenance.health,
+          );
+        const crossMarginUsedUsd = !isIso
+          ? removeDecimals(
+              calcCrossPositionMarginWithoutPnl(position),
+            ).multipliedBy(primaryQuotePriceUsd)
+          : undefined;
 
         return {
           metadata,
           netFunding,
           notionalValueUsd:
-            removeDecimals(balanceNotionalValue).multipliedBy(
-              primaryQuotePriceUsd,
-            ),
-          amount: decimalAdjustedSize,
-          unsettledQuoteAmount: removeDecimals(balanceValue),
-          estimatedPnlUsd: unrealizedPnl.multipliedBy(primaryQuotePriceUsd),
+            decimalAdjustedNotionalValue.multipliedBy(primaryQuotePriceUsd),
+          amount: decimalAdjustedAmount,
+          unsettledQuoteAmount: decimalAdjustedUnsettledQuoteAmount,
+          estimatedPnlUsd: unrealizedPnl?.multipliedBy(primaryQuotePriceUsd),
           estimatedPnlFrac: unrealizedPnlFrac,
-          productId: balance.productId,
+          productId,
           price: {
             fastOraclePriceUsd: oraclePrice.multipliedBy(primaryQuotePriceUsd),
             fastOraclePrice: oraclePrice,
             averageEntryPrice,
           },
-          estimatedLiquidationPrice: calcEstimatedLiquidationPrice(
-            balanceWithProduct,
-            subaccountSummary.health.maintenance.health,
-          ),
-          marginUsedUsd: removeDecimals(
-            calcPositionMarginWithoutPnl(balanceWithProduct),
-          ).multipliedBy(primaryQuotePriceUsd),
+          estimatedLiquidationPrice,
+          crossMarginUsedUsd,
           healthMetrics: {
             initial: removeDecimals(healthMetrics.initial),
             maintenance: removeDecimals(healthMetrics.maintenance),
           },
+          iso,
         };
-      });
+      },
+    );
   };
 
-  const { data: mappedData } = useQuery({
+  const {
+    data: mappedData,
+    isLoading: isLoadingPerpPositions,
+    isError: isPerpPositionsError,
+  } = useQuery({
     queryKey: perpPositionsQueryKey(
-      [dataUpdatedAt, indexerSnapshotUpdatedAt],
+      currentSubaccount,
+      [
+        subaccountSummaryDataUpdatedAt,
+        isolatedPositionsDataUpdatedAt,
+        indexerSnapshotUpdatedAt,
+      ],
       !!latestOraclePrices,
       !!latestMarketPrices,
     ),
@@ -214,10 +309,18 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
     // Prevents a "flash" in UI when query key changes, which occurs when subaccount overview data updates
     placeholderData: keepPreviousData,
     gcTime: REACT_QUERY_CONFIG.computeQueryGcTime,
+    staleTime: REACT_QUERY_CONFIG.computedQueryStaleTime,
   });
 
   return {
     data: mappedData,
-    ...rest,
+    isLoading:
+      isLoadingPerpPositions ||
+      isLoadingSubaccountSummary ||
+      isLoadingIsolatedPositions,
+    isError:
+      isPerpPositionsError ||
+      isSubaccountSummaryError ||
+      isIsolatedPositionsError,
   };
 }

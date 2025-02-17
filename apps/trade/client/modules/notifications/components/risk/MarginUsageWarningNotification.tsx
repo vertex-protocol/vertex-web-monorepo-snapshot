@@ -14,12 +14,13 @@ export function MarginUsageWarningNotification({
   const { show } = useDialog();
 
   const bodyContent = (
-    <div className="flex flex-col items-start gap-y-4">
+    <>
       <p>
         Your initial margin usage has reached 100%. Please deposit more
         collateral or close positions to continue trading.
       </p>
       <SecondaryButton
+        size="xs"
         onClick={() => {
           show({ type: 'deposit', params: {} });
           onDismiss();
@@ -28,7 +29,7 @@ export function MarginUsageWarningNotification({
       >
         Deposit Funds
       </SecondaryButton>
-    </div>
+    </>
   );
 
   const headerContent = (
@@ -42,7 +43,9 @@ export function MarginUsageWarningNotification({
     <Toast.Container visible={visible}>
       <Toast.Header onDismiss={onDismiss}>{headerContent}</Toast.Header>
       <Toast.Separator ttl={ttl} />
-      <Toast.Body>{bodyContent}</Toast.Body>
+      <Toast.Body className="flex flex-col items-start gap-y-4">
+        {bodyContent}
+      </Toast.Body>
     </Toast.Container>
   );
 }

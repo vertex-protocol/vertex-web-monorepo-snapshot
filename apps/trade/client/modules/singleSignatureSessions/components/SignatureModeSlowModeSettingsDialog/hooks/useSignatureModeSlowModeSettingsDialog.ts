@@ -1,9 +1,15 @@
-import { asyncResult } from '@vertex-protocol/utils';
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
+import { asyncResult, removeDecimals } from '@vertex-protocol/utils';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useExecuteSlowModeUpdateLinkedSigner } from 'client/hooks/execute/useExecuteSlowModeUpdateLinkedSigner';
+import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
 import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
-import { useSlowModeFeeAllowance } from 'client/hooks/subaccount/useSlowModeFeeAllowance';
+import {
+  SLOW_MODE_FEE_AMOUNT_USDC,
+  useSlowModeFeeAllowance,
+} from 'client/hooks/subaccount/useSlowModeFeeAllowance';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import {
@@ -14,14 +20,19 @@ import {
   UseSignatureModeSlowModeSettingsDialog,
 } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/hooks/types';
 import { watchFormError } from 'client/utils/form/watchFormError';
-import { isHexString, Wallet, ZeroAddress } from 'ethers';
+import { Wallet } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { isHex, zeroAddress } from 'viem';
 
 export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowModeSettingsDialog {
   const { dispatchNotification } = useNotificationManagerContext();
   const { data: currentServerLinkedSigner } = useSubaccountLinkedSigner();
   const { signingPreference } = useSubaccountContext();
+  const { data: depositableTokenBalances } = useAllDepositableTokenBalances();
+  const {
+    primaryQuoteToken: { tokenDecimals: primaryQuoteTokenDecimals },
+  } = useVertexMetadataContext();
 
   const {
     approvalTxState,
@@ -40,20 +51,29 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
   // It's unlikely that the user will want to change the linked signer again after a successful update
   // And the success state is setup to show relevant instructions after a slow-mode tx is executed
   const slowModeTxState = useOnChainTransactionState({
-    txResponse: executeSlowModeUpdateLinkedSigner?.data,
+    txHash: executeSlowModeUpdateLinkedSigner?.data,
   });
 
+  // When currently enabled, populate the current private key so users can see it
+  const defaultPrivateKeyValue = (() => {
+    const { current } = signingPreference;
+    if (current?.type !== 'sign_once') {
+      return '';
+    }
+
+    return current.authorizedWallet?.privateKey ?? '';
+  })();
   const form = useForm<SignatureModeSlowModeSettingsFormValues>({
     defaultValues: {
       selectedMode: 'sign_once',
-      privateKey: '',
+      privateKey: defaultPrivateKeyValue,
     },
     mode: 'onTouched',
   });
 
   const selectedMode = form.watch('selectedMode');
   const privateKey = form.watch('privateKey');
-  const privateKeyError:
+  const privateKeyInputError:
     | SignatureModeSlowModeSettingsFormErrorType
     | undefined = watchFormError(form, 'privateKey');
 
@@ -92,44 +112,41 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
   );
 
   // From available data & input, derive the current user action
-  const userAction = useMemo((): SignatureModeSlowModeSettingsAction => {
+  const userAction = useMemo(():
+    | SignatureModeSlowModeSettingsAction
+    | undefined => {
     const serverLinkedSignerAddress =
       currentServerLinkedSigner?.signer.toLowerCase();
     const localStorageLinkedSignerAddress = (() => {
       if (signingPreference.current?.type === 'sign_once') {
         return signingPreference.current.authorizedWallet?.address.toLowerCase();
       }
-      return ZeroAddress;
+      return zeroAddress;
     })();
 
-    const isChangingModes = (() => {
-      if (
-        selectedMode === 'sign_always' &&
-        serverLinkedSignerAddress === ZeroAddress
-      ) {
-        return false;
-      } else if (
-        selectedMode === 'sign_once' &&
-        validSingleSignatureWallet &&
-        serverLinkedSignerAddress ===
-          validSingleSignatureWallet.address.toLowerCase()
-      ) {
-        return false;
+    // Case when user wants to turn off 1CT
+    if (selectedMode === 'sign_always') {
+      if (serverLinkedSignerAddress === zeroAddress) {
+        // For the first case: server is already configured but local state is not
+        return localStorageLinkedSignerAddress !== zeroAddress
+          ? 'save_without_tx'
+          : undefined;
       }
-
-      return true;
-    })();
-
-    if (isChangingModes && requiresApproval) {
-      return 'approve';
-    } else if (isChangingModes) {
       return 'execute_slow_mode';
     }
 
-    // No need to change modes because the linked signer is already configured, determine if saving locally is needed
-    return localStorageLinkedSignerAddress === serverLinkedSignerAddress
-      ? 'no_action_required'
-      : 'save_locally';
+    // Case when user wants to turn on 1CT
+    if (!validSingleSignatureWallet) {
+      return;
+    }
+    const singleSignatureWalletAddress =
+      validSingleSignatureWallet.address.toLowerCase();
+    if (serverLinkedSignerAddress !== singleSignatureWalletAddress) {
+      return requiresApproval ? 'requires_fee_approval' : 'execute_slow_mode';
+    }
+    if (localStorageLinkedSignerAddress !== singleSignatureWalletAddress) {
+      return 'save_without_tx';
+    }
   }, [
     currentServerLinkedSigner?.signer,
     requiresApproval,
@@ -138,11 +155,28 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
     validSingleSignatureWallet,
   ]);
 
-  const formError = useMemo(() => {
-    if (selectedMode === 'sign_once' && privateKeyError) {
-      return privateKeyError;
+  const formError = useMemo(():
+    | SignatureModeSlowModeSettingsFormErrorType
+    | undefined => {
+    if (selectedMode === 'sign_once' && privateKeyInputError) {
+      return privateKeyInputError;
     }
-  }, [privateKeyError, selectedMode]);
+    if (
+      userAction === 'execute_slow_mode' &&
+      removeDecimals(
+        depositableTokenBalances?.[QUOTE_PRODUCT_ID],
+        primaryQuoteTokenDecimals,
+      )?.lt(SLOW_MODE_FEE_AMOUNT_USDC)
+    ) {
+      return 'insufficient_balance_for_fee';
+    }
+  }, [
+    depositableTokenBalances,
+    primaryQuoteTokenDecimals,
+    privateKeyInputError,
+    selectedMode,
+    userAction,
+  ]);
 
   const buttonState =
     useMemo((): SignatureModeSlowModeSettingsActionButtonState => {
@@ -167,11 +201,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
         return 'approve_success';
       } else if (isSaveSuccess || isSlowModeTxSuccess) {
         return 'success';
-      } else if (
-        formError ||
-        !hasRequiredFormData ||
-        userAction === 'no_action_required'
-      ) {
+      } else if (formError || !hasRequiredFormData || !userAction) {
         return 'disabled';
       }
 
@@ -190,14 +220,14 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
 
   const onSubmitForm = useCallback(
     async (values: SignatureModeSlowModeSettingsFormValues) => {
-      if (userAction === 'approve') {
-        const txResponsePromise = approveFeeAllowance();
+      if (userAction === 'requires_fee_approval') {
+        const txHashPromise = approveFeeAllowance();
         dispatchNotification({
           type: 'action_error_handler',
           data: {
             errorNotificationTitle: 'Approve Fee Failed',
             executionData: {
-              txResponsePromise,
+              txHashPromise,
             },
           },
         });
@@ -206,7 +236,11 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
 
       // This is just an alternative to try/catch - creating `new Wallet` throws if private key is invalid (which also occurs if it's empty for switching to sign-always)
       const [linkedSignerWallet] = await asyncResult(
-        new Promise<Wallet>((resolve) => {
+        new Promise<Wallet | undefined>((resolve) => {
+          if (values.selectedMode === 'sign_always') {
+            resolve(undefined);
+            return;
+          }
           resolve(new Wallet(values.privateKey));
         }),
       );
@@ -230,7 +264,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
             errorNotificationTitle: 'Update Linked Signer Failed',
             executionData: {
               // We need to create a custom promise here because txReceiptIfExecuted is optionally a tx receipt
-              txResponsePromise: new Promise((_, reject) => {
+              txHashPromise: new Promise((_, reject) => {
                 reject(mutationError);
               }),
             },
@@ -265,6 +299,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
   return {
     form,
     formError,
+    privateKeyInputError,
     validatePrivateKey,
     setRandomPrivateKey,
     userAction,
@@ -275,6 +310,5 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
 }
 
 function isValidPrivateKey(input: string): boolean {
-  // https://github.com/ethers-io/ethers.js/discussions/2939#discussioncomment-2651396
-  return isHexString(input, 32);
+  return isHex(input) && input.length === 66;
 }

@@ -1,5 +1,5 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { Button, UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { DropdownUi, UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import { NavAccountInfoPinsDropdownContent } from 'client/modules/app/navBar/accountInfo/NavAccountInfoPinsDropdownContent';
 import { PinnedNavAccountInfoItem } from 'client/modules/app/navBar/accountInfo/PinnedNavAccountInfoItem';
 import { useNavAccountInfoPins } from 'client/modules/app/navBar/accountInfo/useNavAccountInfoPins';
@@ -30,13 +30,13 @@ export function NavAccountInfoPinsDropdown() {
   return (
     <DropdownMenu.Root onOpenChange={(open) => setOpen(open)} open={open}>
       <DropdownMenu.Trigger asChild>
-        <Button
+        <DropdownUi.Trigger
           endIcon={<UpDownChevronIcon open={open} size={14} />}
           // Static height here to have consistency with/without pinned items
           className="hover:text-text-primary h-desktop-navbar-item gap-x-1"
         >
           {accountButtonContent}
-        </Button>
+        </DropdownUi.Trigger>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content asChild align="end" sideOffset={-2} alignOffset={6}>
         <NavPopoverContentContainer className="w-80 px-0">

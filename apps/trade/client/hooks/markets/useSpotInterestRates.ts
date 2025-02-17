@@ -3,14 +3,14 @@ import {
   calcRealizedDepositRateForTimeRange,
 } from '@vertex-protocol/contracts';
 import { BigDecimal, TimeInSeconds } from '@vertex-protocol/utils';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { useMinDepositRates } from 'client/hooks/query/markets/useMinDepositRates';
 import { useMemo } from 'react';
 
 /**
  * Rates are represented as an annualized APR in fractional form
  */
-interface SpotInterestRate {
+export interface SpotInterestRate {
   deposit: BigDecimal;
   borrow: BigDecimal;
 }

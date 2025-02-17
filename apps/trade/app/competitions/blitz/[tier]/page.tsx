@@ -3,9 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 interface Props {
-  params: {
-    tier: string;
-  };
+  params: Promise<{ tier: string }>;
 }
 
 export default function BlitzTradingCompetitionTierPage() {
@@ -14,12 +12,14 @@ export default function BlitzTradingCompetitionTierPage() {
 
 export async function generateMetadata(
   {
-    // params: { tier },
+    // params,
   }: Props,
 ): Promise<Metadata | undefined> {
   // if (clientEnv.base.brandName !== 'blitz') {
   notFound();
   // }
+
+  // const { tier } = await params;
 
   // return {
   //   title: {

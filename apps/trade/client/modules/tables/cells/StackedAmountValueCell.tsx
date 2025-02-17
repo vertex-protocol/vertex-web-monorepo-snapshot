@@ -1,10 +1,10 @@
-import { BigDecimal } from '@vertex-protocol/utils';
 import {
   CustomNumberFormatSpecifier,
   formatNumber,
   NumberFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
 import { TableCellProps } from 'client/components/DataTable/cells/TableCell';
 
@@ -42,7 +42,7 @@ export function StackedAmountValueCell({
       top={
         <div className="flex items-baseline gap-x-1">
           {formattedSize}
-          <span className="text-text-tertiary text-3xs">{symbol}</span>
+          <span className="text-3xs">{symbol}</span>
         </div>
       }
       bottom={formattedValue}

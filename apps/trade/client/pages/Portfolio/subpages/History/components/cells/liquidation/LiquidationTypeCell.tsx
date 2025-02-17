@@ -1,5 +1,4 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Pill } from '@vertex-protocol/web-ui';
 import {
   TableCell,
   TableCellProps,
@@ -10,29 +9,28 @@ interface LiquidationTypeCellProps extends TableCellProps {
   liquidatedBalanceTypes: HistoricalLiquidationsTableItem['liquidatedBalanceTypes'];
 }
 
-const liquidationTypeToLabel = {
-  spot: 'Balance',
-  perp: 'Perp Position',
-  lp: 'LP Position',
-};
-
 export function LiquidationTypeCell({
   liquidatedBalanceTypes,
   className,
   ...rest
 }: LiquidationTypeCellProps) {
+  const liquidationBalanceTypeContent = {
+    spot: 'Balance',
+    perp_cross: 'Perp (Cross)',
+    perp_isolated: `Perp (Iso)`,
+    lp: 'LP Position',
+  };
+
   return (
     <TableCell
       className={joinClassNames(
-        'flex flex-col items-start justify-center gap-y-2',
+        'text-text-tertiary flex flex-col items-start justify-center gap-y-2',
         className,
       )}
       {...rest}
     >
       {liquidatedBalanceTypes.map((type) => (
-        <Pill colorVariant="tertiary" sizeVariant="sm" key={type}>
-          {liquidationTypeToLabel[type]}
-        </Pill>
+        <div key={type}>{liquidationBalanceTypeContent[type]}</div>
       ))}
     </TableCell>
   );

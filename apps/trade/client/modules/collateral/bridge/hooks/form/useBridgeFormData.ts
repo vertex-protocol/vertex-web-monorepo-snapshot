@@ -1,5 +1,5 @@
 import { removeDecimals } from '@vertex-protocol/utils';
-import { useMinimumDepositAmounts } from 'client/hooks/subaccount/useMinimumDepositAmounts';
+import { useMinInitialDepositAmountByProductId } from 'client/hooks/subaccount/useMinInitialDepositAmountByProductId';
 import { useBridgeTokenBalances } from 'client/modules/collateral/bridge/hooks/query/useBridgeTokenBalances';
 import { useBridgeData } from 'client/modules/collateral/bridge/hooks/useBridgeData';
 import { useMemo } from 'react';
@@ -18,7 +18,8 @@ export function useBridgeFormData({
   const { destinationChain, sourceChains } = useBridgeData() ?? {};
   const { data: tokenBalancesForSourceChain } =
     useBridgeTokenBalances(sourceChainId);
-  const { data: minDepositAmounts } = useMinimumDepositAmounts();
+  const { data: minInitialDepositAmounts } =
+    useMinInitialDepositAmountByProductId();
 
   // Source
   const allSourceChains = useMemo(() => {
@@ -81,15 +82,15 @@ export function useBridgeFormData({
     );
   }, [allDestinationTokens, destinationTokenAddress]);
 
-  const minimumDepositAmount = useMemo(() => {
-    if (!minDepositAmounts || !selectedDestinationToken) {
+  const minimumInitialDepositAmount = useMemo(() => {
+    if (!minInitialDepositAmounts || !selectedDestinationToken) {
       return;
     }
 
-    return removeDecimals(
-      minDepositAmounts[selectedDestinationToken.vertexProduct.productId],
-    );
-  }, [minDepositAmounts, selectedDestinationToken]);
+    return minInitialDepositAmounts[
+      selectedDestinationToken.vertexProduct.productId
+    ];
+  }, [minInitialDepositAmounts, selectedDestinationToken]);
 
   return {
     allSourceChains,
@@ -99,6 +100,6 @@ export function useBridgeFormData({
     sourceTokenBalance,
     allDestinationTokens,
     selectedDestinationToken,
-    minimumDepositAmount,
+    minimumInitialDepositAmount,
   };
 }

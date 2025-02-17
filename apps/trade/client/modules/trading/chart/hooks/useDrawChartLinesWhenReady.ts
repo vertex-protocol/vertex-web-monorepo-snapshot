@@ -6,7 +6,7 @@ interface Params {
   tvWidget: IChartingLibraryWidget | undefined;
   loadedSymbolInfo: TradingViewSymbolInfo | undefined;
   drawOrderLines: () => void;
-  drawEntryLine: () => void;
+  drawEntryLines: () => void;
 }
 
 /**
@@ -17,7 +17,7 @@ export function useDrawChartLinesWhenReady({
   tvWidget,
   loadedSymbolInfo,
   drawOrderLines,
-  drawEntryLine,
+  drawEntryLines,
 }: Params) {
   // Draw chart lines on reload of the callback - the individual draw functions will reload on data changes, so having
   // this effect ensures that data is always brought up to date
@@ -30,16 +30,16 @@ export function useDrawChartLinesWhenReady({
         err,
       );
     }
-  }, [drawOrderLines, tvWidget, loadedSymbolInfo]);
+  }, [tvWidget, loadedSymbolInfo, drawOrderLines]);
 
   useEffect(() => {
     try {
-      drawEntryLine();
+      drawEntryLines();
     } catch (err) {
       console.debug(
         '[useDrawChartLinesWhenReady] Failed to draw entry lines',
         err,
       );
     }
-  }, [drawEntryLine, tvWidget, loadedSymbolInfo]);
+  }, [tvWidget, loadedSymbolInfo, drawEntryLines]);
 }

@@ -1,8 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { PLACE_ENGINE_ORDER_QUERY_KEYS } from 'client/hooks/execute/placeOrder/placeEngineOrderQueryKeys';
 import { usePlaceOrderMutationFn } from 'client/hooks/execute/placeOrder/usePlaceOrderMutationFn';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
-import { OPEN_TRIGGER_ORDER_QUERY_KEYS } from 'client/hooks/execute/util/refetchQueryKeys';
+import {
+  OPEN_TRIGGER_ORDER_QUERY_KEYS,
+  PLACE_ENGINE_ORDER_QUERY_KEYS,
+} from 'client/hooks/execute/util/refetchQueryKeys';
 import { useExecuteInValidContext } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchOpenEngineOrders } from 'client/hooks/execute/util/useRefetchOpenEngineOrders';
 import { useRefetchQueries } from 'client/hooks/execute/util/useRefetchQueries';
@@ -26,7 +28,10 @@ export function useExecutePlaceOrder() {
         refetchOpenTriggerOrderQueries();
       } else {
         refetchPlaceEngineOrderRelatedQueries();
-        refetchOpenEngineOrders([variables.productId]);
+        // Only need to refetch open orders when placing a limit order
+        if (variables.priceType === 'limit') {
+          refetchOpenEngineOrders([variables.productId]);
+        }
       }
     },
     onError(error, variables) {

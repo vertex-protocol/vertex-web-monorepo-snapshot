@@ -2,7 +2,7 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import {
   useVertexMetadataContext,
   VRTX_TOKEN_INFO,
-} from '@vertex-protocol/metadata';
+} from '@vertex-protocol/react-client';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
@@ -17,7 +17,6 @@ import { EpochNameCell } from 'client/pages/VertexRewards/components/cards/VrtxC
 import { EpochRewardsLiquidClaimActionCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochRewardsLiquidClaimActionCell';
 import { EpochRewardsPoolCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochRewardsPoolCell';
 import { EpochRewardsTimeSpanCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochRewardsTimeSpanCell';
-import { EpochUnclaimedRewardsAmountCell } from 'client/pages/VertexRewards/components/cards/VrtxCollapsibleSummaryCard/EpochRewardsTable/cells/EpochUnclaimedRewardsAmountCell';
 import {
   EpochRewardsTableData,
   useEpochRewardsTable,
@@ -40,15 +39,14 @@ export function EpochRewardsTable({
     const protocolChainColumns = [
       columnHelper.accessor('rewardsUnclaimed', {
         header: ({ header }) => (
-          <HeaderCell header={header}>Unclaimed / Deadline</HeaderCell>
+          <HeaderCell header={header}>Unclaimed</HeaderCell>
         ),
         cell: (context) => {
           return (
-            <EpochUnclaimedRewardsAmountCell
+            <AmountWithSymbolCell
               amount={context.getValue()}
-              claimDeadlineMillis={context.row.original.claimDeadlineMillis}
-              isPastClaimDeadline={context.row.original.isPastClaimDeadline}
-              isCurrent={context.row.original.isCurrent}
+              formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+              symbol={VRTX_TOKEN_INFO.symbol}
             />
           );
         },
@@ -64,9 +62,9 @@ export function EpochRewardsTable({
           return (
             <EpochRewardsLiquidClaimActionCell
               className="pr-1"
-              isPastClaimDeadline={context.row.original.isPastClaimDeadline}
               rewardsUnclaimed={context.row.original.rewardsUnclaimed}
               rewardsEarned={context.row.original.rewardsEarned}
+              isPreLbaAirdropEpoch={context.row.original.isPreLbaAirdropEpoch}
               isCurrent={context.row.original.isCurrent}
               epochNumber={context.row.original.epochNumber}
             />

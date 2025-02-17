@@ -14,11 +14,13 @@ import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CloseAllPositionsHeaderCell } from 'client/modules/tables/cells/CloseAllPositionsHeaderCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
+import { PerpMarginLeverageCell } from 'client/modules/tables/cells/PerpMarginLeverageCell';
 import { PerpStackedPnlCell } from 'client/modules/tables/cells/PerpStackedPnlCell';
 import { PerpTpSlCell } from 'client/modules/tables/cells/PerpTpSlCell';
 import { StackedAmountValueCell } from 'client/modules/tables/cells/StackedAmountValueCell';
@@ -43,6 +45,7 @@ export function PerpPositionsTable({
   marketFilter,
   hasBackground,
 }: WithClassnames<Props>) {
+  const { isIsoMarginEnabled } = useEnabledFeatures();
   const { show } = useDialog();
   const isDesktop = useIsDesktop();
   const pushTradePage = usePushTradePage();
@@ -55,6 +58,27 @@ export function PerpPositionsTable({
   const disableClosePosition = !isConnected;
 
   const columns: ColumnDef<PerpPositionsTableItem, any>[] = useMemo(() => {
+    const marginLeverageColumn = columnHelper.display({
+      id: 'marginLeverage',
+      header: ({ header }) => (
+        <HeaderCell header={header}>Margin/Leverage</HeaderCell>
+      ),
+      cell: (context) => {
+        const { margin, isoSubaccountName } = context.row.original;
+
+        return (
+          <PerpMarginLeverageCell
+            margin={margin}
+            isoSubaccountName={isoSubaccountName}
+          />
+        );
+      },
+      enableSorting: false,
+      meta: {
+        cellContainerClassName: 'w-36',
+      },
+    });
+
     return [
       columnHelper.accessor('marketInfo', {
         header: ({ header }) => (
@@ -77,12 +101,12 @@ export function PerpPositionsTable({
           <HeaderCell header={header}>Position Size</HeaderCell>
         ),
         cell: (context) => {
-          const { position, notionalValueUsd, symbol } =
+          const { amount, notionalValueUsd, symbol } =
             context.getValue<PerpPositionsTableItem['amountInfo']>();
           return (
             <StackedAmountValueCell
               symbol={symbol}
-              size={position}
+              size={amount}
               sizeFormatSpecifier={context.row.original.sizeFormatSpecifier}
               valueUsd={notionalValueUsd}
             />
@@ -93,7 +117,8 @@ export function PerpPositionsTable({
           cellContainerClassName: 'w-28',
         },
       }),
-      columnHelper.accessor('marginUsedUsd', {
+      ...(isIsoMarginEnabled ? [marginLeverageColumn] : []),
+      columnHelper.accessor('margin', {
         header: ({ header }) => (
           <HeaderCell definitionTooltipId="perpPositionsMargin" header={header}>
             Margin
@@ -102,12 +127,14 @@ export function PerpPositionsTable({
         cell: (context) => {
           return (
             <CurrencyCell
-              value={context.getValue()}
-              formatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
+              value={
+                context.getValue<PerpPositionsTableItem['margin']>()
+                  .crossMarginUsedUsd
+              }
             />
           );
         },
-        sortingFn: bigDecimalSortFn,
+        sortingFn: getKeyedBigDecimalSortFn('crossMarginUsedUsd'),
         meta: {
           cellContainerClassName: 'w-24',
         },
@@ -206,6 +233,7 @@ export function PerpPositionsTable({
           return (
             <PerpTpSlCell
               productId={context.row.original.productId}
+              isoSubaccountName={context.row.original.isoSubaccountName}
               reduceOnlyOrders={context.getValue()}
               formatSpecifier={context.row.original.priceFormatSpecifier}
             />
@@ -245,12 +273,16 @@ export function PerpPositionsTable({
         id: 'actions',
         header: ({ header }) => <CloseAllPositionsHeaderCell header={header} />,
         cell: (context) => {
-          const { productId, marketInfo, price, pnlInfo } =
-            context.row.original;
+          const {
+            productId,
+            marketInfo,
+            oraclePrice,
+            averageEntryPrice,
+            pnlInfo,
+            isoSubaccountName,
+          } = context.row.original;
 
           const { estimatedPnlFrac } = pnlInfo;
-
-          const { fastOraclePrice, averageEntryPrice } = price;
 
           return (
             <TableCell className="pointer-events-auto px-4">
@@ -259,13 +291,16 @@ export function PerpPositionsTable({
                   tooltipLabel="Share Position"
                   size="xs"
                   onClick={getTableButtonOnClickHandler(() => {
+                    if (!estimatedPnlFrac || !averageEntryPrice) {
+                      return;
+                    }
                     show({
                       type: 'perp_pnl_social_sharing',
                       params: {
                         marketInfo,
                         pnlFrac: estimatedPnlFrac,
                         entryPrice: averageEntryPrice,
-                        referencePrice: fastOraclePrice,
+                        referencePrice: oraclePrice,
                         isRealized: false,
                       },
                     });
@@ -282,6 +317,7 @@ export function PerpPositionsTable({
                       type: 'close_position',
                       params: {
                         productId,
+                        isoSubaccountName,
                       },
                     });
                   })}
@@ -298,7 +334,7 @@ export function PerpPositionsTable({
         },
       }),
     ];
-  }, [disableClosePosition, show]);
+  }, [disableClosePosition, isIsoMarginEnabled, show]);
 
   const onRowClicked = (row: Row<PerpPositionsTableItem>) => {
     if (isDesktop || !isConnected) {

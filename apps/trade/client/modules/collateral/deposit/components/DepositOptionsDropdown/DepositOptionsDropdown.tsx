@@ -1,13 +1,12 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { joinClassNames, WithChildren } from '@vertex-protocol/web-common';
 import {
-  Card,
+  DropdownUi,
   Icons,
   NavCardButton,
   NavCardButtonProps,
   SecondaryButton,
   UpDownChevronIcon,
-  Z_INDEX,
 } from '@vertex-protocol/web-ui';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -143,16 +142,11 @@ export function DepositOptionsDropdown({
         </SecondaryButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content asChild align="start" sideOffset={4}>
-        <Card
+        <DropdownUi.Content
           className={joinClassNames(
-            'bg-surface-2 flex flex-col',
-            'gap-y-0.5 p-1.5',
-            Z_INDEX.pagePopover,
+            'min-w-[var(--radix-dropdown-menu-trigger-width)]',
             contentClassName,
           )}
-          style={{
-            minWidth: 'var(--radix-dropdown-menu-trigger-width)',
-          }}
         >
           {depositOptions.map((props, index) => {
             return (
@@ -164,7 +158,7 @@ export function DepositOptionsDropdown({
               </DropdownMenu.Item>
             );
           })}
-        </Card>
+        </DropdownUi.Content>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   );

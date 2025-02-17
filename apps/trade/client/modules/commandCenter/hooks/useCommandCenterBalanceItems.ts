@@ -4,8 +4,11 @@ import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { CollateralDialogType } from 'client/modules/app/dialogs/types';
-import { signDependentValue } from 'client/utils/signDependentValue';
-import { SpotProductMetadata, MarketCategory } from '@vertex-protocol/metadata';
+import { signDependentValue } from '@vertex-protocol/react-client';
+import {
+  SpotProductMetadata,
+  MarketCategory,
+} from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 export interface BalanceTableItem {

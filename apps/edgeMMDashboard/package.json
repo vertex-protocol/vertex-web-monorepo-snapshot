@@ -14,7 +14,6 @@
     "@next/third-parties": "*",
     "@tanstack/react-query": "*",
     "@vertex-protocol/client": "*",
-    "@vertex-protocol/metadata": "*",
     "@vertex-protocol/react-client": "*",
     "@vertex-protocol/web-common": "*",
     "@vertex-protocol/web-ui": "*",
@@ -38,6 +37,7 @@
     "postcss": "*",
     "tailwindcss": "*",
     "ts-config": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "typescript-eslint": "*"
   }
 }

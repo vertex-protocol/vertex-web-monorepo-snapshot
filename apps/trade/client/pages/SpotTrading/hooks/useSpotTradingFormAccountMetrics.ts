@@ -1,6 +1,10 @@
 import { BalanceSide } from '@vertex-protocol/contracts';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
 import {
+  AnnotatedBalanceWithProduct,
+  AnnotatedSpotBalanceWithProduct,
+} from '@vertex-protocol/react-client';
+import {
   addDecimals,
   BigDecimal,
   BigDecimals,
@@ -9,16 +13,13 @@ import {
 import {
   SpotStaticMarketData,
   StaticMarketQuoteData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+} from 'client/hooks/markets/marketsStaticData/types';
+
 import {
   AdditionalSubaccountInfoFactory,
   EstimatedSubaccountInfo,
   useEstimateSubaccountInfoChange,
 } from 'client/hooks/subaccount/useEstimateSubaccountInfoChange';
-import {
-  AnnotatedBalanceWithProduct,
-  AnnotatedSpotBalanceWithProduct,
-} from '@vertex-protocol/metadata';
 import { useCallback, useMemo } from 'react';
 
 interface AdditionalSubaccountInfo {

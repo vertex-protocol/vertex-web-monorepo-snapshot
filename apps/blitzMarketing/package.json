@@ -14,7 +14,7 @@
     "@next/third-parties": "*",
     "@tanstack/react-query": "*",
     "@vertex-protocol/web-common": "*",
-    "framer-motion": "^11.2.14",
+    "framer-motion": "^11.11.17",
     "jotai": "*",
     "lodash": "*",
     "next": "*",
@@ -31,6 +31,7 @@
     "postcss": "*",
     "tailwindcss": "*",
     "ts-config": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "typescript-eslint": "*"
   }
 }

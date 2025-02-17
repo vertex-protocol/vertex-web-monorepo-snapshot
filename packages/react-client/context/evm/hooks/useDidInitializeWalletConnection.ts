@@ -1,32 +1,45 @@
+import { GetAccountReturnType } from '@wagmi/core/src/actions/getAccount';
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useAccount } from 'wagmi';
+
+const PENDING_ACCOUNT_STATUSES: GetAccountReturnType['status'][] = [
+  'connecting',
+  'reconnecting',
+];
 
 /**
- * Util hook for determining whether an initial client mount has occurred. This is useful as we cannot correctly load connection
- * state before this (all wallet interaction is based on localstorage, so all states will start in `disconnected` even if the user
- * is technically connected).
+ * Util hook for determining when wagmi has successfully initialized connector state.
  *
- * This isn't foolproof, but it's a good enough heuristic for now.
+ * Observed sequence is:
+ * - `isClient` is `false` on the server and during hydration, `true` after hydration.
+ * - When `isClient` is initially switched to `true`, `useAccount` status can still be in a `reconnecting`/`connecting` state.
  */
 export function useDidInitializeWalletConnection() {
   const isClient = useIsClient();
-  const [didInitialClientMount, setDidInitialClientMount] = useState(false);
+  const { status: accountStatus } = useAccount();
+  const [didInitialize, setDidInitialize] = useState(false);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
 
-    if (isClient && !didInitialClientMount) {
-      // Small delay to account for any potential lag for wagmi to initialize client state
+    if (
+      !didInitialize &&
+      isClient &&
+      // Only set didInitialize to true when we're in a "finalized" state - i.e disconnected / connected
+      !PENDING_ACCOUNT_STATUSES.includes(accountStatus)
+    ) {
+      // Small delay to account for any potential lag for wagmi to load client state
       timeout = setTimeout(() => {
-        setDidInitialClientMount(true);
-      }, 100);
+        setDidInitialize(true);
+      }, 250);
     }
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [didInitialClientMount, isClient]);
+  }, [accountStatus, didInitialize, isClient]);
 
-  return didInitialClientMount;
+  return didInitialize;
 }
 
 /**
@@ -45,6 +58,5 @@ export function useIsClient() {
 }
 
 function emptySubscribe() {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   return () => {};
 }

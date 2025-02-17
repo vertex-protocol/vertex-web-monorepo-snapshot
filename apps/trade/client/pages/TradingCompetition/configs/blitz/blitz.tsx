@@ -8,9 +8,9 @@ import {
 export const blitzConfig: TradingCompetitionConfig = {
   ...commonConfig,
   chainEnv: 'blast',
-  contestIds: [7, 8],
+  contestIds: [13, 14],
   tierDataByContestId: {
-    7: TIER_1_TIER_DATA,
-    8: TIER_2_TIER_DATA,
+    13: TIER_1_TIER_DATA,
+    14: TIER_2_TIER_DATA,
   },
 };

@@ -17,12 +17,10 @@ export function TotalAmountDenomSelect({
   const options = useMemo(
     () => [
       {
-        id: 'quote',
         label: quoteSymbol ?? '',
         value: 'quote',
       },
       {
-        id: 'asset',
         label: symbol ?? '',
         value: 'asset',
       },

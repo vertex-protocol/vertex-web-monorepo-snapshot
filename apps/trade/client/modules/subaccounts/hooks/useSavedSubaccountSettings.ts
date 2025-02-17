@@ -1,4 +1,4 @@
-import { usePrimaryChainId } from '@vertex-protocol/react-client';
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 import { SubaccountProfile } from 'client/modules/subaccounts/types';
 import { getSubaccountKey } from 'client/modules/subaccounts/utils/getSubaccountKey';
@@ -7,30 +7,30 @@ import { useCallback } from 'react';
 export function useSavedSubaccountSettings() {
   const {
     savedUserSettings: {
-      selectedSubaccountNameByChainId,
+      selectedSubaccountNameByChainEnv,
       profileBySubaccountKey,
     },
     setSavedUserSettings,
     didLoadPersistedValue,
   } = useSavedUserSettings();
 
-  const primaryChainId = usePrimaryChainId();
+  const { primaryChainEnv } = useEVMContext();
 
   const selectedSubaccountName =
-    selectedSubaccountNameByChainId[primaryChainId];
+    selectedSubaccountNameByChainEnv[primaryChainEnv];
 
   const saveSelectedSubaccountName = useCallback(
     (name: string) =>
       setSavedUserSettings((prev) => {
-        prev.selectedSubaccountNameByChainId[primaryChainId] = name;
+        prev.selectedSubaccountNameByChainEnv[primaryChainEnv] = name;
         return prev;
       }),
-    [primaryChainId, setSavedUserSettings],
+    [primaryChainEnv, setSavedUserSettings],
   );
 
   const saveSubaccountProfile = useCallback(
     (subaccountName: string, data: SubaccountProfile) => {
-      const key = getSubaccountKey(primaryChainId, subaccountName);
+      const key = getSubaccountKey(primaryChainEnv, subaccountName);
       const { username, avatar } = data;
 
       setSavedUserSettings((prev) => {
@@ -38,15 +38,15 @@ export function useSavedSubaccountSettings() {
         return prev;
       });
     },
-    [setSavedUserSettings, primaryChainId],
+    [setSavedUserSettings, primaryChainEnv],
   );
 
   const getSavedSubaccountProfile = useCallback(
     (subaccountName: string) => {
-      const key = getSubaccountKey(primaryChainId, subaccountName);
+      const key = getSubaccountKey(primaryChainEnv, subaccountName);
       return profileBySubaccountKey[key];
     },
-    [primaryChainId, profileBySubaccountKey],
+    [primaryChainEnv, profileBySubaccountKey],
   );
 
   return {

@@ -1,5 +1,4 @@
 import { ChainEnv } from '@vertex-protocol/client';
-import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   Label,
   Select,
@@ -11,7 +10,7 @@ import {
 interface Props {
   setPrimaryChainEnv: (value: ChainEnv) => void;
   primaryChainEnv: ChainEnv;
-  chainEnvOptions: SelectOption<string, ChainEnv>[];
+  chainEnvOptions: SelectOption<ChainEnv>[];
 }
 
 export function ChainEnvSelect({
@@ -28,12 +27,9 @@ export function ChainEnvSelect({
     onOpenChange,
   } = useSelect({
     selectedValue: primaryChainEnv,
-    onSelectedValueChange: (option) => setPrimaryChainEnv(option),
+    onSelectedValueChange: setPrimaryChainEnv,
     options: chainEnvOptions,
   });
-
-  // min-w used to prevent layout shifts. It's shared between trigger and options to keep them aligned.
-  const sharedClassNames = 'min-w-32';
 
   return (
     <Select.Root
@@ -45,17 +41,16 @@ export function ChainEnvSelect({
       <div className="flex flex-col gap-y-1">
         <Label>Chain Env</Label>
         <Select.Trigger
-          className={sharedClassNames}
+          // min-w is used to prevent layout shifts.
+          className="min-w-32"
           endIcon={<UpDownChevronIcon open={open} />}
         >
           {selectedOption?.label}
         </Select.Trigger>
       </div>
       <Select.Options
-        className={
-          // max-h to make it scrollable and prevent going off screen
-          joinClassNames(sharedClassNames, 'max-h-80')
-        }
+        // max-h to make it scrollable and prevent going off screen
+        className="max-h-80"
       >
         {selectOptions.map(({ label, value }) => (
           <Select.Option key={value} value={value}>

@@ -4,10 +4,10 @@ import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
-  usePrimaryChainVertexClient,
+  usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
-import { toBigDecimal } from '@vertex-protocol/utils';
-import { ZeroAddress } from 'ethers';
+import { BigDecimals, toBigDecimal } from '@vertex-protocol/utils';
+import { Address, zeroAddress } from 'viem';
 
 interface Params {
   spenderAddress: string | undefined;
@@ -30,14 +30,14 @@ export function tokenAllowanceQueryKey(
 }
 
 export function useTokenAllowance({ tokenAddress, spenderAddress }: Params) {
-  const vertexClient = usePrimaryChainVertexClient();
+  const publicClient = usePrimaryChainPublicClient();
   const {
     connectionStatus: { address },
     primaryChainEnv,
   } = useEVMContext();
 
-  const disabled = !vertexClient || !spenderAddress || !tokenAddress;
-  const accountAddress = address ?? ZeroAddress;
+  const disabled = !publicClient || !spenderAddress || !tokenAddress;
+  const accountAddress = address ?? zeroAddress;
 
   return useQuery({
     queryKey: tokenAllowanceQueryKey(
@@ -51,14 +51,21 @@ export function useTokenAllowance({ tokenAddress, spenderAddress }: Params) {
         throw new QueryDisabledError();
       }
 
-      const allowance = await IERC20__factory.connect(
-        tokenAddress,
-        vertexClient.context.signerOrProvider,
-      ).allowance(accountAddress, spenderAddress);
+      if (!address) {
+        return BigDecimals.ZERO;
+      }
+
+      const allowance = await publicClient.readContract({
+        abi: IERC20__factory.abi,
+        address: tokenAddress as Address,
+        functionName: 'allowance',
+        args: [accountAddress as Address, spenderAddress as Address],
+      });
 
       return toBigDecimal(allowance);
     },
     enabled: !disabled,
-    refetchInterval: 10000,
+    // Refetch logic for token approval can be flakey, so specify a shorter refetch interval to ensure the UI stays up to date
+    refetchInterval: address ? 3000 : undefined,
   });
 }

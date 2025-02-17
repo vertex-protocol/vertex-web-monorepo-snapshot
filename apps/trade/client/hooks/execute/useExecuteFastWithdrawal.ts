@@ -8,7 +8,6 @@ import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/uti
 import { subaccountPaginatedCollateralEventsQueryKey } from 'client/hooks/query/subaccount/useSubaccountPaginatedCollateralEvents';
 import { allProductsWithdrawPoolLiquidityQueryKey } from 'client/hooks/query/withdrawPool/useAllProductsWithdrawPoolLiquidity';
 import { markedWithdrawPoolIdxsQueryKey } from 'client/hooks/query/withdrawPool/useMarkedWithdrawPoolIdxs';
-import { ContractTransactionResponse } from 'ethers';
 import { useCallback } from 'react';
 
 const REFETCH_QUERY_KEYS = [
@@ -23,7 +22,7 @@ export function useExecuteFastWithdrawal() {
       async (
         params: { submissionIndex: string },
         context: ValidExecuteContext,
-      ): Promise<ContractTransactionResponse> => {
+      ) => {
         console.log('Fast Withdrawing', params);
 
         // There might be delay until the tx is signed (< 5s). This might fail before.
@@ -32,11 +31,13 @@ export function useExecuteFastWithdrawal() {
             { idx: params.submissionIndex },
           );
 
-        return context.vertexClient.context.contracts.withdrawPool.submitFastWithdrawal(
-          idx,
-          txBytes,
-          signatures,
-        );
+        const txResponse =
+          await context.vertexClient.context.contracts.withdrawPool.submitFastWithdrawal(
+            idx,
+            txBytes,
+            signatures,
+          );
+        return txResponse.hash;
       },
       [],
     ),

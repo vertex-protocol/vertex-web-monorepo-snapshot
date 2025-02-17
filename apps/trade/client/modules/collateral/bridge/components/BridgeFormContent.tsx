@@ -18,7 +18,7 @@ export function BridgeFormContent() {
     allSourceTokens,
     allDestinationTokens,
     selectedDestinationToken,
-    minimumDepositAmount,
+    minimumInitialDepositAmount,
     sourceTokenBalance,
     selectedSourceAmount,
     selectedSourceToken,
@@ -72,7 +72,7 @@ export function BridgeFormContent() {
       <div className="flex flex-col gap-y-4">
         {isInitialDeposit && (
           <MinimumInitialDepositAmount
-            amount={minimumDepositAmount}
+            amount={minimumInitialDepositAmount}
             symbol={selectedDestinationToken?.symbol}
           />
         )}

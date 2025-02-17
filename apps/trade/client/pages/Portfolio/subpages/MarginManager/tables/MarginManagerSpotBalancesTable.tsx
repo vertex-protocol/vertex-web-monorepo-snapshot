@@ -23,7 +23,7 @@ import {
   MarginManagerSpotBalanceTableItem,
   useMarginManagerSpotBalancesTable,
 } from 'client/pages/Portfolio/subpages/MarginManager/tables//hooks/useMarginManagerSpotBalancesTable';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarginManagerSpotBalanceTableItem>();

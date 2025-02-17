@@ -1,13 +1,13 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
+  VRTX_TOKEN_INFO,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { ActionSummary } from 'client/components/ActionSummary';
-import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { DepositInfoCardType } from 'client/modules/collateral/deposit/types';
 import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
 import { useMemo } from 'react';
@@ -61,7 +61,7 @@ export function DepositSummaryDisclosure({
   );
 
   const vrtxMarginInfoContent = (() => {
-    if (displayedInfoCardType !== 'vrtx') {
+    if (displayedInfoCardType !== 'vrtx_margin') {
       return null;
     }
 

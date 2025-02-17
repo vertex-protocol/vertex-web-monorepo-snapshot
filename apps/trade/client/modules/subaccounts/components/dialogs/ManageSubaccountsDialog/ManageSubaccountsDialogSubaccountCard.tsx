@@ -11,6 +11,7 @@ import {
   Button,
   getStateOverlayClassNames,
   Icons,
+  Value,
 } from '@vertex-protocol/web-ui';
 import { StatusIndicator } from 'client/components/StatusIndicator';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -53,7 +54,7 @@ export function ManageSubaccountsDialogSubaccountCard({
         }
         endIcon={<Icons.PencilSimple size={12} className="ml-auto" />}
       >
-        <div className="text-text-primary flex items-center gap-x-1 leading-none">
+        <div className="text-text-primary flex items-center gap-x-1">
           {isActive ? (
             <>
               <StatusIndicator sizeVariant="sm" colorVariant="positive" />
@@ -84,11 +85,11 @@ export function ManageSubaccountsDialogSubaccountCard({
           />
           <span className="w-full truncate">{subaccount.profile.username}</span>
         </div>
-        <span className="w-full truncate sm:text-xl">
+        <Value className="text-text-primary">
           {formatNumber(subaccount.portfolioValueUsd, {
             formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
           })}
-        </span>
+        </Value>
       </Button>
     </div>
   );

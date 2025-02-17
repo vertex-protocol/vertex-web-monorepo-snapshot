@@ -21,7 +21,6 @@ export function SubaccountQuoteTransferSelect({
 }: Props) {
   const options = useMemo(() => {
     return subaccounts.map((subaccount) => ({
-      id: subaccount.subaccountName,
       label: subaccount.profile.username,
       value: subaccount.subaccountName,
     }));

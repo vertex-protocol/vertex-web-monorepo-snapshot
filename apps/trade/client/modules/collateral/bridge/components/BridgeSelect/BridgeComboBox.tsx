@@ -1,15 +1,16 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import {
-  ComboBoxTriggerProps,
-  ComboBox,
-  ComboBoxOptionsProps,
-  ComboBoxOptionProps,
-} from 'client/components/ComboBox/ComboBox';
-import { ComboBoxComponentOption } from 'client/components/ComboBox/hooks/types';
 import { UpDownChevronIcon } from '@vertex-protocol/web-ui';
 import {
-  BridgeChain,
-  BridgeToken,
+  ComboBox,
+  ComboBoxOptionProps,
+  ComboBoxOptionsProps,
+  ComboBoxTriggerProps,
+} from 'client/components/ComboBox/ComboBox';
+import { ComboBoxComponentOption } from 'client/components/ComboBox/hooks/types';
+import { BRIDGE_DROPDOWN_CONTENT_CLASSNAME } from 'client/modules/collateral/bridge/components/BridgeSelect/consts';
+import {
+  BridgeChainSelectValue,
+  BridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
 
 interface TriggerProps extends ComboBoxTriggerProps {
@@ -38,7 +39,11 @@ function Trigger({
         <span className="truncate">{label}</span>
         {/* Loading remote images, so can't use Image component */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="size-4 rounded-full" src={labelImgSrc} alt={label} />
+        <img
+          className="h-4 w-auto rounded-full"
+          src={labelImgSrc}
+          alt={label}
+        />
       </div>
     );
   })();
@@ -63,14 +68,9 @@ function Trigger({
 function Options({ className, ...rest }: ComboBoxOptionsProps) {
   return (
     <ComboBox.Options
-      className={joinClassNames(
-        'flex flex-col gap-y-1 p-2',
-        'w-[350px] [@media(max-width:400px)]:w-[315px]',
-        'h-72',
-        className,
-      )}
+      className={joinClassNames(BRIDGE_DROPDOWN_CONTENT_CLASSNAME, className)}
       // `h-60` because we must also account for the search bar.
-      scrollContainerClassName="h-60"
+      scrollContainerClassName="h-60 gap-y-1"
       sideOffset={12}
       {...rest}
     />
@@ -78,20 +78,18 @@ function Options({ className, ...rest }: ComboBoxOptionsProps) {
 }
 
 interface OptionProps extends Omit<ComboBoxOptionProps, 'value' | 'children'> {
-  option: ComboBoxComponentOption<BridgeChain | BridgeToken>;
+  option: ComboBoxComponentOption<
+    BridgeChainSelectValue | BridgeTokenSelectValue
+  >;
 }
 
 function Option({ option, ...rest }: OptionProps) {
   return (
-    <ComboBox.Option
-      value={option.value}
-      className="justify-stretch gap-x-2 p-2"
-      {...rest}
-    >
+    <ComboBox.Option className="justify-start" value={option.value} {...rest}>
       {/*Loading remote images, so can't use Image component*/}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        className="size-5 rounded-full"
+        className="h-5 w-auto rounded-full"
         alt={option.value}
         src={option.original.externalIconUrl}
       />
@@ -101,6 +99,7 @@ function Option({ option, ...rest }: OptionProps) {
 }
 
 export const BridgeComboBox = {
+  Root: ComboBox.Root,
   Trigger,
   Options,
   Option,

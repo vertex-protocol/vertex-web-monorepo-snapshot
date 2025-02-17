@@ -1,13 +1,13 @@
-import { PrimaryChainID } from '@vertex-protocol/react-client';
+import { ChainEnv } from '@vertex-protocol/client';
 import { WithChildren } from '@vertex-protocol/web-common';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
+import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
 
 interface Props extends WithChildren {
-  enabledChainIds: PrimaryChainID[];
+  enabledChainEnvs: ChainEnv[];
 }
 
-export function ChainSpecificContent({ children, enabledChainIds }: Props) {
-  const isContentVisible = useIsEnabledForChainIds(enabledChainIds);
+export function ChainSpecificContent({ children, enabledChainEnvs }: Props) {
+  const isContentVisible = useIsEnabledForChainEnvs(enabledChainEnvs);
 
   if (!isContentVisible) {
     return null;

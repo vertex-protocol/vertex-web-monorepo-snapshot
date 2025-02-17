@@ -1,12 +1,9 @@
-import { PrimaryChainID } from '@vertex-protocol/react-client';
+import { ChainEnv } from '@vertex-protocol/client';
 
 /**
- * Uses the `chainId` and `subaccountName` to build a key for accessing
+ * Uses the `chainEnv` and `subaccountName` to build a key for accessing
  * subaccount data in local storage.
  */
-export function getSubaccountKey(
-  chainId: PrimaryChainID,
-  subaccountName: string,
-) {
-  return `${chainId}_${subaccountName}`;
+export function getSubaccountKey(chainEnv: ChainEnv, subaccountName: string) {
+  return `${chainEnv}_${subaccountName}`;
 }

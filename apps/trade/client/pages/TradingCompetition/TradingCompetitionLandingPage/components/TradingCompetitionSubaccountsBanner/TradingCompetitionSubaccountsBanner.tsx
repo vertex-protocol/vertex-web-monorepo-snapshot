@@ -1,4 +1,3 @@
-import { NewPill } from 'client/components/NewPill';
 import bgImageSrcBlitz from 'client/pages/TradingCompetition/assets/subaccounts-banner/subaccounts-banner-bg-blitz.png';
 import bgImageSrcVertex from 'client/pages/TradingCompetition/assets/subaccounts-banner/subaccounts-banner-bg-vertex.png';
 import { TradingCompetitionSubaccountsBannerCTA } from 'client/pages/TradingCompetition/TradingCompetitionLandingPage/components/TradingCompetitionSubaccountsBanner/TradingCompetitionSubaccountsBannerCTA';
@@ -14,12 +13,11 @@ export function TradingCompetitionSubaccountsBanner() {
   return (
     <div className="border-stroke bg-background relative overflow-hidden rounded-lg border-4">
       <div className="flex flex-col items-start gap-y-3 p-6 lg:w-1/2">
-        <NewPill />
         <span className="text-text-primary text-lg sm:text-xl">
           Competition Accounts
         </span>
         <p className="text-text-tertiary text-xs sm:text-sm">
-          You can now create a dedicated account for competitions that won’t
+          You can create a dedicated account for competitions that won&apos;t
           impact your main account.
         </p>
         <TradingCompetitionSubaccountsBannerCTA />

@@ -2,7 +2,7 @@ import { asyncResult } from '@vertex-protocol/utils';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useExecuteUpdateLinkedSigner } from 'client/hooks/execute/useExecuteUpdateLinkedSigner';
 import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { useRequiresSingleSignatureSetup } from 'client/modules/singleSignatureSessions/hooks/useRequiresSingleSignatureSetup';
@@ -37,7 +37,7 @@ export function useSignatureModeEnable1CTDialogContent({
   });
 
   const { data: currentServerLinkedSigner } = useSubaccountLinkedSigner();
-  const { data: derivedSubaccountOverview } = useDerivedSubaccountOverview();
+  const { data: subaccountOverview } = useSubaccountOverview();
 
   // Form state
   const [rememberMe, setRememberMe] = useState(false);
@@ -62,10 +62,10 @@ export function useSignatureModeEnable1CTDialogContent({
       return 'out_of_switches';
     }
     // Technically it's 5 USDC, but use USD here. There's also a backend rounding error for balances, so we check for just under 5
-    if (derivedSubaccountOverview?.portfolioValueUsd.lt(4.99)) {
+    if (subaccountOverview?.portfolioValueUsd.lt(4.99)) {
       return 'below_minimum_value';
     }
-  }, [numSwitchesRemaining, derivedSubaccountOverview?.portfolioValueUsd]);
+  }, [numSwitchesRemaining, subaccountOverview?.portfolioValueUsd]);
 
   const buttonState = useMemo((): BaseActionButtonState => {
     if (executeUpdateLinkedSigner.isSuccess) {

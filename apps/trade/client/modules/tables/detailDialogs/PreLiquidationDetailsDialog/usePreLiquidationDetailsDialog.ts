@@ -7,18 +7,20 @@ import {
   calcIndexerPerpBalanceValue,
 } from '@vertex-protocol/indexer-client';
 import {
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import {
   BigDecimal,
   removeDecimals,
   toPrintableObject,
 } from '@vertex-protocol/utils';
 import { NextImageSrc } from '@vertex-protocol/web-common';
-import {
-  getMarketPriceFormatSpecifier,
-  getMarketSizeFormatSpecifier,
-} from '@vertex-protocol/react-client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { PerpStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshotsAtTimes } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshotsAtTimes';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
 import { calcIndexerSummaryUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
@@ -34,11 +36,13 @@ interface PreLiquidationBalance {
   balanceAmount: BigDecimal;
   oraclePrice: BigDecimal;
   priceFormatSpecifier: string;
+  marginModeType: MarginModeType;
 }
 
 interface PreLiquidationSpotBalance extends PreLiquidationBalance {
   balanceValueUsd: BigDecimal;
   lpBalanceValueUsd: BigDecimal;
+  isolatedPerpProduct: PerpStaticMarketData | undefined;
 }
 
 interface PreLiquidationPerpBalance extends PreLiquidationBalance {
@@ -91,7 +95,7 @@ export function usePreLiquidationDetailsDialog({
     const perpBalances: PreLiquidationPerpBalance[] = [];
 
     snapshot.balances.forEach((balance) => {
-      const { productId, state } = balance;
+      const { productId, state, isolated, isolatedProductId } = balance;
 
       const marketData =
         productId === QUOTE_PRODUCT_ID
@@ -121,6 +125,7 @@ export function usePreLiquidationDetailsDialog({
         iconSrc: marketMetadata.icon.asset,
         balanceAmount,
         oraclePrice,
+        marginModeType: isolated ? 'isolated' : 'cross',
       };
 
       if (state.type === ProductEngineType.SPOT) {
@@ -129,10 +134,15 @@ export function usePreLiquidationDetailsDialog({
           calcIndexerLpBalanceValue(state.postBalance, state.market),
         );
 
+        const isolatedPerpProduct = isolatedProductId
+          ? allMarketsStaticData.perp[isolatedProductId]
+          : undefined;
+
         spotBalances.push({
           ...commonBalanceProperties,
           balanceValueUsd: balanceValue.multipliedBy(primaryQuotePriceUsd),
           lpBalanceValueUsd: lpBalanceValue.multipliedBy(primaryQuotePriceUsd),
+          isolatedPerpProduct,
         });
       } else {
         const unrealizedPnl = calcIndexerSummaryUnrealizedPnl(balance);

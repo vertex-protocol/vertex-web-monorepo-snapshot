@@ -1,6 +1,6 @@
 import { BigDecimals } from '@vertex-protocol/utils';
 import { useLatestMarketPrice } from 'client/hooks/markets/useLatestMarketPrice';
-import { isHighSpread } from 'client/modules/trading/utils/isHighSpread';
+import { getIsHighSpread } from 'client/modules/trading/utils/getIsHighSpread';
 import { useMemo } from 'react';
 
 export function useIsHighSpread(productId: number | undefined) {
@@ -23,6 +23,6 @@ export function useIsHighSpread(productId: number | undefined) {
       ? spread.div(latestMarketPrice.safeAverage)
       : BigDecimals.ZERO;
 
-    return isHighSpread(spreadFrac);
+    return getIsHighSpread(spreadFrac);
   }, [latestMarketPrice, productId]);
 }

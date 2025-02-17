@@ -48,6 +48,7 @@ export function BlitzSkateRewardsDisclosure({ className }: WithClassnames) {
         </p>
       </div>
       <TextButton
+        colorVariant="secondary"
         startIcon={<Icons.X />}
         onClick={dismiss}
         className="absolute right-3 top-3 p-1"

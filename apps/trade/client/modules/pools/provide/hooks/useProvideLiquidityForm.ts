@@ -34,7 +34,7 @@ import { watchFormError } from 'client/utils/form/watchFormError';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
 import { roundToString } from 'client/utils/rounding';
-import { safeDiv } from 'client/utils/safeDiv';
+import { safeDiv } from '@vertex-protocol/web-common';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 

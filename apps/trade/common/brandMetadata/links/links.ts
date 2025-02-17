@@ -5,13 +5,16 @@ import { clientEnv } from 'common/environment/clientEnv';
 const SHARED_LINKS = {
   edge: 'https://edge.vertexprotocol.com/',
   elixir: 'https://app.elixir.finance/',
+  zenDesk: 'https://vertexprotocol.zendesk.com/hc/en-us/requests/new',
   ethWallets: 'https://ethereum.org/en/wallets/find-wallet/',
+  feb13DelistInfo:
+    'https://discord.com/channels/944256846628266024/1108325256327868446/1338686338312044605',
   kado: 'https://kado.money',
-  perpsAi: 'https://perps.ai/',
   skateFi: 'https://app.skatefi.org/',
   transak: 'https://transak.com',
   twitterTweet: 'https://twitter.com/compose/tweet',
   unlimit: 'https://unlimit.com',
+  stats: 'https://stats.vertexprotocol.com',
 };
 
 const LINKS_BY_BRAND_NAME = {

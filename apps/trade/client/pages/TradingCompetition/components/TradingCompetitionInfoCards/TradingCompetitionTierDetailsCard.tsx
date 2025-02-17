@@ -1,15 +1,18 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  PresetNumberFormatSpecifier,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
   Button,
+  ButtonAsDivProps,
+  ButtonAsLinkProps,
   CARD_BORDER_RADIUS_VARIANT,
   getStateOverlayClassNames,
   Icons,
 } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import { PrizePool } from 'client/modules/tradingCompetition/types';
 import { TradingCompetitionBlitzDetailsCardBgImage } from 'client/pages/TradingCompetition/components/blitz/TradingCompetitionBlitzDetailsCardBgImage';
 import { TradingCompetitionCard } from 'client/pages/TradingCompetition/components/TradingCompetitionInfoCards/TradingCompetitionCard';
@@ -42,29 +45,32 @@ export function TradingCompetitionTierDetailsCard({
     borderRadiusVariant: CARD_BORDER_RADIUS_VARIANT,
   });
   const {
-    config: { requiredProductBalanceMetadata },
+    config: { eligibilityRequirement },
   } = useTradingCompetitionContext();
 
-  const minEligibilityThresholdLabel = requiredProductBalanceMetadata
-    ? `Min. ${requiredProductBalanceMetadata.symbol} Balance`
-    : 'Min. Account Size';
+  const { eligibilityType, productMetadata } = eligibilityRequirement;
 
-  const minEligibilityThresholdTooltipId: DefinitionTooltipID =
-    requiredProductBalanceMetadata
-      ? 'tradingCompetitionMinAssetBalance'
-      : 'tradingCompetitionMinAccountSize';
+  const minEligibilityThresholdLabel = {
+    account_value: 'Min. Account Size',
+    product_balance: `Min. ${productMetadata?.symbol} Balance`,
+    staked_vrtx: `Min. ${productMetadata?.symbol} Staked`,
+  }[eligibilityType];
 
-  const minEligibilityThresholdFormatSpecifier = requiredProductBalanceMetadata
-    ? PresetNumberFormatSpecifier.NUMBER_INT
-    : PresetNumberFormatSpecifier.CURRENCY_INT;
+  const minEligibilityThresholdFormatSpecifier =
+    eligibilityType === 'account_value'
+      ? PresetNumberFormatSpecifier.CURRENCY_INT
+      : PresetNumberFormatSpecifier.NUMBER_INT;
+
+  const buttonProps = href
+    ? ({ as: Link, href } satisfies ButtonAsLinkProps)
+    : ({ as: 'div' } satisfies ButtonAsDivProps);
 
   return (
     <TradingCompetitionCard.Container
       className={href ? hoverStateOverlayClassNames : undefined}
     >
       <Button
-        as={href ? Link : 'div'}
-        href={href ?? ''}
+        {...buttonProps}
         className={joinClassNames(
           'relative flex h-full flex-col items-stretch',
           // Override the "button" `cursor-pointer` when this isn't a link.
@@ -79,9 +85,7 @@ export function TradingCompetitionTierDetailsCard({
               valueContent={prizePool?.map((prize) => (
                 <Fragment key={prize.symbol}>
                   <span className="text-2xl sm:text-4xl">{prize.amount}</span>
-                  <span className="text-text-tertiary text-xs sm:text-sm">
-                    {prize.symbol}
-                  </span>
+                  <span className="text-xs sm:text-sm">{prize.symbol}</span>
                 </Fragment>
               ))}
             />
@@ -90,16 +94,16 @@ export function TradingCompetitionTierDetailsCard({
             <ValueWithLabel.Vertical
               sizeVariant="sm"
               label={minEligibilityThresholdLabel}
-              tooltip={{ id: minEligibilityThresholdTooltipId }}
+              tooltip={{ id: 'tradingCompetitionRequirementToJoin' }}
               value={minEligibilityThreshold}
               numberFormatSpecifier={minEligibilityThresholdFormatSpecifier}
               valueClassName="items-center gap-x-2"
               valueEndElement={
-                requiredProductBalanceMetadata ? (
+                productMetadata ? (
                   <Image
-                    src={requiredProductBalanceMetadata.iconSrc}
-                    className="size-4"
-                    alt={requiredProductBalanceMetadata.symbol}
+                    src={productMetadata.iconSrc}
+                    className="h-4 w-auto"
+                    alt={productMetadata.symbol}
                   />
                 ) : undefined
               }

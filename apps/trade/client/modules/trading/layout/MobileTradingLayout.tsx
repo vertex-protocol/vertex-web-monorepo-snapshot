@@ -1,7 +1,7 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Card, CARD_ROUNDED_CLASSNAMES } from '@vertex-protocol/web-ui';
 import { MarketDataTabs } from 'client/modules/trading/components/MarketDataTabs';
-import { MobileTradingTableTabs } from 'client/modules/trading/components/TradingTableTabs/MobileTradingTableTabs';
+import { MobileTradingTabs } from 'client/modules/trading/components/MobileTradingTabs';
 import { TradingLayoutProps } from 'client/modules/trading/layout/types';
 
 export function MobileTradingLayout({
@@ -33,12 +33,7 @@ export function MobileTradingLayout({
             className="h-[379px]"
           />
         </Card>
-        <Card
-          // 'overflow-hidden' to prevent the unrounded corners from escaping the card
-          className="overflow-hidden"
-        >
-          <MobileTradingTableTabs tradingTabs={tradingTabs} />
-        </Card>
+        <MobileTradingTabs tradingTabs={tradingTabs} />
       </div>
     </div>
   );

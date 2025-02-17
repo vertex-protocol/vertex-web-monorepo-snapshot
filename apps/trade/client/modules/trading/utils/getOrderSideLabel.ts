@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 type SideProps =
   | {

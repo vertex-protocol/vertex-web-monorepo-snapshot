@@ -1,15 +1,5 @@
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { useEVMContext } from '@vertex-protocol/react-client';
-import {
-  arbitrum,
-  arbitrumSepolia,
-  base,
-  baseSepolia,
-  blast,
-  blastSepolia,
-  mantle,
-  mantleSepoliaTestnet,
-} from 'viem/chains';
 import { SENSITIVE_DATA } from 'common/environment/sensitiveData';
 import { toBytes } from 'viem';
 
@@ -24,34 +14,34 @@ interface NotifiConfig extends EnvironmentConfig {
 export function NotifiContextProviderWrapper({ children }: any) {
   const {
     connectionStatus: { connector, address: account, signer },
-    primaryChain,
+    primaryChainEnv,
   } = useEVMContext();
   const notifiConfig = ((): NotifiConfig | undefined => {
-    switch (primaryChain.id) {
-      case arbitrum.id:
+    switch (primaryChainEnv) {
+      case 'arbitrum':
         return {
           env: 'Production',
           cardId: SENSITIVE_DATA.notifiCardId.arbitrumProd,
         };
-      case mantle.id:
+      case 'mantle':
         return {
           env: 'Production',
           cardId: SENSITIVE_DATA.notifiCardId.mantleProd,
         };
-      case blast.id:
+      case 'blast':
         return {
           env: 'Production',
           cardId: SENSITIVE_DATA.notifiCardId.blastProd,
         };
-      case base.id:
+      case 'base':
         return {
           env: 'Production',
           cardId: SENSITIVE_DATA.notifiCardId.baseProd,
         };
-      case arbitrumSepolia.id:
-      case mantleSepoliaTestnet.id:
-      case blastSepolia.id:
-      case baseSepolia.id:
+      case 'arbitrumTestnet':
+      case 'mantleTestnet':
+      case 'blastTestnet':
+      case 'baseTestnet':
         return {
           env: 'Production',
           //we use arbitrumTestnet for test in testnet purpose, we are only support arbitrum chain test in testnet

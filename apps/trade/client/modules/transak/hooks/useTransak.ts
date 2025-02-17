@@ -1,23 +1,14 @@
 import { Transak, TransakConfig } from '@transak/transak-sdk';
 import { useEVMContext } from '@vertex-protocol/react-client';
 import { SENSITIVE_DATA } from 'common/environment/sensitiveData';
-import { useCallback, useMemo } from 'react';
-import {
-  arbitrum,
-  arbitrumSepolia,
-  baseSepolia,
-  mantle,
-  mantleSepoliaTestnet,
-  seiTestnet,
-  sei,
-} from 'viem/chains';
+import { useCallback, useEffect, useMemo } from 'react';
 
 export function useTransak() {
-  const { connectionStatus, primaryChain } = useEVMContext();
+  const { connectionStatus, primaryChainEnv } = useEVMContext();
 
   const transakConfig: TransakConfig | undefined = useMemo(() => {
-    switch (primaryChain.id) {
-      case arbitrum.id:
+    switch (primaryChainEnv) {
+      case 'arbitrum':
         return {
           apiKey: SENSITIVE_DATA.transakApiKey.prod,
           environment: Transak.ENVIRONMENTS.PRODUCTION,
@@ -25,7 +16,7 @@ export function useTransak() {
           defaultCryptoCurrency: 'usdc',
           walletAddress: connectionStatus.address,
         };
-      case arbitrumSepolia.id:
+      case 'arbitrumTestnet':
         return {
           apiKey: SENSITIVE_DATA.transakApiKey.staging,
           environment: Transak.ENVIRONMENTS.STAGING,
@@ -33,7 +24,15 @@ export function useTransak() {
           defaultCryptoCurrency: 'usdc',
           walletAddress: connectionStatus.address,
         };
-      case baseSepolia.id:
+      case 'base':
+        return {
+          apiKey: SENSITIVE_DATA.transakApiKey.prod,
+          environment: Transak.ENVIRONMENTS.PRODUCTION,
+          defaultNetwork: 'base',
+          defaultCryptoCurrency: 'usdc',
+          walletAddress: connectionStatus.address,
+        };
+      case 'baseTestnet':
         return {
           apiKey: SENSITIVE_DATA.transakApiKey.staging,
           environment: Transak.ENVIRONMENTS.STAGING,
@@ -41,7 +40,7 @@ export function useTransak() {
           defaultCryptoCurrency: 'usdc',
           walletAddress: connectionStatus.address,
         };
-      case mantle.id:
+      case 'mantle':
         return {
           apiKey: SENSITIVE_DATA.transakApiKey.prod,
           environment: Transak.ENVIRONMENTS.PRODUCTION,
@@ -49,7 +48,7 @@ export function useTransak() {
           defaultCryptoCurrency: 'usdt',
           walletAddress: connectionStatus.address,
         };
-      case mantleSepoliaTestnet.id:
+      case 'mantleTestnet':
         return {
           apiKey: SENSITIVE_DATA.transakApiKey.staging,
           environment: Transak.ENVIRONMENTS.STAGING,
@@ -57,18 +56,18 @@ export function useTransak() {
           defaultCryptoCurrency: 'usdt',
           walletAddress: connectionStatus.address,
         };
-      case seiTestnet.id:
+      case 'sei':
         return {
-          apiKey: SENSITIVE_DATA.transakApiKey.staging,
-          environment: Transak.ENVIRONMENTS.STAGING,
+          apiKey: SENSITIVE_DATA.transakApiKey.prod,
+          environment: Transak.ENVIRONMENTS.PRODUCTION,
           defaultNetwork: 'sei',
           defaultCryptoCurrency: 'sei',
           walletAddress: connectionStatus.address,
         };
-      case sei.id:
+      case 'seiTestnet':
         return {
-          apiKey: SENSITIVE_DATA.transakApiKey.prod,
-          environment: Transak.ENVIRONMENTS.PRODUCTION,
+          apiKey: SENSITIVE_DATA.transakApiKey.staging,
+          environment: Transak.ENVIRONMENTS.STAGING,
           defaultNetwork: 'sei',
           defaultCryptoCurrency: 'sei',
           walletAddress: connectionStatus.address,
@@ -76,7 +75,7 @@ export function useTransak() {
       default:
         return undefined;
     }
-  }, [primaryChain.id, connectionStatus.address]);
+  }, [primaryChainEnv, connectionStatus.address]);
 
   const transak = useMemo(() => {
     if (!transakConfig) {
@@ -85,16 +84,22 @@ export function useTransak() {
     return new Transak(transakConfig);
   }, [transakConfig]);
 
-  const showTransakDialog = useCallback(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    transak?.init();
-
+  useEffect(() => {
     return () => {
       transak?.close();
     };
+  }, [transak]);
+
+  const showTransakDialog = useCallback(() => {
+    if (typeof window === 'undefined' || !transak) {
+      return;
+    }
+    transak.init();
+
+    // This will trigger when the user closes the widget
+    Transak.on(Transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
+      transak.close();
+    });
   }, [transak]);
 
   return {

@@ -5,6 +5,7 @@ import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { SeparatedRowDataTable } from 'client/components/DataTable/SeparatedRowDataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { AddressCell } from 'client/modules/tables/cells/AddressCell';
+import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { RankCell } from 'client/modules/tables/cells/RankCell';
 import {
@@ -52,7 +53,25 @@ export function BlitzPointsLeaderboardTable() {
           },
           enableSorting: false,
           meta: {
-            cellContainerClassName: 'w-44',
+            cellContainerClassName: 'w-36',
+          },
+        }),
+        columnHelper.accessor('totalVolume', {
+          header: ({ header }) => (
+            <HeaderCell header={header}>Total Trade Volume</HeaderCell>
+          ),
+          cell: (context) => {
+            return (
+              <AmountWithSymbolCell
+                amount={context.getValue()}
+                formatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
+                symbol="USDB"
+              />
+            );
+          },
+          enableSorting: false,
+          meta: {
+            cellContainerClassName: 'w-40',
           },
         }),
         columnHelper.accessor('totalBlitzPoints', {
@@ -69,7 +88,7 @@ export function BlitzPointsLeaderboardTable() {
           },
           enableSorting: false,
           meta: {
-            cellContainerClassName: 'w-32',
+            cellContainerClassName: 'w-32 grow',
           },
         }),
       ];

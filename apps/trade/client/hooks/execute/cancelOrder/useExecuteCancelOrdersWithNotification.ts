@@ -1,6 +1,6 @@
 import { CancelOrdersWithNotificationParams } from 'client/hooks/execute/cancelOrder/types';
 import { useExecuteCancelOrders } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrders';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { useCallback } from 'react';
@@ -29,7 +29,7 @@ export function useExecuteCancelOrdersWithNotification() {
           data: {
             cancelOrderParams: {
               orderType: order.orderType,
-              decimalAdjustedAmount: order.totalAmount,
+              decimalAdjustedAmount: order.decimalAdjustedTotalAmount,
               metadata: {
                 marketName: marketStaticData.metadata.marketName,
                 symbol,

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   createQueryKey,
   QueryDisabledError,
-  useIsChainType,
+  useIsChainEnvType,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 
@@ -11,7 +11,7 @@ export function lbaConfigQueryKey() {
 }
 
 export function useLbaConfig() {
-  const { isArb } = useIsChainType();
+  const { isArb } = useIsChainEnvType();
   const vertexClient = usePrimaryChainVertexClient();
 
   const disabled = !vertexClient || !isArb;

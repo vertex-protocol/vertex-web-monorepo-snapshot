@@ -76,12 +76,15 @@ export function WithdrawSummaryDisclosure({
         label: 'Amount to Borrow',
         valueContent: (
           <>
-            {formatNumber(borrowingAmount, {
-              formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
-              defaultValue: 0,
-            })}
+            <span>
+              {formatNumber(borrowingAmount, {
+                formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
+                defaultValue: 0,
+              })}{' '}
+              {symbol}
+            </span>
             <span className="text-text-tertiary">
-              {symbol} (
+              (
               {formatNumber(borrowingAmountUsd, {
                 formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
                 defaultValue: 0,

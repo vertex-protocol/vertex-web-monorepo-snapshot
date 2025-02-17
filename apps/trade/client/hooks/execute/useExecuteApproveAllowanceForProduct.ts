@@ -8,7 +8,6 @@ import {
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { tokenAllowanceQueryKey } from 'client/hooks/query/useTokenAllowance';
-import { ContractTransactionResponse } from 'ethers';
 import { useCallback, useRef } from 'react';
 
 /**
@@ -20,10 +19,7 @@ export function useExecuteApproveAllowanceForProduct() {
 
   const mutationFn = useExecuteInValidContext(
     useCallback(
-      (
-        params: ApproveAllowanceParams,
-        context: ValidExecuteContext,
-      ): Promise<ContractTransactionResponse> => {
+      async (params: ApproveAllowanceParams, context: ValidExecuteContext) => {
         console.log('Approve Allowance for Product', toPrintableObject(params));
 
         refetchQueryKeysRef.current = [
@@ -36,7 +32,9 @@ export function useExecuteApproveAllowanceForProduct() {
           ),
         ];
 
-        return context.vertexClient.spot.approveAllowance(params);
+        const txResponse =
+          await context.vertexClient.spot.approveAllowance(params);
+        return txResponse.hash;
       },
       [],
     ),

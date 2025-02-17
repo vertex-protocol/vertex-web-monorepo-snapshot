@@ -62,6 +62,6 @@ export function useSubaccountOpenEngineOrders(): QueryState<SubaccountOpenEngine
     },
     enabled: !disabled,
     // This query is expensive, and our refetch-after-execute logic should take care of most data updates
-    refetchInterval: 20000,
+    refetchInterval: 30000,
   });
 }

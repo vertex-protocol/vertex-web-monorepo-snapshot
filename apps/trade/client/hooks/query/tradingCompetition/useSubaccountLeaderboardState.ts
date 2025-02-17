@@ -6,7 +6,7 @@ import {
   useVertexClientForChainEnv,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { ZeroAddress } from 'ethers';
+import { zeroAddress } from 'viem';
 
 export function subaccountLeaderboardStateKey(
   chainEnv?: ChainEnv,
@@ -35,7 +35,7 @@ export function useSubaccountLeaderboardState({
   const vertexClient = useVertexClientForChainEnv(chainEnv);
 
   const { currentSubaccount } = useSubaccountContext();
-  const subaccountOwnerForQuery = currentSubaccount.address ?? ZeroAddress;
+  const subaccountOwnerForQuery = currentSubaccount.address ?? zeroAddress;
 
   const disabled = !vertexClient || !contestIds;
 
@@ -62,6 +62,6 @@ export function useSubaccountLeaderboardState({
       });
     },
     enabled: !disabled,
-    refetchInterval: 30000,
+    refetchInterval: currentSubaccount.address ? 60000 : undefined,
   });
 }

@@ -6,14 +6,12 @@ import {
   ScrollShadowsContainer,
   TabButton,
 } from '@vertex-protocol/web-ui';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { ROUTE_APP_PORTFOLIO_PREFIX } from 'client/modules/app/consts/routes';
 import { usePortfolioNavItems } from 'client/pages/Portfolio/hooks/usePortfolioNavItems';
 import Link from 'next/link';
 
 export function MobilePortfolioSubNavMenu({ className }: WithClassnames) {
   const navItems = usePortfolioNavItems();
-  const { trackEvent } = useAnalyticsContext();
 
   return (
     <ScrollShadowsContainer
@@ -35,14 +33,6 @@ export function MobilePortfolioSubNavMenu({ className }: WithClassnames) {
             href={`${ROUTE_APP_PORTFOLIO_PREFIX}/${href}`}
             disabled={disabled}
             className="title-text gap-x-1.5 whitespace-nowrap"
-            onClick={() => {
-              trackEvent({
-                type: 'portfolio_nav_item_clicked',
-                data: {
-                  portfolioNavItems: label,
-                },
-              });
-            }}
           >
             {label}
             {!!associatedCount && (

@@ -1,12 +1,12 @@
 import {
   CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
   formatNumber,
   getMarketQuoteSizeFormatSpecifier,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { LinkButton } from '@vertex-protocol/web-ui';
-import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useEstimateTradeEntry } from 'client/modules/trading/hooks/useEstimateTradeEntry';
 import { useSpotLeverageEnabled } from 'client/modules/trading/hooks/useSpotLeverageEnabled';
@@ -41,8 +41,6 @@ export function SpotOrderSummary({ currentState, estimatedState }: Props) {
   });
 
   const showSlippageMetric = priceType === 'market' || priceType === 'stop';
-  const showMarginUsageMetric = spotLeverageEnabled;
-  const showAccountLeverageMetric = spotLeverageEnabled;
 
   const slippageToleranceMetric: ValueWithLabelProps = {
     label: 'Max Slippage',
@@ -83,7 +81,7 @@ export function SpotOrderSummary({ currentState, estimatedState }: Props) {
 
   const showEstimatedFeeFireIcon = estimatedTradeEntry?.estimatedFee.isZero();
 
-  const metricItems: ValueWithLabelProps[] = [
+  const orderMetricItems: ValueWithLabelProps[] = [
     {
       label: 'Est. Price',
       value: estimatedTradeEntry?.avgFillPrice,
@@ -117,19 +115,35 @@ export function SpotOrderSummary({ currentState, estimatedState }: Props) {
       newValue: estimatedState?.assetBalance,
       numberFormatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
     },
-    ...(showMarginUsageMetric ? [marginUsageMetric] : []),
-    ...(showAccountLeverageMetric ? [accountLeverageMetric] : []),
   ];
+
+  const accountMetricItems: ValueWithLabelProps[] = spotLeverageEnabled
+    ? [marginUsageMetric, accountLeverageMetric]
+    : [];
+  const showCrossAccountMetrics = accountMetricItems.length > 0;
 
   return (
     <div className="flex flex-col gap-y-1">
-      {metricItems.map((itemProps) => (
+      {orderMetricItems.map((itemProps, index) => (
         <ValueWithLabel.Horizontal
           sizeVariant="xs"
-          key={itemProps.label?.toString()}
+          key={index}
           {...itemProps}
         />
       ))}
+      {showCrossAccountMetrics && (
+        <>
+          {/*Extra 4px of spacing between sections*/}
+          <span className="text-text-primary mt-1 text-xs">Cross Account</span>
+          {accountMetricItems.map((itemProps, index) => (
+            <ValueWithLabel.Horizontal
+              sizeVariant="xs"
+              key={index}
+              {...itemProps}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 }

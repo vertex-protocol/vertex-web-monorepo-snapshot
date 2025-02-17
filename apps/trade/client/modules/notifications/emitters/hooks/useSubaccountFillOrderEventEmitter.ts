@@ -22,7 +22,7 @@ export function useSubaccountFillOrderEventEmitter() {
     undefined,
   );
 
-  // Reset on subaccount & primary chain changes
+  // Reset on subaccount & chainenv changes
   useEffect(() => {
     lastFillOrderSubmissionIdx.current = undefined;
   }, [address, name, chainEnv]);

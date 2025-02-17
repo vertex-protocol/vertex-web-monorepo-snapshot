@@ -11,7 +11,7 @@ import {
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { useMarketLiquidity } from 'client/hooks/query/markets/useMarketLiquidity';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { safeDiv } from 'client/utils/safeDiv';
+import { safeDiv } from '@vertex-protocol/web-common';
 import { first } from 'lodash';
 import { useMemo } from 'react';
 

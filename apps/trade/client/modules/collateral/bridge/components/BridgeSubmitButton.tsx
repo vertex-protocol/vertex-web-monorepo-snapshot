@@ -1,11 +1,11 @@
 import { PrimaryButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
 import { BridgeFormActionButtonState } from 'client/modules/collateral/bridge/hooks/form/types';
-import { BridgeChain } from 'client/modules/collateral/bridge/types';
+import { BridgeChainSelectValue } from 'client/modules/collateral/bridge/types';
 
 interface Props {
   buttonState: BridgeFormActionButtonState;
-  selectedSourceChain: BridgeChain | undefined;
+  selectedSourceChain: BridgeChainSelectValue | undefined;
 }
 
 export function BridgeSubmitButton({

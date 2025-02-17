@@ -1,25 +1,21 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
-import { TextButton, TextButtonProps } from './TextButton';
+import { Except } from 'type-fest';
+import { TextButton } from './TextButton';
+import { ButtonProps } from './types';
 
-export type TabTextButtonProps = TextButtonProps & {
+export type TabTextButtonProps = Except<ButtonProps, 'isLoading'> & {
   active: boolean;
 };
 
-export const TabTextButton = forwardRef(function TabButton(
-  { className, active, ...rest }: TabTextButtonProps,
-  ref,
-) {
+export function TabTextButton({
+  className,
+  active,
+  ...rest
+}: TabTextButtonProps) {
   return (
     <TextButton
-      className={joinClassNames(
-        active
-          ? 'text-text-primary'
-          : 'text-text-tertiary hover:text-text-secondary',
-        className,
-      )}
-      ref={ref}
+      colorVariant={active ? 'secondary' : 'tertiary'}
+      className={className}
       {...rest}
     />
   );
-});
+}

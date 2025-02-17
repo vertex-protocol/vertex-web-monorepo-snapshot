@@ -1,10 +1,12 @@
-import { BigDecimal } from '@vertex-protocol/client';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   LeaderboardContest,
   useLeaderboardContests,
 } from 'client/hooks/query/tradingCompetition/useLeaderboardContests';
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useAccountStakingV2State } from 'client/hooks/query/vrtxToken/useAccountStakingV2State';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import {
   PrizePool,
   TierData,
@@ -26,17 +28,23 @@ export interface UseTradingCompetitionData {
   currentContestPrizePool: PrizePool | undefined;
   currentContestTierData: TierData | undefined;
   /**
-   * Contests may require either a min. account value or a min. product balance.
-   * For contests that require a min. account value, this will be set to the user's
-   * account value.
+   * Contests may require either a min. account value, min. product balance,
+   * or min. staked amount. This is set to the user's account value so we
+   * can check that they meet the configured requirement.
    */
   accountValueUsd: BigDecimal | undefined;
   /**
-   * Contests may require either a min. account value or a min. product balance.
-   * For contests that require a min. product balance, this will be set to the user's
-   * balance for the relevant product.
+   * Contests may require either a min. account value, min. product balance,
+   * or min. staked amount. This is set to the user's product balance so we
+   * can check that they meet the configured requirement.
    */
   productBalance: BigDecimal | undefined;
+  /**
+   * Contests may require either a min. account value, min. product balance,
+   * or min. staked amount. This is set to the user's staked amount so we
+   * can check that they meet the configured requirement.
+   */
+  stakedVrtx: BigDecimal | undefined;
   isLoadingContestData: boolean;
 }
 
@@ -49,12 +57,8 @@ interface Params {
 }
 
 export function useTradingCompetitionData({ tierContestId, config }: Params) {
-  const {
-    contestIds,
-    tierDataByContestId,
-    chainEnv,
-    requiredProductBalanceMetadata,
-  } = config;
+  const { contestIds, tierDataByContestId, chainEnv, eligibilityRequirement } =
+    config;
   const { data: contestsData, isLoading: isLeaderboardContestsLoading } =
     useLeaderboardContests({
       contestIds,
@@ -62,7 +66,14 @@ export function useTradingCompetitionData({ tierContestId, config }: Params) {
     });
 
   const { balances: spotBalances } = useSpotBalances();
-  const { data: derivedSubaccountOverview } = useDerivedSubaccountOverview();
+  const { data: subaccountOverview } = useSubaccountOverview();
+  const { data: accountStakingV2State } = useAccountStakingV2State();
+
+  const {
+    protocolTokenMetadata: {
+      token: { tokenDecimals: protocolTokenDecimals },
+    },
+  } = useVertexMetadataContext();
 
   const {
     contests,
@@ -141,20 +152,24 @@ export function useTradingCompetitionData({ tierContestId, config }: Params) {
     };
   }, [contestsData?.contests, tierContestId, tierDataByContestId]);
 
-  const accountValueUsd = !requiredProductBalanceMetadata
-    ? derivedSubaccountOverview?.portfolioValueUsd
-    : undefined;
+  const accountValueUsd = subaccountOverview?.portfolioValueUsd;
 
   const productBalance = useMemo(() => {
-    if (!requiredProductBalanceMetadata || !spotBalances) {
+    if (!spotBalances) {
       return;
     }
 
+    const { productMetadata } = eligibilityRequirement;
+
     return spotBalances.find(
-      (balance) =>
-        balance.productId === requiredProductBalanceMetadata.productId,
+      (balance) => balance.productId === productMetadata?.productId,
     )?.amount;
-  }, [spotBalances, requiredProductBalanceMetadata]);
+  }, [spotBalances, eligibilityRequirement]);
+
+  const stakedVrtx = removeDecimals(
+    accountStakingV2State?.amountStaked,
+    protocolTokenDecimals,
+  );
 
   return {
     contests,
@@ -164,6 +179,7 @@ export function useTradingCompetitionData({ tierContestId, config }: Params) {
     currentContestTierData,
     accountValueUsd,
     productBalance,
+    stakedVrtx,
     isLoadingContestData: isLeaderboardContestsLoading,
   };
 }

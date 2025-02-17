@@ -1,8 +1,7 @@
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/react-client';
 import { DiscList } from '@vertex-protocol/web-ui';
-import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
-import { MARKET_SENTIMENT_PROVIDER } from 'common/environment/integrations/marketSentimentProvider';
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
+import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
 
 const lpMarketsTooltips = {
   lpMarkets24hVolume: {
@@ -79,6 +78,10 @@ const perpPositionsTooltips = {
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const openEngineOrdersTooltips = {
+  openEngineOrdersIsoMargin: {
+    title: `Margin`,
+    content: `The amount of margin that will be transferred to the isolated position when the order executes.`,
+  },
   openEngineOrdersLimitPrice: {
     title: 'Price',
     content: `The price at which the limit order will be executed.`,
@@ -185,7 +188,7 @@ const historicalWithdrawalsTooltips = {
     title: `Processing Withdrawals`,
     content: (
       <div>
-        Withdrawals may be delayed due to high on-chain gas costs.
+        Withdrawals may be delayed due to high on-chain gas costs.{' '}
         <BrandSpecificContent enabledBrands={['vertex']}>
           If <span className="text-text-primary">Fast Withdraw</span> is
           available for this asset, you can execute processing withdrawals
@@ -241,10 +244,6 @@ const historicalLiquidationTooltips = {
     title: `Position Changes`,
     content: `The associated changes in position size from the liquidation. Affected LP positions from a liquidation are decomposed into the underlying asset.`,
   },
-  historicalLiquidationUsdcChanges: ({ primaryQuoteToken }) => ({
-    title: `Liquidation ${primaryQuoteToken.symbol} Transfer`,
-    content: `To liquidate a position, there must be a ${primaryQuoteToken.symbol} transfer between you and the liquidator. This is the net change in ${primaryQuoteToken.symbol} for your account as a result of the liquidation.`,
-  }),
   historicalLiquidationType: {
     title: `Type of Liquidation`,
     content: (
@@ -271,17 +270,6 @@ const historicalLiquidationTooltips = {
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
-const sentimentTooltips = {
-  sentimentLabel: {
-    title: `Sentiment`,
-    content: `Sentiment is a quantified representation of how positive or negative users on X are about a particular asset.\nData provided by ${MARKET_SENTIMENT_PROVIDER.name}.`,
-  },
-  sentimentTweetVolumeChange: {
-    title: `Hype 🔥`,
-    content: `24h tweet volume vs. 30d daily average.\nData provided by ${MARKET_SENTIMENT_PROVIDER.name}.`,
-  },
-} as const satisfies Record<string, DefinitionTooltipConfig>;
-
 export const tableTooltips = {
   ...lpMarketsTooltips,
   ...spotBalancesTooltips,
@@ -298,5 +286,4 @@ export const tableTooltips = {
   ...fundingRateMarketsTooltips,
   ...perpMarketsTooltips,
   ...lbaPositionTooltips,
-  ...sentimentTooltips,
 } as const satisfies Record<string, DefinitionTooltipConfig>;

@@ -3,13 +3,13 @@ import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { BarSubscriber } from 'client/modules/trading/chart/hooks/useTradingViewData/types';
 import { getLastBarMapKey } from 'client/modules/trading/chart/hooks/useTradingViewData/utils';
 import type { Bar } from 'public/charting_library';
-import { MutableRefObject, useEffect } from 'react';
+import { RefObject, useEffect } from 'react';
 
 interface UseUpdateLatestBarParams {
   currentProductId: number | undefined;
-  subscriberUIDToBarSubscriber: MutableRefObject<Map<string, BarSubscriber>>;
-  productIdToSubscriberUIDs: MutableRefObject<Map<number, Set<string>>>;
-  chartKeyToLastBar: MutableRefObject<Map<string, Bar>>;
+  subscriberUIDToBarSubscriber: RefObject<Map<string, BarSubscriber>>;
+  productIdToSubscriberUIDs: RefObject<Map<number, Set<string>>>;
+  chartKeyToLastBar: RefObject<Map<string, Bar>>;
 }
 
 export function useUpdateLatestBar({

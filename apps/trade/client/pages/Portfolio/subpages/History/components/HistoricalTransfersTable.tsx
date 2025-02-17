@@ -2,6 +2,7 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
+import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
@@ -41,25 +42,49 @@ export function HistoricalTransfersTable() {
             withLeftPadding: true,
           },
         }),
-        columnHelper.accessor('metadata', {
+        columnHelper.accessor('token', {
           header: ({ header }) => (
             <HeaderCell header={header}>Asset</HeaderCell>
           ),
           cell: (context) => {
-            const metadata =
-              context.getValue<
-                HistoricalCollateralEventsTableItem['metadata']
-              >();
+            const token =
+              context.getValue<HistoricalCollateralEventsTableItem['token']>();
             return (
               <MarketProductInfoCell
-                symbol={metadata.symbol}
-                iconSrc={metadata.icon.asset}
+                symbol={token.symbol}
+                iconSrc={token.icon.asset}
               />
             );
           },
           enableSorting: false,
           meta: {
             cellContainerClassName: 'w-32',
+          },
+        }),
+        columnHelper.display({
+          id: 'fromSubaccountUsername',
+          header: ({ header }) => <HeaderCell header={header}>From</HeaderCell>,
+          cell: (context) => (
+            <TableCell>
+              {context.row.original.transferEventData?.fromSubaccountUsername}
+            </TableCell>
+          ),
+          enableSorting: false,
+          meta: {
+            cellContainerClassName: 'w-40',
+          },
+        }),
+        columnHelper.display({
+          id: 'toSubaccountUsername',
+          header: ({ header }) => <HeaderCell header={header}>To</HeaderCell>,
+          cell: (context) => (
+            <TableCell>
+              {context.row.original.transferEventData?.toSubaccountUsername}
+            </TableCell>
+          ),
+          enableSorting: false,
+          meta: {
+            cellContainerClassName: 'w-40',
           },
         }),
         columnHelper.accessor('amount', {
@@ -69,7 +94,7 @@ export function HistoricalTransfersTable() {
           cell: (context) => (
             <AmountWithSymbolCell
               amount={context.getValue()}
-              symbol={context.row.original.metadata.symbol}
+              symbol={context.row.original.token.symbol}
               formatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
             />
           ),

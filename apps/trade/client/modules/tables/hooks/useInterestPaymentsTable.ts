@@ -4,15 +4,16 @@ import {
   IndexerProductPayment,
 } from '@vertex-protocol/client';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { SpotProductMetadata } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedPaymentEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedPaymentEvents';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { SpotProductMetadata } from '@vertex-protocol/metadata';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
-import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 
 export interface InterestPaymentsTableItem {
   timestampMillis: number;
@@ -21,6 +22,7 @@ export interface InterestPaymentsTableItem {
   interestRateFrac: BigDecimal;
   interestPaidAmount: BigDecimal;
   valueUsd: BigDecimal;
+  marginModeType: MarginModeType;
 }
 
 interface Params {
@@ -98,6 +100,10 @@ export function useInterestPaymentsTable({
         const { metadata } = spotProduct;
         const interestPaidAmount = removeDecimals(item.paymentAmount);
 
+        const marginModeType: MarginModeType = item.isolated
+          ? 'isolated'
+          : 'cross';
+
         return {
           timestampMillis: secondsToMilliseconds(item.timestamp.toNumber()),
           metadata,
@@ -107,6 +113,7 @@ export function useInterestPaymentsTable({
           valueUsd: interestPaidAmount
             .multipliedBy(item.oraclePrice)
             .multipliedBy(primaryQuotePriceUsd),
+          marginModeType,
         };
       })
       .filter(nonNullFilter);

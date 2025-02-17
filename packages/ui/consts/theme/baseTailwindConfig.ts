@@ -28,7 +28,6 @@ export const BASE_TAILWIND_CONFIG = {
         '3xl': '1.625rem',
         '4xl': '1.875rem',
         '5xl': '2.5rem',
-        '6xl': '3.375rem',
       },
     },
   },

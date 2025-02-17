@@ -1,5 +1,5 @@
 import { WarningPanel } from 'client/components/WarningPanel';
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/react-client';
 
 export function OrderFormVrtxBorrowWarningPanel() {
   return (

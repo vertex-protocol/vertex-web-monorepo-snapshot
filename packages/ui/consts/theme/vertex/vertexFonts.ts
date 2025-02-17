@@ -1,4 +1,5 @@
 import { Inter } from 'next/font/google';
+import { Fonts } from '../types';
 
 const INTER = Inter({
   variable: '--font-default',
@@ -8,4 +9,4 @@ const INTER = Inter({
 export const VERTEX_FONTS = {
   title: INTER,
   default: INTER,
-};
+} satisfies Fonts;

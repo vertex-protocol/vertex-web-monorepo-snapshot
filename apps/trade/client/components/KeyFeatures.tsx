@@ -1,3 +1,4 @@
+import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
   IconComponent,
   Icons,
@@ -11,7 +12,7 @@ const BrandMonochromeIcon = imageToIconComponent({
   alt: '',
 });
 
-export function KeyFeatures() {
+export function KeyFeatures({ className }: WithClassnames) {
   const showVertexIncentives = useIsEnabledForBrand(['vertex']);
   const showBlitzIncentives = useIsEnabledForBrand(['blitz']);
 
@@ -47,7 +48,7 @@ export function KeyFeatures() {
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className={mergeClassNames('grid gap-4 sm:grid-cols-2', className)}>
       {keyFeatures.map(({ icon, description }, index) => (
         <Feature key={index} description={description} icon={icon} />
       ))}

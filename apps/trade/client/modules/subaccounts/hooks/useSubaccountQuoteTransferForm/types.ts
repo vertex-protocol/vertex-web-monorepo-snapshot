@@ -2,7 +2,7 @@ import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageA
 
 export type SubaccountQuoteTransferErrorType =
   | 'invalid_input'
-  | 'under_min'
+  | 'below_min'
   | 'max_exceeded';
 
 export interface SubaccountQuoteTransferFormValues

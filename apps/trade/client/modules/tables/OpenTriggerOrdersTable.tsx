@@ -1,6 +1,5 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
@@ -61,7 +60,14 @@ export function OpenTriggerOrdersTable({
       }),
       columnHelper.accessor('orderType', {
         header: ({ header }) => <HeaderCell header={header}>Type</HeaderCell>,
-        cell: (context) => <OrderTypeCell value={context.getValue()} />,
+        cell: (context) => {
+          return (
+            <OrderTypeCell
+              marginModeType={context.row.original.marginModeType}
+              orderType={context.getValue()}
+            />
+          );
+        },
         enableSorting: false,
         meta: {
           cellContainerClassName: 'w-28',
@@ -91,9 +97,7 @@ export function OpenTriggerOrdersTable({
         cell: (context) => (
           <NumberCell
             value={context.getValue()}
-            formatSpecifier={getMarketPriceFormatSpecifier(
-              context.row.original.marketInfo.priceIncrement,
-            )}
+            formatSpecifier={context.row.original.priceFormatSpecifier}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -128,9 +132,7 @@ export function OpenTriggerOrdersTable({
           <NumberCell
             className="text-text-secondary"
             value={context.getValue()}
-            formatSpecifier={getMarketPriceFormatSpecifier(
-              context.row.original.marketInfo.priceIncrement,
-            )}
+            formatSpecifier={context.row.original.priceFormatSpecifier}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -147,19 +149,12 @@ export function OpenTriggerOrdersTable({
           />
         ),
         cell: (context) => {
-          const { productId, digest, totalAmount, orderType } =
-            context.row.original;
+          const { orderForCancellation } = context.row.original;
           return (
             <CancelOrderCell
-              order={{
-                productId,
-                digest,
-                totalAmount,
-                isTrigger: true,
-                orderType,
-              }}
+              order={orderForCancellation}
               // Provide a key to force a unique render. Without this, React will somehow perserve the success state on previously cancelled order rows
-              key={digest}
+              key={orderForCancellation.digest}
             />
           );
         },

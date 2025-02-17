@@ -6,9 +6,12 @@ import {
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  BigDecimals,
+  removeDecimals,
+} from '@vertex-protocol/utils';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
-import { AllLatestMarketPricesData } from 'client/hooks/query/markets/types';
 
 export function allLatestMarketPricesQueryKey(
   chainEnv?: ChainEnv,
@@ -16,6 +19,18 @@ export function allLatestMarketPricesQueryKey(
 ) {
   return createQueryKey('latestMarketPrices', chainEnv, productIds);
 }
+
+export interface LatestMarketPrice {
+  bid: BigDecimal;
+  ask: BigDecimal;
+  average: BigDecimal;
+  safeBid: BigDecimal | undefined;
+  safeAsk: BigDecimal | undefined;
+  safeAverage: BigDecimal | undefined;
+}
+
+// Product ID -> LatestMarketPrice
+export type AllLatestMarketPricesData = Record<number, LatestMarketPrice>;
 
 export function useAllMarketsLatestPrices() {
   const vertexClient = usePrimaryChainVertexClient();

@@ -3,13 +3,12 @@ import {
   QueryDisabledError,
   useEVMContext,
 } from '@vertex-protocol/react-client';
-import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
-import { TxResponse } from 'client/types/TxResponse';
-import { TransactionReceipt } from 'ethers';
+import { useGetConfirmedTx } from 'client/hooks/util/useGetConfirmedTx';
 import { useMemo } from 'react';
+import { TransactionReceipt } from 'viem';
 
 interface Params {
-  txResponse: TxResponse | undefined;
+  txHash: string | undefined;
 }
 
 type UseOnChainTransactionState =
@@ -30,36 +29,36 @@ type UseOnChainTransactionState =
     }
   | {
       type: 'error';
-      receipt?: TransactionReceipt;
+      receipt: undefined;
       error?: unknown;
     };
 
 export function useOnChainTransactionState({
-  txResponse,
+  txHash,
 }: Params): UseOnChainTransactionState {
   const {
     chainStatus: { connectedChain },
   } = useEVMContext();
-  const getConfirmedTxPromise = useGetConfirmedTxPromise();
+  const getConfirmedTx = useGetConfirmedTx();
 
-  const disabled = !txResponse || !connectedChain;
+  const disabled = !txHash || !connectedChain;
   const { data, error, isLoading } = useQuery({
-    queryKey: ['onChainTransactionState', connectedChain?.id, txResponse?.hash],
+    queryKey: ['onChainTransactionState', connectedChain?.id, txHash],
     queryFn: async () => {
       if (disabled) {
         throw new QueryDisabledError();
       }
-      return getConfirmedTxPromise(Promise.resolve(txResponse));
+      return getConfirmedTx(Promise.resolve(txHash));
     },
     enabled: !disabled,
   });
 
   return useMemo((): UseOnChainTransactionState => {
     if (data) {
-      // getConfirmedTxPromise checks for `status` of value 1, so no need to check data.status here
+      // getConfirmedTx checks for a `success` `status`, so no need to check data.status here
       return {
         type: 'confirmed',
-        receipt: data,
+        receipt: data.transactionReceipt,
         error: undefined,
       };
     } else if (isLoading) {
@@ -71,7 +70,7 @@ export function useOnChainTransactionState({
     } else if (error) {
       return {
         type: 'error',
-        receipt: data ?? undefined,
+        receipt: undefined,
         error,
       };
     } else {

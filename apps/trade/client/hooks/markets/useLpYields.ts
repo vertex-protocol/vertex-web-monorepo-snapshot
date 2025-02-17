@@ -8,7 +8,7 @@ import {
 import { BigDecimal, BigDecimals, TimeInSeconds } from '@vertex-protocol/utils';
 import { useAllProducts24hrHistoricalSnapshot } from 'client/hooks/markets/useAllProducts24hrHistoricalSnapshot';
 import { useSpotInterestRates } from 'client/hooks/markets/useSpotInterestRates';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { calcEstimatedLpApr } from 'client/utils/calcs/calcEstimatedLpApr';
 import { get } from 'lodash';
 

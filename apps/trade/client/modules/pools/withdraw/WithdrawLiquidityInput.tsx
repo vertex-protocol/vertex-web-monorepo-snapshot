@@ -1,23 +1,22 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { WithClassnames } from '@vertex-protocol/web-common';
+import { WithClassnames, WithRef } from '@vertex-protocol/web-common';
 import { CompactInput } from '@vertex-protocol/web-ui';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
-import { forwardRef, InputHTMLAttributes, ReactNode } from 'react';
+import { InputHTMLAttributes, ReactNode } from 'react';
 
 export interface WithdrawLiquidityInputProps
-  extends InputHTMLAttributes<HTMLInputElement>,
+  extends WithRef<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
     WithClassnames {
   error?: ReactNode;
   estimatedValueUsd: BigDecimal | undefined;
 }
 
-export const WithdrawLiquidityInput = forwardRef<
-  HTMLInputElement,
-  WithdrawLiquidityInputProps
->(function WithdrawLiquidityInput(
-  { className, error, estimatedValueUsd, ...rest }: WithdrawLiquidityInputProps,
-  ref,
-) {
+export function WithdrawLiquidityInput({
+  className,
+  error,
+  estimatedValueUsd,
+  ...rest
+}: WithdrawLiquidityInputProps) {
   return (
     <CompactInput
       type="number"
@@ -27,8 +26,7 @@ export const WithdrawLiquidityInput = forwardRef<
       endElement={
         <EstimatedCurrencyValueItem estimatedValueUsd={estimatedValueUsd} />
       }
-      ref={ref}
       {...rest}
     />
   );
-});
+}

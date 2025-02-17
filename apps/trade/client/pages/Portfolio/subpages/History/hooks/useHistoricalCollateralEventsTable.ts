@@ -1,31 +1,41 @@
-import { BigDecimals } from '@vertex-protocol/client';
+import {
+  BigDecimals,
+  subaccountFromHex,
+  VertexTransferQuoteTx,
+} from '@vertex-protocol/client';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import {
   GetIndexerSubaccountCollateralEventsResponse,
   IndexerCollateralEvent,
 } from '@vertex-protocol/indexer-client';
 import { CollateralEventType } from '@vertex-protocol/indexer-client/dist/types/collateralEventType';
-import { Token } from '@vertex-protocol/metadata';
+import { Token } from '@vertex-protocol/react-client';
 import {
   BigDecimal,
   removeDecimals,
   toBigDecimal,
 } from '@vertex-protocol/utils';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import {
+  AllMarketsStaticDataForChainEnv,
   SpotStaticMarketData,
-  useAllMarketsStaticData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+} from 'client/hooks/markets/marketsStaticData/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedCollateralEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedCollateralEvents';
 import { useAllProductsWithdrawPoolLiquidity } from 'client/hooks/query/withdrawPool/useAllProductsWithdrawPoolLiquidity';
 import { useAreWithdrawalsProcessing } from 'client/modules/collateral/hooks/useAreWithdrawalsProcessing';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { SubaccountProfile } from 'client/modules/subaccounts/types';
+import { isIsoSubaccountHex } from 'client/utils/isIsoSubaccount';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
+import { toBytes } from 'viem';
 
 export interface HistoricalCollateralEventsTableItem {
-  metadata: Token;
+  token: Token;
+  eventType: CollateralEventType;
   timestampMillis: number;
   size: BigDecimal;
   valueUsd: BigDecimal;
@@ -34,6 +44,14 @@ export interface HistoricalCollateralEventsTableItem {
   submissionIndex: string;
   amount: BigDecimal;
   productId: number;
+  transferEventData:
+    | {
+        fromSubaccountName: string;
+        toSubaccountName: string;
+        fromSubaccountUsername: string;
+        toSubaccountUsername: string;
+      }
+    | undefined;
 }
 
 const PAGE_SIZE = 10;
@@ -49,6 +67,7 @@ export function useHistoricalCollateralEventsTable({
 }: {
   eventTypes: CollateralEventType[];
 }) {
+  const { getSubaccountProfile } = useSubaccountContext();
   const { data: allProductsWithdrawPoolLiquidityData } =
     useAllProductsWithdrawPoolLiquidity();
   const { data: allMarketsStaticData, isLoading: allMarketsLoading } =
@@ -108,12 +127,12 @@ export function useHistoricalCollateralEventsTable({
       return getPageData(subaccountPaginatedEvents)
         .map((event) => {
           const productId = event.snapshot.market.productId;
-          const staticMarketData =
+          const staticSpotMarketData =
             productId === QUOTE_PRODUCT_ID
               ? allMarketsStaticData.primaryQuote
               : allMarketsStaticData.spot[productId];
 
-          if (!staticMarketData) {
+          if (!staticSpotMarketData) {
             console.warn(
               `[useHistoricalCollateralEventsTable] Product ${productId} not found`,
             );
@@ -122,10 +141,12 @@ export function useHistoricalCollateralEventsTable({
 
           return getHistoricalCollateralEventsTableItem({
             event,
-            staticMarketData,
+            staticSpotMarketData,
+            allMarketsStaticData,
             areWithdrawalsProcessingData,
             allProductsWithdrawPoolLiquidityData,
             primaryQuotePriceUsd,
+            getSubaccountProfile,
           });
         })
         .filter(nonNullFilter);
@@ -136,6 +157,7 @@ export function useHistoricalCollateralEventsTable({
       areWithdrawalsProcessingData,
       allProductsWithdrawPoolLiquidityData,
       primaryQuotePriceUsd,
+      getSubaccountProfile,
     ]);
 
   return {
@@ -152,24 +174,29 @@ export function useHistoricalCollateralEventsTable({
 
 interface GetHistoricalCollateralEventsTableItemParams {
   event: IndexerCollateralEvent;
-  staticMarketData: SpotStaticMarketData;
+  staticSpotMarketData: SpotStaticMarketData;
+  allMarketsStaticData: AllMarketsStaticDataForChainEnv | undefined;
   areWithdrawalsProcessingData: Record<string, boolean> | undefined;
   allProductsWithdrawPoolLiquidityData: Record<number, BigDecimal> | undefined;
   primaryQuotePriceUsd: BigDecimal;
+  getSubaccountProfile: (subaccountName: string) => SubaccountProfile;
 }
 
 export function getHistoricalCollateralEventsTableItem({
   event,
-  staticMarketData,
+  allMarketsStaticData,
+  staticSpotMarketData,
   primaryQuotePriceUsd,
   areWithdrawalsProcessingData,
   allProductsWithdrawPoolLiquidityData,
-}: GetHistoricalCollateralEventsTableItemParams) {
+  getSubaccountProfile,
+}: GetHistoricalCollateralEventsTableItemParams): HistoricalCollateralEventsTableItem {
+  const eventType = event.eventType;
   const productId = event.snapshot.market.productId;
-  const metadata = staticMarketData.metadata.token;
+  const metadata = staticSpotMarketData.metadata.token;
   const amount = removeDecimals(toBigDecimal(event.amount));
   const size = amount.abs();
-  const isWithdraw = event.eventType === 'withdraw_collateral';
+  const isWithdraw = eventType === 'withdraw_collateral';
   const isProcessing =
     isWithdraw && areWithdrawalsProcessingData?.[event.submissionIndex];
 
@@ -181,8 +208,40 @@ export function getHistoricalCollateralEventsTableItem({
     allProductsWithdrawPoolLiquidityData?.[productId]?.gt(BigDecimals.ZERO) ??
     false;
 
+  // Sender & recipient subaccounts, only for transfers
+  const transferEventData = (() => {
+    if (eventType !== 'transfer_quote') {
+      return;
+    }
+
+    const {
+      transfer_quote: { sender, recipient },
+    } = event.tx as VertexTransferQuoteTx;
+
+    const { name: fromSubaccountName, username: fromSubaccountUsername } =
+      getNormalizedSubaccountInfo({
+        subaccount: sender,
+        allMarketsStaticData,
+        getSubaccountProfile,
+      });
+    const { name: toSubaccountName, username: toSubaccountUsername } =
+      getNormalizedSubaccountInfo({
+        subaccount: recipient,
+        allMarketsStaticData,
+        getSubaccountProfile,
+      });
+
+    return {
+      fromSubaccountName,
+      toSubaccountName,
+      fromSubaccountUsername,
+      toSubaccountUsername,
+    };
+  })();
+
   return {
-    metadata,
+    token: metadata,
+    eventType,
     timestampMillis: secondsToMilliseconds(event.timestamp.toNumber()),
     valueUsd: size.times(oraclePrice).times(primaryQuotePriceUsd),
     size,
@@ -191,5 +250,50 @@ export function getHistoricalCollateralEventsTableItem({
     submissionIndex: event.submissionIndex,
     amount,
     productId,
+    transferEventData,
   };
+}
+
+interface GetNormalizedSubaccountInfoParams {
+  subaccount: string;
+  allMarketsStaticData: AllMarketsStaticDataForChainEnv | undefined;
+  getSubaccountProfile: (subaccountName: string) => SubaccountProfile;
+}
+
+function getNormalizedSubaccountInfo({
+  subaccount,
+  allMarketsStaticData,
+  getSubaccountProfile,
+}: GetNormalizedSubaccountInfoParams) {
+  const subaccountName = subaccountFromHex(subaccount).subaccountName;
+
+  if (isIsoSubaccountHex(subaccount)) {
+    const productId = getIsoSubaccountProductId(subaccount);
+    const marketName =
+      allMarketsStaticData?.perp[productId]?.metadata.marketName;
+
+    return {
+      name: subaccountName,
+      username: marketName ? `${marketName} (Iso)` : 'Isolated',
+    };
+  }
+
+  return {
+    name: subaccountName,
+    username: getSubaccountProfile(subaccountName).username,
+  };
+}
+
+/**
+ * Subaccounts are in hex and include the isolated product id
+ *
+ * | address | reserved | productId | id | 'iso' |
+ *
+ * | 20 bytes | 6 bytes | 2 bytes | 1 byte | 3 bytes |
+ *
+ * @param subaccount
+ * @returns `productId` of the isolated subaccount market
+ */
+function getIsoSubaccountProductId(subaccount: string) {
+  return parseInt(toBytes(subaccount).slice(27, 29).toString());
 }

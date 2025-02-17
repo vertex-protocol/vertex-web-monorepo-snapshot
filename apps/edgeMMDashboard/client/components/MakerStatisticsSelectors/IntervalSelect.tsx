@@ -10,7 +10,7 @@ import {
 interface Props extends WithClassnames {
   interval: number;
   setInterval: (value: number) => void;
-  intervalOptions: SelectOption<string, number>[];
+  intervalOptions: SelectOption<number>[];
 }
 
 export function IntervalSelect({
@@ -27,12 +27,9 @@ export function IntervalSelect({
     onOpenChange,
   } = useSelect({
     selectedValue: interval,
-    onSelectedValueChange: (option) => setInterval(option),
+    onSelectedValueChange: setInterval,
     options: intervalOptions,
   });
-
-  // min-w used to prevent layout shifts. It's shared between trigger and options to keep them aligned.
-  const sharedClassNames = 'min-w-32';
 
   return (
     <Select.Root
@@ -44,13 +41,14 @@ export function IntervalSelect({
       <div className="flex flex-col gap-y-1">
         <Label>Interval</Label>
         <Select.Trigger
-          className={sharedClassNames}
+          // min-w is used to prevent layout shifts
+          className="min-w-32"
           endIcon={<UpDownChevronIcon open={open} />}
         >
           {selectedOption?.label ?? 'Select'}
         </Select.Trigger>
       </div>
-      <Select.Options className={sharedClassNames}>
+      <Select.Options>
         {selectOptions.map(({ label, value }) => (
           <Select.Option key={value} value={value}>
             {label}

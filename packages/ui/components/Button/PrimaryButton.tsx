@@ -1,5 +1,4 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
 import { SizeVariant } from '../../types';
 import { getStateOverlayClassNames } from '../../utils/';
 import { Button } from './Button';
@@ -19,10 +18,11 @@ export type PrimaryButtonProps = Exclude<ButtonProps, 'size'> & {
  *
  * @param size - The size of the button. Default is 'base'.
  */
-export const PrimaryButton = forwardRef(function PrimaryButton(
-  { className, size = 'base', ...rest }: PrimaryButtonProps,
-  ref,
-) {
+export function PrimaryButton({
+  className,
+  size = 'base',
+  ...rest
+}: PrimaryButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
     borderRadiusVariant: 'base',
     disabled: rest.disabled,
@@ -38,7 +38,6 @@ export const PrimaryButton = forwardRef(function PrimaryButton(
 
   return (
     <Button
-      ref={ref}
       className={mergeClassNames(
         'text-text-primary rounded border',
         stateOverlayClassNames,
@@ -51,4 +50,4 @@ export const PrimaryButton = forwardRef(function PrimaryButton(
       {...rest}
     />
   );
-});
+}

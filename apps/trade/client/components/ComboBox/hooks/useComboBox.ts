@@ -1,4 +1,4 @@
-import { useSelect } from '@vertex-protocol/web-ui';
+import { useSelect, SelectValue } from '@vertex-protocol/web-ui';
 import {
   UseComboBoxParams,
   UseComboBox,
@@ -8,12 +8,12 @@ import { useState } from 'react';
 /**
  * Returns search query getter / setter along with utilities from `useSelect`.
  */
-export function useComboBox<TIdentifier extends string, TValue>({
+export function useComboBox<TValue extends SelectValue>({
   defaultOpen,
   onSelectedValueChange,
   selectedValue,
   options,
-}: UseComboBoxParams<TIdentifier, TValue>): UseComboBox<TIdentifier, TValue> {
+}: UseComboBoxParams<TValue>): UseComboBox<TValue> {
   const [query, setQuery] = useState('');
 
   const { onOpenChange, onValueChange, ...rest } = useSelect({
@@ -24,8 +24,8 @@ export function useComboBox<TIdentifier extends string, TValue>({
   });
 
   // Overrides `useSelect`'s onValueChange` so we can also close the popover.
-  const handleValueChange = (value: TIdentifier) => {
-    onValueChange(value);
+  const handleValueChange = (newId: string) => {
+    onValueChange(newId);
     onOpenChange(false);
   };
 

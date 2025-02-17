@@ -1,4 +1,4 @@
-import { MarketCategory } from '@vertex-protocol/metadata';
+import { MarketCategory } from '@vertex-protocol/react-client';
 import { useCallback } from 'react';
 
 type MarketCategoryID = MarketCategory | 'all';
@@ -20,10 +20,6 @@ const marketCategoryFilterById: MarketCategoryFilterByID = {
   spot: {
     value: 'spot',
     label: 'Spot',
-  },
-  prediction: {
-    value: 'prediction',
-    label: 'Prediction',
   },
   meme: {
     value: 'meme',

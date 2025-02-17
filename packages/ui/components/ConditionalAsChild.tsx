@@ -1,11 +1,12 @@
 import { Slot, SlotProps } from '@radix-ui/react-slot';
-import { forwardRef } from 'react';
+import { WithRef } from '@vertex-protocol/web-common';
+import { ElementType } from 'react';
 
-export interface ConditionalAsChildProps extends SlotProps {
+export interface ConditionalAsChildProps extends WithRef<SlotProps> {
   /** When `true`, the component will use Radix's `Slot` to render `children`. */
   asChild: boolean | undefined;
   /** Can be something like `"div"` or `FallbackComponent`. */
-  fallback: React.ElementType;
+  fallback: ElementType;
 }
 
 /**
@@ -15,11 +16,12 @@ export interface ConditionalAsChildProps extends SlotProps {
  * Note, if `children` is not a single node, you need to wrap the child that
  * you want props merged to with Radix's `Slottable`.
  */
-export const ConditionalAsChild = forwardRef<
-  HTMLElement,
-  ConditionalAsChildProps
->(function ConditionalAsChild({ asChild, fallback: Fallback, ...props }, ref) {
+export function ConditionalAsChild({
+  asChild,
+  fallback: Fallback,
+  ...props
+}: ConditionalAsChildProps) {
   const Comp = asChild ? Slot : Fallback;
 
-  return <Comp ref={ref} {...props} />;
-});
+  return <Comp {...props} />;
+}

@@ -55,6 +55,6 @@ export function useSubaccountLatestFillOrderEvents() {
       );
     },
     enabled: !disabled,
-    refetchInterval: 5000,
+    refetchInterval: 10000,
   });
 }

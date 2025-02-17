@@ -1,5 +1,6 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
@@ -9,7 +10,6 @@ import { Divider } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -80,10 +80,7 @@ export function LpMarketsTable({ className }: WithClassnames) {
       columnHelper.accessor('volume', {
         header: ({ header }) => (
           <HeaderCell header={header} definitionTooltipId="lpMarkets24hVolume">
-            24h Volume{' '}
-            <span className="text-text-tertiary">
-              {primaryQuoteToken.symbol}
-            </span>
+            24h Volume {primaryQuoteToken.symbol}
           </HeaderCell>
         ),
         cell: (context) => {

@@ -2,7 +2,7 @@ import {
   SharedProductMetadata,
   PerpProductMetadata,
   SpotProductMetadata,
-} from '@vertex-protocol/metadata';
+} from '@vertex-protocol/react-client';
 
 /**
  * Get the shared product metadata

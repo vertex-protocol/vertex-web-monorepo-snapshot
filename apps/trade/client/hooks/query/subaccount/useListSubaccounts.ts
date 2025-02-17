@@ -6,7 +6,7 @@ import {
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { ZeroAddress } from 'ethers';
+import { zeroAddress } from 'viem';
 
 export function listSubaccountsQueryKey(
   chainEnv?: ChainEnv,
@@ -23,7 +23,7 @@ export function useListSubaccounts({ limit = 100 }: { limit?: number } = {}) {
     primaryChainEnv,
   } = useEVMContext();
 
-  const subaccountsOwnerForQuery = address ?? ZeroAddress;
+  const subaccountsOwnerForQuery = address ?? zeroAddress;
 
   const disabled = !vertexClient;
 

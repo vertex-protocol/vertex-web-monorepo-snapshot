@@ -5,8 +5,8 @@ import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useResolvedConnectors } from 'client/modules/app/dialogs/wallet/states/connect/useResolvedConnectors';
 import { WalletButton } from 'client/modules/app/dialogs/wallet/states/connect/WalletButton';
-import { BASE_CHAIN_IDS } from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
+import { BASE_CHAIN_ENVS } from '@vertex-protocol/react-client';
+import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
 import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';
 
@@ -22,7 +22,7 @@ export function ConnectWalletDialogContent() {
 
   const isDisabled = connectionStatus.type === 'connecting';
   const showCoinbaseWalletPrompt =
-    useIsEnabledForChainIds(BASE_CHAIN_IDS) && !!coinbaseConnector;
+    useIsEnabledForChainEnvs(BASE_CHAIN_ENVS) && !!coinbaseConnector;
 
   return (
     <>
@@ -48,7 +48,7 @@ export function ConnectWalletDialogContent() {
         </div>
         <div className="flex flex-col gap-y-2">
           <div className="flex flex-col gap-y-0.5">
-            <div className="text-text-primary">Don’t see your wallet?</div>
+            <div className="text-text-primary">Don&apos;t see your wallet?</div>
             <div className="text-text-tertiary">
               WalletConnect supports 50+ options
             </div>
@@ -61,7 +61,7 @@ export function ConnectWalletDialogContent() {
               showCoinbaseWalletPrompt ? 'gap-y-2' : 'gap-y-0.5',
             )}
           >
-            <div className="text-text-primary">Don’t have a wallet?</div>
+            <div className="text-text-primary">Don&apos;t have a wallet?</div>
             {showCoinbaseWalletPrompt ? (
               <PrimaryButton
                 disabled={isDisabled}

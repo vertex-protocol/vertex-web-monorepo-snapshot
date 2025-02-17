@@ -1,7 +1,6 @@
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { OneClickTradingStatusPill } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/OneClickTradingStatusPill';
 import { SignatureModeDisable1CTDialogContent } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeDisable1CTDialogContent/SignatureModeDisable1CTDialogContent';
 import { SignatureModeEnable1CTDialogContent } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeEnable1CTDialogContent/SignatureModeEnable1CTDialogContent';
 import { useEffect, useState } from 'react';
@@ -28,12 +27,7 @@ export function SignatureModeSettingsDialog() {
 
   return (
     <BaseAppDialog.Container onClose={hide}>
-      <BaseAppDialog.Title onClose={hide}>
-        <div className="flex items-center gap-x-1.5">
-          1-Click Trading
-          <OneClickTradingStatusPill enabled={showDisable1CTContent} />
-        </div>
-      </BaseAppDialog.Title>
+      <BaseAppDialog.Title onClose={hide}>1-Click Trading</BaseAppDialog.Title>
       <BaseAppDialog.Body>
         {showDisable1CTContent ? (
           <SignatureModeDisable1CTDialogContent

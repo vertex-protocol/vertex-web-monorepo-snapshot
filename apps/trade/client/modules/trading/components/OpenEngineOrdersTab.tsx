@@ -1,4 +1,5 @@
 import { OpenEngineOrdersTable } from 'client/modules/tables/OpenEngineOrdersTable';
+import { MobileTradingTabEngineOrders } from 'client/modules/trading/components/MobileTradingTab/MobileTradingTabEngineOrders';
 import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
 import { OpenOrdersFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
@@ -35,15 +36,11 @@ export const openEngineOrdersTableFilters: TradingTabFilters<OpenOrdersFilterOpt
   };
 
 export function OpenEngineOrdersTab({
-  enableUserFiltering,
   productId,
-  defaultFilter,
   isDesktop,
 }: {
-  enableUserFiltering: boolean;
   productId: number | undefined;
-  defaultFilter: MarketFilter | undefined;
-  isDesktop: boolean;
+  isDesktop?: boolean;
 }) {
   const { selectedFilter } =
     useSelectedFilterByTradingTableTabSetting<OpenOrdersFilterOptionID>({
@@ -63,10 +60,14 @@ export function OpenEngineOrdersTab({
     }
   }, [selectedFilter, productId]);
 
+  if (isDesktop) {
+    return <OpenEngineOrdersTable marketFilter={userFilter} />;
+  }
+
   return (
-    <OpenEngineOrdersTable
-      marketFilter={enableUserFiltering ? userFilter : defaultFilter}
-      pageSize={isDesktop ? undefined : 5}
+    <MobileTradingTabEngineOrders
+      marketFilter={userFilter}
+      tradingTabFilters={openEngineOrdersTableFilters}
     />
   );
 }

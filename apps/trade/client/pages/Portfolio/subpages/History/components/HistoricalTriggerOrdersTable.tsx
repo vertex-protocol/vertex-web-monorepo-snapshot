@@ -20,6 +20,7 @@ import {
 } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalTriggerOrdersTable';
 import { startCase } from 'lodash';
 import { useMemo } from 'react';
+import { MarginModeTypeCell } from 'client/modules/tables/cells/MarginModeTypeCell';
 
 const columnHelper = createColumnHelper<HistoricalTriggerOrdersTableItem>();
 
@@ -61,6 +62,16 @@ export function HistoricalTriggerOrdersTable() {
           enableSorting: false,
           meta: {
             cellContainerClassName: 'w-40',
+          },
+        }),
+        columnHelper.accessor('marginModeType', {
+          header: ({ header }) => <HeaderCell header={header}>Type</HeaderCell>,
+          cell: (context) => (
+            <MarginModeTypeCell marginModeType={context.getValue()} />
+          ),
+          enableSorting: false,
+          meta: {
+            cellContainerClassName: 'w-20',
           },
         }),
         columnHelper.accessor('price', {

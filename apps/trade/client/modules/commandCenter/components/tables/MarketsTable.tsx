@@ -2,6 +2,8 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
+  signDependentValue,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { Icons } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
@@ -16,7 +18,6 @@ import { BaseTable } from 'client/modules/commandCenter/components/tables/BaseTa
 import { MarketTableItem } from 'client/modules/commandCenter/hooks/useCommandCenterMarketItems';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { signDependentValue } from 'client/utils/signDependentValue';
 import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarketTableItem>();
@@ -26,6 +27,10 @@ interface Props {
 }
 
 export function MarketsTable({ markets }: Props) {
+  const {
+    primaryQuoteToken: { symbol: primaryQuoteSymbol },
+  } = useVertexMetadataContext();
+
   const columns: ColumnDef<MarketTableItem, any>[] = useMemo(() => {
     return [
       columnHelper.accessor('metadata', {
@@ -84,8 +89,10 @@ export function MarketsTable({ markets }: Props) {
           cellContainerClassName: 'w-24 lg:w-36',
         },
       }),
-      columnHelper.accessor('volume24hr', {
-        header: ({ header }) => <HeaderCell header={header}>Volume</HeaderCell>,
+      columnHelper.accessor('pastDayVolumeInPrimaryQuote', {
+        header: ({ header }) => (
+          <HeaderCell header={header}>Volume {primaryQuoteSymbol}</HeaderCell>
+        ),
         cell: (context) => (
           <NumberCell
             value={context.getValue()}
@@ -118,14 +125,14 @@ export function MarketsTable({ markets }: Props) {
         },
       }),
     ];
-  }, []);
+  }, [primaryQuoteSymbol]);
 
   return (
     <BaseTable
       id="markets"
       columns={columns}
       data={markets}
-      initialSortingState={[{ id: 'volume24hr', desc: true }]}
+      initialSortingState={[{ id: 'pastDayVolumeInPrimaryQuote', desc: true }]}
       onSelect={(row) => row.original.action()}
     />
   );

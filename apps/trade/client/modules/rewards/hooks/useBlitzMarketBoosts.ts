@@ -1,7 +1,7 @@
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { KNOWN_PRODUCT_IDS } from '@vertex-protocol/react-client';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { KNOWN_PRODUCT_IDS } from '@vertex-protocol/metadata';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 const MARKET_BOOST_MULTIPLIERS_BY_PRODUCT_ID: Record<number, number> = {

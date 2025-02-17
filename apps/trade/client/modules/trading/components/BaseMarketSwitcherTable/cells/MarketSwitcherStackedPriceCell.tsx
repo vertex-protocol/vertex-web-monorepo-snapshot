@@ -1,13 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   formatNumber,
   getMarketPriceFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
+import { joinClassNames } from '@vertex-protocol/web-common';
 import { StackedTableCell } from 'client/components/DataTable/cells/StackedTableCell';
-import { signDependentValue } from 'client/utils/signDependentValue';
-import React from 'react';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 
 interface Props {
   priceIncrement: BigDecimal | undefined;
@@ -22,11 +21,7 @@ export function MarketSwitcherStackedPriceCell({
   priceIncrement,
   priceChangeFracClassName,
 }: Props) {
-  const color = signDependentValue(priceChangeFrac, {
-    positive: 'text-positive',
-    negative: 'text-negative',
-    zero: 'text-text-primary',
-  });
+  const color = getSignDependentColorClassName(priceChangeFrac);
 
   return (
     <StackedTableCell

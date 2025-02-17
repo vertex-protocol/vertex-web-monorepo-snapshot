@@ -4,8 +4,8 @@ import {
   IndexerRewardsEpoch,
   LBA_AIRDROP_EPOCH,
 } from '@vertex-protocol/client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useAddressPaginatedRewards } from 'client/hooks/query/rewards/useAddressPaginatedRewards';
 import { useAccountTokenClaimState } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 import { useTokenClaimDeadlines } from 'client/hooks/query/vrtxToken/useTokenClaimDeadlines';
@@ -30,8 +30,7 @@ export interface EpochRewardsTableData {
   subaccountFees: BigDecimal;
   rewardsEarned: BigDecimal | undefined;
   rewardsUnclaimed: BigDecimal | undefined;
-  claimDeadlineMillis: number | undefined;
-  isPastClaimDeadline: boolean;
+  isPreLbaAirdropEpoch: boolean;
 }
 
 const PAGE_SIZE = 5;
@@ -105,10 +104,6 @@ export function useEpochRewardsTable() {
       // All LBA epochs are consolidated into the LBA_AIRDROP_EPOCH
       const isPreLbaAirdropEpoch = epoch.epochNumber < LBA_AIRDROP_EPOCH;
 
-      const isPastClaimDeadline =
-        !!epoch.subaccountTokenClaim.claimDeadlineMillis &&
-        isBefore(epoch.subaccountTokenClaim.claimDeadlineMillis, nowInMillis);
-
       const rewardsEarned = (() => {
         if (isCurrent || isPreLbaAirdropEpoch) {
           return;
@@ -133,10 +128,6 @@ export function useEpochRewardsTable() {
         );
       })();
 
-      const claimDeadlineMillis = isPreLbaAirdropEpoch
-        ? undefined
-        : epoch.subaccountTokenClaim.claimDeadlineMillis;
-
       return {
         epochNumber: epoch.epochNumber,
         isCurrent,
@@ -149,8 +140,7 @@ export function useEpochRewardsTable() {
         },
         rewardsEarned,
         rewardsUnclaimed,
-        claimDeadlineMillis,
-        isPastClaimDeadline,
+        isPreLbaAirdropEpoch,
       };
     });
   }, [

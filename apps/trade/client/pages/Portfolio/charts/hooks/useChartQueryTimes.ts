@@ -16,7 +16,9 @@ interface ChartQueryTimes {
  * 24 hour: hourly interval
  * 7 day: 6 hour interval
  * 1 month: 1 day interval
- * all time: use 50 data points that go back to max(time to account creation, 1 week)
+ * all time: use 30 data points that go back to max(time to account creation, 1 week)
+ *
+ * Note that the maximum # of data points we query for is 30
  */
 export function useChartQueryTimes(timespan: ChartTimespan) {
   const { data: subaccountCreationTime } = useSubaccountCreationTime();
@@ -42,22 +44,22 @@ export function useChartQueryTimes(timespan: ChartTimespan) {
       switch (timespan) {
         case '24hr':
           return {
-            interval: TimeInSeconds.MINUTE * 20,
+            interval: TimeInSeconds.HOUR,
             earliestSecondsBeforeNow: TimeInSeconds.DAY,
           };
         case '7d':
           return {
-            interval: TimeInSeconds.HOUR * 3,
+            interval: TimeInSeconds.HOUR * 6,
             earliestSecondsBeforeNow: TimeInSeconds.DAY * 7,
           };
         case '1m':
           return {
-            interval: TimeInSeconds.HOUR * 12,
+            interval: TimeInSeconds.DAY,
             earliestSecondsBeforeNow: TimeInSeconds.DAY * 30,
           };
         case 'all_time':
           return {
-            interval: Math.round(secondsToCreationTime / 60),
+            interval: Math.round(secondsToCreationTime / 30),
             earliestSecondsBeforeNow: secondsToCreationTime,
           };
       }

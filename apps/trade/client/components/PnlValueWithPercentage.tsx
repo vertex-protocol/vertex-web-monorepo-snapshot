@@ -5,7 +5,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { formatNumber } from '@vertex-protocol/react-client';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface Props {
   pnlUsd: BigDecimal | undefined;

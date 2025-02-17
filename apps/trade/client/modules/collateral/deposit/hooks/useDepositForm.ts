@@ -1,7 +1,6 @@
 import { MutationStatus } from '@tanstack/react-query';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { useIsChainType } from '@vertex-protocol/react-client';
 import {
   addDecimals,
   BigDecimal,
@@ -13,10 +12,6 @@ import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
-import {
-  KNOWN_PRODUCT_IDS,
-  useVertexMetadataContext,
-} from '@vertex-protocol/metadata';
 import { useExecuteApproveAllowanceForProduct } from 'client/hooks/execute/useExecuteApproveAllowanceForProduct';
 import { useExecuteDepositCollateral } from 'client/hooks/execute/useExecuteDepositCollateral';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
@@ -27,6 +22,7 @@ import {
 } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDepositFormData } from 'client/modules/collateral/deposit/hooks/useDepositFormData';
+import { useDepositFormDisplayedInfoCardType } from 'client/modules/collateral/deposit/hooks/useDepositFormDisplayedInfoCardType';
 import { useDepositFormOnChangeSideEffects } from 'client/modules/collateral/deposit/hooks/useDepositFormOnChangeSideEffects';
 import { useDepositFormSubmitHandler } from 'client/modules/collateral/deposit/hooks/useDepositFormSubmitHandler';
 import {
@@ -34,12 +30,11 @@ import {
   DepositErrorType,
   DepositFormValues,
   DepositInfoCardType,
-  DepositProduct,
+  DepositProductSelectValue,
 } from 'client/modules/collateral/deposit/types';
 
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { isRoughlyZero } from 'client/utils/isRoughlyZero';
 import { useCallback, useMemo } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 
@@ -49,8 +44,8 @@ export interface UseDepositForm {
   formError: DepositErrorType | undefined;
   depositCollateralMutationStatus: MutationStatus;
   // Form data
-  selectedProduct?: DepositProduct;
-  availableProducts: DepositProduct[];
+  selectedProduct?: DepositProductSelectValue;
+  availableProducts: DepositProductSelectValue[];
   // Parsed amounts
   validAmount?: BigDecimal;
   amountInputValueUsd?: BigDecimal; // $ Value for amount input
@@ -72,11 +67,7 @@ export function useDepositForm({
 }: {
   initialProductId: number | undefined;
 }): UseDepositForm {
-  const {
-    protocolTokenMetadata: { productId: protocolTokenProductId },
-  } = useVertexMetadataContext();
   const isInitialDeposit = useRequiresInitialDeposit();
-  const { isArb, isBase, isBlast, isMantle, isSei } = useIsChainType();
 
   const useDepositForm = useForm<DepositFormValues>({
     defaultValues: {
@@ -127,7 +118,7 @@ export function useDepositForm({
           selectedProduct.decimalAdjustedMinimumInitialDepositAmount,
         )
       ) {
-        return 'under_min';
+        return 'below_min';
       }
     },
     [selectedProduct, isInitialDeposit],
@@ -158,7 +149,7 @@ export function useDepositForm({
   const { isLoading: isApprovalTxLoading, isSuccess: isApprovalTxSuccess } =
     useOnChainMutationStatus({
       mutationStatus: executeApproveAllowance.status,
-      txResponse: executeApproveAllowance.data,
+      txHash: executeApproveAllowance.data,
     });
 
   useRunWithDelayOnCondition({
@@ -170,21 +161,13 @@ export function useDepositForm({
   const { isLoading: isDepositTxLoading, isSuccess: isDepositTxSuccess } =
     useOnChainMutationStatus({
       mutationStatus: executeDepositCollateral.status,
-      txResponse: executeDepositCollateral.data,
+      txHash: executeDepositCollateral.data,
     });
 
   useRunWithDelayOnCondition({
     condition: isDepositTxSuccess,
     fn: executeDepositCollateral.reset,
   });
-
-  // Whether the user has near-zero (or zero) balance of the selected product
-  const isNegligibleWalletBalance = useMemo(() => {
-    if (!selectedProduct || !hasLoadedDepositableBalances) {
-      return false;
-    }
-    return isRoughlyZero(selectedProduct.decimalAdjustedWalletBalance);
-  }, [hasLoadedDepositableBalances, selectedProduct]);
 
   // Deposit by default, approve if we don't have enough allowance
   const isApprove = useMemo(() => {
@@ -270,66 +253,10 @@ export function useDepositForm({
     useDepositForm,
   });
 
-  const displayedInfoCardType = useMemo((): DepositInfoCardType | undefined => {
-    if (!selectedProduct) {
-      return;
-    }
-
-    if (
-      isArb &&
-      selectedProduct.productId === KNOWN_PRODUCT_IDS.wethArb &&
-      isNegligibleWalletBalance
-    ) {
-      return 'weth';
-    }
-
-    if (
-      isBase &&
-      selectedProduct.productId === KNOWN_PRODUCT_IDS.wethBase &&
-      isNegligibleWalletBalance
-    ) {
-      return 'weth';
-    }
-
-    // wETH on blast mainnet is 91 and 3 on testnet
-    const isBlastWethProductId =
-      selectedProduct.productId === KNOWN_PRODUCT_IDS.wethBlast ||
-      selectedProduct.productId === KNOWN_PRODUCT_IDS.wethBlastSepolia;
-
-    if (isBlast && isBlastWethProductId && isNegligibleWalletBalance) {
-      return 'weth';
-    }
-    // Note: no need for `weth` dismissible on Mantle as MNT is the native token, not ETH
-
-    if (isMantle && selectedProduct.productId === KNOWN_PRODUCT_IDS.wmnt) {
-      return 'wmnt';
-    }
-
-    if (isSei && selectedProduct.productId === KNOWN_PRODUCT_IDS.wsei) {
-      return 'wsei';
-    }
-
-    if (isArb && selectedProduct.productId === protocolTokenProductId) {
-      return 'vrtx';
-    }
-
-    // wETH & USDB are eligible for blast native yield
-    const isEligibleForBlastNativeYield =
-      isBlastWethProductId || selectedProduct.productId === QUOTE_PRODUCT_ID;
-
-    if (isBlast && isEligibleForBlastNativeYield) {
-      return 'blast_native_yield';
-    }
-  }, [
+  const displayedInfoCardType = useDepositFormDisplayedInfoCardType({
     selectedProduct,
-    isNegligibleWalletBalance,
-    isArb,
-    isBase,
-    isBlast,
-    isMantle,
-    isSei,
-    protocolTokenProductId,
-  ]);
+    hasLoadedDepositableBalances,
+  });
 
   return {
     form: useDepositForm,

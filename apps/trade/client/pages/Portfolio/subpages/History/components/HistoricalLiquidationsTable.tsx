@@ -62,7 +62,7 @@ export function HistoricalLiquidationsTable() {
           },
           enableSorting: false,
           meta: {
-            cellContainerClassName: 'w-32',
+            cellContainerClassName: 'w-28',
           },
         }),
         columnHelper.display({
@@ -137,6 +137,7 @@ export function HistoricalLiquidationsTable() {
             return (
               <TableCell className="pointer-events-auto pr-4">
                 <TextButton
+                  colorVariant="secondary"
                   onClick={getTableButtonOnClickHandler(() => {
                     show({
                       type: 'pre_liquidation_details',

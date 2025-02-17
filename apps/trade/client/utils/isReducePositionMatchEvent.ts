@@ -1,6 +1,6 @@
 import { IndexerMatchEvent } from '@vertex-protocol/indexer-client';
 import { calcPreMatchEventBalanceAmount } from 'client/utils/calcs/calcPreMatchEventBalanceAmount';
-import { safeDiv } from 'client/utils/safeDiv';
+import { safeDiv } from '@vertex-protocol/web-common';
 
 /**
  * Reduce position events are trades that decrease the position size

@@ -5,6 +5,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ChainEnv } from '@vertex-protocol/client';
 import {
   EVMContextProvider,
+  getPrimaryChain,
+  useWagmiConfig,
   VertexClientContextProvider,
 } from '@vertex-protocol/react-client';
 import { useStorageAtom, WithChildren } from '@vertex-protocol/web-common';
@@ -12,19 +14,7 @@ import {
   DEFAULT_PRIMARY_CHAIN_ENV,
   primaryChainEnvAtom,
 } from 'client/consts/store';
-import {
-  arbitrum,
-  arbitrumSepolia,
-  base,
-  baseSepolia,
-  blast,
-  blastSepolia,
-  Chain,
-  mantle,
-  mantleSepoliaTestnet,
-  sei,
-  seiTestnet,
-} from 'viem/chains';
+import { WagmiProvider } from 'wagmi';
 
 const queryClient = new QueryClient();
 
@@ -35,28 +25,18 @@ const SUPPORTED_CHAIN_ENVS: ChainEnv[] = [
   'sei',
   'blast',
   'base',
+  'abstract',
   // Testnets
   'arbitrumTestnet',
   'mantleTestnet',
   'seiTestnet',
   'blastTestnet',
   'baseTestnet',
+  'sonicTestnet',
+  'abstractTestnet',
 ];
 
-const SUPPORTED_CHAINS: Chain[] = [
-  // Mainnets
-  arbitrum,
-  mantle,
-  sei,
-  blast,
-  base,
-  // Testnets
-  arbitrumSepolia,
-  mantleSepoliaTestnet,
-  seiTestnet,
-  blastSepolia,
-  baseSepolia,
-];
+const SUPPORTED_CHAINS = SUPPORTED_CHAIN_ENVS.map(getPrimaryChain);
 
 export function ClientLayout({ children }: WithChildren) {
   const [savedPrimaryChainEnv, setSavedPrimaryChainEnv, didLoad] =
@@ -71,16 +51,20 @@ export function ClientLayout({ children }: WithChildren) {
     return children;
   })();
 
+  const wagmiConfig = useWagmiConfig({ supportedChains: SUPPORTED_CHAINS });
+
   return (
     <QueryClientProvider client={queryClient}>
-      <EVMContextProvider
-        supportedChainEnvs={SUPPORTED_CHAIN_ENVS}
-        supportedChains={SUPPORTED_CHAINS}
-        primaryChainEnv={savedPrimaryChainEnv}
-        setPrimaryChainEnv={setSavedPrimaryChainEnv}
-      >
-        <VertexClientContextProvider>{content}</VertexClientContextProvider>
-      </EVMContextProvider>
+      <WagmiProvider config={wagmiConfig}>
+        <EVMContextProvider
+          supportedChainEnvs={SUPPORTED_CHAIN_ENVS}
+          supportedChains={SUPPORTED_CHAINS}
+          primaryChainEnv={savedPrimaryChainEnv}
+          setPrimaryChainEnv={setSavedPrimaryChainEnv}
+        >
+          <VertexClientContextProvider>{content}</VertexClientContextProvider>
+        </EVMContextProvider>
+      </WagmiProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

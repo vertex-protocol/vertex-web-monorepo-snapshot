@@ -1,41 +1,46 @@
-import { EXTERNAL_LINKS } from 'client/consts';
+import { LINKS } from 'config/links';
 
-export interface FooterLinkProps {
-  href: string;
-  label: string;
-}
+type Data = {
+  title?: string;
+  links: { href: string; text: string }[];
+};
 
-export const FOOTER_LINKS: FooterLinkProps[] = [
+/**
+ * Data for the footer section of the marketing website.
+ * Organizes navigation links into sections for developers and community.
+ */
+export const FOOTER_DATA: Data[] = [
   {
-    href: EXTERNAL_LINKS.docs,
-    label: 'Docs',
+    title: 'Developers',
+    links: [
+      { href: LINKS.docs, text: 'Docs' },
+      { href: LINKS.apiDocs, text: 'Vertex API' },
+      { href: LINKS.sdkDocs, text: 'Vertex SDKs' },
+      { href: LINKS.bugBountyProgram, text: 'Bug Bounty program' },
+    ],
   },
   {
-    href: EXTERNAL_LINKS.termsOfUse,
-    label: 'Terms of Service',
+    title: 'Community',
+    links: [
+      { href: LINKS.liquidityLounge, text: 'Liquidity Lounge' },
+      { href: LINKS.mediaKit, text: 'Media Kit' },
+      { href: LINKS.linktree, text: 'Linktree' },
+      { href: LINKS.discord, text: 'Discord' },
+    ],
   },
   {
-    href: EXTERNAL_LINKS.privacy,
-    label: 'Privacy Policy',
+    links: [
+      { href: LINKS.twitter, text: 'X' },
+      { href: LINKS.blog, text: 'Blog' },
+      { href: LINKS.faq, text: 'FAQ' },
+      { href: LINKS.statsDashboard, text: 'Stats Dashboard' },
+    ],
   },
   {
-    href: EXTERNAL_LINKS.mediaKit,
-    label: 'Media Kit',
+    title: 'Legal',
+    links: [
+      { href: LINKS.termsOfService, text: 'Terms of Service' },
+      { href: LINKS.privacyPolicy, text: 'Privacy Policy' },
+    ],
   },
-  {
-    href: EXTERNAL_LINKS.discord,
-    label: 'Discord',
-  },
-  {
-    href: EXTERNAL_LINKS.x,
-    label: 'X',
-  },
-  {
-    href: EXTERNAL_LINKS.blog,
-    label: 'Blog',
-  },
-  {
-    href: EXTERNAL_LINKS.ambassadors,
-    label: 'Ambassadors',
-  },
-];
+] as const;

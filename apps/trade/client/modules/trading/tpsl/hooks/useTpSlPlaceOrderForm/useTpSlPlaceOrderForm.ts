@@ -5,10 +5,10 @@ import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecute
 import { useReduceOnlyTriggerOrders } from 'client/hooks/subaccount/useReduceOnlyTriggerOrders';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
 import {
-  UseTpSlPlaceOrderForm,
-  TpSlPlaceOrderFormValues,
   TpSlPlaceOrderErrorType,
   TpSlPlaceOrderFormPositionChanges,
+  TpSlPlaceOrderFormValues,
+  UseTpSlPlaceOrderForm,
 } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/types';
 import { useSavedTpSlTriggerPriceType } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/useSavedTpSlTriggerPriceType';
 import { useTpSlPlaceOrderFormEstimatedState } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/useTpSlPlaceOrderFormEstimatedState';
@@ -25,6 +25,11 @@ import { useForm } from 'react-hook-form';
 
 interface Params {
   productId: number | undefined;
+  /**
+   * Defined for isolated positions, null indicates that this is not for an isolated position,
+   * whereas undefined indicates that the value is not yet loaded.
+   */
+  isoSubaccountName: string | undefined | null;
   isTakeProfit: boolean;
   priceIncrement: BigDecimal | undefined;
   lastPrice: BigDecimal | undefined;
@@ -39,6 +44,7 @@ interface Params {
 
 export function useTpSlPlaceOrderForm({
   productId,
+  isoSubaccountName,
   isTakeProfit,
   priceIncrement,
   lastPrice,
@@ -88,20 +94,25 @@ export function useTpSlPlaceOrderForm({
 
   /* Derived data */
   const existingTriggerOrder = (() => {
-    if (!productId) {
+    if (!productId || isoSubaccountName === undefined) {
       return;
     }
+    const tpSlOrders = !!isoSubaccountName
+      ? reduceOnlyOrderData?.[productId]?.iso
+      : reduceOnlyOrderData?.[productId]?.cross;
     return isTakeProfit
-      ? reduceOnlyOrderData?.[productId]?.takeProfitOrder
-      : reduceOnlyOrderData?.[productId]?.stopLossOrder;
+      ? tpSlOrders?.takeProfitOrder
+      : tpSlOrders?.stopLossOrder;
   })();
 
   const indexerSnapshotBalance = useMemo(
     () =>
       indexerSnapshot?.balances.find((indexerBalance) => {
-        return indexerBalance.productId === productId;
+        const matchesMarginMode =
+          !!isoSubaccountName === indexerBalance.isolated;
+        return matchesMarginMode && indexerBalance.productId === productId;
       }),
-    [indexerSnapshot?.balances, productId],
+    [indexerSnapshot?.balances, isoSubaccountName, productId],
   );
 
   const hasExistingPosition = indexerSnapshotBalance
@@ -148,6 +159,7 @@ export function useTpSlPlaceOrderForm({
 
   // Submit handler
   const submitHandler = useTpSlPlaceOrderFormSubmitHandler({
+    isoSubaccountName,
     isTakeProfit,
     positionSide,
     existingTriggerOrder,
@@ -156,7 +168,6 @@ export function useTpSlPlaceOrderForm({
     useTpSlPlaceOrderForm,
     setSavedTpSlTriggerPriceType,
     mutateAsync: executePlaceOrder.mutateAsync,
-    isPerpOrderForm: !!positionChanges,
   });
 
   return {

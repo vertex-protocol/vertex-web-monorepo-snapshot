@@ -1,5 +1,8 @@
 import { GetIndexerSubaccountLiquidationEventsParams } from '@vertex-protocol/indexer-client';
-import { EXPORT_HISTORY_QUERY_PAGE_SIZE } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
+import {
+  EXPORT_HISTORY_QUERY_PAGE_SIZE,
+  EXPORT_HISTORY_QUERY_DELAY_MILLIS,
+} from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
 import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
@@ -7,6 +10,7 @@ import {
   GetExportHistoryDataParams,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 import { getHistoricalLiquidationsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
+import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
 
 export async function getExportHistoryLiquidationsData(
@@ -88,7 +92,7 @@ export async function getExportHistoryLiquidationsData(
         items.push({
           time: formattedTimestamp,
           submissionIndex: tableItem.submissionIndex,
-          balanceType: 'perp',
+          balanceType: tableItem.perp.liquidatedBalanceType,
           productName: tableItem.perp.sharedMetadata.marketName,
           amountLiquidated: tableItem.perp.amountLiquidated.toString(),
           assetAmountDelta: tableItem.perp.amountLiquidated
@@ -114,6 +118,9 @@ export async function getExportHistoryLiquidationsData(
     if (!liquidationEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    // Reduce chance of rate limiting.
+    await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);
   }
 
   return items;

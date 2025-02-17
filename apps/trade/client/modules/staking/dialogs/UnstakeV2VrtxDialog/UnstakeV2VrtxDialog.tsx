@@ -1,5 +1,6 @@
 import {
   CustomNumberFormatSpecifier,
+  formatNumber,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import {
@@ -32,6 +33,7 @@ export function UnstakeV2VrtxDialog() {
     protocolTokenIconSrc,
     instantUnstakeReceivedAmountFraction,
     instantUnstakeBurnAmountFraction,
+    instantUnstakeBurnedAmount,
     availableToUnstakeTimeMillis,
     showErrorPanel,
     unstakedLockPeriodDays,
@@ -40,14 +42,17 @@ export function UnstakeV2VrtxDialog() {
     unstakeAll,
   } = useUnstakeV2VrtxDialog();
 
-  const summaryContent = (() => {
-    return selectedRadioId === 'instant' ? (
-      <>
+  const summaryContent =
+    selectedRadioId === 'instant' ? (
+      <div className="flex flex-col gap-y-1">
         <ValueWithLabel.Horizontal
           sizeVariant="xs"
-          label="Percent Burned:"
+          label="Amount Burned:"
           value={instantUnstakeBurnAmountFraction}
           numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
+          valueEndElement={`(${formatNumber(instantUnstakeBurnedAmount, {
+            formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
+          })})`}
         />
         <ValueWithLabel.Horizontal
           sizeVariant="xs"
@@ -56,7 +61,7 @@ export function UnstakeV2VrtxDialog() {
           valueEndElement={protocolTokenSymbol}
           numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
         />
-      </>
+      </div>
     ) : (
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
@@ -67,14 +72,12 @@ export function UnstakeV2VrtxDialog() {
         })}
       />
     );
-  })();
 
   return (
     <BaseAppDialog.Container onClose={hide}>
       <BaseAppDialog.Title
         onClose={hide}
         endElement={
-          // TODO ensure links are correct
           <LinkButton
             as={Link}
             colorVariant="primary"
@@ -104,6 +107,7 @@ export function UnstakeV2VrtxDialog() {
           }
           unstakedLockPeriodDays={unstakedLockPeriodDays}
           disableButtons={disableButtons}
+          protocolTokenSymbol={protocolTokenSymbol}
         />
         {showErrorPanel && (
           <UnstakeV2VrtxErrorPanel
@@ -115,7 +119,7 @@ export function UnstakeV2VrtxDialog() {
           currentBalance={currentBalance}
           protocolTokenIconSrc={protocolTokenIconSrc}
         />
-        <div className="flex flex-col gap-y-1.5">
+        <div className="flex flex-col gap-y-4">
           {summaryContent}
           <UnstakeV2VrtxSubmitButton state={buttonState} onClick={unstakeAll} />
         </div>

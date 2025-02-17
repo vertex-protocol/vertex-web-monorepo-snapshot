@@ -19,7 +19,7 @@ export function useSubaccountLiquidationEventEmitter() {
     undefined,
   );
 
-  // Reset on subaccount & primary chain changes
+  // Reset on subaccount chainenv changes
   useEffect(() => {
     lastLiquidationSubmissionIdx.current = undefined;
   }, [address, name, chainEnv]);

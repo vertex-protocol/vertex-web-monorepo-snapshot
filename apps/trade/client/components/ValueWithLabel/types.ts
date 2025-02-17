@@ -35,12 +35,16 @@ interface WithValueContent {
 }
 
 interface WithFormatValue {
-  value: NumberFormatValue | undefined;
+  value: NumberFormatValue | undefined | null;
   numberFormatSpecifier: NumberFormatSpecifier | string;
   defaultValue?: string | number;
   valueClassName?: string;
   valueEndElement?: ReactNode;
-  newValue?: NumberFormatValue;
+  /**
+   * Null indicates a "non-value" as the new value, which will render a `-` instead of skipping render of the `-> newValue` entirely
+   * This is useful for the estimated liquidation price, amongst other things.
+   */
+  newValue?: NumberFormatValue | null;
   /** When overriding icon size use `size-` className. ex. `size-4`  */
   changeArrowClassName?: string;
 }

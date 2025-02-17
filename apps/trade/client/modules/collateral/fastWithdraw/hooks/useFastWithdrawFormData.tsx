@@ -5,7 +5,7 @@ import {
   removeDecimals,
   toBigDecimal,
 } from '@vertex-protocol/client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
 import { useAllProductsWithdrawPoolLiquidity } from 'client/hooks/query/withdrawPool/useAllProductsWithdrawPoolLiquidity';
 import { useWithdrawPoolFeeAmount } from 'client/hooks/query/withdrawPool/useWithdrawPoolFeeAmount';

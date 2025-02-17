@@ -1,12 +1,12 @@
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
 import { useMemo } from 'react';
 
 export function PerpHeroMetricsItems({ className }: WithClassnames) {
-  const { data: overview } = useDerivedSubaccountOverview();
+  const { data: overview } = useSubaccountOverview();
 
   const perpMetricItems = useMemo(
     () =>
@@ -32,14 +32,14 @@ export function PerpHeroMetricsItems({ className }: WithClassnames) {
             id: 'perpOpenPositionsMarginUsed',
           },
           label: 'Margin Used',
-          value: overview?.perp.totalMarginUsedUsd,
+          value: overview?.perp.cross.totalMarginUsedUsd,
           numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
       ] satisfies ValueWithLabelProps[],
     [
       overview?.perp.totalUnrealizedPnlUsd,
       overview?.perp.totalNotionalValueUsd,
-      overview?.perp.totalMarginUsedUsd,
+      overview?.perp.cross.totalMarginUsedUsd,
     ],
   );
 

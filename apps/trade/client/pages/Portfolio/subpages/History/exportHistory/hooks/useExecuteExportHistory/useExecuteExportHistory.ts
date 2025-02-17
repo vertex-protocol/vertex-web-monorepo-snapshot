@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import { toPrintableObject } from '@vertex-protocol/utils';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { AppSubaccount } from 'client/context/subaccount/types';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   useExecuteInValidContext,
   ValidExecuteContext,
 } from 'client/hooks/execute/util/useExecuteInValidContext';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { EXPORT_HISTORY_HEADINGS_BY_TYPE } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { getExportHistoryCollateralData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryCollateralData';
@@ -26,6 +28,7 @@ import { useCallback } from 'react';
  * Hook to retrieve historical data and download it as a CSV
  */
 export function useExecuteExportHistory() {
+  const { getSubaccountProfile } = useSubaccountContext();
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
@@ -46,6 +49,7 @@ export function useExecuteExportHistory() {
           primaryQuotePriceUsd,
           vertexClient: context.vertexClient,
           subaccount: context.subaccount,
+          getSubaccountProfile,
         };
 
         const data: CsvDataItem[] = await (() => {
@@ -69,13 +73,16 @@ export function useExecuteExportHistory() {
 
         downloadCsv(
           data,
-          getExportHistoryCsvFileName(params),
+          getExportHistoryCsvFileName({
+            ...params,
+            subaccount: context.subaccount,
+          }),
           EXPORT_HISTORY_HEADINGS_BY_TYPE[params.type],
         );
 
         return data;
       },
-      [allMarketsStaticData, primaryQuotePriceUsd],
+      [allMarketsStaticData, getSubaccountProfile, primaryQuotePriceUsd],
     ),
   );
 
@@ -87,10 +94,18 @@ export function useExecuteExportHistory() {
   });
 }
 
+interface GetExportHistoryCsvFileNameParams extends GetExportHistoryDataParams {
+  subaccount: AppSubaccount;
+}
+
 function getExportHistoryCsvFileName({
+  subaccount: { name, address, chainEnv },
   type,
   startTimeMillis,
   endTimeMillis,
-}: GetExportHistoryDataParams): CsvFileName {
-  return `${type}_${startTimeMillis}_${endTimeMillis}.csv`;
+}: GetExportHistoryCsvFileNameParams): CsvFileName {
+  // Last 4 chars of the address
+  const addressIdentifier = address?.slice(-6);
+
+  return `${addressIdentifier}_${name}_${chainEnv}_${type}_${startTimeMillis}_${endTimeMillis}.csv`;
 }

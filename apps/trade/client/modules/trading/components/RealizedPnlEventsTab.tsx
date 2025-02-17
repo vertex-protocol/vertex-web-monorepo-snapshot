@@ -1,4 +1,5 @@
 import { PaginatedRealizedPnlEventsTable } from 'client/modules/tables/PaginatedRealizedPnlEventsTable';
+import { MobileTradingTabRealizedPnlEvents } from 'client/modules/trading/components/MobileTradingTab/MobileTradingTabRealizedPnlEvents';
 import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
 import { RealizedPnlEventsFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
@@ -31,18 +32,11 @@ const PERP_ONLY_FILTER: MarketFilter = {
 };
 
 interface Props {
-  enableUserFiltering: boolean;
-  defaultFilter: MarketFilter;
   productId: number | undefined;
-  isDesktop: boolean;
+  isDesktop?: boolean;
 }
 
-export function RealizedPnlEventsTab({
-  enableUserFiltering,
-  productId,
-  defaultFilter,
-  isDesktop,
-}: Props) {
+export function RealizedPnlEventsTab({ productId, isDesktop }: Props) {
   const { selectedFilter } =
     useSelectedFilterByTradingTableTabSetting<RealizedPnlEventsFilterOptionID>({
       tradingTableTab: 'realizedPnlEvents',
@@ -57,11 +51,20 @@ export function RealizedPnlEventsTab({
     }
   }, [selectedFilter, productId]);
 
+  if (isDesktop) {
+    return (
+      <PaginatedRealizedPnlEventsTable
+        marketFilter={userFilter}
+        pageSize={10}
+      />
+    );
+  }
+
   return (
-    <PaginatedRealizedPnlEventsTable
-      marketFilter={enableUserFiltering ? userFilter : defaultFilter}
-      pageSize={isDesktop ? 10 : 5}
-      showPagination={!isDesktop}
+    <MobileTradingTabRealizedPnlEvents
+      marketFilter={userFilter}
+      // If there's no `productId` we're currently on a spot market and ignore user filtering.
+      tradingTabFilters={productId ? realizedPnlEventsTableFilters : undefined}
     />
   );
 }

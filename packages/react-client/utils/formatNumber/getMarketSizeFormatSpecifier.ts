@@ -25,5 +25,5 @@ export function getMarketSizeFormatSpecifier(
   );
 
   // precisionFixed has a minimum of 0, so precisionFixed(10) = 0
-  return `.${precisionFixed(decimalAdjustedSizeIncrement).toFixed()}f`;
+  return `,.${precisionFixed(decimalAdjustedSizeIncrement).toFixed()}f`;
 }

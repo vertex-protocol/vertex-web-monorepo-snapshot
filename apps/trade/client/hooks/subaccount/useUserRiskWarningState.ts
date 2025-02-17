@@ -1,4 +1,4 @@
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { useUserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { getLiquidationRiskLevel } from 'client/utils/getLiquidationRiskLevel';
 
@@ -7,14 +7,18 @@ export type UserRiskWarningState =
   | 'no_funds_available';
 
 export function useUserRiskWarningState(): UserRiskWarningState | undefined {
-  const { data: overview } = useDerivedSubaccountOverview();
+  const { data: overview } = useSubaccountOverview();
   const userStateError = useUserStateError();
 
   const riskLevel = getLiquidationRiskLevel(
     overview?.liquidationRiskFractionBounded,
   );
 
-  if (userStateError === 'not_connected') {
+  // No subaccount case
+  if (
+    userStateError === 'not_connected' ||
+    userStateError === 'requires_initial_deposit'
+  ) {
     return undefined;
   }
 

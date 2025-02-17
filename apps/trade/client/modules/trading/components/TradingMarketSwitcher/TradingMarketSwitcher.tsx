@@ -1,7 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
-import { MarketCategory } from '@vertex-protocol/metadata';
+import { MarketCategory } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Card, SearchBar, Z_INDEX } from '@vertex-protocol/web-ui';
+import { DropdownUi, SearchBar } from '@vertex-protocol/web-ui';
 import { MarketCategoryFilter } from 'client/components/MarketCategoryFilter/MarketCategoryFilter';
 import { useIsMobile } from 'client/hooks/ui/breakpoints';
 import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
@@ -54,13 +54,12 @@ export function TradingMarketSwitcher({
       />
       <Popover.Content
         // Render it flush against the trigger on mobile to save some room.
-        className={Z_INDEX.pagePopover}
         sideOffset={isMobile ? 0 : 6}
         asChild
       >
-        <Card
+        <DropdownUi.Content
           className={joinClassNames(
-            'flex flex-col gap-y-3 overflow-y-auto px-1 py-2 shadow-xl shadow-black',
+            'bg-surface-card p-1 shadow-xl shadow-black',
             // See: https://www.radix-ui.com/primitives/docs/components/popover
             // Subtracting "8px" from available height to have a little padding from the screen's edge
             'h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popover-trigger-width)]',
@@ -98,7 +97,7 @@ export function TradingMarketSwitcher({
               setIsMarketSwitcherOpen(false);
             }}
           />
-        </Card>
+        </DropdownUi.Content>
       </Popover.Content>
     </Popover.Root>
   );

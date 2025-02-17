@@ -1,13 +1,14 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import {
+  BaseDialog,
+  BaseDialogProps,
+  BaseDialogTitleProps,
   IconButton,
   Icons,
   SecondaryButton,
-  BaseDialog,
-  BaseDialogTitleProps,
-  BaseDialogProps,
 } from '@vertex-protocol/web-ui';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { ReactNode } from 'react';
 
 interface DialogContainerProps
   extends Omit<BaseDialogProps, 'open' | 'onOpenChange'> {
@@ -33,7 +34,7 @@ function DialogContainer({ children, onClose, ...rest }: DialogContainerProps) {
 }
 
 interface DialogTitleProps extends BaseDialogTitleProps {
-  endElement?: React.ReactNode;
+  endElement?: ReactNode;
   onClose?: () => void;
 }
 

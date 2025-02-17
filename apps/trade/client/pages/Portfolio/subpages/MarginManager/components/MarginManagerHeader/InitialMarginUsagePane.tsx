@@ -5,7 +5,7 @@ import {
 } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
-import { RiskWarningIcon } from 'client/components/Icons/RiskWarningIcon';
+import { UserRiskWarningIcon } from 'client/components/Icons/UserRiskWarningIcon';
 import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
 import { MarginManagerHeaderInfo } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerHeader/MarginManagerHeaderInfo';
 
@@ -56,7 +56,10 @@ function InitialMarginUsageWarning() {
 
   return (
     <div className="flex items-center justify-start gap-x-4 px-4 text-xs lg:px-6">
-      <RiskWarningIcon size="lg" userRiskWarningState="no_funds_available" />
+      <UserRiskWarningIcon
+        size="lg"
+        userRiskWarningState="no_funds_available"
+      />
       You&apos;ve run out of initial margin / funds available. You cannot
       initiate new positions or withdraw collateral. Deposit more collateral or
       close existing positions to trade.

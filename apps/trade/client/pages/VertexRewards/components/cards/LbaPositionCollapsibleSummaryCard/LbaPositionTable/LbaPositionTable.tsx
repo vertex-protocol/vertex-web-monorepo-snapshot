@@ -17,7 +17,7 @@ import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import {
   useVertexMetadataContext,
   VRTX_TOKEN_INFO,
-} from '@vertex-protocol/metadata';
+} from '@vertex-protocol/react-client';
 import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { LbaPositionActionCell } from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/LbaPositionTable/LbaPositionActionCell';

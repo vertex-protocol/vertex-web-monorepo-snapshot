@@ -1,10 +1,13 @@
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/client';
+import {
+  PresetNumberFormatSpecifier,
+  signDependentValue,
+} from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import BigDecimal from 'bignumber.js';
+
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { FundingChartSelect } from 'client/modules/trading/chart/funding/FundingChartSelect';
 import { FundingRateTimespan } from 'client/utils/calcs/funding';
-import { signDependentValue } from 'client/utils/signDependentValue';
 
 interface Props extends WithClassnames {
   timespan: FundingRateTimespan;

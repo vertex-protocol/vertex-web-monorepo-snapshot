@@ -9,26 +9,26 @@ import {
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
-import { toast } from 'react-hot-toast';
+import { Toast, toast } from 'react-hot-toast';
 
 export async function handleBridgeDepositNotificationDispatch(
   {
     amount,
     sourceChainName,
     sourceTokenSymbol,
-    txResponsePromise,
+    txHashPromise,
   }: BridgeDepositNotificationData,
-  { getConfirmedTxPromise }: NotificationDispatchContext,
+  { getConfirmedTx }: NotificationDispatchContext,
 ) {
   const toastId = createToastId('bridgeDeposit');
 
   const [txReceiptData, txReceiptError] = await asyncResult(
-    getConfirmedTxPromise(txResponsePromise),
+    getConfirmedTx(txHashPromise),
   );
 
   if (txReceiptData) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <BridgeDepositSuccessNotification
             txHash={txReceiptData.hash}
@@ -50,7 +50,7 @@ export async function handleBridgeDepositNotificationDispatch(
     );
   } else if (!isUserDeniedError(txReceiptError)) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <ActionErrorNotification
             title="Cross-Chain Deposit Failed"

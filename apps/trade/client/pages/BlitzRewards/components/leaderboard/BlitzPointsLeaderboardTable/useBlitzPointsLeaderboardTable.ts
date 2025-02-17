@@ -4,12 +4,12 @@ import {
   IndexerBlitzPointsLeaderboardPosition,
 } from '@vertex-protocol/client';
 import { NextImageSrc } from '@vertex-protocol/web-common';
-import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import firstPlacePentagon from 'client/assets/leaderboard/first-place-pentagon.svg';
 import secondPlacePentagon from 'client/assets/leaderboard/second-place-pentagon.svg';
 import thirdPlacePentagon from 'client/assets/leaderboard/third-place-pentagon.svg';
-import { useMemo } from 'react';
+import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { usePaginatedBlitzPointsLeaderboard } from 'client/hooks/query/points/useBlitzPointsLeaderboard';
+import { useMemo } from 'react';
 
 export interface BlitzPointsLeaderboardTableItem {
   rankingData: {
@@ -17,6 +17,7 @@ export interface BlitzPointsLeaderboardTableItem {
     iconSrc: NextImageSrc | undefined;
   };
   address: string;
+  totalVolume: BigDecimal;
   totalBlitzPoints: BigDecimal;
 }
 
@@ -85,6 +86,7 @@ export function useBlitzPointsLeaderboardTable({ epoch }: Params) {
             iconSrc,
           },
           address: position.address,
+          totalVolume: position.takerVolume.plus(position.makerVolume),
           totalBlitzPoints: position.referralPoints.plus(
             position.tradingPoints,
           ),

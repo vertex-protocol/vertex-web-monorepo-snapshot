@@ -62,7 +62,7 @@ function Base({
  * If `valueContent` is provided, return the `Value` component with the provided content. Formatting of the content is to be supplied by the consumer.
  *
  * Else, format the `value` with `numberFormatSpecifier` and return a `ValueWithChange` component which internally wraps the content with `Value`.
- * If `newValue` is provided, the `ValueWithChange` component will render the change arrow alongside the `newValueContent`.
+ * If `newValue` is not `undefined`, the `ValueWithChange` component will render the change arrow alongside the `newValueContent`.
  */
 function ValueContent({
   sizeVariant = 'base',
@@ -96,7 +96,8 @@ function ValueContent({
   } = unionProps;
 
   const newValueContent = (() => {
-    if (newValue == null) {
+    // Allow null values to be formatted as `-`, only `undefined` values are ignored
+    if (newValue === undefined) {
       return;
     }
 
@@ -128,7 +129,11 @@ function Horizontal({
 }: HorizontalValueWithLabelProps) {
   return (
     <Base
-      className={mergeClassNames(!fitWidth && 'justify-between', className)}
+      className={mergeClassNames(
+        'items-center',
+        !fitWidth && 'justify-between',
+        className,
+      )}
       {...rest}
     />
   );

@@ -1,7 +1,8 @@
+import {
+  LatestMarketPrice,
+  useAllMarketsLatestPrices,
+} from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { QueryState } from 'client/types/QueryState';
-
-import { LatestMarketPrice } from 'client/hooks/query/markets/types';
-import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 
 interface Params {
   productId?: number;

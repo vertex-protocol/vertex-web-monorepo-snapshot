@@ -10,7 +10,7 @@ import {
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
-import toast from 'react-hot-toast';
+import toast, { Toast } from 'react-hot-toast';
 
 export async function handleCancelOrderNotificationDispatch(
   cancelOrderNotificationData: CancelOrderNotificationData,
@@ -21,7 +21,7 @@ export async function handleCancelOrderNotificationDispatch(
 
   if (!context.isSingleSignature) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <SignaturePendingNotification
             action="cancel_order"
@@ -43,7 +43,7 @@ export async function handleCancelOrderNotificationDispatch(
 
   if (!serverStatusError) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <CancelOrderSuccessNotification
             data={cancelOrderParams}
@@ -59,7 +59,7 @@ export async function handleCancelOrderNotificationDispatch(
     );
   } else if (!isUserDeniedError(serverStatusError)) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <CancelOrderErrorNotification
             ttl={DEFAULT_TOAST_TTL}

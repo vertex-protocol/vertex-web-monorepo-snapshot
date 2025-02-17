@@ -51,7 +51,7 @@ export function HistoricalSettlementsTable() {
           ),
           enableSorting: false,
           meta: {
-            cellContainerClassName: 'w-32',
+            cellContainerClassName: 'w-40',
           },
         }),
         columnHelper.accessor('settlementQuoteAmount', {

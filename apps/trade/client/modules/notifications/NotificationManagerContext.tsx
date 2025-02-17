@@ -1,5 +1,5 @@
 import { DispatchNotificationParams } from 'client/modules/notifications/types';
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 export type NotificationManagerContextData = {
   dispatchNotification(params: DispatchNotificationParams): void;
@@ -11,4 +11,4 @@ export const NotificationManagerContext =
   );
 
 export const useNotificationManagerContext = () =>
-  useContext(NotificationManagerContext);
+  use(NotificationManagerContext);

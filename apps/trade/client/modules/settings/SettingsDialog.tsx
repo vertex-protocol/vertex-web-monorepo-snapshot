@@ -3,6 +3,7 @@ import { useIsMobile } from 'client/hooks/ui/breakpoints';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { OneClickTradingSettingsEntrypoint } from 'client/modules/settings/components/OneClickTradingSettingsEntrypoint';
+import { OrderDefaultMarginMode } from 'client/modules/settings/components/OrderDefaultMarginMode';
 import { OrderLinesToggle } from 'client/modules/settings/components/OrderLinesToggle';
 import { OrderNotificationsToggle } from 'client/modules/settings/components/OrderNotificationsToggle';
 import { OrderSlippageForm } from 'client/modules/settings/components/OrderSlippageForm/OrderSlippageForm';
@@ -27,6 +28,7 @@ export function SettingsDialog() {
           </>
         )}
         <Divider />
+        <OrderDefaultMarginMode />
         <OrderSlippageForm forms={orderSlippageForms} />
         <Divider />
         <OneClickTradingSettingsEntrypoint />

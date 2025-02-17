@@ -1,16 +1,10 @@
-import {
-  CustomNumberFormatSpecifier,
-  formatNumber,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
+import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import {
   ButtonHelperInfo,
   CompactInput,
-  GradientPill,
+  Divider,
   LinkButton,
-  Value,
 } from '@vertex-protocol/web-ui';
-import { ActionSummary } from 'client/components/ActionSummary';
 import { UserDisclosureDismissibleCard } from 'client/components/Disclosure/UserDisclosureDismissibleCard';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
@@ -20,11 +14,10 @@ import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialo
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
-import { useStakeVrtxAmountErrorTooltipContent } from 'client/modules/rewards/dialogs/staking/hooks/useStakeVrtxAmountErrorTooltipContent';
-import { STAKING_BONUS_FRACTION } from 'client/modules/staking/dialogs/StakeV2VrtxDialog/consts';
 import { StakeV2VrtxSubmitButton } from 'client/modules/staking/dialogs/StakeV2VrtxDialog/StakeV2VrtxSubmitButton';
 import { StakeV2VrtxSummary } from 'client/modules/staking/dialogs/StakeV2VrtxDialog/StakeV2VrtxSummary';
 import { useStakeV2VrtxDialog } from 'client/modules/staking/dialogs/StakeV2VrtxDialog/useStakeV2VrtxDialog';
+import { useStakeVrtxAmountErrorTooltipContent } from 'client/modules/staking/dialogs/useStakeVrtxAmountErrorTooltipContent';
 import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import Link from 'next/link';
 
@@ -36,7 +29,6 @@ export function StakeV2VrtxDialog() {
     validPercentageAmount,
     validAmount,
     estimatedStakeValueUsd,
-    migrationBonusPeriodAmount,
     protocolTokenSymbol,
     protocolTokenIcon,
     protocolTokenProductId,
@@ -127,7 +119,6 @@ export function StakeV2VrtxDialog() {
               formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
               currentValue={vrtxWalletBalance}
               onValueClick={onMaxAmountSelected}
-              definitionTooltipId="stakingVrtxInWallet"
             />
           </div>
           <FractionAmountButtons
@@ -135,28 +126,9 @@ export function StakeV2VrtxDialog() {
             selectedFraction={validPercentageAmount}
             className="pt-0.5"
           />
-          <div className="flex items-center justify-between">
-            <GradientPill className="uppercase">
-              Limited time staking bonus
-            </GradientPill>
-            <Value
-              sizeVariant="xs"
-              endElement={
-                !!migrationBonusPeriodAmount &&
-                `${formatNumber(migrationBonusPeriodAmount, {
-                  formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
-                })} ${protocolTokenSymbol}`
-              }
-            >
-              {formatNumber(STAKING_BONUS_FRACTION, {
-                formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-              })}
-            </Value>
-          </div>
-          <ActionSummary.Container>
-            <StakeV2VrtxSummary validAmount={validAmount} />
-            <StakeV2VrtxSubmitButton state={buttonState} />
-          </ActionSummary.Container>
+          <Divider />
+          <StakeV2VrtxSummary validAmount={validAmount} />
+          <StakeV2VrtxSubmitButton state={buttonState} />
           {buttonState === 'approve_idle' && (
             <ButtonHelperInfo.Content>
               Approval for {protocolTokenSymbol} is required. You will need to

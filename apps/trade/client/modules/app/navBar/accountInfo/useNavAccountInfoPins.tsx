@@ -1,7 +1,12 @@
+import {
+  CustomNumberFormatSpecifier,
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { TimeInSeconds } from '@vertex-protocol/utils';
-import { RiskWarningIcon } from 'client/components/Icons/RiskWarningIcon';
+import { UserRiskWarningIcon } from 'client/components/Icons/UserRiskWarningIcon';
 import { LiquidationRiskBar } from 'client/components/LiquidationRiskBar';
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { useSubaccountTimespanMetrics } from 'client/hooks/subaccount/useSubaccountTimespanMetrics';
 import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
 import {
@@ -9,13 +14,8 @@ import {
   NavAccountPinID,
 } from 'client/modules/localstorage/userSettings/types/navAccountPins';
 import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
-import {
-  CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
 import { getLiquidationRiskLevelClassNames } from 'client/utils/getLiquidationRiskLevelClassNames';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import { ReactNode, useCallback, useMemo } from 'react';
 
 const MAX_NUM_PINS = 3;
@@ -37,7 +37,7 @@ export interface UseNavAccountInfoPins {
 }
 
 export function useNavAccountInfoPins(): UseNavAccountInfoPins {
-  const { data: derivedOverview } = useDerivedSubaccountOverview();
+  const { data: subaccountOverview } = useSubaccountOverview();
   const { savedUserSettings, setSavedUserSettings } = useSavedUserSettings();
   const { data: timespanMetrics } = useSubaccountTimespanMetrics(
     TimeInSeconds.DAY,
@@ -84,7 +84,7 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
         localStorageId: 'accountValue',
         label: 'Acct. Value',
         isPinned: getIsPinned('accountValue'),
-        value: formatNumber(derivedOverview?.portfolioValueUsd, {
+        value: formatNumber(subaccountOverview?.portfolioValueUsd, {
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         }),
       },
@@ -108,11 +108,11 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
         localStorageId: 'perpPnl',
         label: 'Open Perps PnL',
         isPinned: getIsPinned('perpPnl'),
-        value: formatNumber(derivedOverview?.perp.totalUnrealizedPnlUsd, {
+        value: formatNumber(subaccountOverview?.perp.totalUnrealizedPnlUsd, {
           formatSpecifier: CustomNumberFormatSpecifier.SIGNED_CURRENCY_2DP,
         }),
         valueClassName: signDependentValue(
-          derivedOverview?.perp.totalUnrealizedPnlUsd,
+          subaccountOverview?.perp.totalUnrealizedPnlUsd,
           {
             positive: 'text-positive',
             negative: 'text-negative',
@@ -122,9 +122,9 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
       },
       {
         localStorageId: 'assets',
-        label: 'Assets',
+        label: 'Deposits',
         isPinned: getIsPinned('assets'),
-        value: formatNumber(derivedOverview?.spot.totalDepositsValueUsd, {
+        value: formatNumber(subaccountOverview?.spot.totalDepositsValueUsd, {
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         }),
       },
@@ -132,7 +132,7 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
         localStorageId: 'borrows',
         label: 'Borrows',
         isPinned: getIsPinned('borrows'),
-        value: formatNumber(derivedOverview?.spot.totalBorrowsValueUsd, {
+        value: formatNumber(subaccountOverview?.spot.totalBorrowsValueUsd, {
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         }),
       },
@@ -140,18 +140,18 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
         localStorageId: 'lpPositions',
         label: 'LP Positions',
         isPinned: getIsPinned('lpPositions'),
-        value: formatNumber(derivedOverview?.lp.totalValueUsd, {
+        value: formatNumber(subaccountOverview?.lp.totalValueUsd, {
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         }),
       },
     ];
   }, [
     getIsPinned,
-    derivedOverview?.portfolioValueUsd,
-    derivedOverview?.perp.totalUnrealizedPnlUsd,
-    derivedOverview?.spot.totalDepositsValueUsd,
-    derivedOverview?.spot.totalBorrowsValueUsd,
-    derivedOverview?.lp.totalValueUsd,
+    subaccountOverview?.portfolioValueUsd,
+    subaccountOverview?.perp.totalUnrealizedPnlUsd,
+    subaccountOverview?.spot.totalDepositsValueUsd,
+    subaccountOverview?.spot.totalBorrowsValueUsd,
+    subaccountOverview?.lp.totalValueUsd,
     timespanMetrics?.deltas.cumulativeAccountPnlUsd,
   ]);
 
@@ -161,7 +161,7 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
         localStorageId: 'marginUsage',
         label: 'Margin Usage',
         isPinned: getIsPinned('marginUsage'),
-        value: formatNumber(derivedOverview?.marginUsageFractionBounded, {
+        value: formatNumber(subaccountOverview?.marginUsageFractionBounded, {
           formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         }),
       },
@@ -172,12 +172,12 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
         value: (
           <div className="flex items-center gap-x-1">
             {userRiskWarningState === 'no_funds_available' ? (
-              <RiskWarningIcon
+              <UserRiskWarningIcon
                 size="sm"
                 userRiskWarningState="no_funds_available"
               />
             ) : null}
-            {formatNumber(derivedOverview?.fundsAvailableBounded, {
+            {formatNumber(subaccountOverview?.fundsAvailableBounded, {
               formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
             })}
           </div>
@@ -186,8 +186,8 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
     ];
   }, [
     getIsPinned,
-    derivedOverview?.fundsAvailableBounded,
-    derivedOverview?.marginUsageFractionBounded,
+    subaccountOverview?.fundsAvailableBounded,
+    subaccountOverview?.marginUsageFractionBounded,
     userRiskWarningState,
   ]);
 
@@ -197,7 +197,7 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
         localStorageId: 'leverage',
         label: 'Acct. Leverage',
         isPinned: getIsPinned('leverage'),
-        value: `${formatNumber(derivedOverview?.accountLeverage, {
+        value: `${formatNumber(subaccountOverview?.accountLeverage, {
           formatSpecifier: PresetNumberFormatSpecifier.NUMBER_1DP,
         })}x`,
       },
@@ -205,7 +205,7 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
         localStorageId: 'fundsUntilLiquidation',
         label: 'Funds Until Liq.',
         isPinned: getIsPinned('fundsUntilLiquidation'),
-        value: formatNumber(derivedOverview?.fundsUntilLiquidationBounded, {
+        value: formatNumber(subaccountOverview?.fundsUntilLiquidationBounded, {
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         }),
       },
@@ -217,25 +217,25 @@ export function useNavAccountInfoPins(): UseNavAccountInfoPins {
           <div className="flex items-center gap-x-1">
             <LiquidationRiskBar
               liquidationRiskFraction={
-                derivedOverview?.liquidationRiskFractionBounded
+                subaccountOverview?.liquidationRiskFractionBounded
               }
               className="w-7"
             />
-            {formatNumber(derivedOverview?.liquidationRiskFractionBounded, {
+            {formatNumber(subaccountOverview?.liquidationRiskFractionBounded, {
               formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
             })}
           </div>
         ),
         valueClassName: getLiquidationRiskLevelClassNames(
-          derivedOverview?.liquidationRiskFractionBounded,
+          subaccountOverview?.liquidationRiskFractionBounded,
         ).text,
       },
     ];
   }, [
     getIsPinned,
-    derivedOverview?.accountLeverage,
-    derivedOverview?.fundsUntilLiquidationBounded,
-    derivedOverview?.liquidationRiskFractionBounded,
+    subaccountOverview?.accountLeverage,
+    subaccountOverview?.fundsUntilLiquidationBounded,
+    subaccountOverview?.liquidationRiskFractionBounded,
   ]);
 
   const pinSections: Array<NavAccountInfoPinItem[]> = useMemo(() => {

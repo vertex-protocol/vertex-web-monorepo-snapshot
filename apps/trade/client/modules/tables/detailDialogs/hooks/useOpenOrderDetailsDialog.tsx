@@ -1,7 +1,7 @@
 import { BigDecimal, ProductEngineType } from '@vertex-protocol/client';
 import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
 import { useExecuteCancelOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrdersWithNotification';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useCanUserExecute } from 'client/hooks/subaccount/useCanUserExecute';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -26,7 +26,7 @@ export function useOpenOrderDetailsDialog({
   marketInfo,
   orderType,
 }: Params) {
-  const userActionState = useUserActionState();
+  const canUserExecute = useCanUserExecute();
   const { cancelOrdersWithNotification, status } =
     useExecuteCancelOrdersWithNotification();
   const { productType } = marketInfo;
@@ -40,8 +40,7 @@ export function useOpenOrderDetailsDialog({
   });
 
   const isCancelling = status === 'pending';
-  // Users should be able to cancel orders even if a deposit is required
-  const disableCancelOrder = userActionState === 'block_all' || isCancelling;
+  const disableCancelOrder = !canUserExecute || isCancelling;
 
   const isPerp = productType === ProductEngineType.PERP;
 
@@ -56,7 +55,7 @@ export function useOpenOrderDetailsDialog({
           isTrigger,
           productId,
           digest,
-          totalAmount,
+          decimalAdjustedTotalAmount: totalAmount,
           orderType,
         },
       ],

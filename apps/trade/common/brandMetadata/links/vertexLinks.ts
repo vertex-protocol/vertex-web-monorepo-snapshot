@@ -1,21 +1,49 @@
 export const VERTEX_SPECIFIC_LINKS = {
-  benjiTradingCompetitionDocs:
-    'https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-base/basenji-trading-competition',
+  abstractDiscover: 'https://www.abs.xyz/discover',
+  aerodomePool:
+    'https://aerodrome.finance/deposit?token0=0x4200000000000000000000000000000000000006&token1=0xFB0c734Fc3008683c5efF45bcf8128836C4D97D0&type=-1',
   blitzApp: 'https://app.blitz.exchange',
   blitzTestnetApp: 'https://testnet.blitz.exchange',
-  electionTokensDocs: 'https://docs.vertexprotocol.com/basics/election-markets',
   fuulReferralsDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/referral-program-new',
   rewardsDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/trade-and-earn-rewards-program',
-  seiTradingCompetitionDocs:
-    'https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-sei/trading-competition-series',
+  seiSeason6RewardsDocs: `https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-sei/trading-rewards#sei-season-6-trading-rewards`,
+  sonicApp: 'https://www.soniclabs.com/',
+  sonicGemsDocs:
+    'https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-sonic/trading-rewards',
   stakeVrtxDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/the-vertex-lba/stake-vrtx',
-  degenRewardsDetails:
-    'https://x.com/vertex_protocol/status/1852017998019858698',
+  transporterBridge: 'https://app.transporter.io/?token=VRTX',
   vestingScheduleGraphic: '/rewards/lba-vesting-schedule.png',
+  vrtxExchanges: {
+    bybit: 'https://www.bybit.com/en/trade/spot/VRTX/USDT',
+    traderJoe:
+      'https://lfj.gg/arbitrum/trade?outputCurrency=0x95146881b86b3ee99e63705ec87afe29fcc044d9',
+    kucoin: 'https://www.kucoin.com/trade/VRTX-USDT',
+    camelot:
+      'https://info.camelot.exchange/pair/arbitrum-one/v3/0x3cf4cb6ce8cf3b147e6c444cf66526f5f0c16b92',
+    mexc: 'https://www.mexc.com/exchange/VRTX_USDT',
+    htx: 'https://www.htx.com/trade/vrtx_usdt',
+  },
+  vrtxExplorers: {
+    arbiscan:
+      'https://arbiscan.io/token/0x95146881b86b3ee99e63705ec87afe29fcc044d9',
+    etherscan:
+      'https://etherscan.io/token/0xbbEE07B3e8121227AfCFe1E2B82772246226128e',
+    basescan:
+      'https://basescan.org/address/0xFB0c734Fc3008683c5efF45bcf8128836C4D97D0',
+    blastScan:
+      'https://blastscan.io/address/0x6CD20f11470e9C9d1458a69c8f7B330B99577EF9',
+  },
+  vrtxInfo: {
+    coinMarketCap: 'https://coinmarketcap.com/currencies/vertex-protocol/',
+    coinGecko: 'https://www.coingecko.com/en/coins/vertex-2',
+  },
+  vrtxTradingCompetitionDocs:
+    'https://docs.vertexprotocol.com/more/trading-competitions',
   wrapSei: 'https://dragonswap.app/swap',
+  wrapSonic: 'https://app.magpiefi.xyz/swap/sonic/S/sonic/wS',
 };
 
 export const VERTEX_COMMON_LINKS = {
@@ -40,11 +68,9 @@ export const VERTEX_COMMON_LINKS = {
     'https://docs.vertexprotocol.com/basics/perpetual-and-spot-market-specifications',
   referralDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/referrals',
-  spotTradingLearnMore:
-    'https://docs.vertexprotocol.com/tutorials/spot#_nwt65ltode4j',
+  spotTradingLearnMore: 'https://docs.vertexprotocol.com/tutorials/spot',
   spreadDocs:
     'https://docs.vertexprotocol.com/basics/subaccounts-isolated-margin-and-health#special-cases-spreads-lps-and-large-positions',
-  stats: 'https://stats.vertexprotocol.com',
   termsOfUse: 'https://vertexprotocol.com/docs/TermsOfUse.pdf',
   tpslDocs: 'https://docs.vertexprotocol.com/tutorials/tp-sl-and-stop-market',
   tutorials: 'https://docs.vertexprotocol.com/tutorials/quick-start',

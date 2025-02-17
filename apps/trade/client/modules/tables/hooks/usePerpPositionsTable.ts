@@ -3,35 +3,41 @@ import { ProductEngineType } from '@vertex-protocol/contracts';
 import {
   getMarketPriceFormatSpecifier,
   getMarketSizeFormatSpecifier,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
-import {
-  PerpPositionItem,
-  usePerpPositions,
-} from 'client/hooks/subaccount/usePerpPositions';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import { useReduceOnlyTriggerOrders } from 'client/hooks/subaccount/useReduceOnlyTriggerOrders';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { useMemo } from 'react';
 
-export interface PerpPositionsTableItem extends PerpPositionItem {
+export interface PerpPositionsTableItem {
+  productId: number;
+  isoSubaccountName: string | undefined;
   marketInfo: MarketInfoCellData;
   amountInfo: {
     symbol: string;
-    position: BigDecimal;
+    amount: BigDecimal;
     notionalValueUsd: BigDecimal;
   };
-  netFunding: BigDecimal;
-  marginUsedUsd: BigDecimal;
+  netFunding: BigDecimal | undefined;
+  margin: {
+    crossMarginUsedUsd: BigDecimal | undefined;
+    isoMarginUsedUsd: BigDecimal | undefined;
+    isoLeverage: number | undefined;
+    marginModeType: MarginModeType;
+  };
   pnlInfo: {
-    estimatedPnlUsd: BigDecimal;
-    estimatedPnlFrac: BigDecimal;
+    estimatedPnlUsd: BigDecimal | undefined;
+    estimatedPnlFrac: BigDecimal | undefined;
   };
   estimatedLiquidationPrice: BigDecimal | null;
-  averageEntryPrice: BigDecimal;
+  averageEntryPrice: BigDecimal | undefined;
   oraclePrice: BigDecimal;
   reduceOnlyOrders: {
     takeProfitTriggerPrice: BigDecimal | undefined;
@@ -45,12 +51,13 @@ interface Params {
   marketFilter?: MarketFilter;
 }
 
-export const usePerpPositionsTable = ({ marketFilter }: Params) => {
+export function usePerpPositionsTable({ marketFilter }: Params) {
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const {
     primaryQuoteToken: { symbol: primaryQuoteSymbol },
   } = useVertexMetadataContext();
   const { data: reduceOnlyOrdersData } = useReduceOnlyTriggerOrders();
-  const { data: perpBalances, ...rest } = usePerpPositions();
+  const { data: perpBalances, isLoading } = usePerpPositions();
   const { filteredProductIds } = useFilteredMarkets(marketFilter);
   const { data: staticMarketsData } = useAllMarketsStaticData();
 
@@ -67,13 +74,18 @@ export const usePerpPositionsTable = ({ marketFilter }: Params) => {
       .map((position): PerpPositionsTableItem => {
         const staticMarketData = staticMarketsData?.perp[position.productId];
         const reduceOnlyOrders = reduceOnlyOrdersData?.[position?.productId];
+        const tpSlOrders = !!position.iso
+          ? reduceOnlyOrders?.iso
+          : reduceOnlyOrders?.cross;
 
         const takeProfitTriggerPrice =
-          reduceOnlyOrders?.takeProfitOrder?.order.triggerCriteria.triggerPrice;
+          tpSlOrders?.takeProfitOrder?.order.triggerCriteria.triggerPrice;
         const stopLossTriggerPrice =
-          reduceOnlyOrders?.stopLossOrder?.order.triggerCriteria.triggerPrice;
+          tpSlOrders?.stopLossOrder?.order.triggerCriteria.triggerPrice;
 
         return {
+          productId: position.productId,
+          isoSubaccountName: position.iso?.subaccountName,
           marketInfo: {
             ...position.metadata,
             // Perps are always quoted in the primary quote token
@@ -87,7 +99,7 @@ export const usePerpPositionsTable = ({ marketFilter }: Params) => {
           },
           amountInfo: {
             symbol: position.metadata.symbol,
-            position: position.amount,
+            amount: position.amount,
             notionalValueUsd: position.notionalValueUsd,
           },
           pnlInfo: {
@@ -110,12 +122,21 @@ export const usePerpPositionsTable = ({ marketFilter }: Params) => {
           priceFormatSpecifier: getMarketPriceFormatSpecifier(
             staticMarketData?.priceIncrement,
           ),
-          ...position,
+          netFunding: position.netFunding,
+          estimatedLiquidationPrice: position.estimatedLiquidationPrice,
+          margin: {
+            crossMarginUsedUsd: position.crossMarginUsedUsd,
+            isoLeverage: position.iso?.leverage,
+            isoMarginUsedUsd:
+              position.iso?.netMargin.multipliedBy(primaryQuotePriceUsd),
+            marginModeType: !!position.iso ? 'isolated' : 'cross',
+          },
         };
       });
   }, [
     filteredProductIds,
     perpBalances,
+    primaryQuotePriceUsd,
     primaryQuoteSymbol,
     reduceOnlyOrdersData,
     staticMarketsData?.perp,
@@ -123,6 +144,6 @@ export const usePerpPositionsTable = ({ marketFilter }: Params) => {
 
   return {
     positions: mappedData,
-    ...rest,
+    isLoading,
   };
-};
+}

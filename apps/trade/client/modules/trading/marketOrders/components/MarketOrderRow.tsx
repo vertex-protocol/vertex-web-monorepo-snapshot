@@ -9,8 +9,8 @@ import { Button, Icons } from '@vertex-protocol/web-ui';
 import { useShouldFlash } from 'client/hooks/ui/useShouldFlash';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
-import { range } from 'lodash';
-import React from 'react';
+import { clamp, range } from 'lodash';
+import { memo } from 'react';
 
 interface ContainerProps extends WithClassnames, WithChildren {
   onClick: () => void;
@@ -38,8 +38,13 @@ function Container({
       return;
     }
 
-    return isSell ? 'bg-negative/20' : 'bg-positive/20';
+    return isSell ? 'bg-negative/30' : 'bg-positive/30';
   })();
+  const highlightWidthPercentage = clamp(
+    highlightWidthFraction.times(100).toNumber(),
+    0,
+    100,
+  );
 
   return (
     <DefinitionTooltip
@@ -51,10 +56,10 @@ function Container({
       <Button
         onClick={onClick}
         className={mergeClassNames(
-          'group relative flex gap-x-1',
+          'group relative flex gap-x-1 transition-colors duration-150',
           'px-4 py-0.5 lg:py-0',
           'text-2xs text-text-secondary',
-          isSell ? 'hover:bg-negative/5' : 'hover:bg-positive/5',
+          isSell ? 'hover:bg-negative/30' : 'hover:bg-positive/30',
           flashClassName,
           className,
         )}
@@ -62,10 +67,10 @@ function Container({
         <div
           className={joinClassNames(
             'absolute inset-0',
-            isSell ? 'bg-negative/10' : 'bg-positive/10',
+            isSell ? 'bg-negative/20' : 'bg-positive/20',
           )}
           style={{
-            width: `${highlightWidthFraction.times(100).toFixed()}%`,
+            width: `${highlightWidthPercentage.toFixed()}%`,
           }}
         />
         {children}
@@ -120,5 +125,5 @@ const Skeleton = ({
 export const MarketOrderRow = {
   Container,
   Item,
-  Skeleton: React.memo(Skeleton),
+  Skeleton: memo(Skeleton),
 };

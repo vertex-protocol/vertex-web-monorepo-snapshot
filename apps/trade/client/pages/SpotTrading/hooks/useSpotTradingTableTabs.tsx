@@ -2,7 +2,7 @@ import {
   HistoricalTradesTab,
   historicalTradesTableFilters,
 } from 'client/modules/trading/components/HistoricalTradesTab';
-import { MobileTradeTab } from 'client/modules/trading/components/MobileTradeTab';
+import { MobileTradingTabTrade } from 'client/modules/trading/components/MobileTradingTab/MobileTradingTabTrade';
 import {
   OpenEngineOrdersTab,
   openEngineOrdersTableFilters,
@@ -19,14 +19,7 @@ import {
   SpotBalancesTab,
 } from 'client/pages/SpotTrading/components/SpotBalancesTab';
 import { SpotOrderPlacementSection } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/SpotOrderPlacementSection';
-import { MarketFilter } from 'client/types/MarketFilter';
 import { useMemo } from 'react';
-
-const SHOW_ALL_FILTER = undefined;
-
-const PERP_ONLY_FILTER: MarketFilter = {
-  marketCategory: 'perp',
-};
 
 export function useSpotTradingTableTabs(productId: number | undefined) {
   const mobileTradingTabs = useMemo((): TradingTab[] => {
@@ -35,19 +28,15 @@ export function useSpotTradingTableTabs(productId: number | undefined) {
         id: 'trade',
         label: 'Trade',
         content: (
-          <MobileTradeTab OrderPlacementSection={SpotOrderPlacementSection} />
+          <MobileTradingTabTrade
+            OrderPlacementSection={SpotOrderPlacementSection}
+          />
         ),
       },
       {
         id: 'balances',
         label: 'Balances',
-        content: (
-          <SpotBalancesTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            productId={productId}
-          />
-        ),
+        content: <SpotBalancesTab productId={productId} />,
       },
       {
         id: 'positions',
@@ -55,8 +44,6 @@ export function useSpotTradingTableTabs(productId: number | undefined) {
         countIndicatorKey: 'numPerpPositions',
         content: (
           <PerpPositionsTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
             // productId is undefined because perp positions are not relevant to spot markets. We show all perp positions instead.
             productId={undefined}
           />
@@ -66,48 +53,25 @@ export function useSpotTradingTableTabs(productId: number | undefined) {
         id: 'engine_orders',
         label: 'Limit Orders',
         countIndicatorKey: 'numOpenEngineOrders',
-        content: (
-          <OpenEngineOrdersTab
-            isDesktop={false}
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            productId={productId}
-          />
-        ),
+        content: <OpenEngineOrdersTab productId={productId} />,
       },
       {
         id: 'trigger_orders',
         label: 'Trigger Orders',
         countIndicatorKey: 'numOpenTriggerOrders',
-        content: (
-          <OpenTriggerOrdersTab
-            isDesktop={false}
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            productId={productId}
-          />
-        ),
+        content: <OpenTriggerOrdersTab productId={productId} />,
       },
       {
         id: 'history',
         label: 'History',
-        content: (
-          <HistoricalTradesTab
-            isDesktop={false}
-            defaultFilter={SHOW_ALL_FILTER}
-            enableUserFiltering={false}
-            productId={productId}
-          />
-        ),
+        content: <HistoricalTradesTab productId={productId} />,
       },
       {
         id: 'realized_pnl',
         label: 'Realized PnL',
         content: (
           <RealizedPnlEventsTab
-            isDesktop={false}
-            enableUserFiltering={false}
-            defaultFilter={PERP_ONLY_FILTER}
+            // productId is set to undefined because realized pnl events are not relevant to spot markets. We show all perp pnl events instead.
             productId={undefined}
           />
         ),
@@ -120,13 +84,7 @@ export function useSpotTradingTableTabs(productId: number | undefined) {
       {
         id: 'balances',
         label: 'Balances',
-        content: (
-          <SpotBalancesTab
-            defaultFilter={SHOW_ALL_FILTER}
-            enableUserFiltering
-            productId={productId}
-          />
-        ),
+        content: <SpotBalancesTab productId={productId} isDesktop />,
         filters: balancesTableFilters,
       },
       {
@@ -135,9 +93,9 @@ export function useSpotTradingTableTabs(productId: number | undefined) {
         countIndicatorKey: 'numPerpPositions',
         content: (
           <PerpPositionsTab
-            enableUserFiltering={false}
-            defaultFilter={SHOW_ALL_FILTER}
+            // productId is undefined because perp positions are not relevant to spot markets. We show all perp positions instead.
             productId={undefined}
+            isDesktop
           />
         ),
       },
@@ -145,41 +103,20 @@ export function useSpotTradingTableTabs(productId: number | undefined) {
         id: 'engine_orders',
         label: 'Limit Orders',
         countIndicatorKey: 'numOpenEngineOrders',
-        content: (
-          <OpenEngineOrdersTab
-            defaultFilter={SHOW_ALL_FILTER}
-            isDesktop
-            enableUserFiltering
-            productId={productId}
-          />
-        ),
+        content: <OpenEngineOrdersTab productId={productId} isDesktop />,
         filters: openEngineOrdersTableFilters,
       },
       {
         id: 'trigger_orders',
         label: 'Trigger Orders',
         countIndicatorKey: 'numOpenTriggerOrders',
-        content: (
-          <OpenTriggerOrdersTab
-            defaultFilter={SHOW_ALL_FILTER}
-            isDesktop
-            enableUserFiltering
-            productId={productId}
-          />
-        ),
+        content: <OpenTriggerOrdersTab productId={productId} isDesktop />,
         filters: openTriggerOrdersTableFilters,
       },
       {
         id: 'history',
         label: 'History',
-        content: (
-          <HistoricalTradesTab
-            defaultFilter={SHOW_ALL_FILTER}
-            enableUserFiltering
-            isDesktop
-            productId={productId}
-          />
-        ),
+        content: <HistoricalTradesTab productId={productId} isDesktop />,
         filters: historicalTradesTableFilters,
       },
       {
@@ -187,8 +124,6 @@ export function useSpotTradingTableTabs(productId: number | undefined) {
         label: 'Realized PnL',
         content: (
           <RealizedPnlEventsTab
-            enableUserFiltering={false}
-            defaultFilter={PERP_ONLY_FILTER}
             // productId is set to undefined because realized pnl events are not relevant to spot markets. We show all perp pnl events instead.
             productId={undefined}
             isDesktop

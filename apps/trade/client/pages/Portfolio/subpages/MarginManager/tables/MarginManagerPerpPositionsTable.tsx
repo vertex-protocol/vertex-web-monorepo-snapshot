@@ -2,28 +2,28 @@
 
 import { createColumnHelper } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import {
-  PresetNumberFormatSpecifier,
   getMarketSizeFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
-import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
+import { DataTable } from 'client/components/DataTable/DataTable';
 import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { PnlCell } from 'client/modules/tables/cells/PnlCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 import { CalculatorIconHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/CalculatorIconHeaderCell';
 import { MarginWeightCell } from 'client/pages/Portfolio/subpages/MarginManager/tables/cells/MarginWeightCell';
@@ -185,6 +185,8 @@ export function MarginManagerPerpPositionsTable({ className }: WithClassnames) {
                       type: 'close_position',
                       params: {
                         productId,
+                        // Margin manager only shows cross positions
+                        isoSubaccountName: undefined,
                       },
                     });
                   })}

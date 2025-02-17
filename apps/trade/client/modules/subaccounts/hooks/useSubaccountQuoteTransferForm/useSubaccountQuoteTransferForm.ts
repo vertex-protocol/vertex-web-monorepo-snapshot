@@ -1,5 +1,6 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
+import { Token } from '@vertex-protocol/react-client';
 import {
   addDecimals,
   BigDecimal,
@@ -12,7 +13,7 @@ import {
   safeParseForData,
 } from '@vertex-protocol/web-common';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { Subaccount } from 'client/context/subaccount/types';
+import { AppSubaccount } from 'client/context/subaccount/types';
 import { useExecuteSubaccountQuoteTransfer } from 'client/hooks/execute/useExecuteSubaccountQuoteTransfer';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
 import {
@@ -29,17 +30,16 @@ import {
   SubaccountQuoteTransferErrorType,
   SubaccountQuoteTransferFormValues,
 } from 'client/modules/subaccounts/hooks/useSubaccountQuoteTransferForm/types';
+import { useSubaccountQuoteTransferAmountValidator } from 'client/modules/subaccounts/hooks/useSubaccountQuoteTransferForm/useSubaccountQuoteTransferAmountValidator';
 import {
   QuoteTransferSubaccount,
   useSubaccountQuoteTransferFormData,
 } from 'client/modules/subaccounts/hooks/useSubaccountQuoteTransferForm/useSubaccountQuoteTransferFormData';
 import { useSubaccountQuoteTransferFormSubmitHandler } from 'client/modules/subaccounts/hooks/useSubaccountQuoteTransferForm/useSubaccountQuoteTransferFormSubmitHandler';
-import { useSubaccountQuoteTransferValidateAmount } from 'client/modules/subaccounts/hooks/useSubaccountQuoteTransferForm/useSubaccountQuoteTransferValidateAmount';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { Token } from '@vertex-protocol/metadata';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 
 export interface UseSubaccountQuoteTransferForm {
@@ -50,12 +50,13 @@ export interface UseSubaccountQuoteTransferForm {
   validateAmount: InputValidatorFn<string, SubaccountQuoteTransferErrorType>;
   validPercentageAmount?: number;
   onFractionSelected: OnFractionSelectedHandler;
+  onEnableBorrowsChange: (enabled: boolean) => void;
   enableBorrows: boolean;
   decimalAdjustedMaxWithdrawableWithFee: BigDecimal | undefined;
   subaccounts: QuoteTransferSubaccount[];
   senderSubaccount: QuoteTransferSubaccount;
   recipientSubaccount: QuoteTransferSubaccount;
-  currentSubaccount: Subaccount;
+  currentSubaccount: AppSubaccount;
   primaryQuoteToken: Token;
   senderEstimateStateTxs: SubaccountTx[];
   recipientEstimateStateTxs: SubaccountTx[];
@@ -130,7 +131,7 @@ export function useSubaccountQuoteTransferForm({
   const { mutateAsync, isPending, isSuccess, reset } =
     useExecuteSubaccountQuoteTransfer();
 
-  const validateAmount = useSubaccountQuoteTransferValidateAmount({
+  const validateAmount = useSubaccountQuoteTransferAmountValidator({
     maxAmount: decimalAdjustedMaxWithdrawableWithFee,
   });
 
@@ -232,6 +233,13 @@ export function useSubaccountQuoteTransferForm({
     setValue: useSubaccountQuoteTransferForm.setValue,
   });
 
+  const onEnableBorrowsChange = useCallback(
+    (enabled: boolean) => {
+      useSubaccountQuoteTransferForm.setValue('enableBorrows', enabled);
+    },
+    [useSubaccountQuoteTransferForm],
+  );
+
   const onSubmitForm = useSubaccountQuoteTransferFormSubmitHandler({
     mutateQuoteTransferAsync: mutateAsync,
     senderSigningPreference,
@@ -259,6 +267,7 @@ export function useSubaccountQuoteTransferForm({
     senderQuoteBalanceDelta,
     recipientQuoteBalanceDelta,
     buttonState,
+    onEnableBorrowsChange,
     onSubmit: useSubaccountQuoteTransferForm.handleSubmit(onSubmitForm),
   };
 }

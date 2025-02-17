@@ -3,11 +3,12 @@ import {
   HANDLED_BUTTON_USER_STATE_ERRORS,
   useButtonUserStateErrorProps,
 } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { useIsSmartContractWalletConnected } from 'client/hooks/util/useIsSmartContractWalletConnected';
 import { RememberMeSwitch } from 'client/modules/singleSignatureSessions/components/RememberMeSwitch';
 import { SignatureModeEnable1CTSubmitButton } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeEnable1CTDialogContent/SignatureModeEnable1CTSubmitButton';
 import { SignatureModeUserStateErrorCard } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeEnable1CTDialogContent/SignatureModeUserStateErrorCard';
 import { useSignatureModeEnable1CTDialogContent } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeEnable1CTDialogContent/useSignatureModeEnable1CTDialogContent';
-import { SignatureModeSlowModeEntrypoint } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeEntrypoint';
+import { SignatureModeInfo } from 'client/modules/singleSignatureSessions/components/SignatureModeSettingsDialog/SignatureModeInfo';
 
 interface Props {
   onEnableSuccess(): void;
@@ -28,6 +29,7 @@ export function SignatureModeEnable1CTDialogContent({
   } = useSignatureModeEnable1CTDialogContent({
     onEnableSuccess,
   });
+  const isSmartContractWalletConnected = useIsSmartContractWalletConnected();
 
   const userStateErrorButtonProps = useButtonUserStateErrorProps({
     handledErrors: HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain,
@@ -53,7 +55,8 @@ export function SignatureModeEnable1CTDialogContent({
         </div>
         {requiresSingleSignatureSetup && (
           <TextButton
-            className="text-text-tertiary text-center"
+            colorVariant="tertiary"
+            className="text-center"
             onClick={skipSignOnceSuggestion}
           >
             Sign every transaction instead
@@ -65,16 +68,16 @@ export function SignatureModeEnable1CTDialogContent({
 
   return (
     <>
-      <div className="text-text-tertiary flex flex-col gap-y-2">
-        <p>
-          Enjoy a seamless trading experience with 1-Click Trading. Sign one
-          approval transaction at the start of your trading session and you
-          won&apos;t need to sign again.
-        </p>
-        <SignatureModeSlowModeEntrypoint />
-      </div>
-      <SignatureModeUserStateErrorCard userStateError={userStateError} />
-      {actionContent}
+      <SignatureModeInfo
+        isSmartContractWalletConnected={isSmartContractWalletConnected}
+      />
+      {/*Only show the setup content if the user is using a normal wallet, otherwise, divert their attention to the slow mode settings in SignatureModeInfo*/}
+      {!isSmartContractWalletConnected && (
+        <>
+          <SignatureModeUserStateErrorCard userStateError={userStateError} />
+          {actionContent}
+        </>
+      )}
     </>
   );
 }

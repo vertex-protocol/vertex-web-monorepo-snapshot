@@ -2,16 +2,16 @@ import { SignatureModeSlowModeSettingsFormErrorType } from 'client/modules/singl
 import { useMemo } from 'react';
 
 export function useSlowModeSettingsPrivateKeyErrorTooltipContent({
-  formError,
+  error,
 }: {
-  formError: SignatureModeSlowModeSettingsFormErrorType | undefined;
+  error: SignatureModeSlowModeSettingsFormErrorType | undefined;
 }) {
   return useMemo(() => {
-    switch (formError) {
+    switch (error) {
       case 'invalid_private_key':
         return 'Please enter a valid private key beginning with "0x".';
       default:
         return null;
     }
-  }, [formError]);
+  }, [error]);
 }

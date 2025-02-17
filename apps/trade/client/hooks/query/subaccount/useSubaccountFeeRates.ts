@@ -6,7 +6,7 @@ import {
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { ZeroAddress } from 'ethers';
+import { zeroAddress } from 'viem';
 
 export function subaccountFeeRatesQueryKey(
   chainEnv?: ChainEnv,
@@ -34,7 +34,7 @@ export function useSubaccountFeeRates() {
       }
       // Fetch fee rates even when there's no subaccount for a set of "default" fees
       return vertexClient.subaccount.getSubaccountFeeRates({
-        subaccountOwner: currentSubaccount.address ?? ZeroAddress,
+        subaccountOwner: currentSubaccount.address ?? zeroAddress,
         subaccountName: currentSubaccount.name ?? '',
       });
     },

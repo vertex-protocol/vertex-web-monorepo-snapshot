@@ -43,7 +43,7 @@ export function MarketOrderRows<TRow extends RowIdentifiable>({
         className,
       )}
       isReversed={reverseRows}
-      shadowSize={14}
+      shadowSize={4}
     >
       {content}
     </ScrollShadowsContainer>

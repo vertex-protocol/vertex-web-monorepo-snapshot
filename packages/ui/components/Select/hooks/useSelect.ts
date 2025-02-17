@@ -1,28 +1,36 @@
-import { UseSelect, UseSelectParams } from './types';
+import { SelectValue, UseSelect, UseSelectParams } from './types';
 import { useCallback, useMemo, useState } from 'react';
 
 /**
  * Utility hook for Radix controlled select components. Allows for options with arbitrary values, as long as they have
- * a string ID field. Mapping to & from the selected option is done internally to this hook. Also controls the open state
+ * a ID field. Mapping to & from the selected option is done internally to this hook. Also controls the open state
  */
-export function useSelect<TIdentifier extends string, TValue>({
+export function useSelect<TValue extends SelectValue>({
   defaultOpen,
   onSelectedValueChange,
   selectedValue,
   options,
-}: UseSelectParams<TIdentifier, TValue>): UseSelect<TIdentifier, TValue> {
+}: UseSelectParams<TValue>): UseSelect<TValue> {
   const [open, setOpen] = useState(!!defaultOpen);
 
   // Get currently selected option.
-  const selectedOption = useMemo(
-    () => options.find((option) => option.value === selectedValue),
-    [options, selectedValue],
-  );
+  const selectedOption = useMemo(() => {
+    if (selectedValue == null) {
+      return;
+    }
+
+    return options.find(
+      (option) =>
+        getSelectValueId(option.value) === getSelectValueId(selectedValue),
+    );
+  }, [options, selectedValue]);
 
   // Pass newly selected value to onValueChange.
   const onValueChange = useCallback(
-    (newId: TIdentifier) => {
-      const newOption = options.find((option) => option.id === newId);
+    (newId: string) => {
+      const newOption = options.find(
+        (option) => getSelectValueId(option.value) === newId,
+      );
 
       if (newOption == null) {
         return;
@@ -38,7 +46,7 @@ export function useSelect<TIdentifier extends string, TValue>({
       return {
         label: option.label,
         // Radix expects a string value
-        value: option.id,
+        value: getSelectValueId(option.value),
         original: option.value,
       };
     });
@@ -47,9 +55,13 @@ export function useSelect<TIdentifier extends string, TValue>({
   return {
     open,
     onValueChange,
-    value: selectedOption?.id,
+    value: selectedOption ? getSelectValueId(selectedOption.value) : undefined,
     onOpenChange: setOpen,
     selectOptions,
     selectedOption,
   };
+}
+
+function getSelectValueId<TValue extends SelectValue>(value: TValue) {
+  return (typeof value === 'object' ? value.selectId : value).toString();
 }

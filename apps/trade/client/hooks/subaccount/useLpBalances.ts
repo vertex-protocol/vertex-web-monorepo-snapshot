@@ -4,6 +4,10 @@ import {
   ProductEngineType,
 } from '@vertex-protocol/contracts';
 import {
+  PerpProductMetadata,
+  SpotProductMetadata,
+} from '@vertex-protocol/react-client';
+import {
   createQueryKey,
   QueryDisabledError,
 } from '@vertex-protocol/react-client';
@@ -12,17 +16,15 @@ import {
   BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { AppSubaccount } from 'client/context/subaccount/types';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import {
   calcLpBalanceHealth,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
 import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
-import {
-  PerpProductMetadata,
-  SpotProductMetadata,
-} from '@vertex-protocol/metadata';
 
 type LpUnderlyingProduct =
   | {
@@ -56,8 +58,11 @@ interface UseLpBalances {
   isError?: boolean;
 }
 
-function lpBalancesQueryKey(lastUpdated: number) {
-  return createQueryKey('lpBalances', lastUpdated);
+function lpBalancesQueryKey(
+  subaccount: AppSubaccount,
+  subaccountSummaryLastUpdated: number,
+) {
+  return createQueryKey('lpBalances', subaccount, subaccountSummaryLastUpdated);
 }
 
 /**
@@ -66,6 +71,8 @@ function lpBalancesQueryKey(lastUpdated: number) {
  * Note: Also includes balances where the pool is disabled (when quote for the market isn't product ID of 0)
  */
 export function useLpBalances(): UseLpBalances {
+  const { currentSubaccount } = useSubaccountContext();
+
   const {
     data: summaryData,
     isError: summaryError,
@@ -130,11 +137,12 @@ export function useLpBalances(): UseLpBalances {
   };
 
   const { data: mappedData } = useQuery({
-    queryKey: lpBalancesQueryKey(dataUpdatedAt),
+    queryKey: lpBalancesQueryKey(currentSubaccount, dataUpdatedAt),
     queryFn,
     placeholderData: keepPreviousData,
     enabled: !disabled,
     gcTime: REACT_QUERY_CONFIG.computeQueryGcTime,
+    staleTime: REACT_QUERY_CONFIG.computedQueryStaleTime,
   });
 
   return {

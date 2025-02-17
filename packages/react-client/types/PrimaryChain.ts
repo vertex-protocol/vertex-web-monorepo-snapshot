@@ -1,16 +1,20 @@
+import { sonic, sonicTestnet } from '@vertex-protocol/react-client';
 import {
+  abstract,
+  abstractTestnet,
   arbitrum,
   arbitrumSepolia,
+  base,
+  baseSepolia,
+  berachainTestnet,
   blast,
   blastSepolia,
   hardhat,
   localhost,
   mantle,
   mantleSepoliaTestnet,
-  seiTestnet,
   sei,
-  baseSepolia,
-  base,
+  seiTestnet,
 } from 'wagmi/chains';
 
 export const PRIMARY_CHAINS = [
@@ -26,6 +30,11 @@ export const PRIMARY_CHAINS = [
   sei,
   baseSepolia,
   base,
+  sonicTestnet,
+  sonic,
+  berachainTestnet,
+  abstractTestnet,
+  abstract,
 ] as const;
 
 export const PRIMARY_CHAIN_IDS = PRIMARY_CHAINS.map((chain) => chain.id);

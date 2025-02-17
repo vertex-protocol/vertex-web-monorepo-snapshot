@@ -1,4 +1,3 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   Label,
   Select,
@@ -10,7 +9,7 @@ import {
 interface Props {
   productId: number | undefined;
   setProductId: (value: number) => void;
-  productOptions: SelectOption<string, number>[];
+  productOptions: SelectOption<number>[];
 }
 
 export function ProductSelect({
@@ -27,12 +26,9 @@ export function ProductSelect({
     onOpenChange,
   } = useSelect({
     selectedValue: productId,
-    onSelectedValueChange: (option) => setProductId(option),
+    onSelectedValueChange: setProductId,
     options: productOptions,
   });
-
-  // min-w used to prevent layout shifts. It's shared between trigger and options to keep them aligned.
-  const sharedClassNames = 'min-w-32';
 
   return (
     <Select.Root
@@ -44,7 +40,8 @@ export function ProductSelect({
       <div className="flex flex-col gap-y-1">
         <Label>Market</Label>
         <Select.Trigger
-          className={sharedClassNames}
+          // min-w is used to prevent layout shifts.
+          className="min-w-32"
           endIcon={<UpDownChevronIcon open={open} />}
         >
           {selectedOption?.label ?? 'Select'}
@@ -53,7 +50,7 @@ export function ProductSelect({
 
       <Select.Options
         // max-h to make it scrollable and prevent going off screen
-        className={joinClassNames(sharedClassNames, 'max-h-80')}
+        className="max-h-80"
       >
         {selectOptions.map(({ label, value }) => (
           <Select.Option key={value} value={value}>

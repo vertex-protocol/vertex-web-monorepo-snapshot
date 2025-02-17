@@ -1,8 +1,6 @@
-// We can't use Image element from nextjs here. It won't generate images properly.
-/* eslint-disable @next/next/no-img-element */
+import { signDependentValue } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames, NextImageSrc } from '@vertex-protocol/web-common';
-import { signDependentValue } from 'client/utils/signDependentValue';
 import Image from 'next/image';
 
 interface Props {
@@ -24,7 +22,7 @@ export function SocialSharingMarketInfo({
         <Image
           onLoad={onLoad}
           src={iconSrc}
-          className="size-3"
+          className="h-3 w-auto"
           alt="Asset Icon"
         />
         {marketName}

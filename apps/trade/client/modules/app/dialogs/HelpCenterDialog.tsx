@@ -19,12 +19,12 @@ const FAQ_LINKS = {
     description: 'How to use the app',
     icon: Icons.NavigationArrowFill,
   },
-  discord: {
-    href: LINKS.discord,
+  zenDesk: {
+    href: LINKS.zenDesk,
     external: true,
     title: 'Get Help',
-    description: 'Ask questions in Discord',
-    icon: Icons.DiscordLogo,
+    description: 'Ask questions via our Helpdesk',
+    icon: Icons.Question,
   },
 } as const;
 

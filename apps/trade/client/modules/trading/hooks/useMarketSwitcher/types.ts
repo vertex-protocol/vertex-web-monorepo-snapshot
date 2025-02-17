@@ -1,6 +1,6 @@
 import { BigDecimal, ProductEngineType } from '@vertex-protocol/client';
-import { TokenIconMetadata } from '@vertex-protocol/metadata';
-import { MarketCategory } from '@vertex-protocol/metadata';
+import { TokenIconMetadata } from '@vertex-protocol/react-client';
+import { MarketCategory } from '@vertex-protocol/react-client';
 
 export interface MarketSwitcherItem {
   market: {

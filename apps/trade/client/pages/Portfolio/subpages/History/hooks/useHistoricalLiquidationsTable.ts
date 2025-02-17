@@ -6,6 +6,7 @@ import {
   GetIndexerSubaccountLiquidationEventsResponse,
   IndexerLiquidationEvent,
 } from '@vertex-protocol/indexer-client';
+import { SharedProductMetadata, Token } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
   getMarketPriceFormatSpecifier,
@@ -14,22 +15,22 @@ import {
 } from '@vertex-protocol/react-client';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import {
-  AllMarketsStaticData,
-  useAllMarketsStaticData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+import { AllMarketsStaticDataForChainEnv } from 'client/hooks/markets/marketsStaticData/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedLiquidationEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedLiquidationEvents';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { SharedProductMetadata, Token } from '@vertex-protocol/metadata';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
-export type HistoricalLiquidatedBalanceType = 'spot' | 'perp' | 'lp';
+export type HistoricalLiquidatedBalanceType =
+  | 'spot'
+  | 'perp_cross'
+  | 'perp_isolated'
+  | 'lp';
 
 export interface HistoricalLiquidatedBalance {
-  type: ProductEngineType;
   sharedMetadata: SharedProductMetadata;
   oraclePrice: BigDecimal;
   priceFormatSpecifier: NumberFormatSpecifier | string;
@@ -39,6 +40,7 @@ export interface HistoricalLiquidatedBalance {
   // Decimal adjusted
   amountLiquidated: BigDecimal;
   liquidatedValueUsd: BigDecimal;
+  liquidatedBalanceType: HistoricalLiquidatedBalanceType;
 }
 
 export interface HistoricalLiquidationDecomposedLp {
@@ -142,7 +144,7 @@ export function useHistoricalLiquidationsTable() {
 
 interface GetHistoricalLiquidationsTableItemParams {
   event: IndexerLiquidationEvent;
-  allMarketsStaticData: AllMarketsStaticData;
+  allMarketsStaticData: AllMarketsStaticDataForChainEnv;
   primaryQuotePriceUsd: BigDecimal;
 }
 
@@ -241,7 +243,7 @@ export function getHistoricalLiquidationsTableItem({
       liquidatedValueUsd: amountLiquidated
         .multipliedBy(oraclePrice)
         .multipliedBy(primaryQuotePriceUsd),
-      type: ProductEngineType.SPOT,
+      liquidatedBalanceType: 'spot',
       sharedMetadata: getSharedProductMetadata(marketMetadata),
     };
     liquidatedBalanceTypes.add('spot');
@@ -267,6 +269,10 @@ export function getHistoricalLiquidationsTableItem({
       indexerEventMarket.sizeIncrement,
     );
 
+    const liquidatedBalanceType = perp.indexerEvent.isolated
+      ? 'perp_isolated'
+      : 'perp_cross';
+
     perpLiquidation = {
       oraclePrice,
       priceFormatSpecifier: getMarketPriceFormatSpecifier(
@@ -278,10 +284,11 @@ export function getHistoricalLiquidationsTableItem({
       liquidatedValueUsd: amountLiquidated
         .multipliedBy(oraclePrice)
         .multipliedBy(primaryQuotePriceUsd),
-      type: ProductEngineType.PERP,
+      liquidatedBalanceType,
       sharedMetadata: getSharedProductMetadata(marketMetadata),
     };
-    liquidatedBalanceTypes.add('perp');
+
+    liquidatedBalanceTypes.add(liquidatedBalanceType);
   }
 
   // For quote payment, also bundle in vQuoteDelta changes as a result of perp liquidations

@@ -1,6 +1,5 @@
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useEVMContext } from '@vertex-protocol/react-client';
-import { NextImageSrc } from '@vertex-protocol/web-common';
-import { CHAIN_ICON_BY_CHAIN } from 'client/assets/chains/chainIcons';
 import { UserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { AccountCenterSubaccountSwitcher } from 'client/modules/accountCenter/components/AccountCenterHeader/AccountCenterSubaccountSwitcher';
 import { ActionButtons } from 'client/modules/accountCenter/components/AccountCenterHeader/ActionButtons';
@@ -16,13 +15,10 @@ interface Props {
 
 export function AccountCenterHeader({ userStateError }: Props) {
   const { push } = useDialog();
-  const { connectionStatus, chainStatus } = useEVMContext();
+  const { primaryChainMetadata } = useVertexMetadataContext();
+  const { connectionStatus, primaryChainEnv } = useEVMContext();
   const [isAddressPrivate, setIsAddressPrivate] =
     usePrivacySetting('isAddressPrivate');
-
-  const chainIconSrc: NextImageSrc | undefined = chainStatus.connectedChain
-    ? CHAIN_ICON_BY_CHAIN[chainStatus.connectedChain.id]
-    : undefined;
 
   return (
     <div className="flex items-center justify-between gap-x-2">
@@ -31,13 +27,11 @@ export function AccountCenterHeader({ userStateError }: Props) {
         <div className="relative">
           <AccountCenterWalletIcon userStateError={userStateError} size={30} />
           <div className="absolute -bottom-1 -right-1">
-            {chainIconSrc && (
-              <Image
-                alt={chainStatus.connectedChain?.name ?? ''}
-                src={chainIconSrc}
-                className="h-3.5 w-auto"
-              />
-            )}
+            <Image
+              alt={primaryChainEnv}
+              src={primaryChainMetadata.chainIcon}
+              className="h-3.5 w-auto"
+            />
           </div>
         </div>
         {/*Address & edit profile*/}
@@ -47,7 +41,7 @@ export function AccountCenterHeader({ userStateError }: Props) {
             connectionStatus={connectionStatus}
             setIsAddressPrivate={setIsAddressPrivate}
           />
-          <AccountCenterSubaccountSwitcher className="w-28" />
+          <AccountCenterSubaccountSwitcher triggerClassName="w-28" />
         </div>
       </div>
       <ActionButtons

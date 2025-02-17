@@ -3,7 +3,7 @@ import {
   NumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 
@@ -12,6 +12,7 @@ export interface InputSummaryItemProps extends WithClassnames {
   definitionTooltipId?: DefinitionTooltipID;
   formatSpecifier: NumberFormatSpecifier | string;
   currentValue?: BigDecimal;
+  valueClassName?: string;
   // Callback when clicking on value, commonly used to set max amount.
   onValueClick?: () => void;
 }
@@ -20,6 +21,7 @@ export function InputSummaryItem({
   label,
   currentValue,
   definitionTooltipId,
+  valueClassName,
   formatSpecifier,
   onValueClick,
   className,
@@ -27,11 +29,12 @@ export function InputSummaryItem({
   const isValueClickable = !!currentValue && !!onValueClick;
   const valueContent = (
     <span
-      className={joinClassNames(
+      className={mergeClassNames(
         'text-text-secondary',
         isValueClickable
           ? 'hover:text-text-primary cursor-pointer transition-colors'
           : '',
+        valueClassName,
       )}
       onClick={onValueClick}
     >

@@ -1,16 +1,14 @@
 import { WalletWidget } from '@passkeys/react';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { SecondaryButton } from '@vertex-protocol/web-ui';
+import { KNOWN_CONNECTOR_IDS, PresetNumberFormatSpecifier, useEVMContext, } from '@vertex-protocol/react-client';
+import { Card, SecondaryButton } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
-import { useEVMContext } from '@vertex-protocol/react-client';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DepositOptionsDropdown } from 'client/modules/collateral/deposit/components/DepositOptionsDropdown/DepositOptionsDropdown';
 import { IMAGES } from 'common/brandMetadata/images';
 import { COLORS } from 'common/theme/colors';
 import Image from 'next/image';
-import { KNOWN_CONNECTOR_IDS } from 'client/consts/knownConnectorIds';
 
 /**
  * Card with portfolio value and collateral buttons
@@ -18,7 +16,7 @@ import { KNOWN_CONNECTOR_IDS } from 'client/consts/knownConnectorIds';
 export function AccountCenterPortfolioCard() {
   const { push } = useDialog();
 
-  const { data: derivedSubaccountOverview } = useDerivedSubaccountOverview();
+  const { data: subaccountOverview } = useSubaccountOverview();
   const {
     connectionStatus: { connector },
   } = useEVMContext();
@@ -26,11 +24,20 @@ export function AccountCenterPortfolioCard() {
   const isConnected = useIsConnected();
 
   return (
-    <div className="border-stroke relative flex flex-col gap-y-4 overflow-hidden rounded-lg border p-4">
-      <div className="flex justify-between">
+    <Card className="bg-background relative flex flex-col gap-y-4 overflow-hidden border-4 p-4">
+      <Image
+        src={IMAGES.brandBg}
+        alt=""
+        fill
+        sizes="95vw"
+        className="object-cover"
+        priority
+      />
+      {/*isolate needed here to display content over the bg image*/}
+      <div className="isolate flex justify-between">
         <ValueWithLabel.Vertical
           label="Account Value"
-          value={derivedSubaccountOverview?.portfolioValueUsd}
+          value={subaccountOverview?.portfolioValueUsd}
           numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
           sizeVariant="lg"
         />
@@ -80,13 +87,6 @@ export function AccountCenterPortfolioCard() {
           Transfer
         </SecondaryButton>
       </div>
-      <Image
-        src={IMAGES.brandBg}
-        alt=""
-        fill
-        className="-z-10 object-cover"
-        priority
-      />
-    </div>
+    </Card>
   );
 }

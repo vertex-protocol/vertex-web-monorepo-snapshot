@@ -1,3 +1,4 @@
+import { BLAST_CHAIN_ENVS } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { DesktopEarnPopover } from 'client/modules/app/navBar/earn/DesktopEarnPopover';
@@ -6,9 +7,9 @@ import { DesktopMoreLinksPopover } from 'client/modules/app/navBar/moreLinks/Des
 import { MobileMoreLinksCollapsible } from 'client/modules/app/navBar/moreLinks/MobileMoreLinksCollapsible';
 import { DesktopNavMarketSwitcher } from 'client/modules/app/navBar/trade/DesktopNavMarketSwitcher/DesktopNavMarketSwitcher';
 import { MobileNavTradeCollapsible } from 'client/modules/app/navBar/trade/MobileNavTradeCollapsible';
-import { BLAST_CHAIN_IDS } from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
-import { ReactNode, useMemo } from 'react';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
+import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
+import { ElementType, ReactNode, useMemo } from 'react';
 
 interface BaseAppNavItem {
   id: string;
@@ -28,8 +29,8 @@ export interface AppNavLinkItem extends BaseAppNavItem {
 export interface AppNavCustomItem extends BaseAppNavItem {
   type: 'custom';
   content: {
-    Desktop: React.ElementType;
-    Mobile: React.ElementType<WithClassnames>;
+    Desktop: ElementType;
+    Mobile: ElementType<WithClassnames>;
   };
 }
 
@@ -54,8 +55,11 @@ const BLITZ_NAV_ITEMS: AppNavItem[] = [
 ];
 
 export function useAppNavItems() {
-  const showBlitzNavItems = useIsEnabledForChainIds(BLAST_CHAIN_IDS);
+  const showBlitzNavItems = useIsEnabledForChainEnvs(BLAST_CHAIN_ENVS);
   // const showVertexTradingCompetitionsPopover = useIsEnabledForBrand(['vertex']);
+
+  const { isStakingPageEnabled, isSonicPointsPageEnabled } =
+    useEnabledFeatures();
 
   return useMemo(
     () =>
@@ -90,6 +94,36 @@ export function useAppNavItems() {
             Mobile: MobileEarnCollapsible,
           },
         },
+        ...(isStakingPageEnabled
+          ? [
+              {
+                id: 'staking',
+                type: 'link',
+                href: ROUTES.staking,
+                label: (
+                  <span className="text-vertex-animated-gradient-highlight">
+                    VRTX
+                  </span>
+                ),
+                basePath: ROUTES.staking,
+              },
+            ]
+          : []),
+        ...(isSonicPointsPageEnabled
+          ? [
+              {
+                id: 'gems',
+                type: 'link',
+                href: ROUTES.gems,
+                label: (
+                  <span className="text-sonic-animated-gradient-highlight">
+                    Sonic Gems
+                  </span>
+                ),
+                basePath: ROUTES.gems,
+              },
+            ]
+          : []),
         // ...(showVertexTradingCompetitionsPopover
         //   ? [
         //       {
@@ -112,6 +146,6 @@ export function useAppNavItems() {
           },
         },
       ] as AppNavItem[],
-    [showBlitzNavItems],
+    [isStakingPageEnabled, isSonicPointsPageEnabled, showBlitzNavItems],
   );
 }

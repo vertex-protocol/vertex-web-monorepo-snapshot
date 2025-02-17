@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { safeDiv } from 'client/utils/safeDiv';
+import { safeDiv } from '@vertex-protocol/web-common';
 
 /**
  * Oracle prices are in terms of primary quote, but we often want to convert the price to be denominated in terms of the quote for the market.

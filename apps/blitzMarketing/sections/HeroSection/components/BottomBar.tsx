@@ -1,3 +1,5 @@
+'use client';
+
 import { LINKS } from 'config/links';
 import { useGlitchTextOnHover } from 'hooks/useGlitchTextOnHover';
 import Link from 'next/link';

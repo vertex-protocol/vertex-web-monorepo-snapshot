@@ -1,6 +1,6 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,

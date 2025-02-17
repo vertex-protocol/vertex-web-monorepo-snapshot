@@ -22,7 +22,6 @@ export function BlitzCompetitionNavItemButton({ withMobilePadding }: Props) {
       href={ROUTE}
       active={getIsActiveRoute(ROUTE)}
       withMobilePadding={withMobilePadding}
-      className="text-text-primary"
       onClick={() => setOpenMobileNav(false)}
     >
       🏆 Trading Comp

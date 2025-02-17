@@ -1,15 +1,21 @@
 import {
+  getMarketPriceFormatSpecifier,
+  getMarketSizeFormatSpecifier,
+} from '@vertex-protocol/react-client';
+import {
   BigDecimal,
-  toBigDecimal,
   removeDecimals,
+  toBigDecimal,
 } from '@vertex-protocol/utils';
-import { getMarketSizeFormatSpecifier } from '@vertex-protocol/react-client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { CancellableOrderWithNotificationInfo } from 'client/hooks/execute/cancelOrder/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { TriggerOrderType } from 'client/modules/trading/types';
 import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
+import { getIsIsoTriggerOrder } from 'client/modules/trading/utils/isoOrderChecks';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { QueryState } from 'client/types/QueryState';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
@@ -26,8 +32,11 @@ export interface OpenTriggerOrderTableItem {
   totalSize: BigDecimal;
   orderPrice: BigDecimal;
   digest: string;
+  marginModeType: MarginModeType;
   // This can be derived from marketInfo.sizeIncrement, but is pulled here to reduce duplication
   sizeFormatSpecifier: string;
+  priceFormatSpecifier: string;
+  orderForCancellation: CancellableOrderWithNotificationInfo;
 }
 
 export function useOpenTriggerOrdersTable(
@@ -66,6 +75,9 @@ export function useOpenTriggerOrdersTable(
             openTriggerOrder.order.triggerCriteria.triggerPrice,
           );
 
+          const { productId, price, digest } = openTriggerOrder.order;
+          const orderType = getTriggerOrderType(openTriggerOrder);
+
           return {
             timePlacedMillis: secondsToMilliseconds(openTriggerOrder.updatedAt),
             marketInfo: {
@@ -79,16 +91,29 @@ export function useOpenTriggerOrdersTable(
               sizeIncrement: market.sizeIncrement,
               priceIncrement: market.priceIncrement,
             },
-            orderType: getTriggerOrderType(openTriggerOrder),
-            productId: openTriggerOrder.order.productId,
+            orderType,
+            productId,
             triggerPrice,
             totalAmount: decimalAdjustedTotalAmount,
             totalSize: decimalAdjustedTotalAmount.abs(),
-            orderPrice: toBigDecimal(openTriggerOrder.order.price),
-            digest: openTriggerOrder.order.digest,
+            orderPrice: toBigDecimal(price),
+            digest,
+            marginModeType: getIsIsoTriggerOrder(openTriggerOrder)
+              ? 'isolated'
+              : 'cross',
             sizeFormatSpecifier: getMarketSizeFormatSpecifier(
               market.sizeIncrement,
             ),
+            priceFormatSpecifier: getMarketPriceFormatSpecifier(
+              market.priceIncrement,
+            ),
+            orderForCancellation: {
+              productId,
+              digest,
+              decimalAdjustedTotalAmount,
+              isTrigger: true,
+              orderType,
+            },
           };
         },
       );

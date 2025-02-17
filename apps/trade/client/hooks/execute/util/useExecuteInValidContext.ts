@@ -6,7 +6,7 @@ import {
   usePrimaryChainWalletClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { Subaccount } from 'client/context/subaccount/types';
+import { AppSubaccount } from 'client/context/subaccount/types';
 import { Signer } from 'ethers';
 import { useCallback } from 'react';
 
@@ -14,7 +14,7 @@ export interface ValidExecuteContext {
   vertexClient: VertexClient;
   publicClient: NonNullable<ReturnType<typeof usePrimaryChainPublicClient>>;
   walletClient: NonNullable<ReturnType<typeof usePrimaryChainWalletClient>>;
-  subaccount: Required<Subaccount>;
+  subaccount: Required<AppSubaccount>;
   signer: Signer;
 }
 

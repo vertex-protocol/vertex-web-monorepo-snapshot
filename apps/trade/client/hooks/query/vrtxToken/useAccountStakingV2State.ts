@@ -7,8 +7,7 @@ import {
 } from '@vertex-protocol/react-client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import { useProtocolTokenQueryClients } from 'client/hooks/query/useProtocolTokenQueryClients';
-import { ZeroAddress } from 'ethers';
-import { Address } from 'viem';
+import { Address, zeroAddress } from 'viem';
 
 export function accountStakingV2StateQueryKey(address?: string) {
   return createQueryKey('accountStakingV2State', address);
@@ -34,6 +33,7 @@ export interface AccountStakingV2State {
   toDistributeRatio: BigDecimal;
   // Fraction of yield to distribute to treasury as penalty
   toTreasuryRatio: BigDecimal;
+  delegatedTradingWallet: string;
 }
 
 /**
@@ -46,7 +46,7 @@ export function useAccountStakingV2State() {
   const { publicClient, vertexClient } = useProtocolTokenQueryClients();
 
   const disabled = !vertexClient || !publicClient;
-  const addressForQuery = address ?? ZeroAddress;
+  const addressForQuery = address ?? zeroAddress;
 
   const queryFn = async (): Promise<AccountStakingV2State> => {
     if (disabled) {
@@ -73,6 +73,7 @@ export function useAccountStakingV2State() {
         currentStakedAmount,
       },
       { toDistributeRatio, toTreasuryRatio, withdrawLockingTime },
+      delegatedTradingWallet,
     ] = await publicClient.multicall({
       allowFailure: false,
       contracts: [
@@ -96,6 +97,10 @@ export function useAccountStakingV2State() {
           functionName: 'getConfig',
           ...commonMulticallArgs,
         },
+        {
+          functionName: 'getTradingWallet',
+          ...commonMulticallArgs,
+        },
       ],
     });
 
@@ -116,6 +121,7 @@ export function useAccountStakingV2State() {
       toTreasuryRatio: toBigDecimal(toTreasuryRatio),
       unstakedLockPeriodMillis:
         toBigDecimal(withdrawLockingTime).multipliedBy(1000),
+      delegatedTradingWallet,
     };
   };
 
@@ -123,7 +129,7 @@ export function useAccountStakingV2State() {
     queryKey: accountStakingV2StateQueryKey(addressForQuery),
     queryFn,
     enabled: !disabled,
-    refetchInterval: 10000,
+    // Refetch logic should handle query updates
   });
 }
 

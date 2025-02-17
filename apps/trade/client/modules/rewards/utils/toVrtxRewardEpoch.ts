@@ -12,7 +12,7 @@ import {
 import { AccountTokenClaimStateData } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
 
 import { VrtxRewardEpoch } from 'client/modules/rewards/types';
-import { safeDiv } from 'client/utils/safeDiv';
+import { safeDiv } from '@vertex-protocol/web-common';
 import { get } from 'lodash';
 
 interface Params {

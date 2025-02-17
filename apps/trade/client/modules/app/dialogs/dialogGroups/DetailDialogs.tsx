@@ -1,13 +1,13 @@
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { LpBalanceDetailsDialog } from 'client/modules/tables/detailDialogs/LpBalanceDetailsDialog';
 import { LpMarketDetailsDialog } from 'client/modules/tables/detailDialogs/LpMarketDetailsDialog';
+import { MarketDetailsDialog } from 'client/modules/tables/detailDialogs/MarketDetailsDialog';
 import { OpenEngineOrderDetailsDialog } from 'client/modules/tables/detailDialogs/OpenEngineOrderDetailsDialog';
 import { OpenTriggerOrderDetailsDialog } from 'client/modules/tables/detailDialogs/OpenTriggerOrderDetailsDialog';
 import { PerpPositionDetailsDialog } from 'client/modules/tables/detailDialogs/PerpPositionDetailsDialog';
 import { PreLiquidationDetailsDialog } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/PreLiquidationDetailsDialog';
 import { RealizedPnlDetailsDialog } from 'client/modules/tables/detailDialogs/RealizedPnlDetailsDialog';
 import { SpotBalanceDetailsDialog } from 'client/modules/tables/detailDialogs/SpotBalanceDetailsDialog';
-import { MarketDetailsDialog } from 'client/pages/Markets/components/MarketDetailsDialog/MarketDetailsDialog';
 
 /**
  * Typically shown on tablet/mobile when clicking on a table row

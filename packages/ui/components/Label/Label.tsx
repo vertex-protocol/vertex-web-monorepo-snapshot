@@ -1,13 +1,9 @@
-import {
-  mergeClassNames,
-  WithChildren,
-  WithClassnames,
-} from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
+import { mergeClassNames } from '@vertex-protocol/web-common';
+import { ComponentPropsWithRef } from 'react';
 import { SizeVariant } from '../../types';
 import { IconComponent } from '../Icons';
 
-export interface LabelProps extends WithClassnames<WithChildren> {
+export interface LabelProps extends ComponentPropsWithRef<'div'> {
   sizeVariant?: SizeVariant;
   startIcon?: IconComponent;
   endIcon?: IconComponent;
@@ -15,17 +11,15 @@ export interface LabelProps extends WithClassnames<WithChildren> {
   outerClassName?: string;
 }
 
-export const Label = forwardRef<HTMLDivElement, LabelProps>(function Label(
-  {
-    className,
-    children,
-    sizeVariant = 'base',
-    startIcon: StartIcon,
-    endIcon: EndIcon,
-    iconClassName,
-  },
-  ref,
-) {
+export function Label({
+  className,
+  children,
+  sizeVariant = 'base',
+  startIcon: StartIcon,
+  endIcon: EndIcon,
+  iconClassName,
+  ...rest
+}: LabelProps) {
   const textSizeClassNames = {
     xs: 'text-xs',
     sm: 'text-sm',
@@ -40,7 +34,7 @@ export const Label = forwardRef<HTMLDivElement, LabelProps>(function Label(
         textSizeClassNames,
         className,
       )}
-      ref={ref}
+      {...rest}
     >
       {!!StartIcon && (
         <StartIcon className={mergeClassNames('size-4', iconClassName)} />
@@ -51,4 +45,4 @@ export const Label = forwardRef<HTMLDivElement, LabelProps>(function Label(
       )}
     </div>
   );
-});
+}

@@ -1,11 +1,5 @@
 import { ChainEnv } from '@vertex-protocol/client';
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-} from 'react';
+import { createContext, ReactNode, use, useCallback, useMemo } from 'react';
 import { useEVMContext } from '../evm';
 import { useVertexClientsQuery } from './hooks/useVertexClientsQuery';
 import {
@@ -32,7 +26,7 @@ const VertexClientContext = createContext<VertexClientContextData>(
   {} as VertexClientContextData,
 );
 
-export const useVertexClientContext = () => useContext(VertexClientContext);
+export const useVertexClientContext = () => use(VertexClientContext);
 
 export function VertexClientContextProvider({ children }: Props) {
   const {
@@ -63,9 +57,5 @@ export function VertexClientContextProvider({ children }: Props) {
     };
   }, [primaryChainEnv, setLinkedSigner, vertexClientsByChainEnv]);
 
-  return (
-    <VertexClientContext.Provider value={data}>
-      {children}
-    </VertexClientContext.Provider>
-  );
+  return <VertexClientContext value={data}>{children}</VertexClientContext>;
 }

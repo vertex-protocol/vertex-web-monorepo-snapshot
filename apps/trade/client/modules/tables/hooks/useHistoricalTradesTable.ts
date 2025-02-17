@@ -10,12 +10,13 @@ import {
   getMarketSizeFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { removeDecimals, toBigDecimal } from '@vertex-protocol/utils';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import {
   StaticMarketData,
   StaticMarketQuoteData,
-  useAllMarketsStaticData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+} from 'client/hooks/markets/marketsStaticData/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useSubaccountPaginatedHistoricalTrades } from 'client/hooks/query/subaccount/useSubaccountPaginatedHistoricalTrades';
 import { HistoricalTradesTableItem } from 'client/modules/tables/types/HistoricalTradesTableItem';
@@ -23,7 +24,6 @@ import { getOrderType } from 'client/modules/trading/utils/getOrderType';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { calcOrderFillPrice } from 'client/utils/calcs/calcOrderFillPrice';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
@@ -125,7 +125,7 @@ export function getHistoricalTradesTableItem({
   staticMarketData,
   staticQuoteData,
 }: GetHistoricalTradesTableItemParams): HistoricalTradesTableItem {
-  const { timestamp, quoteFilled, baseFilled, totalFee } = event;
+  const { timestamp, quoteFilled, baseFilled, totalFee, isolated } = event;
 
   const { icon, symbol } = getSharedProductMetadata(staticMarketData.metadata);
   const orderType = getOrderType(event);
@@ -159,6 +159,7 @@ export function getHistoricalTradesTableItem({
     filledAmount: filledAmount,
     filledAmountAbs: filledAmount.abs(),
     tradeTotalCost: quoteAmount.abs(),
+    marginModeType: isolated ? 'isolated' : 'cross',
     marketPriceFormatSpecifier: getMarketPriceFormatSpecifier(
       staticMarketData.priceIncrement,
     ),

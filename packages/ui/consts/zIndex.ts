@@ -1,6 +1,6 @@
 export const Z_INDEX = {
   bgHighlights: '-z-10',
-  pagePopover: 'z-10',
+  popover: 'z-10',
   // Should remain larger than `pagePopover`.
   navbar: 'z-40',
   dialogOverlay: 'z-50',

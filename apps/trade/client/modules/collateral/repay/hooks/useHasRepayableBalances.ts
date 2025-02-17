@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { some } from 'lodash';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { ProductEngineType } from '@vertex-protocol/contracts';
 
 export function useHasRepayableBalances() {

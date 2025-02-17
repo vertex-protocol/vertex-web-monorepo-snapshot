@@ -8,6 +8,7 @@ import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
+import { MarginModeTypeCell } from 'client/modules/tables/cells/MarginModeTypeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { PnlCell } from 'client/modules/tables/cells/PnlCell';
@@ -71,6 +72,16 @@ export function HistoricalPnlAccountingTable() {
           enableSorting: false,
           meta: {
             cellContainerClassName: 'w-40',
+          },
+        }),
+        columnHelper.accessor('marginModeType', {
+          header: ({ header }) => <HeaderCell header={header}>Type</HeaderCell>,
+          cell: (context) => (
+            <MarginModeTypeCell marginModeType={context.getValue()} />
+          ),
+          enableSorting: false,
+          meta: {
+            cellContainerClassName: 'w-20',
           },
         }),
         columnHelper.accessor('preEventBalanceAmount', {

@@ -4,7 +4,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { Value, LinkButton } from '@vertex-protocol/web-ui';
+import { LinkButton, Value } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
@@ -48,7 +48,7 @@ export function SkateVaultCard({
       vaultInfoContent={
         <>
           <div className="flex items-end justify-between">
-            <Value endElement="APY" sizeVariant="lg" className="leading-none">
+            <Value endElement="APY" sizeVariant="lg">
               {formatNumber(vaultApy, {
                 formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
               })}

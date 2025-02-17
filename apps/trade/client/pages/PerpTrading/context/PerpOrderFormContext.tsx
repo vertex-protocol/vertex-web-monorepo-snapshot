@@ -1,27 +1,29 @@
-import {
-  BalanceSide,
-  ProductEngineType,
-  QUOTE_PRODUCT_ID,
-} from '@vertex-protocol/contracts';
+import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
+import { BalanceSide, ProductEngineType } from '@vertex-protocol/contracts';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { safeParseForData, WithChildren } from '@vertex-protocol/web-common';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
-import { PerpStaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { PerpStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+
 import { useLatestMarketPrice } from 'client/hooks/markets/useLatestMarketPrice';
+import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import {
   UserStateError,
   useUserStateError,
 } from 'client/hooks/subaccount/useUserStateError';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
+import { MarginMode } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { useOrderFormConversionPrices } from 'client/modules/trading/hooks/orderFormContext/useOrderFormConversionPrices';
 import { useOrderFormEnableMaxSizeLogic } from 'client/modules/trading/hooks/orderFormContext/useOrderFormEnableMaxSizeLogic';
 import { useOrderFormError } from 'client/modules/trading/hooks/orderFormContext/useOrderFormError';
 import { useOrderFormMarketSelection } from 'client/modules/trading/hooks/orderFormContext/useOrderFormMarketSelection';
-import { useOrderFormMaxOrderSizes } from 'client/modules/trading/hooks/orderFormContext/useOrderFormMaxOrderSizes';
 import { useOrderFormOnChangeSideEffects } from 'client/modules/trading/hooks/orderFormContext/useOrderFormOnChangeSideEffects';
 import { useOrderFormProductData } from 'client/modules/trading/hooks/orderFormContext/useOrderFormProductData';
-import { useOrderFormSubmitHandler } from 'client/modules/trading/hooks/orderFormContext/useOrderFormSubmitHandler';
+import {
+  OrderFormSubmitHandlerIsoParams,
+  useOrderFormSubmitHandler,
+} from 'client/modules/trading/hooks/orderFormContext/useOrderFormSubmitHandler';
 import { useOrderFormValidators } from 'client/modules/trading/hooks/orderFormContext/useOrderFormValidators';
 import {
   TradeEntryEstimate,
@@ -33,19 +35,21 @@ import {
   OrderFormValidators,
   PlaceOrderPriceType,
 } from 'client/modules/trading/types';
+import { usePerpOrderFormMaxOrderSizes } from 'client/pages/PerpTrading/context/hooks/usePerpOrderFormMaxOrderSizes';
 import { usePerpOrderFormOnChangeSideEffects } from 'client/pages/PerpTrading/context/hooks/usePerpOrderFormOnChangeSideEffects';
 import { PerpOrderFormValues } from 'client/pages/PerpTrading/context/types';
 import { usePerpTpSlOrderForm } from 'client/pages/PerpTrading/hooks/usePerpTpSlOrderForm';
-import { useSelectedPerpLeverage } from 'client/pages/PerpTrading/hooks/useSelectedPerpLeverage';
+import { useSelectedPerpMarginMode } from 'client/pages/PerpTrading/hooks/useSelectedPerpMarginMode';
 import { perpPriceInputAtom } from 'client/store/trading/perpTradingStore';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { mapValues } from 'lodash';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 export interface PerpOrderFormContextData {
-  // Market selection
+  /**
+   * Currently selected market
+   */
   currentMarket: PerpStaticMarketData | undefined;
   /**
    * Validators for the form
@@ -103,6 +107,10 @@ export interface PerpOrderFormContextData {
    */
   priceType: PlaceOrderPriceType;
   /**
+   * The current margin mode.
+   */
+  marginMode: MarginMode;
+  /**
    * Whether there is already a position open for the current market.
    */
   hasExistingPosition: boolean;
@@ -143,6 +151,10 @@ export interface PerpOrderFormContextData {
    * Whether the current market has an existing TP/SL.
    */
   hasExistingTriggerOrder: boolean;
+  /**
+   * Whether the user is reducing an isolated position.
+   */
+  isReducingIsoPosition: boolean;
 }
 
 const PerpOrderFormContext = createContext<PerpOrderFormContextData>(
@@ -150,7 +162,7 @@ const PerpOrderFormContext = createContext<PerpOrderFormContextData>(
 );
 
 // Hook to consume context
-export const usePerpOrderFormContext = () => useContext(PerpOrderFormContext);
+export const usePerpOrderFormContext = () => use(PerpOrderFormContext);
 
 export function PerpOrderFormContextProvider({ children }: WithChildren) {
   const { currentMarket } = useOrderFormMarketSelection(ProductEngineType.PERP);
@@ -177,6 +189,9 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   });
   const productId = currentMarket?.productId;
 
+  const { selectedMarginMode: marginMode } =
+    useSelectedPerpMarginMode(productId);
+
   const {
     firstExecutionPrice,
     topOfBookPrice,
@@ -192,8 +207,6 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
     productId,
   });
 
-  const { selectedLeverage } = useSelectedPerpLeverage(productId);
-
   const executePlaceOrder = useExecutePlaceOrder();
 
   useRunWithDelayOnCondition({
@@ -207,6 +220,37 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   const assetAmountInput = usePerpForm.watch('assetAmount');
   const priceType = usePerpForm.watch('priceType');
   const orderSide = usePerpForm.watch('side');
+
+  /**
+   * Derive current position data
+   */
+  const { data: perpPositions } = usePerpPositions();
+  const currentPosition = useMemo(() => {
+    return perpPositions?.find((pos) => {
+      const matchesProductId = pos.productId === productId;
+      const matchesMarginMode = !!pos.iso === (marginMode.mode === 'isolated');
+
+      return matchesMarginMode && matchesProductId;
+    });
+  }, [marginMode.mode, perpPositions, productId]);
+
+  const isCreatingIsoPosition =
+    marginMode.mode === 'isolated' && !currentPosition;
+  const isReducingIsoPosition = (() => {
+    if (
+      marginMode.mode !== 'isolated' ||
+      !currentPosition ||
+      currentPosition.amount.isZero()
+    ) {
+      return false;
+    }
+
+    const isReducingLong =
+      currentPosition.amount.isPositive() && orderSide === 'short';
+    const isReducingShort =
+      currentPosition.amount.isNegative() && orderSide === 'long';
+    return isReducingLong || isReducingShort;
+  })();
 
   /**
    * Validate fields
@@ -239,27 +283,24 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   /**
    * Max order sizes
    */
-  const maxOrderSizes = useOrderFormMaxOrderSizes({
+  const maxOrderSizes = usePerpOrderFormMaxOrderSizes({
     inputConversionPrice,
     executionConversionPrice,
     orderSide,
     productId,
     roundAmount,
-    allowAnyOrderSizeIncrement: false,
+    marginMode,
+    currentMarket,
+    isReducingIsoPosition,
+    currentPosition,
   });
-  const maxOrderSizesWithLeverage = useMemo(() => {
-    if (!maxOrderSizes || !currentMarket) {
-      return;
-    }
-    // Leverage ONLY impacts max order size, given by (true max order size) * leverage / max leverage
-    return mapValues(maxOrderSizes, (val) =>
-      val.multipliedBy(selectedLeverage).dividedBy(currentMarket.maxLeverage),
-    );
-  }, [currentMarket, maxOrderSizes, selectedLeverage]);
   // Max order size changes frequently, so use a ref for certain dependency arrays
-  const maxAssetOrderSize = maxOrderSizesWithLeverage?.asset;
+  const maxAssetOrderSize = maxOrderSizes?.asset;
   const maxAssetOrderSizeRef = useSyncedRef(maxAssetOrderSize);
-  const enableMaxSizeLogic = useOrderFormEnableMaxSizeLogic({ priceType });
+  const enableMaxSizeLogic = useOrderFormEnableMaxSizeLogic({
+    priceType,
+    marginMode,
+  });
 
   /**
    * Get estimated trade entry.
@@ -274,6 +315,13 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   /**
    * TP/SL
    */
+  const tpslIsoSubaccountName = (() => {
+    if (!currentPosition) {
+      return;
+    }
+    // Null here indicates that the position is not isolated, whereas undefined means no data
+    return currentPosition.iso?.subaccountName ?? null;
+  })();
   const {
     isTpSlCheckboxChecked,
     setIsTpSlCheckboxChecked,
@@ -285,6 +333,7 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
     hasTpSlOrderFormError,
     hasExistingPosition,
   } = usePerpTpSlOrderForm({
+    isoSubaccountName: tpslIsoSubaccountName,
     productId: currentMarket?.productId,
     longWeightInitial: currentMarket?.longWeightInitial,
     estimatedTradeEntry,
@@ -292,6 +341,7 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
     validatedAssetAmountInput,
     orderSide,
     priceType,
+    isCreatingIsoPosition,
   });
 
   /**
@@ -321,12 +371,13 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
   });
   usePerpOrderFormOnChangeSideEffects({
     form: usePerpForm,
-    selectedLeverage,
+    marginMode,
     isTpSlCheckboxDisabled,
     setIsTpSlCheckboxChecked,
     orderSide,
     takeProfitOrderFormResetField: takeProfitOrderForm.form.resetField,
     stopLossOrderFormResetField: stopLossOrderForm.form.resetField,
+    priceType,
   });
 
   /**
@@ -350,15 +401,29 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
     }),
     [isTpSlEnabled, takeProfitOrderForm, stopLossOrderForm],
   );
+  const submitHandlerIsoParam = useMemo(():
+    | OrderFormSubmitHandlerIsoParams
+    | undefined => {
+    return marginMode.mode === 'isolated'
+      ? {
+          subaccountName: currentPosition?.iso?.subaccountName,
+          isReducingIsoPosition,
+        }
+      : undefined;
+  }, [
+    currentPosition?.iso?.subaccountName,
+    isReducingIsoPosition,
+    marginMode.mode,
+  ]);
   const submitHandler = useOrderFormSubmitHandler({
     executionConversionPriceRef,
     inputConversionPriceRef,
     currentMarket,
     mutateAsync: executePlaceOrder.mutateAsync,
-    allowAnyOrderSizeIncrement: false,
-    // Multi-quote not supported for perps
     quoteProductId: QUOTE_PRODUCT_ID,
     tpsl: submitHandlerTpSlParam,
+    iso: submitHandlerIsoParam,
+    marginMode,
   });
 
   /**
@@ -424,25 +489,27 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
       takeProfitOrderForm,
       stopLossOrderForm,
       hasExistingTriggerOrder,
+      isReducingIsoPosition,
+      marginMode,
     };
   }, [
-    buttonState,
     currentMarket,
-    enableMaxSizeLogic,
-    executionConversionPrice,
-    estimatedTradeEntry,
-    formError,
-    inputConversionPrice,
-    inputValidators,
-    minAssetOrderSize,
-    maxAssetOrderSize,
     priceIncrement,
     sizeIncrement,
+    enableMaxSizeLogic,
+    minAssetOrderSize,
+    maxAssetOrderSize,
+    inputConversionPrice,
+    executionConversionPrice,
+    estimatedTradeEntry,
     slippageFraction,
-    submitHandler,
-    usePerpForm,
-    userStateError,
     validatedAssetAmountInput,
+    usePerpForm,
+    submitHandler,
+    inputValidators,
+    formError,
+    userStateError,
+    buttonState,
     orderSide,
     priceType,
     hasExistingPosition,
@@ -452,11 +519,13 @@ export function PerpOrderFormContextProvider({ children }: WithChildren) {
     takeProfitOrderForm,
     stopLossOrderForm,
     hasExistingTriggerOrder,
+    isReducingIsoPosition,
+    marginMode,
   ]);
 
   return (
-    <PerpOrderFormContext.Provider value={value}>
+    <PerpOrderFormContext value={value}>
       <FormProvider {...usePerpForm}>{children}</FormProvider>
-    </PerpOrderFormContext.Provider>
+    </PerpOrderFormContext>
   );
 }

@@ -1,4 +1,4 @@
-import { SharedProductMetadata } from '@vertex-protocol/metadata';
+import { SharedProductMetadata } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { OrderbookPriceTickSpacingMultiplier } from 'client/modules/trading/marketOrders/orderbook/types';
 
@@ -23,8 +23,9 @@ export interface OrderbookData {
   quoteSymbol: string;
   priceIncrement: BigDecimal;
   sizeIncrement: BigDecimal;
-  // Total cumulative amount in either asset currency (ex. wETH) or quote currency (ex. USDC) - the background color fill adapts to this as per figma
-  cumulativeTotalAmount: BigDecimal;
+  // Total cumulative amount in either asset currency (ex. wETH) or quote currency (ex. USDC)
+  // This is max(cumulative amount for bids, cumulative amount for asks)
+  maxCumulativeTotalAmount: BigDecimal;
   // Ascending, from bid price
   bids: OrderbookRowItem[];
   // Descending, from ask price

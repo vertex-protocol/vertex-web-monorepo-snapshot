@@ -4,17 +4,17 @@ import { ExecutePlaceEngineOrderParams } from 'client/hooks/execute/placeOrder/t
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
 import {
   RepayConvertFormValues,
-  RepayConvertProduct,
+  RepayConvertProductSelectValue,
 } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
+import { AnnotatedSpotMarket } from '@vertex-protocol/react-client';
 import { useCallback } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 interface Params {
   form: UseFormReturn<RepayConvertFormValues>;
   executePlaceOrder: ReturnType<typeof useExecutePlaceOrder>;
-  marketProduct: RepayConvertProduct | undefined;
+  marketProduct: RepayConvertProductSelectValue | undefined;
   market: AnnotatedSpotMarket | undefined;
   executionConversionPrice: BigDecimal | undefined;
   isSellOrder: boolean;

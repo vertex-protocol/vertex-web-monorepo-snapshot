@@ -1,5 +1,5 @@
 import { IndexerLeaderboardParticipant } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
   formatNumber,
@@ -8,19 +8,15 @@ import {
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { TradingCompetitionCard } from 'client/pages/TradingCompetition/components/TradingCompetitionInfoCards/TradingCompetitionCard';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface Props {
-  participant: IndexerLeaderboardParticipant | undefined;
+  participant: IndexerLeaderboardParticipant;
 }
 
 export function EligibleParticipantCardContent({ participant }: Props) {
   const { primaryQuoteToken } = useVertexMetadataContext();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
-
-  if (!participant) {
-    return null;
-  }
 
   const { pnl, volume, roiRank, percentRoi } = participant;
 

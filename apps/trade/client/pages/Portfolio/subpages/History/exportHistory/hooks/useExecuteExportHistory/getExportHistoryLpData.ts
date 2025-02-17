@@ -1,5 +1,8 @@
 import { GetIndexerSubaccountLpEventsParams } from '@vertex-protocol/indexer-client';
-import { EXPORT_HISTORY_QUERY_PAGE_SIZE } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
+import {
+  EXPORT_HISTORY_QUERY_PAGE_SIZE,
+  EXPORT_HISTORY_QUERY_DELAY_MILLIS,
+} from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
 import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
@@ -7,6 +10,7 @@ import {
   GetExportHistoryDataParams,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 import { getHistoricalLpEventsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLpEventsTable';
+import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
 
 export async function getExportHistoryLpData(
@@ -72,6 +76,9 @@ export async function getExportHistoryLpData(
     if (!lpEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    // Reduce chance of rate limiting.
+    await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);
   }
 
   return items;

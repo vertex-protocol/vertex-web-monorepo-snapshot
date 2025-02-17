@@ -1,18 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["SENTRY_AUTH_TOKEN"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "env": [
-        "KLAVIYO_SECRET",
-        "NEXT_PUBLIC_DATA_ENV",
-        "NEXT_PUBLIC_BRAND_NAME",
-        "NEXT_PUBLIC_ENABLE_EXPERIMENTAL_FEATURES",
-        "NEXT_PUBLIC_SENTRY_ENV_NAME",
-        "NEXT_RUNTIME",
-        "NODE_ENV",
-        "NEXT_PUBLIC_BUILD_ID"
-      ],
+      "env": ["NEXT_RUNTIME", "NODE_ENV", "SENTRY_AUTH_TOKEN"],
       "outputs": ["dist/**", ".next/**"]
     },
     "lint": {

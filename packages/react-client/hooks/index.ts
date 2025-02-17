@@ -1,1 +1,1 @@
-export * from './useIsChainType';
+export * from './useIsChainEnvType';

@@ -12,7 +12,7 @@ export function useBridgeAmountErrorTooltipContent({
         return "You can't bridge more than your wallet balance. Please enter a valid amount.";
       case 'invalid_input':
         return 'Please enter a valid amount.';
-      case 'under_min':
+      case 'below_min':
         return 'Please bridge more than the min amount.';
       default:
         return null;

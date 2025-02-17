@@ -2,14 +2,14 @@ import {
   joinClassNames,
   mergeClassNames,
   WithClassnames,
+  WithRef,
 } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
 import { SizeVariant } from '../../types';
 import { Button } from '../Button';
 import { Icons } from '../Icons';
 import { Input } from '../Input';
 
-interface Props extends WithClassnames {
+interface Props extends WithRef<WithClassnames, HTMLInputElement> {
   query: string;
   setQuery: (query: string) => void;
   sizeVariant: Extract<SizeVariant, 'xs' | 'base'>;
@@ -29,18 +29,16 @@ const ANIMATED_BOTTOM_BORDER_CLASSNAME = joinClassNames(
   'after:bg-accent focus-within:after:scale-x-100 after:scale-x-0',
 );
 
-export const SearchBar = forwardRef<HTMLInputElement, Props>(function SearchBar(
-  {
-    query,
-    setQuery,
-    placeholder,
-    sizeVariant,
-    className,
-    textAreaClassName,
-    hideSearchIcon,
-  },
+export function SearchBar({
+  query,
+  setQuery,
+  placeholder,
+  sizeVariant,
+  className,
+  textAreaClassName,
+  hideSearchIcon,
   ref,
-) {
+}: Props) {
   const onClear = () => {
     setQuery('');
   };
@@ -79,4 +77,4 @@ export const SearchBar = forwardRef<HTMLInputElement, Props>(function SearchBar(
       )}
     </div>
   );
-});
+}

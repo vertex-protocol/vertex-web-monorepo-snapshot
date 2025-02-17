@@ -1,8 +1,9 @@
 import { BigDecimals } from '@vertex-protocol/client';
 import { removeDecimals } from '@vertex-protocol/utils';
-import { AllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import { StaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { AllLatestMarketPricesData } from 'client/hooks/query/markets/types';
+import { StaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+import { AllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
+
+import { AllLatestMarketPricesData } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { MarketSwitcherItem } from 'client/modules/trading/hooks/useMarketSwitcher/types';
 import { bigDecimalComparator } from 'client/utils/comparators';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
@@ -10,7 +11,7 @@ import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata'
 export function getMappedMarket(
   market: StaticMarketData,
   latestMarketPrices: AllLatestMarketPricesData | undefined,
-  marketMetricsData: AllMarketsHistoricalMetrics | undefined,
+  marketStats: AllMarketsStats | undefined,
   isFavoritedMarket: boolean,
   isNewMarket: boolean,
   href: string,
@@ -20,9 +21,9 @@ export function getMappedMarket(
   const { marketName, symbol, icon } = getSharedProductMetadata(metadata);
   const currentPrice = latestMarketPrices?.[productId]?.safeAverage;
   const priceChangeFrac =
-    marketMetricsData?.metricsByMarket[productId]?.pastDayPriceChangeFrac;
+    marketStats?.statsByMarket[productId]?.pastDayPriceChangeFrac;
   const volume24h = removeDecimals(
-    marketMetricsData?.metricsByMarket[productId]?.pastDayVolumeInPrimaryQuote,
+    marketStats?.statsByMarket[productId]?.pastDayVolumeInPrimaryQuote,
   );
 
   return {

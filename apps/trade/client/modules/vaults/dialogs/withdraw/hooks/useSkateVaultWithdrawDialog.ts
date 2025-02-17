@@ -1,16 +1,15 @@
 import { addDecimals, removeDecimals } from '@vertex-protocol/client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   InputValidatorFn,
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
 import { useDebounce } from 'ahooks';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
 import { useOnFractionSelectedHandler } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { SkateVaultFormErrorType } from 'client/modules/vaults/dialogs/types';
 import { useExecuteBurnSkateVaultShares } from 'client/modules/vaults/hooks/execute/useExecuteBurnSkateVaultShares';
@@ -31,7 +30,6 @@ export function useSkateVaultWithdrawDialog({
 }) {
   const { primaryQuoteToken } = useVertexMetadataContext();
   const { data: skateVaultState } = useSkateVaultState({ vaultAddress });
-  const { trackEvent } = useAnalyticsContext();
   const { dispatchNotification } = useNotificationManagerContext();
 
   const quoteDecimals = primaryQuoteToken.tokenDecimals;
@@ -78,7 +76,7 @@ export function useSkateVaultWithdrawDialog({
   const { isLoading: isWithdrawTxLoading, isSuccess: isWithdrawTxSuccess } =
     useOnChainMutationStatus({
       mutationStatus: executeBurnSkateVaultShares.status,
-      txResponse: executeBurnSkateVaultShares.data,
+      txHash: executeBurnSkateVaultShares.data,
     });
 
   useRunWithDelayOnCondition({
@@ -153,19 +151,13 @@ export function useSkateVaultWithdrawDialog({
       return;
     }
 
-    const txResponsePromise = executeBurnSkateVaultShares.mutateAsync(
+    const txHashPromise = executeBurnSkateVaultShares.mutateAsync(
       {
         numShares: validAmountWithAddedDecimals,
         vaultAddress,
       },
       {
         onSuccess: () => {
-          trackEvent({
-            type: 'vault_dialog_withdraw_placed',
-            data: {
-              vaultAddress,
-            },
-          });
           useSkateWithdrawForm.resetField('amount');
           useSkateWithdrawForm.setValue('percentageAmount', 0);
         },
@@ -176,7 +168,7 @@ export function useSkateVaultWithdrawDialog({
       type: 'action_error_handler',
       data: {
         errorNotificationTitle: 'Withdrawal Failed',
-        executionData: { txResponsePromise },
+        executionData: { txHashPromise },
       },
     });
   };

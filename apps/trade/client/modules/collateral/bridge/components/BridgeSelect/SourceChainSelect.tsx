@@ -1,17 +1,15 @@
-import { Select, SelectOption, useSelect } from '@vertex-protocol/web-ui';
+import { useSelect } from '@vertex-protocol/web-ui';
 import { BridgeSelect } from 'client/modules/collateral/bridge/components/BridgeSelect/BridgeSelect';
 import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/form/types';
-import { BridgeChain } from 'client/modules/collateral/bridge/types';
-import { useMemo } from 'react';
+import { BridgeChainSelectValue } from 'client/modules/collateral/bridge/types';
+import { useCallback, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 interface Props {
-  selectedSourceChain: BridgeChain | undefined;
-  allSourceChains: BridgeChain[];
+  selectedSourceChain: BridgeChainSelectValue | undefined;
+  allSourceChains: BridgeChainSelectValue[];
   form: UseFormReturn<BridgeFormValues>;
 }
-
-type ChainSelectOption = SelectOption<string, BridgeChain>;
 
 export function SourceChainSelect({
   allSourceChains,
@@ -20,30 +18,34 @@ export function SourceChainSelect({
 }: Props) {
   // Options for select dropdown
   const options = useMemo(() => {
-    return allSourceChains.map((chain): ChainSelectOption => {
+    return allSourceChains.map((chain) => {
       return {
-        id: chain.chainId.toFixed(),
         label: chain.chainName,
         value: chain,
       };
     });
   }, [allSourceChains]);
 
+  const onSelectedValueChange = useCallback(
+    (newChain: BridgeChainSelectValue) => {
+      form.setValue('sourceChainId', newChain.chainId);
+      form.setValue('sourceTokenAddress', '');
+      form.resetField('amount');
+    },
+    [form],
+  );
+
   const { open, onOpenChange, value, onValueChange, selectOptions } = useSelect(
     {
       selectedValue: selectedSourceChain,
-      onSelectedValueChange: (newChain) => {
-        form.setValue('sourceChainId', newChain.chainId);
-        form.setValue('sourceTokenAddress', '');
-        form.resetField('amount');
-      },
+      onSelectedValueChange,
       options,
     },
   );
 
   const disabled = allSourceChains.length === 0;
   return (
-    <Select.Root
+    <BridgeSelect.Root
       value={value}
       onValueChange={onValueChange}
       open={open}
@@ -62,6 +64,6 @@ export function SourceChainSelect({
           <BridgeSelect.Option option={option} key={option.label} />
         ))}
       </BridgeSelect.Options>
-    </Select.Root>
+    </BridgeSelect.Root>
   );
 }

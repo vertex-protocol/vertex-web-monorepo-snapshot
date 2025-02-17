@@ -6,7 +6,7 @@ import {
 } from 'client/hooks/subaccount/useSpotBalances';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { clientEnv } from 'common/environment/clientEnv';
-import { KNOWN_PRODUCT_IDS } from '@vertex-protocol/metadata';
+import { KNOWN_PRODUCT_IDS } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 interface BalanceInfo {

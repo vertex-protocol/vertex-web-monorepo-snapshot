@@ -1,19 +1,19 @@
 import { ProductEngineType } from '@vertex-protocol/contracts';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { nonNullFilter } from '@vertex-protocol/web-common';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
 import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { useMemo } from 'react';
 
 export interface MarginManagerPerpPositionsTableItem {
   productId: number;
   marketInfo: MarketInfoCellData;
-  estimatedPnlUsd: BigDecimal;
+  estimatedPnlUsd: BigDecimal | undefined;
   unsettledQuoteAmount: BigDecimal;
   notionalValueUsd: BigDecimal;
   positionAmount: BigDecimal;
@@ -40,6 +40,11 @@ export function useMarginManagerPerpPositionsTable() {
       return perpBalances
         .map((position): MarginManagerPerpPositionsTableItem | undefined => {
           const perpMarketData = marketsStaticData.perp[position.productId];
+
+          // return if iso (margin manager only displays cross positions)
+          if (position.iso) {
+            return;
+          }
 
           // return if no market data or position amount is zero
           if (!perpMarketData || position.amount.isZero()) {

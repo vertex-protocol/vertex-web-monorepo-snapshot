@@ -1,7 +1,9 @@
-import { useBlitzCookiePreference } from 'hooks/useBlitzCookiePreference';
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import Link from 'next/link';
+'use client';
+
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { LINKS } from 'config/links';
+import { useBlitzCookiePreference } from 'hooks/useBlitzCookiePreference';
+import Link from 'next/link';
 
 export function CookieNoticeBanner({ className }: WithClassnames) {
   const {
@@ -25,8 +27,8 @@ export function CookieNoticeBanner({ className }: WithClassnames) {
       )}
     >
       <div className="flex flex-col gap-y-2">
-        <p className="text-sm font-bold text-white">Manage Cookies</p>
-        <p className="text-white-dark text-xs">
+        <p className="text-base font-bold text-white">Manage Cookies</p>
+        <p className="text-white-dark text-sm">
           Blitz may collect and disclose cookie and other data collection
           technologies (“Cookies”) to third-party partners, including service
           providers, basic identification information, device information and
@@ -63,7 +65,7 @@ function ActionButtons({ acceptCookies, declineCookies }: ActionButtonsProps) {
   const buttonClassNames =
     'py-3 px-6 bg-black-dark text-nowrap hover:brightness-125';
   return (
-    <div className="flex items-center gap-x-2 text-sm">
+    <div className="text-md flex items-center gap-x-2">
       <button className={buttonClassNames} onClick={acceptCookies}>
         Accept All
       </button>

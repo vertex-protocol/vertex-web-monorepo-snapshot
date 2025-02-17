@@ -1,18 +1,15 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { ComponentPropsWithRef, forwardRef } from 'react';
+import { ComponentPropsWithRef } from 'react';
 import { SizeVariant } from '../types';
 import { Button as BaseButton, TabButtonProps } from './Button';
 
-const Button = forwardRef(function UnderlinedTabsButton(
-  {
-    className,
-    active,
-    size,
-    disabled,
-    ...rest
-  }: TabButtonProps & { size: SizeVariant },
-  ref,
-) {
+function Button({
+  className,
+  active,
+  size,
+  disabled,
+  ...rest
+}: TabButtonProps & { size: SizeVariant }) {
   const activeButtonClasses = 'text-text-primary after:scale-x-100';
   const inactiveButtonClasses = joinClassNames(
     'text-text-tertiary after:scale-x-0',
@@ -34,29 +31,23 @@ const Button = forwardRef(function UnderlinedTabsButton(
         className,
       )}
       disabled={disabled}
-      ref={ref}
       {...rest}
     />
   );
-});
+}
 
-const Container = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
-  function UnderlinedTabsContainer({ children, className, ...rest }, ref) {
-    return (
-      <div
-        className={joinClassNames(
-          'flex min-w-max',
-          'after:bg-stroke relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-sm',
-          className,
-        )}
-        {...rest}
-        ref={ref}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+function Container({ className, ...rest }: ComponentPropsWithRef<'div'>) {
+  return (
+    <div
+      className={joinClassNames(
+        'flex min-w-max',
+        'after:bg-stroke relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-sm',
+        className,
+      )}
+      {...rest}
+    />
+  );
+}
 
 export const UnderlinedTabs = {
   Button,

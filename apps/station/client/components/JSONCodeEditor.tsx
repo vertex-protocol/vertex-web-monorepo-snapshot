@@ -4,17 +4,17 @@ import ReactCodeMirror, {
   ReactCodeMirrorProps,
   ReactCodeMirrorRef,
 } from '@uiw/react-codemirror';
-import { joinClassNames } from '@vertex-protocol/web-common';
+import { joinClassNames, WithRef } from '@vertex-protocol/web-common';
 import { CARD_ROUNDED_CLASSNAMES } from '@vertex-protocol/web-ui';
-import { forwardRef } from 'react';
 
-export const JSONCodeEditor = forwardRef<
-  ReactCodeMirrorRef,
-  ReactCodeMirrorProps
->(function JSONCodeEditor({ className, theme, extensions, ...restProps }, ref) {
+export function JSONCodeEditor({
+  className,
+  theme,
+  extensions,
+  ...restProps
+}: WithRef<ReactCodeMirrorProps, ReactCodeMirrorRef>) {
   return (
     <ReactCodeMirror
-      ref={ref}
       className={joinClassNames(
         CARD_ROUNDED_CLASSNAMES,
         'overflow-hidden',
@@ -25,4 +25,4 @@ export const JSONCodeEditor = forwardRef<
       {...restProps}
     />
   );
-});
+}

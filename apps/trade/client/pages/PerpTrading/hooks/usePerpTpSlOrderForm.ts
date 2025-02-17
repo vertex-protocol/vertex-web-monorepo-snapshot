@@ -1,12 +1,12 @@
+import { BalanceSide, BigDecimal } from '@vertex-protocol/client';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
-import { useMemo, useState } from 'react';
-import { BalanceSide, BigDecimal } from '@vertex-protocol/client';
+import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
 import { TradeEntryEstimate } from 'client/modules/trading/hooks/useEstimateTradeEntry';
 import { UseTpSlPlaceOrderForm } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/types';
 import { useTpSlPlaceOrderForm } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/useTpSlPlaceOrderForm';
-import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
 import { PlaceOrderPriceType } from 'client/modules/trading/types';
+import { useMemo, useState } from 'react';
 
 interface UsePerpTpSlOrderForm {
   isTpSlCheckboxChecked: boolean;
@@ -28,6 +28,8 @@ interface Params {
   validatedAssetAmountInput: BigDecimal | undefined;
   orderSide: BalanceSide;
   priceType: PlaceOrderPriceType;
+  isCreatingIsoPosition: boolean;
+  isoSubaccountName: string | null | undefined;
 }
 
 export function usePerpTpSlOrderForm({
@@ -38,6 +40,8 @@ export function usePerpTpSlOrderForm({
   validatedAssetAmountInput,
   orderSide,
   priceType,
+  isCreatingIsoPosition,
+  isoSubaccountName,
 }: Params): UsePerpTpSlOrderForm {
   const [isTpSlCheckboxChecked, setIsTpSlCheckboxChecked] = useState(false);
   const isTpSlEnabled = isTpSlCheckboxChecked && priceType === 'market';
@@ -45,7 +49,9 @@ export function usePerpTpSlOrderForm({
   const isSingleSignatureSession = useIsSingleSignatureSession({
     requireActive: true,
   });
-  const isTpSlCheckboxDisabled = !isSingleSignatureSession;
+  // Cannot create a TPSL on a non-existing isolated position as we don't have the isolated subaccount name
+  const isTpSlCheckboxDisabled =
+    !isSingleSignatureSession || isCreatingIsoPosition;
 
   const { data: latestOraclePrices } = useLatestOraclePrices();
   const oraclePrice = productId
@@ -73,6 +79,7 @@ export function usePerpTpSlOrderForm({
 
   const takeProfitOrderForm = useTpSlPlaceOrderForm({
     productId,
+    isoSubaccountName,
     isTakeProfit: true,
     oraclePrice,
     lastPrice,
@@ -83,6 +90,7 @@ export function usePerpTpSlOrderForm({
 
   const stopLossOrderForm = useTpSlPlaceOrderForm({
     productId,
+    isoSubaccountName,
     isTakeProfit: false,
     oraclePrice,
     lastPrice,

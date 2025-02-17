@@ -5,41 +5,41 @@ interface BrandSeoMetadata {
   title: string;
   description: string;
   bannerImage: string;
-  favicon: string;
+  siteManifest: string;
+  faviconIco: string;
+  faviconSvg: string;
   appleTouchIcon: string;
-  favicon32x32: string;
-  favicon16x16: string;
-  safariPinnedTab: string;
   tileColor: string;
   headerColor: string;
+  xUsername: string;
 }
 
 const BRAND_SEO_METADATA_BY_BRAND_NAME: Record<BrandName, BrandSeoMetadata> = {
   vertex: {
-    title: 'Vertex | A Leading Exchange for Spot & Perpetuals Trading',
+    title: 'Vertex | Trade Crypto with an Edge',
     description:
-      'An all-in-one DEX on Arbitrum. Trade, earn & borrow, powered by a turbo-charged trading engine to outperform the competition. Trade on Vertex and earn $VRTX.',
+      'Traders choose Vertex for decentralized spot and perpetual cryptocurrency trading with the fastest speeds, lowest fees, and deep liquidity. Trade spot and perp crypto markets across multiple blockchains including Arbitrum, Base, and Sei.',
     bannerImage: 'https://vertexprotocol.com/img/twitter-preview-banner.png',
-    favicon: '/vertex-favicon.ico',
+    siteManifest: '/vertex-site.webmanifest',
+    faviconIco: '/vertex-favicon.ico',
+    faviconSvg: '/vertex-icon.svg',
     appleTouchIcon: '/vertex-apple-touch-icon.png',
-    favicon32x32: '/vertex-favicon-32x32.png',
-    favicon16x16: '/vertex-favicon-16x16.png',
-    safariPinnedTab: '/vertex-safari-pinned-tab.svg',
     tileColor: '#8041E5',
-    headerColor: '#101016',
+    headerColor: '#000000',
+    xUsername: '@vertex_protocol',
   },
   blitz: {
-    title: 'Blitz | A Leading Exchange for Spot & Perpetuals Trading',
+    title: 'Blitz | Trade Crypto with an Edge',
     description:
       'Blazing fast orderbook DEX for spot and futures trading on Blast. Connected by Vertex Edge.',
     bannerImage: 'https://blitz.exchange/img/twitter-preview-banner.png',
-    favicon: '/blitz-favicon.ico',
+    siteManifest: '/blitz-site.webmanifest',
+    faviconIco: '/blitz-favicon.ico',
+    faviconSvg: '/blitz-icon.svg',
     appleTouchIcon: '/blitz-apple-touch-icon.png',
-    favicon32x32: '/blitz-favicon-32x32.png',
-    favicon16x16: '/blitz-favicon-16x16.png',
-    safariPinnedTab: '/blitz-safari-pinned-tab.svg',
     tileColor: '#FF036D',
     headerColor: '#07070A',
+    xUsername: '@tradeonblitz',
   },
 };
 

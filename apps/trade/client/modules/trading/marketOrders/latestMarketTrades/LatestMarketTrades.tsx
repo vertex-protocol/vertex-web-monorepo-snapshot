@@ -1,6 +1,11 @@
 import { formatNumber } from '@vertex-protocol/react-client';
 import { BigDecimals } from '@vertex-protocol/utils';
-import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import {
+  joinClassNames,
+  safeDiv,
+  WithClassnames,
+} from '@vertex-protocol/web-common';
+import { formatTimestamp, TimeFormatSpecifier } from '@vertex-protocol/web-ui';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import { MarketOrderRow } from 'client/modules/trading/marketOrders/components/MarketOrderRow';
 import { MarketOrderRows } from 'client/modules/trading/marketOrders/components/MarketOrderRows';
@@ -9,8 +14,6 @@ import {
   MarketTradeRowItem,
   useLatestMarketTrades,
 } from 'client/modules/trading/marketOrders/latestMarketTrades/hooks/useLatestMarketTrades';
-import { safeDiv } from 'client/utils/safeDiv';
-import { formatTimestamp, TimeFormatSpecifier } from '@vertex-protocol/web-ui';
 import { first } from 'lodash';
 import { useCallback } from 'react';
 
@@ -41,7 +44,7 @@ export function LatestMarketTrades({
     (row: MarketTradeRowItem) => {
       const highlightWidthFraction = safeDiv(
         row.decimalAdjustedSize,
-        data?.maxTradeSize.times(2) ?? BigDecimals.ZERO,
+        data?.maxTradeSize ?? BigDecimals.ZERO,
       );
 
       // We don't want to flash if we don't yet have a cached latest trade time,

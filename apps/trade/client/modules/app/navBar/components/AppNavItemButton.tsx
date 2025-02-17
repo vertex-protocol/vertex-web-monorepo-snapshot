@@ -5,7 +5,6 @@ import {
   getStateOverlayClassNames,
   Icons,
 } from '@vertex-protocol/web-ui';
-import { forwardRef } from 'react';
 
 export type AppNavItemButtonProps = ButtonProps & {
   withMobilePadding?: boolean;
@@ -13,17 +12,13 @@ export type AppNavItemButtonProps = ButtonProps & {
   active?: boolean;
 };
 
-export const AppNavItemButton = forwardRef(function AppNavItemButton(
-  {
-    className,
-    children,
-    withMobilePadding,
-    withCaret,
-    active,
-    ...rest
-  }: AppNavItemButtonProps,
-  ref,
-) {
+export function AppNavItemButton({
+  className,
+  withMobilePadding,
+  withCaret,
+  active,
+  ...rest
+}: AppNavItemButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
     borderRadiusVariant: 'base',
     disabled: rest.disabled,
@@ -40,15 +35,12 @@ export const AppNavItemButton = forwardRef(function AppNavItemButton(
         stateOverlayClassNames,
         className,
       )}
-      ref={ref}
       endIcon={
         withCaret && (
           <Icons.CaretDown className='group-data-[state="open"]:rotate-180' />
         )
       }
       {...rest}
-    >
-      {children}
-    </Button>
+    />
   );
-});
+}

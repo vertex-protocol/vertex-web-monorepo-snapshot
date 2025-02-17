@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { ChainEnv, IndexerProductSnapshot } from '@vertex-protocol/client';
-import { nowInSeconds } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { nowInSeconds } from '@vertex-protocol/utils';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 
 export function allProductsHistoricalSnapshotsQueryKey(
@@ -61,6 +61,5 @@ export function useAllProductsHistoricalSnapshots(secondsBeforeNow: number[]) {
     },
     enabled: !disabled,
     refetchInterval: 30000,
-    staleTime: 10000,
   });
 }

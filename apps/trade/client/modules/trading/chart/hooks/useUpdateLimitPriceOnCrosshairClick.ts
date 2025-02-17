@@ -16,7 +16,7 @@ export function useUpdateLimitPriceOnCrosshairClick({
   tvWidget,
   productId,
 }: Params) {
-  const limitPriceRef = useRef<number | undefined>();
+  const limitPriceRef = useRef<number>(null);
   const baseSetPriceInput = useSetPriceInput();
 
   useEffect(() => {

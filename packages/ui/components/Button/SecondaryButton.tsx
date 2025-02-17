@@ -1,5 +1,4 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
 import { SizeVariant } from '../../types';
 import { getStateOverlayClassNames } from '../../utils';
 import { Button } from './Button';
@@ -19,10 +18,12 @@ export type SecondaryButtonProps = ButtonProps & {
  * @param size - The size of the button. Default is 'base'.
  * @param destructive - Whether the button is destructive or not. Default is false.
  */
-export const SecondaryButton = forwardRef(function SecondaryButton(
-  { size = 'base', className, destructive, ...rest }: SecondaryButtonProps,
-  ref,
-) {
+export function SecondaryButton({
+  size = 'base',
+  className,
+  destructive,
+  ...rest
+}: SecondaryButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
     borderRadiusVariant: 'base',
     disabled: rest.disabled,
@@ -41,7 +42,6 @@ export const SecondaryButton = forwardRef(function SecondaryButton(
 
   return (
     <Button
-      ref={ref}
       className={mergeClassNames(
         'bg-surface-2 rounded border',
         stateClassNames,
@@ -54,4 +54,4 @@ export const SecondaryButton = forwardRef(function SecondaryButton(
       {...rest}
     />
   );
-});
+}

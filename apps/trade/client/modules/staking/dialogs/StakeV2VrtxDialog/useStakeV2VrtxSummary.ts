@@ -1,13 +1,10 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { useAccountStakingV2State } from 'client/hooks/query/vrtxToken/useAccountStakingV2State';
-import { useStakingMigrationState } from 'client/hooks/query/vrtxToken/useStakingMigrationState';
 import { useStakingV2State } from 'client/hooks/query/vrtxToken/useStakingV2State';
-import { STAKING_BONUS_FRACTION } from 'client/modules/staking/dialogs/StakeV2VrtxDialog/consts';
-import { useStakingV2Apr } from 'client/modules/staking/hooks/useStakingV2Apr';
-import { safeDiv } from 'client/utils/safeDiv';
-import { now } from 'lodash';
+import { useStakingV2Rewards } from 'client/modules/staking/hooks/useStakingV2Rewards';
+import { safeDiv } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 export interface StakingDialogAccountState {
@@ -22,7 +19,6 @@ export function useStakeV2VrtxSummary({
 }) {
   const { data: accountStakingV2State } = useAccountStakingV2State();
   const { data: stakingV2State } = useStakingV2State();
-  const { data: stakingMigrationState } = useStakingMigrationState();
   const {
     protocolTokenMetadata: {
       token: {
@@ -31,7 +27,7 @@ export function useStakeV2VrtxSummary({
       },
     },
   } = useVertexMetadataContext();
-  const stakingApr = useStakingV2Apr();
+  const { apr: stakingApr } = useStakingV2Rewards();
 
   const currentStakingSummary = useMemo(() => {
     const accountBalance = removeDecimals(
@@ -66,25 +62,18 @@ export function useStakeV2VrtxSummary({
     if (
       !currentStakingSummary.accountBalance ||
       !stakingV2State ||
-      !stakingMigrationState ||
       !validAmount
     ) {
       return;
     }
 
-    const isBonusPeriod = stakingMigrationState.v2BonusDeadlineMillis.lt(now());
-
-    const adjustedAmount = isBonusPeriod
-      ? validAmount.multipliedBy(1 + STAKING_BONUS_FRACTION)
-      : validAmount;
-
     const estimatedAccountStaked =
-      currentStakingSummary.accountBalance.plus(adjustedAmount);
+      currentStakingSummary.accountBalance.plus(validAmount);
 
     const newTotalPoolBalance = removeDecimals(
       stakingV2State.totalBalance,
       protocolTokenDecimals,
-    ).plus(adjustedAmount);
+    ).plus(validAmount);
 
     const estimatedShareOfPool = safeDiv(
       estimatedAccountStaked,
@@ -97,7 +86,6 @@ export function useStakeV2VrtxSummary({
     };
   }, [
     currentStakingSummary.accountBalance,
-    stakingMigrationState,
     stakingV2State,
     validAmount,
     protocolTokenDecimals,

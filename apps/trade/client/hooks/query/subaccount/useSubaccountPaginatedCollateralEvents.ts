@@ -68,6 +68,9 @@ export function useSubaccountPaginatedCollateralEvents({
         startCursor: pageParam,
         subaccountOwner,
         subaccountName,
+        // Only fetch non-isolated events to avoid duplication with isolated events
+        // Cross account events include the isolated transfers as well
+        isolated: false,
         eventTypes,
       };
       return vertexClient.context.indexerClient.getPaginatedSubaccountCollateralEvents(

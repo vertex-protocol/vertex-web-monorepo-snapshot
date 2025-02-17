@@ -1,13 +1,15 @@
-import { BigDecimals } from '@vertex-protocol/client';
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
-import { CollateralEventType } from '@vertex-protocol/indexer-client/dist/types/collateralEventType';
-import { Token } from '@vertex-protocol/metadata';
-import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import { formatTimestamp, TimeFormatSpecifier } from '@vertex-protocol/web-ui';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
+import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedCollateralEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedCollateralEvents';
 import { useAllProductsWithdrawPoolLiquidity } from 'client/hooks/query/withdrawPool/useAllProductsWithdrawPoolLiquidity';
 import { useAreWithdrawalsProcessing } from 'client/modules/collateral/hooks/useAreWithdrawalsProcessing';
+import {
+  getHistoricalCollateralEventsTableItem,
+  HistoricalCollateralEventsTableItem,
+} from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalCollateralEventsTable';
 import { secondsToMilliseconds } from 'date-fns';
 import { first, sortBy } from 'lodash';
 import { useMemo } from 'react';
@@ -17,21 +19,15 @@ interface AccountCenterCollateralEventsWithDate {
    * Date label (ex. Mar 12, 2024) to be displayed in the UI
    */
   dateLabel: string;
-  events: {
+  events: (HistoricalCollateralEventsTableItem & {
     // Unique ID used as the key
     id: string;
-    eventType: CollateralEventType;
-    timestampMillis: number;
-    token: Token;
-    amount: BigDecimal;
-    submissionIndex: string;
-    productId: number;
-    isProcessing: boolean | undefined;
-    hasWithdrawPoolLiquidity: boolean;
-  }[];
+  })[];
 }
 
 export function useAccountCenterCollateralHistory() {
+  const { getSubaccountProfile } = useSubaccountContext();
+  const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { data: allProductsWithdrawPoolLiquidityData } =
     useAllProductsWithdrawPoolLiquidity();
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
@@ -72,12 +68,12 @@ export function useAccountCenterCollateralHistory() {
 
     eventsToProcess?.forEach((event) => {
       const productId = event.snapshot.market.productId;
-      const marketStaticData =
+      const staticSpotMarketData =
         productId === QUOTE_PRODUCT_ID
           ? allMarketsStaticData?.primaryQuote
           : allMarketsStaticData?.spot[productId];
 
-      if (!marketStaticData) {
+      if (!staticSpotMarketData) {
         return;
       }
 
@@ -91,25 +87,19 @@ export function useAccountCenterCollateralHistory() {
           events: [],
         };
 
-      const token = marketStaticData.metadata.token;
-
-      // If there is liquidity in the withdraw pool for this product, then a fast withdraw is available,
-      // We enable fast withdraw button depending on this.
-      const hasWithdrawPoolLiquidity =
-        allProductsWithdrawPoolLiquidityData?.[productId]?.gt(
-          BigDecimals.ZERO,
-        ) ?? false;
+      const tableItem = getHistoricalCollateralEventsTableItem({
+        event,
+        staticSpotMarketData,
+        allMarketsStaticData,
+        primaryQuotePriceUsd,
+        areWithdrawalsProcessingData,
+        allProductsWithdrawPoolLiquidityData,
+        getSubaccountProfile,
+      });
 
       eventsWithDate.events.push({
-        id: `${event.submissionIndex}-${token.symbol}-${event.newAmount.toString()}`,
-        eventType: event.eventType,
-        timestampMillis,
-        token,
-        amount: removeDecimals(event.amount),
-        submissionIndex: event.submissionIndex,
-        isProcessing: areWithdrawalsProcessingData?.[event.submissionIndex],
-        hasWithdrawPoolLiquidity,
-        productId,
+        id: `${event.submissionIndex}-${tableItem.token.symbol}-${event.newAmount.toString()}`,
+        ...tableItem,
       });
 
       eventsByDateLabel[dateLabel] = eventsWithDate;
@@ -122,11 +112,12 @@ export function useAccountCenterCollateralHistory() {
         -1 * (first(eventsWithDate.events)?.timestampMillis ?? 0),
     );
   }, [
-    allMarketsStaticData?.primaryQuote,
-    allMarketsStaticData?.spot,
+    allMarketsStaticData,
     allProductsWithdrawPoolLiquidityData,
     areWithdrawalsProcessingData,
     eventsToProcess,
+    getSubaccountProfile,
+    primaryQuotePriceUsd,
   ]);
 
   return {

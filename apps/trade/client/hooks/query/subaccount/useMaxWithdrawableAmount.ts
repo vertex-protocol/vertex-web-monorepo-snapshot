@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { BigDecimal } from '@vertex-protocol/utils';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { ChainEnv } from '@vertex-protocol/client';
 
 export function maxWithdrawableQueryKey(
   chainEnv?: ChainEnv,
@@ -29,25 +29,26 @@ interface Params {
   productId?: number;
   spotLeverage?: boolean;
   subaccountName?: string;
+  disabled?: boolean;
 }
 
 // Always non-negative, includes any current positive balances
-export function useMaxWithdrawableAmount(params?: Params) {
+export function useMaxWithdrawableAmount(params: Params) {
   const { currentSubaccount } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 
-  const subaccountName = params?.subaccountName
+  const subaccountName = params.subaccountName
     ? params.subaccountName
     : currentSubaccount.name;
 
-  const productId = params?.productId ?? 0;
-  const spotLeverage = params?.spotLeverage ?? false;
+  const productId = params.productId ?? 0;
+  const spotLeverage = params.spotLeverage ?? false;
 
   const disabled =
     !currentSubaccount.address ||
     !subaccountName ||
     !vertexClient ||
-    params == null;
+    params.disabled;
 
   return useQuery({
     queryKey: maxWithdrawableQueryKey(

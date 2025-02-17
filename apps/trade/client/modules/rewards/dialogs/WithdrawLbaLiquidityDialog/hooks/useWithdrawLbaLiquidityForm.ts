@@ -1,8 +1,9 @@
 import { calcLpTokenValue } from '@vertex-protocol/contracts';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import {
   percentageValidator,
+  safeDiv,
   safeParseForData,
 } from '@vertex-protocol/web-common';
 import { useExecuteWithdrawLbaLiquidity } from 'client/hooks/execute/vrtxToken/useExecuteWithdrawLbaLiquidity';
@@ -24,7 +25,6 @@ import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { safeDiv } from 'client/utils/safeDiv';
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -47,7 +47,7 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
   const { isLoading: isTxLoading, isSuccess: isTxSuccessful } =
     useOnChainMutationStatus({
       mutationStatus: executeWithdrawLbaLiquidity.status,
-      txResponse: executeWithdrawLbaLiquidity.data,
+      txHash: executeWithdrawLbaLiquidity.data,
     });
 
   useRunWithDelayOnCondition({
@@ -217,7 +217,7 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
         accountState?.unlockedLpTokens,
       );
 
-      const txResponsePromise = executeWithdrawLbaLiquidity.mutateAsync(
+      const txHashPromise = executeWithdrawLbaLiquidity.mutateAsync(
         {
           amount: addDecimals(
             amountToWithdraw,
@@ -236,7 +236,7 @@ export function useWithdrawLbaLiquidityForm(): UseWithdrawLbaLiquidityForm {
         type: 'action_error_handler',
         data: {
           errorNotificationTitle: 'Withdraw LBA Liquidity Failed',
-          executionData: { txResponsePromise },
+          executionData: { txHashPromise },
         },
       });
     },

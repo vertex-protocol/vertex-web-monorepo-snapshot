@@ -1,15 +1,16 @@
+import { BigDecimal } from '@vertex-protocol/client';
 import {
   getMarketPriceFormatSpecifier,
   getMarketSizeFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
-import BigDecimal from 'bignumber.js';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import {
   StaticMarketData,
   StaticMarketQuoteData,
-  useAllMarketsStaticData,
-} from 'client/hooks/markets/useAllMarketsStaticData';
+} from 'client/hooks/markets/marketsStaticData/types';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import {
@@ -17,12 +18,12 @@ import {
   RealizedPnlEventsResponse,
   useSubaccountPaginatedRealizedPnlEvents,
 } from 'client/hooks/query/subaccount/useSubaccountPaginatedRealizedPnlEvents';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { RealizedPnlEventsTableItem } from 'client/modules/tables/types/RealizedPnlEventsTableItem';
 import { MarketFilter } from 'client/types/MarketFilter';
 import { calcPerpEntryCostBeforeLeverage } from 'client/utils/calcs/perpEntryCostCalcs';
 import { calcPnlFrac } from 'client/utils/calcs/pnlCalcs';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 
@@ -142,6 +143,7 @@ export function getRealizedPnlEventsTableItem({
     entryPrice,
     exitPrice,
     preBalances,
+    isolated,
   } = event;
   const { icon, symbol } = getSharedProductMetadata(staticMarketData.metadata);
 
@@ -175,6 +177,8 @@ export function getRealizedPnlEventsTableItem({
     staticMarketData.sizeIncrement,
   );
 
+  const marginModeType: MarginModeType = isolated ? 'isolated' : 'cross';
+
   return {
     timestampMillis: secondsToMilliseconds(timestamp.toNumber()),
     marketInfo: {
@@ -192,6 +196,7 @@ export function getRealizedPnlEventsTableItem({
       realizedPnlFrac,
       realizedPnlUsd,
     },
+    marginModeType,
     filledAmountAbs: decimalAdjustedFilledAmount.abs(),
     marketPriceFormatSpecifier,
     marketSizeFormatSpecifier,

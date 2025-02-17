@@ -1,5 +1,9 @@
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import {
+  MarketCategory,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
+import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
@@ -11,10 +15,6 @@ import {
   getSearchString,
   volumeComparator,
 } from 'client/modules/trading/hooks/useMarketSwitcher/utils';
-import {
-  MarketCategory,
-  useVertexMetadataContext,
-} from '@vertex-protocol/metadata';
 import { get } from 'lodash';
 import { useMemo, useState } from 'react';
 
@@ -46,7 +46,7 @@ export function useMarketSwitcher(
   const { data: allMarketsStaticData, isLoading: isLoadingMarketsStaticData } =
     useAllMarketsStaticData();
   const { data: latestMarketPricesData } = useAllMarketsLatestPrices();
-  const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
+  const { data: marketStatsData } = useAllMarketsStats();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
 
   const productTradingLinks = useProductTradingLinks();
@@ -62,7 +62,7 @@ export function useMarketSwitcher(
         getMappedMarket(
           market,
           latestMarketPricesData,
-          marketMetricsData,
+          marketStatsData,
           favoritedMarketIds.has(market.productId),
           getIsNewMarket(market.productId),
           get(productTradingLinks, market.productId, undefined)?.link ?? '',
@@ -72,7 +72,7 @@ export function useMarketSwitcher(
     allMarketsStaticData,
     favoritedMarketIds,
     latestMarketPricesData,
-    marketMetricsData,
+    marketStatsData,
     getIsHiddenMarket,
     getIsNewMarket,
     productTradingLinks,

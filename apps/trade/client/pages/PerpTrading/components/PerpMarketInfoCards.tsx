@@ -1,6 +1,7 @@
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
+  signDependentValue,
 } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
@@ -12,24 +13,15 @@ import {
 } from '@vertex-protocol/web-ui';
 import { MarketInfoCard } from 'client/components/MarketInfoCard';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { SentimentLabel } from 'client/modules/sentiment/components/SentimentLabel';
-import { useAllMarketsSentiment } from 'client/modules/sentiment/hooks/useAllMarketsSentiment';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { MarketInfoCardsContainer } from 'client/modules/trading/components/MarketInfoCardsContainer';
 import { usePerpMarketInfoCards } from 'client/pages/PerpTrading/hooks/usePerpMarketInfoCards';
-import { signDependentValue } from 'client/utils/signDependentValue';
-import { MARKET_SENTIMENT_PROVIDER } from 'common/environment/integrations/marketSentimentProvider';
-import Image from 'next/image';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 
 export function PerpMarketInfoCards({ className }: WithClassnames) {
   const { show } = useDialog();
-  const { data: allMarketsSentiment } = useAllMarketsSentiment();
   const { productId, millisToNextFunding, perpMarketInfo, quoteSymbol } =
     usePerpMarketInfoCards();
-
-  const marketSentiment = perpMarketInfo?.metadata.symbol
-    ? allMarketsSentiment?.[perpMarketInfo.metadata.symbol]
-    : undefined;
 
   return (
     <MarketInfoCardsContainer className={className}>
@@ -157,13 +149,8 @@ export function PerpMarketInfoCards({ className }: WithClassnames) {
         label="Annualized Funding"
         value={
           <div
-            className={signDependentValue(
+            className={getSignDependentColorClassName(
               perpMarketInfo?.fundingRates?.annualized,
-              {
-                positive: 'text-positive',
-                negative: 'text-negative',
-                zero: 'text-text-secondary',
-              },
             )}
           >
             {formatNumber(perpMarketInfo?.fundingRates?.annualized, {
@@ -174,32 +161,10 @@ export function PerpMarketInfoCards({ className }: WithClassnames) {
         }
       />
 
-      {/* Show market sentiment if available */}
-      {marketSentiment && (
-        <>
-          <Divider vertical className="h-6" />
-          <div className="flex items-center gap-x-1 px-2">
-            {MARKET_SENTIMENT_PROVIDER.logo && (
-              <Image
-                src={MARKET_SENTIMENT_PROVIDER.logo}
-                alt={MARKET_SENTIMENT_PROVIDER.name}
-                className="w-10"
-              />
-            )}
-            <MarketInfoCard
-              label="24h Sentiment"
-              // This seems to be required for proper width on webkit. Without this, the divider to the right will be squished right to the label
-              className="w-max"
-              definitionTooltipId="sentimentLabel"
-              value={<SentimentLabel score={marketSentiment.sentiment['1d']} />}
-            />
-          </div>
-        </>
-      )}
-
       {/* Market details entrypoint is pushed to the very right for large screens */}
       <Divider vertical className="ml-auto h-6" />
       <TextButton
+        colorVariant="secondary"
         className="px-2 text-xs"
         startIcon={<Icons.Info />}
         onClick={() => {

@@ -1,27 +1,36 @@
+import Clarity from '@microsoft/clarity';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useCookiePreference } from 'client/modules/analytics/useCookiePreference';
 import { clientEnv } from 'common/environment/clientEnv';
-import { useEVMContext } from '@vertex-protocol/react-client';
-import Script from 'next/script';
+import { useEffect } from 'react';
 
 export function MicrosoftClarityAnalytics() {
   const {
     primaryChainMetadata: { isTestnet },
-  } = useEVMContext();
+  } = useVertexMetadataContext();
   const { areCookiesAccepted } = useCookiePreference();
 
-  const disabled = isTestnet || !areCookiesAccepted;
+  const disabled = isTestnet;
 
-  return disabled ? null : (
-    <Script
-      id="ms-clarity"
-      strategy="afterInteractive"
-      dangerouslySetInnerHTML={{
-        __html: ` (function(c,l,a,r,i,t,y){
-  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "${clientEnv.integrations.microsoftClarityAnalytics}");`,
-      }}
-    />
-  );
+  const isInitialized = typeof window.clarity !== 'undefined';
+
+  // If not disabled and not initialized, initialize Clarity
+  useEffect(() => {
+    if (disabled || isInitialized) {
+      return;
+    }
+
+    Clarity.init(clientEnv.integrations.microsoftClarityAnalytics);
+  }, [disabled, isInitialized]);
+
+  // Listen for changes in the cookie preference and update the consent if Clarity is initialized
+  useEffect(() => {
+    if (!isInitialized) {
+      return;
+    }
+
+    Clarity.consent(areCookiesAccepted ?? false);
+  }, [areCookiesAccepted, isInitialized]);
+
+  return null;
 }

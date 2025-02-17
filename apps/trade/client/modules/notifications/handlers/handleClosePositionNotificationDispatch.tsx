@@ -10,7 +10,7 @@ import {
 import { createToastId } from 'client/utils/createToastId';
 import { getExecuteErrorMessage } from 'client/utils/errors/getExecuteErrorMessage';
 import { isUserDeniedError } from 'client/utils/errors/isUserDeniedError';
-import toast from 'react-hot-toast';
+import toast, { Toast } from 'react-hot-toast';
 
 export async function handleClosePositionNotificationDispatch(
   closePositionNotificationData: ClosePositionNotificationData,
@@ -21,7 +21,7 @@ export async function handleClosePositionNotificationDispatch(
 
   if (!context.isSingleSignature) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <SignaturePendingNotification
             action="close_position"
@@ -45,7 +45,7 @@ export async function handleClosePositionNotificationDispatch(
 
   if (!orderActionError) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <ClosePositionSuccessNotification
             data={closePositionParams}
@@ -61,7 +61,7 @@ export async function handleClosePositionNotificationDispatch(
     );
   } else if (!isUserDeniedError(orderActionError)) {
     toast.custom(
-      (t) => {
+      (t: Toast['message']) => {
         return (
           <ClosePositionErrorNotification
             ttl={DEFAULT_TOAST_TTL}

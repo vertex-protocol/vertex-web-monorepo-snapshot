@@ -18,18 +18,20 @@ export function Value({
   children,
   endElement,
 }: ValueProps) {
-  const textSizeClassNames = {
+  const textSizeClassName = {
     xs: 'text-xs',
     sm: 'text-sm',
-    base: 'text-lg sm:text-[20px]',
+    base: 'text-lg sm:text-xl',
     lg: 'text-2xl sm:text-3xl',
   }[sizeVariant];
 
   return (
     <div
       className={mergeClassNames(
-        textSizeClassNames,
+        textSizeClassName,
         'text-text-primary flex items-baseline gap-x-1',
+        // Applying `leading-none` & `sm:leading-none` to prevent being overridden on larger screens by `textSizeClassName`
+        'leading-none sm:leading-none',
         className,
       )}
     >

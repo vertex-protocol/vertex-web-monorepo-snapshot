@@ -56,10 +56,10 @@ export function CronTaskCard({
       label: 'Min/Hr/DoMonth/DoWeek',
       valueContent: (
         <div className="flex items-center gap-x-1">
-          <DateTimeValue valueInSeconds={minute} />
-          <DateTimeValue valueInSeconds={hour} />
-          <DateTimeValue valueInSeconds={day_of_month} />
-          <DateTimeValue valueInSeconds={day_of_week} />
+          <CronScheduleValue value={minute} />
+          <CronScheduleValue value={hour} />
+          <CronScheduleValue value={day_of_month} />
+          <CronScheduleValue value={day_of_week} />
         </div>
       ),
     },
@@ -77,4 +77,8 @@ export function CronTaskCard({
       })}
     </Card>
   );
+}
+
+function CronScheduleValue({ value }: { value: number | null }) {
+  return <span>{value ?? '-'}</span>;
 }

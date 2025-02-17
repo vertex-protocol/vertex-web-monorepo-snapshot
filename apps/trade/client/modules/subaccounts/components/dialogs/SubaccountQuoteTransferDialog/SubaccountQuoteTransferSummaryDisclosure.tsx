@@ -102,7 +102,7 @@ function SummarySection({
   }, [current, estimated]);
 
   return (
-    <div className="flex flex-col gap-y-2">
+    <>
       <p className="text-xs">{profile.username}</p>
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
@@ -114,6 +114,6 @@ function SummarySection({
       {metricItems.map((props, index) => (
         <ValueWithLabel.Horizontal key={index} sizeVariant="xs" {...props} />
       ))}
-    </div>
+    </>
   );
 }

@@ -87,6 +87,6 @@ export function useStakingState() {
     queryKey: stakingStateQueryKey(),
     queryFn,
     enabled: !disabled,
-    refetchInterval: 10000,
+    refetchInterval: 30000,
   });
 }

@@ -1,12 +1,11 @@
 import { MarginUsageWarningNotification } from 'client/modules/notifications/components/risk/MarginUsageWarningNotification';
-import { createToastId } from 'client/utils/createToastId';
-import { toast } from 'react-hot-toast';
+import { Toast, toast } from 'react-hot-toast';
+
+export const MARGIN_USAGE_WARNING_TOAST_ID = 'marginUsageWarning';
 
 export function handleMarginUsageWarningNotificationDispatch() {
-  const toastId = createToastId('marginUsageWarning');
-
   toast.custom(
-    (t) => {
+    (t: Toast['message']) => {
       return (
         <MarginUsageWarningNotification
           visible={t.visible}
@@ -17,7 +16,7 @@ export function handleMarginUsageWarningNotificationDispatch() {
       );
     },
     {
-      id: toastId,
+      id: MARGIN_USAGE_WARNING_TOAST_ID,
       duration: Infinity,
     },
   );

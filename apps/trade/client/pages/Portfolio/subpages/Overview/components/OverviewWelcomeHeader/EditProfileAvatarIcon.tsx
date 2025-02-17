@@ -1,6 +1,5 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Button, Icons } from '@vertex-protocol/web-ui';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { ProfileAvatarIcon } from 'client/modules/subaccounts/components/ProfileAvatarIcon';
 import { ProfileAvatar } from 'client/modules/subaccounts/types';
@@ -12,16 +11,11 @@ interface Props {
 
 export function EditProfileAvatarIcon({ avatar, size }: Props) {
   const { show } = useDialog();
-  const { trackEvent } = useAnalyticsContext();
 
   return (
     <Button
       className="group relative"
       onClick={() => {
-        trackEvent({
-          type: 'edit_profile_clicked',
-          data: {},
-        });
         show({ type: 'edit_user_profile', params: {} });
       }}
     >

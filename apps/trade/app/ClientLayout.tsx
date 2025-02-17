@@ -13,11 +13,12 @@ import { MicrosoftClarityAnalytics } from 'client/modules/analytics/MicrosoftCla
 import { AppDialogs } from 'client/modules/app/AppDialogs';
 import { OpenCommandCenterOnKeyPressListener } from 'client/modules/commandCenter/components/OpenCommandCenterOnKeyPressListener';
 import { NotificationManagerContextProvider } from 'client/modules/notifications/NotificationManagerContextProvider';
-import { ReferralCodeListener } from 'client/modules/referrals/components/ReferralCodeListener';
-import { FuulReferralsProvider } from 'client/modules/referrals/context/FuulReferralsContext';
+import { FuulReferralsProvider } from 'client/modules/referrals/fuul/FuulReferralsContext';
+import { ReferralCodeListener } from 'client/modules/referrals/ReferralCodeListener';
 import { SentryConfigManager } from 'client/modules/sentry/SentryConfigManager';
 import { OrderFillQueryRefetchListener } from 'client/modules/trading/OrderFillQueryRefetchListener';
 import { TpSlPositionChangeListener } from 'client/modules/trading/TpSlPositionChangeListener';
+import { UtmQueryParamsListener } from 'client/modules/utm/UtmQueryParamsListener';
 import { Provider as JotaiProvider } from 'jotai';
 import { Suspense } from 'react';
 
@@ -29,7 +30,8 @@ const queryClient = new QueryClient({
     queries: {
       // Stale time determines when a new component mount should trigger a refresh. By default this is 0,
       // which results in repeated fetches if a query is used in multiple components.
-      staleTime: 5000,
+      // We usually specify query refreshes manually, so we set this to a higher value to avoid unnecessary fetches.
+      staleTime: 30000,
     },
   },
 });
@@ -47,8 +49,8 @@ export function ClientLayout({ children }: WithChildren) {
           <Suspense>
             <AppDataProviders>
               <GatedAppAccessContextProvider>
-                <NotificationManagerContextProvider>
-                  <FuulReferralsProvider>
+                <FuulReferralsProvider>
+                  <NotificationManagerContextProvider>
                     <AnalyticsContextProvider>
                       <GoogleAnalytics />
                       {children}
@@ -57,12 +59,13 @@ export function ClientLayout({ children }: WithChildren) {
                       <SentryConfigManager />
                       <MicrosoftClarityAnalytics />
                       <TpSlPositionChangeListener />
+                      <UtmQueryParamsListener />
                       <ReferralCodeListener />
                       <CookieNoticeBanner />
                       <OpenCommandCenterOnKeyPressListener />
                     </AnalyticsContextProvider>
-                  </FuulReferralsProvider>
-                </NotificationManagerContextProvider>
+                  </NotificationManagerContextProvider>
+                </FuulReferralsProvider>
               </GatedAppAccessContextProvider>
             </AppDataProviders>
           </Suspense>

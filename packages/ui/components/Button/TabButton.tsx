@@ -1,5 +1,4 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
 import { Except } from 'type-fest';
 import { getStateOverlayClassNames } from '../../utils';
 import { Button } from './Button';
@@ -9,10 +8,7 @@ export type TabButtonProps = Except<ButtonProps, 'isLoading'> & {
   active?: boolean;
 };
 
-export const TabButton = forwardRef(function TabButton(
-  { className, active, ...rest }: TabButtonProps,
-  ref,
-) {
+export function TabButton({ className, active, ...rest }: TabButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
     borderRadiusVariant: 'base',
     disabled: rest.disabled,
@@ -27,8 +23,7 @@ export const TabButton = forwardRef(function TabButton(
         stateOverlayClassNames,
         className,
       )}
-      ref={ref}
       {...rest}
     />
   );
-});
+}

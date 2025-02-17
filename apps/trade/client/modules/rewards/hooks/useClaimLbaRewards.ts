@@ -1,11 +1,11 @@
+import { VRTX_TOKEN_INFO } from '@vertex-protocol/react-client';
 import { asyncResult } from '@vertex-protocol/utils';
 import { useExecuteClaimLbaRewards } from 'client/hooks/execute/vrtxToken/useExecuteClaimLbaRewards';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
-import { useGetConfirmedTxPromise } from 'client/hooks/util/useGetConfirmedTxPromise';
+import { useGetConfirmedTx } from 'client/hooks/util/useGetConfirmedTx';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/metadata';
 import { useCallback } from 'react';
 
 /**
@@ -13,13 +13,13 @@ import { useCallback } from 'react';
  */
 export function useClaimLbaRewards() {
   const { dispatchNotification } = useNotificationManagerContext();
-  const getConfirmedTxPromise = useGetConfirmedTxPromise();
+  const getConfirmedTx = useGetConfirmedTx();
   const { show } = useDialog();
 
   const mutation = useExecuteClaimLbaRewards();
   const { isLoading, isSuccess } = useOnChainMutationStatus({
     mutationStatus: mutation.status,
-    txResponse: mutation.data,
+    txHash: mutation.data,
   });
   useRunWithDelayOnCondition({
     condition: isSuccess,
@@ -27,22 +27,20 @@ export function useClaimLbaRewards() {
   });
 
   const claim = useCallback(async () => {
-    const txResponsePromise = mutation.mutateAsync({});
+    const txHashPromise = mutation.mutateAsync({});
 
     dispatchNotification({
       type: 'action_error_handler',
       data: {
         errorNotificationTitle: 'LBA Rewards Claim Failed',
         executionData: {
-          txResponsePromise,
+          txHashPromise,
         },
       },
     });
 
     // Await the tx here as well so we can show the success dialog
-    const [, txError] = await asyncResult(
-      getConfirmedTxPromise(txResponsePromise),
-    );
+    const [, txError] = await asyncResult(getConfirmedTx(txHashPromise));
 
     if (!txError) {
       show({
@@ -54,7 +52,7 @@ export function useClaimLbaRewards() {
             label: 'Stake Claimed Rewards',
             onClick: () => {
               show({
-                type: 'stake_vrtx',
+                type: 'stake_v2_vrtx',
                 params: {},
               });
             },
@@ -62,7 +60,7 @@ export function useClaimLbaRewards() {
         },
       });
     }
-  }, [dispatchNotification, getConfirmedTxPromise, mutation, show]);
+  }, [dispatchNotification, getConfirmedTx, mutation, show]);
 
   return {
     claim,

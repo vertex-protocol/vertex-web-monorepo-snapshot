@@ -1,4 +1,4 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useEVMContext } from '@vertex-protocol/react-client';
 import { startCase } from 'lodash';
 import { useCallback } from 'react';

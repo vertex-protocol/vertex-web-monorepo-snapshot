@@ -74,6 +74,7 @@ import { WarningCircle } from '@phosphor-icons/react/dist/ssr/WarningCircle';
 import { X } from '@phosphor-icons/react/dist/ssr/X';
 import { XCircle } from '@phosphor-icons/react/dist/ssr/XCircle';
 import { XLogo } from '@phosphor-icons/react/dist/ssr/XLogo';
+import { Question } from '@phosphor-icons/react/dist/ssr/Question';
 import { IconBaseProps, IconComponent } from './types';
 
 export const Icons = {
@@ -158,6 +159,7 @@ export const Icons = {
   Prohibit,
   Pulse,
   PushPin,
+  Question,
   ShareFatFill: (props: IconBaseProps) => <ShareFat weight="fill" {...props} />,
   ShuffleSimple,
   Star,

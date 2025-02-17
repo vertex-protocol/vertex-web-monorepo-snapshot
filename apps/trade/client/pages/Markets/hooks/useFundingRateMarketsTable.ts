@@ -4,20 +4,20 @@ import {
   ProductEngineType,
   TimeInSeconds,
 } from '@vertex-protocol/client';
+import {
+  PerpProductMetadata,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
+import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
 import { useAllProductsHistoricalSnapshots } from 'client/hooks/query/markets/useAllProductsHistoricalSnapshots';
 import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
 import { useTextSearch } from 'client/hooks/ui/useTextSearch';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
-import { safeDiv } from 'client/utils/safeDiv';
-import {
-  PerpProductMetadata,
-  useVertexMetadataContext,
-} from '@vertex-protocol/metadata';
+import { safeDiv } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 export interface FundingRateTableItem {

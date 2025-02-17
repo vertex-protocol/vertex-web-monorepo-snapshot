@@ -27,6 +27,7 @@ export function WalletAddressWithActions({
         />
       </LabelTooltip>
       <PrivacyToggleButton
+        colorVariant="secondary"
         isPrivate={isAddressPrivate}
         onClick={() => setIsAddressPrivate(!isAddressPrivate)}
       />

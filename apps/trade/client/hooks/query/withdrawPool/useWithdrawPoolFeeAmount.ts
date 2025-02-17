@@ -11,7 +11,7 @@ import {
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 
 export function withdrawPoolFeeAmountQueryKey(
   chainEnv?: ChainEnv,

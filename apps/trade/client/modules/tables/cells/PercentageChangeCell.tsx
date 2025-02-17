@@ -1,8 +1,10 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 
 interface Props {
   value: BigDecimal;
@@ -14,11 +16,7 @@ export function PercentageChangeCell({
   value,
   formatSpecifier = PresetNumberFormatSpecifier.SIGNED_PERCENTAGE_2DP,
 }: Props) {
-  const color = signDependentValue(value, {
-    positive: 'text-positive',
-    negative: 'text-negative',
-    zero: 'text-text-primary',
-  });
+  const color = getSignDependentColorClassName(value);
 
   return (
     <TableCell className={color}>

@@ -7,16 +7,16 @@ import {
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons, Pill } from '@vertex-protocol/web-ui';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import {
-  ARB_CHAIN_IDS,
-  BLAST_CHAIN_IDS,
-} from 'client/modules/envSpecificContent/consts/chainIds';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
-import { OverviewInfoCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoCardButton';
 import { OverviewInfoBlitzRewardsCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoBlitzRewardsCardButton';
+import { OverviewInfoCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoCardButton';
 import { OverviewInfoVrtxCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoVrtxCardButton';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
+import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
+import {
+  ARB_CHAIN_ENVS,
+  BLAST_CHAIN_ENVS,
+} from '@vertex-protocol/react-client';
 
 export interface Props {
   totalEstimatedPerpPnlUsd: BigDecimal | undefined;
@@ -35,8 +35,8 @@ export function OverviewInfoCardButtons({
   totalEstimatedPerpPnlFrac,
   totalEstimatedPerpPnlUsd,
 }: Props) {
-  const showVrtxCard = useIsEnabledForChainIds(ARB_CHAIN_IDS);
-  const showBlitzCard = useIsEnabledForChainIds(BLAST_CHAIN_IDS);
+  const showVrtxCard = useIsEnabledForChainEnvs(ARB_CHAIN_ENVS);
+  const showBlitzCard = useIsEnabledForChainEnvs(BLAST_CHAIN_ENVS);
   const [areAccountValuesPrivate] = usePrivacySetting(
     'areAccountValuesPrivate',
   );

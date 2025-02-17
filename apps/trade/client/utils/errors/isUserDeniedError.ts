@@ -16,10 +16,19 @@ export function isUserDeniedError(err?: any): boolean {
   }
 
   // Provider errors usually have a `code` property, this is hit if we use contract methods through the SDK
-  if (!err?.code) {
-    return false;
+  const code = err?.code;
+  if (code === 'ACTION_REJECTED' || code === 4001) {
+    return true;
   }
 
-  // ACTION_REJECTED occurs on desktop MetaMask, 4001 occurs with walletconnect on mobile: https://github.com/MetaMask/rpc-errors/blob/main/src/error-constants.ts
-  return err.code === 'ACTION_REJECTED' || err.code === 4001;
+  // Try to match against a stringified error JSON
+  // Walletconnect throws something containing `User rejected the request`, Abstract GW throws `User rejected request`
+  try {
+    const errorString = JSON.stringify(err);
+    return !!errorString.match(/user.*request/i)?.length;
+  } catch (err) {
+    console.debug('[isUserDeniedError] Failed to stringify error', err);
+  }
+
+  return false;
 }

@@ -1,7 +1,7 @@
 import { usePrimaryChainVertexClient } from '@vertex-protocol/react-client';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { useTokenAllowance } from 'client/hooks/query/useTokenAllowance';
-import { AnnotatedSpotMarket } from '@vertex-protocol/metadata';
+import { AnnotatedSpotMarket } from '@vertex-protocol/react-client';
 
 interface Params {
   productId: number | undefined;

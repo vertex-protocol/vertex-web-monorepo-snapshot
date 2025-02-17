@@ -1,4 +1,4 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { COMMON_TRANSPARENCY_COLORS, Icons } from '@vertex-protocol/web-ui';

@@ -52,7 +52,6 @@ export function getSquidRouteRequest(params: Params): RouteRequest {
     toAddress: params.subaccountAddress,
     // 5% slippage
     slippage: 5,
-    enableBoost: true, // Always enable boost
     postHook: {
       description: 'Deposit collateral',
       logoURI: 'https://app.vertexprotocol.com/vertex-icon.svg',

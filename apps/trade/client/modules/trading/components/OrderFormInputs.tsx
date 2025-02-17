@@ -4,6 +4,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { LabelTooltip, TextButton } from '@vertex-protocol/web-ui';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
 import { RangeSlider } from 'client/modules/trading/components/RangeSlider';
 import { TradeInput } from 'client/modules/trading/components/TradeInput';
@@ -23,6 +24,10 @@ interface Props extends WithClassnames {
     size: BigDecimal | undefined;
   };
   minAssetOrderSize: BigDecimal | undefined;
+  /**
+   * Used for the `Last` button on the price entry for limit price
+   */
+  lastFillPrice: BigDecimal | undefined;
 }
 
 export function OrderFormInputs({
@@ -32,6 +37,7 @@ export function OrderFormInputs({
   validators,
   inputIncrements,
   minAssetOrderSize,
+  lastFillPrice,
   className,
 }: Props) {
   const {
@@ -45,12 +51,23 @@ export function OrderFormInputs({
     priceType,
     percentageAmount,
     errorTooltips,
+    showLastPriceButton,
+    onLastPriceClick,
   } = useOrderFormInputs({
     formError,
     validators,
     minAssetOrderSize,
     inputIncrements,
+    lastFillPrice,
   });
+
+  const lastPriceButton = showLastPriceButton && (
+    <TextButton onClick={onLastPriceClick} colorVariant="accent">
+      <LabelTooltip label="Fill in the last traded price" noHelpCursor>
+        Last
+      </LabelTooltip>
+    </TextButton>
+  );
 
   return (
     <div className={joinClassNames('flex flex-col gap-y-3', className)}>
@@ -61,7 +78,7 @@ export function OrderFormInputs({
             id={priceInputRegister.name}
             label={priceType === 'limit' ? 'Price' : 'Trigger'}
             step={inputIncrements.price?.toString()}
-            symbol={undefined}
+            endElement={lastPriceButton}
             error={errorTooltips.price}
           />
         )}
@@ -69,7 +86,7 @@ export function OrderFormInputs({
           {...assetAmountInputRegister}
           id={assetAmountInputRegister.name}
           label="Amount"
-          symbol={baseSymbol}
+          endElement={baseSymbol}
           step={inputIncrements.size?.toString()}
           error={errorTooltips.assetAmount}
           onFocus={() => onFocusAmountSource('asset')}
@@ -78,7 +95,7 @@ export function OrderFormInputs({
           {...quoteAmountInputRegister}
           id={quoteAmountInputRegister.name}
           label="Total"
-          symbol={quoteSymbol}
+          endElement={quoteSymbol}
           step={0.01}
           error={errorTooltips.quoteAmount}
           onFocus={() => onFocusAmountSource('quote')}

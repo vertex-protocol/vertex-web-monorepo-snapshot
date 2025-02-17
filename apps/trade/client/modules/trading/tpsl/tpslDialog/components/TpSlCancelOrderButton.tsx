@@ -1,10 +1,10 @@
 import { TriggerOrderInfo } from '@vertex-protocol/client';
+import { removeDecimals } from '@vertex-protocol/utils';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
 import { useExecuteCancelOrdersWithNotification } from 'client/hooks/execute/cancelOrder/useExecuteCancelOrdersWithNotification';
-import { useUserActionState } from 'client/hooks/subaccount/useUserActionState';
+import { useCanUserExecute } from 'client/hooks/subaccount/useCanUserExecute';
 import { getTriggerOrderType } from 'client/modules/trading/utils/getTriggerOrderType';
-import { removeDecimals } from '@vertex-protocol/utils';
 
 interface Props {
   order: TriggerOrderInfo;
@@ -13,14 +13,14 @@ interface Props {
 export function TpSlCancelOrderButton({ order }: Props) {
   const { cancelOrdersWithNotification, status } =
     useExecuteCancelOrdersWithNotification();
-  const userActionState = useUserActionState();
+  const canUserExecute = useCanUserExecute();
 
   const message = (() => {
     switch (status) {
       case 'success':
         return <ButtonStateContent.Success message="Order Cancelled" />;
       case 'pending':
-        return 'Canceling';
+        return 'Cancelling';
       case 'idle':
       case 'error':
         return 'Cancel';
@@ -32,7 +32,7 @@ export function TpSlCancelOrderButton({ order }: Props) {
       size="xs"
       destructive
       title="Cancel"
-      disabled={userActionState === 'block_all'}
+      disabled={!canUserExecute}
       isLoading={status === 'pending'}
       onClick={() => {
         cancelOrdersWithNotification({
@@ -40,7 +40,7 @@ export function TpSlCancelOrderButton({ order }: Props) {
             {
               productId: order.order.productId,
               digest: order.order.digest,
-              totalAmount: removeDecimals(order.order.amount),
+              decimalAdjustedTotalAmount: removeDecimals(order.order.amount),
               orderType: getTriggerOrderType(order),
               isTrigger: true,
             },

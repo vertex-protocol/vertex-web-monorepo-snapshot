@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/nextjs';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { clientEnv } from 'common/environment/clientEnv';
-import { ZeroAddress } from 'ethers';
 import { useEffect } from 'react';
+import { zeroAddress } from 'viem';
 
 Sentry.setTag('data_env', clientEnv.base.dataEnv);
 
@@ -27,5 +27,5 @@ export function SentryConfigManager() {
 }
 
 function getSentryUserId(address: string | undefined, subaccountName: string) {
-  return `${address ?? ZeroAddress}-${subaccountName}`;
+  return `${address ?? zeroAddress}-${subaccountName}`;
 }

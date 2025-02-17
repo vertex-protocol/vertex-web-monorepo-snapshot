@@ -1,5 +1,6 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { SpotBalancesTable } from 'client/modules/tables/SpotBalancesTable';
+import { MobileTradingTabSpotBalances } from 'client/modules/trading/components/MobileTradingTab/MobileTradingTabSpotBalances/MobileTradingTabSpotBalances';
 import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
 import { BalancesFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
@@ -31,13 +32,11 @@ export const balancesTableFilters: TradingTabFilters<BalancesFilterOptionID> = {
 };
 
 export function SpotBalancesTab({
-  enableUserFiltering,
-  defaultFilter,
   productId,
+  isDesktop,
 }: {
-  enableUserFiltering: boolean;
-  defaultFilter: MarketFilter | undefined;
   productId: number | undefined;
+  isDesktop?: boolean;
 }) {
   const { selectedFilter } =
     useSelectedFilterByTradingTableTabSetting<BalancesFilterOptionID>({
@@ -57,9 +56,15 @@ export function SpotBalancesTab({
     }
   }, [selectedFilter, productId]);
 
+  if (isDesktop) {
+    return <SpotBalancesTable marketFilter={userFilter} />;
+  }
+
   return (
-    <SpotBalancesTable
-      marketFilter={enableUserFiltering ? userFilter : defaultFilter}
+    <MobileTradingTabSpotBalances
+      marketFilter={userFilter}
+      // If there's no `productId` we're currently on a perp market and ignore user filtering.
+      tradingTabFilters={productId ? balancesTableFilters : undefined}
     />
   );
 }

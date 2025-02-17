@@ -1,7 +1,11 @@
+import {
+  AnnotatedPerpMarket,
+  getMarketPriceFormatSpecifier,
+  PerpProductMetadata,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
+import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { useLatestPriceChange } from 'client/hooks/markets/useLatestPriceChange';
 import { useMarket } from 'client/hooks/markets/useMarket';
@@ -12,10 +16,6 @@ import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPri
 import { useNextFundingTime } from 'client/modules/trading/hooks/useNextFundingTime';
 import { usePerpOrderFormContext } from 'client/pages/PerpTrading/context/PerpOrderFormContext';
 import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
-import {
-  AnnotatedPerpMarket,
-  PerpProductMetadata,
-} from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface PerpMarketInfo {
@@ -27,7 +27,7 @@ export interface PerpMarketInfo {
   priceChange24hr: BigDecimal | undefined;
   priceChangeFrac24hr: BigDecimal | undefined;
   quoteVolume24hr: BigDecimal | undefined;
-  openInterestQuote: BigDecimal;
+  openInterestQuote: BigDecimal | undefined;
   fundingRates: FundingRates | undefined;
   metadata: PerpProductMetadata;
   latestPriceChange: BigDecimal | undefined;
@@ -48,7 +48,7 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
   const { data: perpMarket } = useMarket<AnnotatedPerpMarket>({ productId });
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { millisToNextFunding } = useNextFundingTime();
-  const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
+  const { data: marketStatsData } = useAllMarketsStats();
   const { data: fundingRatesData } = useAllMarkets24HrFundingRates();
   const { data: latestPerpPricesData } = useLatestPerpPrices();
   const { data: latestOraclePricesData } = useLatestOraclePrices();
@@ -61,8 +61,8 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
     }
     const productId = perpMarket.productId;
 
-    const marketMetrics = marketMetricsData?.metricsByMarket[productId];
-    const marketPriceChange = marketMetrics?.pastDayPriceChange;
+    const marketStats = marketStatsData?.statsByMarket[productId];
+    const marketPriceChange = marketStats?.pastDayPriceChange;
     const dailyFundingRate = fundingRatesData?.[productId]?.fundingRate;
     const oraclePrice =
       latestOraclePricesData?.[productId]?.oraclePrice ??
@@ -76,9 +76,7 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
       fundingRates: dailyFundingRate
         ? getFundingRates(dailyFundingRate)
         : undefined,
-      openInterestQuote: removeDecimals(
-        perpMarket.product.openInterest.multipliedBy(oraclePrice),
-      ),
+      openInterestQuote: removeDecimals(marketStats?.openInterestQuote),
       metadata: perpMarket.metadata,
       marketPrice: latestOrderFillPrice?.price,
       marketPriceValueUsd:
@@ -86,19 +84,17 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
       oraclePrice,
       indexPrice,
       priceChange24hr: marketPriceChange,
-      priceChangeFrac24hr: marketMetrics?.pastDayPriceChangeFrac,
-      quoteVolume24hr: removeDecimals(
-        marketMetrics?.pastDayVolumeInPrimaryQuote,
-      ),
+      priceChangeFrac24hr: marketStats?.pastDayPriceChangeFrac,
+      quoteVolume24hr: removeDecimals(marketStats?.pastDayVolumeInPrimaryQuote),
       latestPriceChange: latestPriceChange ?? marketPriceChange,
     };
   }, [
     perpMarket,
-    latestOrderFillPrice,
-    marketMetricsData,
+    marketStatsData?.statsByMarket,
     fundingRatesData,
     latestOraclePricesData,
     latestPerpPricesData,
+    latestOrderFillPrice?.price,
     primaryQuotePriceUsd,
     latestPriceChange,
   ]);

@@ -1,4 +1,7 @@
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  formatNumber,
+  getMarketPriceFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import {
   SecondaryButton,
   formatTimestamp,
@@ -11,7 +14,8 @@ import { useOpenOrderDetailsDialog } from 'client/modules/tables/detailDialogs/h
 import { OpenTriggerOrderTableItem } from 'client/modules/tables/hooks/useOpenTriggerOrdersTable';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
+import { isTpSlOrderSize } from 'client/modules/trading/tpsl/utils/isTpSlOrderSize';
 
 export type OpenTriggerOrderDetailsDialogParams = OpenTriggerOrderTableItem;
 
@@ -22,6 +26,7 @@ export function OpenTriggerOrderDetailsDialog({
   digest,
   triggerPrice: price,
   orderType,
+  marginModeType,
   totalAmount,
   orderPrice,
   totalSize,
@@ -41,10 +46,10 @@ export function OpenTriggerOrderDetailsDialog({
     totalAmount,
   });
 
-  const { symbol, amountForSide, icon, marketName } = marketInfo;
+  const { amountForSide, icon, marketName } = marketInfo;
 
   const metricItems = (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-2">
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Time"
@@ -58,8 +63,7 @@ export function OpenTriggerOrderDetailsDialog({
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Type"
-        valueClassName="text-text-tertiary uppercase"
-        valueContent={getOrderTypeLabel(orderType)}
+        valueContent={getOrderTypeLabel(orderType, marginModeType)}
       />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
@@ -86,9 +90,13 @@ export function OpenTriggerOrderDetailsDialog({
       <ValueWithLabel.Horizontal
         sizeVariant="xs"
         label="Amount"
-        numberFormatSpecifier={sizeFormatSpecifier}
-        value={totalSize}
-        valueEndElement={symbol}
+        valueContent={
+          isTpSlOrderSize(totalSize)
+            ? 'MAX'
+            : formatNumber(totalSize, {
+                formatSpecifier: sizeFormatSpecifier,
+              })
+        }
       />
       <ValueWithLabel.Horizontal
         sizeVariant="xs"

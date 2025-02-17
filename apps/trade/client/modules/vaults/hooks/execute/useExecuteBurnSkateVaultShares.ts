@@ -6,7 +6,7 @@ import {
   toBigDecimal,
   toPrintableObject,
 } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import { useExecuteInValidContext } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
@@ -132,13 +132,11 @@ export function useExecuteBurnSkateVaultShares() {
           }),
         );
 
-        const hash = await context.walletClient.writeContract({
+        return context.walletClient.writeContract({
           ...contractParams,
           functionName: 'burn',
           args: [shares, minQuoteAmountWithSlippage],
         });
-
-        return { hash };
       },
       [quoteAddress],
     ),

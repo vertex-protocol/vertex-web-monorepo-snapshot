@@ -6,7 +6,7 @@ export * from './ConditionalAsChild';
 export * from './DiscList';
 export * from './Disclosure';
 export * from './Divider';
-export * from './DropdownTrigger';
+export * from './DropdownUi';
 export * from './Icons';
 export * from './Input';
 export * from './Label';

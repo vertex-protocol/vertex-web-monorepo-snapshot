@@ -1,6 +1,7 @@
 import { ActionSuccessDialog } from 'client/modules/app/dialogs/ActionSuccessDialog';
 import { CommandCenterDialog } from 'client/modules/app/dialogs/CommandCenterDialog';
 import { AccountDialogs } from 'client/modules/app/dialogs/dialogGroups/AccountDialogs';
+import { CampaignDialogs } from 'client/modules/app/dialogs/dialogGroups/CampaignDialogs';
 import { CollateralDialogs } from 'client/modules/app/dialogs/dialogGroups/CollateralDialogs';
 import { DetailDialogs } from 'client/modules/app/dialogs/dialogGroups/DetailDialogs';
 import { LpDialogs } from 'client/modules/app/dialogs/dialogGroups/LpDialogs';
@@ -36,6 +37,7 @@ export function AppDialogs() {
       <VrtxTokenDialogs />
       <ReferralDialogs />
       <VaultsDialogs />
+      <CampaignDialogs />
     </>
   );
 }

@@ -4,17 +4,16 @@ import {
   IAirdrop__factory,
   ILBA__factory,
 } from '@vertex-protocol/client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
-  useIsChainType,
+  useIsChainEnvType,
   usePrimaryChainPublicClient,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { ZeroAddress } from 'ethers';
-import { Address } from 'viem';
+import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { Address, zeroAddress } from 'viem';
 
 export function accountTokenClaimStateQueryKey(
   chainEnv?: ChainEnv,
@@ -39,7 +38,7 @@ export interface AccountTokenClaimStateData {
  * A multicall query that returns a summary of an address' state in the LBA pool
  */
 export function useAccountTokenClaimState() {
-  const { isArb } = useIsChainType();
+  const { isArb } = useIsChainEnvType();
   const vertexClient = usePrimaryChainVertexClient();
   const publicClient = usePrimaryChainPublicClient();
   const {
@@ -48,7 +47,7 @@ export function useAccountTokenClaimState() {
   } = useEVMContext();
 
   const disabled = !vertexClient || !publicClient || !isArb;
-  const addressForQuery = address ?? ZeroAddress;
+  const addressForQuery = address ?? zeroAddress;
 
   const queryFn = async (): Promise<AccountTokenClaimStateData> => {
     if (disabled) {
@@ -103,6 +102,6 @@ export function useAccountTokenClaimState() {
     queryKey: accountTokenClaimStateQueryKey(primaryChainEnv, addressForQuery),
     queryFn,
     enabled: !disabled,
-    refetchInterval: 10000,
+    // Refetch logic should handle query updates
   });
 }

@@ -1,79 +1,62 @@
 import {
-  ARB_CHAIN_IDS,
-  BASE_CHAIN_IDS,
-  BLAST_CHAIN_IDS,
-  MANTLE_CHAIN_IDS,
-  SEI_CHAIN_IDS,
-} from 'client/modules/envSpecificContent/consts/chainIds';
+  ARB_CHAIN_ENVS,
+  BASE_CHAIN_ENVS,
+  BLAST_CHAIN_ENVS,
+  MANTLE_CHAIN_ENVS,
+  SEI_CHAIN_ENVS,
+  SONIC_CHAIN_ENVS,
+} from '@vertex-protocol/react-client';
+import { NO_SPOT_CHAIN_ENVS } from 'client/modules/envSpecificContent/consts/noSpotChainEnvs';
 import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
-import { useIsEnabledForChainIds } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainIds';
+import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
 import { clientEnv } from 'common/environment/clientEnv';
 
 export function useEnabledFeatures() {
-  const isStakePageEnabled = clientEnv.base.brandName === 'vertex';
-  const isStakeActionEnabled = useIsEnabledForChainIds(ARB_CHAIN_IDS);
-  const isElectionMarketsEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...BASE_CHAIN_IDS,
+  const isSonicPointsPageEnabled = useIsEnabledForChainEnvs(SONIC_CHAIN_ENVS);
+  const isStakingPageEnabled = useIsEnabledForBrand(['vertex']);
+  const isStakeActionEnabled = useIsEnabledForChainEnvs(ARB_CHAIN_ENVS);
+  const isSpotTradingEnabled = !useIsEnabledForChainEnvs(NO_SPOT_CHAIN_ENVS);
+
+  const isBridgeEnabled = useIsEnabledForChainEnvs([
+    ...ARB_CHAIN_ENVS,
+    ...BASE_CHAIN_ENVS,
+    ...MANTLE_CHAIN_ENVS,
+    ...BLAST_CHAIN_ENVS,
   ]);
 
-  const isBridgeEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...BASE_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-    ...BLAST_CHAIN_IDS,
-  ]);
-
-  const isOnrampEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...BASE_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-    ...SEI_CHAIN_IDS,
+  const isOnrampEnabled = useIsEnabledForChainEnvs([
+    ...ARB_CHAIN_ENVS,
+    ...BASE_CHAIN_ENVS,
+    ...MANTLE_CHAIN_ENVS,
+    ...SEI_CHAIN_ENVS,
   ]);
 
   const isFuulEnabled = useIsEnabledForBrand(['vertex']);
 
-  const isVaultsEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-    ...BLAST_CHAIN_IDS,
+  const isVaultsEnabled = useIsEnabledForChainEnvs([
+    ...ARB_CHAIN_ENVS,
+    ...MANTLE_CHAIN_ENVS,
+    ...BLAST_CHAIN_ENVS,
   ]);
 
-  const isStatsLinkEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...BLAST_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-    ...BASE_CHAIN_IDS,
-    ...SEI_CHAIN_IDS,
+  const isNotifiEnabled = useIsEnabledForChainEnvs([
+    ...ARB_CHAIN_ENVS,
+    ...BASE_CHAIN_ENVS,
+    ...BLAST_CHAIN_ENVS,
   ]);
 
-  const isLeaderboardEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-  ]);
-
-  const isNotifiEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...BASE_CHAIN_IDS,
-    ...BLAST_CHAIN_IDS,
-  ]);
-
-  const isExodusEnabled = useIsEnabledForChainIds([
-    ...ARB_CHAIN_IDS,
-    ...MANTLE_CHAIN_IDS,
-  ]);
+  const isIsoMarginEnabled = clientEnv.base.enableExperimentalFeatures;
 
   return {
-    isStakePageEnabled,
+    isSonicPointsPageEnabled,
+    isSpotTradingEnabled,
+    isStakingPageEnabled,
     isStakeActionEnabled,
     isBridgeEnabled,
     isOnrampEnabled,
     isFuulEnabled,
     isVaultsEnabled,
-    isStatsLinkEnabled,
-    isLeaderboardEnabled,
     isNotifiEnabled,
-    isExodusEnabled,
-    isElectionMarketsEnabled,
+    isIsoMarginEnabled,
   };
 }

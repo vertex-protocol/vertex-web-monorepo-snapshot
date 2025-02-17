@@ -16,9 +16,11 @@ interface StakingV2RewardsDistribution {
   /** Time in seconds */
   timeMillis: BigDecimal;
   /** Base amount of VRTX rewarded (yield fraction = baseAmount / totalVrtxBalance */
-  baseAmount: BigDecimal;
+  baseYieldAmount: BigDecimal;
   /** Amount of VRTX rewarded from fees (yield fraction = feeAmount / totalVrtxBalance */
-  feeAmount: BigDecimal;
+  feesYieldAmount: BigDecimal;
+  /** Amount of USDC fees */
+  feesUsdcAmount: BigDecimal;
   /** Amount staked including yield */
   totalBalance: BigDecimal;
 }
@@ -70,8 +72,9 @@ export function useStakingV2State() {
           timeMillis: toBigDecimal(distribution.distributionTime).multipliedBy(
             1000,
           ),
-          baseAmount: toBigDecimal(distribution.baseYieldAmount),
-          feeAmount: toBigDecimal(distribution.feesYieldAmount),
+          baseYieldAmount: toBigDecimal(distribution.baseYieldAmount),
+          feesYieldAmount: toBigDecimal(distribution.feesYieldAmount),
+          feesUsdcAmount: toBigDecimal(distribution.usdcAmount),
           totalBalance: toBigDecimal(distribution.totalVrtxBalance),
         };
       }),
@@ -83,6 +86,6 @@ export function useStakingV2State() {
     queryKey: stakingV2StateQueryKey(),
     queryFn,
     enabled: !disabled,
-    refetchInterval: 10000,
+    refetchInterval: 30000,
   });
 }

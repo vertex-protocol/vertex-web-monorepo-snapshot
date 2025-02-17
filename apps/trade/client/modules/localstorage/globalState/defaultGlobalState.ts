@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash';
 const DEFAULT_GLOBAL_STATE = Object.freeze<SavedGlobalState>({
   areCookiesAccepted: null,
   lastSelectedChainEnv: undefined,
+  readOnlyAddressOverride: '',
 });
 
 // See getUserSettingsWithDefaults for explanation of implementation
@@ -17,6 +18,9 @@ export function getGlobalStateWithDefaults(
     lastSelectedChainEnv:
       currentSaved?.lastSelectedChainEnv ??
       DEFAULT_GLOBAL_STATE.lastSelectedChainEnv,
+    readOnlyAddressOverride:
+      currentSaved?.readOnlyAddressOverride ??
+      DEFAULT_GLOBAL_STATE.readOnlyAddressOverride,
   };
 
   return cloneDeep(withDefaults);

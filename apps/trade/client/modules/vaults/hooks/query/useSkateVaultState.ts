@@ -1,15 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/client';
 import {
-  QueryDisabledError,
   createQueryKey,
+  QueryDisabledError,
   useEVMContext,
   usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
-import { ZeroAddress } from 'ethers';
-import { Address } from 'viem';
 
 import vaultsAbi from 'client/modules/vaults/SkateVaultAbi';
+import { Address, zeroAddress } from 'viem';
 
 export function skateVaultStateQueryKey(
   vaultAddress?: string,
@@ -42,7 +41,7 @@ export function useSkateVaultState({ vaultAddress }: Params) {
     connectionStatus: { address },
   } = useEVMContext();
 
-  const userAddressForQuery = address ?? ZeroAddress;
+  const userAddressForQuery = address ?? zeroAddress;
 
   const disabled = !publicClient;
 

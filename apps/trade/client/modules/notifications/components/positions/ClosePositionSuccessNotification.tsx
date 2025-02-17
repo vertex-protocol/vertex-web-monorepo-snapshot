@@ -8,7 +8,7 @@ import { ActionToast } from 'client/components/Toast/ActionToast/ActionToast';
 import { ToastProps } from 'client/components/Toast/types';
 import { OrderSuccessIcon } from 'client/modules/notifications/components/OrderSuccessIcon';
 import { ClosePositionNotificationData } from 'client/modules/notifications/types';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface ClosePositionNotificationProps extends ToastProps {
   data: ClosePositionNotificationData['closePositionParams'];

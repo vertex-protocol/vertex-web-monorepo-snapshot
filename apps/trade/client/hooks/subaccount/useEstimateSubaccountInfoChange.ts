@@ -3,13 +3,12 @@ import {
   calcSubaccountMarginUsageFractions,
 } from '@vertex-protocol/contracts';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { BigDecimal } from '@vertex-protocol/utils';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { AnnotatedSubaccountSummary } from 'client/hooks/query/subaccount/annotateSubaccountSummary';
-import { useSubaccountEstimatedSummary } from 'client/hooks/query/subaccount/useSubaccountEstimatedSummary';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useSubaccountEstimatedSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountEstimatedSummary';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
+import { AnnotatedSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/annotateSubaccountSummary';
 import { useDebounceFalsy } from 'client/hooks/util/useDebounceFalsy';
-import { removeDecimals } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
 import { EmptyObject } from 'type-fest';
 

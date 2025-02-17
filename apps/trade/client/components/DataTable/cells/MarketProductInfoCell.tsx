@@ -5,6 +5,7 @@ import {
 } from 'client/components/DataTable/cells/TableCell';
 import { NewPill } from 'client/components/NewPill';
 import Image from 'next/image';
+import { ReactNode } from 'react';
 
 interface Props extends TableCellProps {
   iconSrc: NextImageSrc;
@@ -16,7 +17,7 @@ interface Props extends TableCellProps {
   /**
    * Renders an element at the end of the cell
    */
-  endElement?: React.ReactNode;
+  endElement?: ReactNode;
 }
 
 export function MarketProductInfoCell({
@@ -28,10 +29,10 @@ export function MarketProductInfoCell({
 }: Props) {
   return (
     <TableCell className={joinClassNames('gap-x-2', className)}>
-      <Image src={iconSrc} className="size-6" alt={symbol} />
+      <Image src={iconSrc} className="h-6 w-auto" alt={symbol} />
       {/* If there is a "new" pill next to the name, the row may not have enough space, */}
       {/* so render the name and pill as a column on small screens. */}
-      <div className="flex flex-col items-start gap-1.5 lg:flex-row lg:items-center">
+      <div className="flex flex-col items-start gap-x-1.5 gap-y-0.5 lg:flex-row lg:items-center">
         <p className="font-medium">{symbol}</p>
         {isNewMarket && <NewPill />}
       </div>

@@ -6,7 +6,7 @@ import {
   removeDecimals,
   toBigDecimal,
 } from '@vertex-protocol/utils';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useMarketLiquidity } from 'client/hooks/query/markets/useMarketLiquidity';
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
 import { useMemo } from 'react';

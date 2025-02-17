@@ -30,7 +30,7 @@ export function useExecuteStakeV2Vrtx() {
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (params: VrtxTokenAmountParams, context: ValidExecuteContext) => {
-        console.log('Staking v2 VRTX', params);
+        console.log('Staking V2 VRTX', params);
         refetchQueryKeysRef.current = [
           ...REFETCH_QUERY_KEYS_WITHOUT_ALLOWANCE,
           tokenAllowanceQueryKey(
@@ -40,7 +40,8 @@ export function useExecuteStakeV2Vrtx() {
             context.vertexClient.context.contractAddresses.vrtxToken,
           ),
         ];
-        return context.vertexClient.rewards.stakeV2(params);
+        const txResponse = await context.vertexClient.rewards.stakeV2(params);
+        return txResponse.hash;
       },
       [],
     ),

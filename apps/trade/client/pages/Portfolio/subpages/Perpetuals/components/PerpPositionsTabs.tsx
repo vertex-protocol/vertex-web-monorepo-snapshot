@@ -8,13 +8,11 @@ import {
 } from '@radix-ui/react-tabs';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { CounterPill, UnderlinedTabs } from '@vertex-protocol/web-ui';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { usePerpPositionsTabs } from 'client/pages/Portfolio/subpages/Perpetuals/hooks/usePerpPositionsTabs';
 
 export function PerpPositionsTabs({ className }: WithClassnames) {
   const { selectedTabId, tabs, setSelectedUntypedTabId } =
     usePerpPositionsTabs();
-  const { trackEvent } = useAnalyticsContext();
 
   return (
     <TabsRoot
@@ -22,12 +20,6 @@ export function PerpPositionsTabs({ className }: WithClassnames) {
       value={selectedTabId}
       onValueChange={(value) => {
         setSelectedUntypedTabId(value);
-        trackEvent({
-          type: 'positions_tabs_clicked',
-          data: {
-            positionsTab: value,
-          },
-        });
       }}
     >
       <TabsList asChild>

@@ -15,6 +15,7 @@ import {
   useInterestPaymentsTable,
 } from 'client/modules/tables/hooks/useInterestPaymentsTable';
 import { useMemo } from 'react';
+import { MarginModeTypeCell } from 'client/modules/tables/cells/MarginModeTypeCell';
 
 const columnHelper = createColumnHelper<InterestPaymentsTableItem>();
 
@@ -56,6 +57,16 @@ export const PaginatedInterestPaymentsTable = ({
         enableSorting: false,
         meta: {
           cellContainerClassName: 'w-32',
+        },
+      }),
+      columnHelper.accessor('marginModeType', {
+        header: ({ header }) => <HeaderCell header={header}>Type</HeaderCell>,
+        cell: ({ getValue }) => {
+          return <MarginModeTypeCell marginModeType={getValue()} />;
+        },
+        enableSorting: false,
+        meta: {
+          cellContainerClassName: 'w-20',
         },
       }),
       columnHelper.accessor('balanceAmount', {

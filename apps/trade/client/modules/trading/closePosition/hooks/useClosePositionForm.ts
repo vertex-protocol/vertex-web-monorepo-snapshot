@@ -1,6 +1,6 @@
 import { BigDecimal } from '@vertex-protocol/utils';
 import { useExecuteClosePosition } from 'client/hooks/execute/placeOrder/useExecuteClosePosition';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import {
   PerpPositionItem,
   usePerpPositions,
@@ -18,7 +18,7 @@ import {
 } from 'react';
 
 interface UseClosePositionForm {
-  perpPositionItem?: PerpPositionItem;
+  perpPositionItem: PerpPositionItem | undefined;
   sizeIncrement: BigDecimal | undefined;
   priceIncrement: BigDecimal | undefined;
   amountClosedPnl: BigDecimal | undefined;
@@ -35,8 +35,10 @@ interface UseClosePositionForm {
 // This allows users to easily submit close position orders of any size if their initial health < 0
 export function useClosePositionForm({
   productId,
+  isoSubaccountName,
 }: {
   productId: number;
+  isoSubaccountName: string | undefined;
 }): UseClosePositionForm {
   const { hide } = useDialog();
   const { dispatchNotification } = useNotificationManagerContext();
@@ -46,10 +48,13 @@ export function useClosePositionForm({
 
   const [fractionToClose, setFractionToClose] = useState<number>(1); // 100% as default
 
-  // Perp Position Item
-  const perpPositionItem = positionsData?.find(
-    (position) => position.productId === productId,
-  );
+  const perpPositionItem = positionsData?.find((position) => {
+    const matchesProductId = position.productId === productId;
+    const matchesMarginMode =
+      position.iso?.subaccountName === isoSubaccountName;
+
+    return matchesProductId && matchesMarginMode;
+  });
 
   useRunWithDelayOnCondition({
     condition: executeClosePosition.isSuccess,
@@ -105,6 +110,7 @@ export function useClosePositionForm({
     const orderActionResult = executeClosePosition.mutateAsync({
       productId,
       fractionToClose,
+      isoSubaccountName: perpPositionItem?.iso?.subaccountName,
     });
 
     dispatchNotification({

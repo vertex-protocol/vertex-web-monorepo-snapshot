@@ -8,9 +8,9 @@ export function WmntDepositDismissible({
 }: {
   displayedInfoCardType: DepositInfoCardType | undefined;
 }) {
-  const { show } = useDialog();
+  const { push } = useDialog();
 
-  if (displayedInfoCardType !== 'wmnt') {
+  if (displayedInfoCardType !== 'wrap_wmnt') {
     return null;
   }
 
@@ -23,13 +23,13 @@ export function WmntDepositDismissible({
           <p>Only wMNT deposits are supported.</p>
           <p>
             Swap MNT to wMNT via the cross-chain deposit dialog by selecting{' '}
-            Mantle as the originating chain.
+            Mantle as the &quot;From&quot; chain.
           </p>
           <LinkButton
             colorVariant="primary"
             className="w-fit"
             onClick={() => {
-              show({
+              push({
                 type: 'bridge',
                 params: {},
               });

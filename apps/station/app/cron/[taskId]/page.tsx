@@ -2,23 +2,25 @@ import {
   CronTaskPage,
   CronTaskPageRouteParams,
 } from 'client/pages/CronTaskPage/CronTaskPage';
-import { TaskPageRouteParams } from 'client/pages/TaskPage/TaskPage';
-import { Metadata } from 'next';
 
-export default function Page({
-  params: { taskId },
+export default async function Page({
+  params,
 }: {
-  params: TaskPageRouteParams;
+  params: Promise<CronTaskPageRouteParams>;
 }) {
+  const { taskId } = await params;
+
   return <CronTaskPage taskId={taskId} />;
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: CronTaskPageRouteParams;
-}): Metadata {
+  params: Promise<CronTaskPageRouteParams>;
+}) {
+  const { taskId } = await params;
+
   return {
-    title: `Cron Task ${params.taskId}`,
+    title: `Cron Task ${taskId}`,
   };
 }

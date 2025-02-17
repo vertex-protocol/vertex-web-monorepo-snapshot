@@ -2,22 +2,23 @@ import * as Accordion from '@radix-ui/react-accordion';
 import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
+  signDependentValue,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { useCopyText } from '@vertex-protocol/web-common';
 import {
+  formatTimestamp,
   Spinner,
   TextButton,
-  formatTimestamp,
   TimeFormatSpecifier,
 } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { PreLiquidationBalanceAccordionItem } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/PreLiquidationBalanceAccordionItem';
 import { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
 import { usePreLiquidationDetailsDialog } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/usePreLiquidationDetailsDialog';
-import { signDependentValue } from 'client/utils/signDependentValue';
 import { useState } from 'react';
 
 export function PreLiquidationDetailsDialog(
@@ -62,7 +63,7 @@ export function PreLiquidationDetailsDialog(
           </p>
           <p>
             If asked by support:{' '}
-            <TextButton onClick={onCopyJsonClick}>
+            <TextButton colorVariant="secondary" onClick={onCopyJsonClick}>
               {copyJsonButtonText}
             </TextButton>
           </p>
@@ -82,11 +83,31 @@ export function PreLiquidationDetailsDialog(
         >
           {/*Spot balances*/}
           {spotBalances?.map((balance) => {
-            const accordionId = balance.productId.toString();
+            const isolatedPerpProduct = balance.isolatedPerpProduct;
+            const accordionId = `${balance.productId}_${isolatedPerpProduct?.productId}`;
             const isPositiveBalance = balance.balanceAmount.gt(0);
+            const productNameWithMarginMode = getProductNameWithMarginMode(
+              balance.productName,
+              balance.marginModeType,
+            );
 
             const metrics = (
               <>
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
+                  label="Type"
+                  valueClassName="capitalize"
+                  valueContent={balance.marginModeType}
+                />
+                {isolatedPerpProduct && (
+                  <ValueWithLabel.Horizontal
+                    sizeVariant="xs"
+                    label="Position"
+                    valueContent={
+                      balance.isolatedPerpProduct?.metadata.marketName
+                    }
+                  />
+                )}
                 <ValueWithLabel.Horizontal
                   sizeVariant="xs"
                   label="Oracle Price"
@@ -129,7 +150,7 @@ export function PreLiquidationDetailsDialog(
                 value={accordionId}
                 active={openAccordionIds.includes(accordionId)}
                 productIconSrc={balance.iconSrc}
-                productName={balance.productName}
+                productName={productNameWithMarginMode}
                 sideLabel={isPositiveBalance ? 'DEPOSIT' : 'BORROW'}
                 isPositiveBalance={isPositiveBalance}
                 metrics={metrics}
@@ -138,11 +159,21 @@ export function PreLiquidationDetailsDialog(
           })}
           {/*Perp positions*/}
           {perpBalances?.map((balance) => {
-            const accordionId = balance.productId.toString();
+            const accordionId = `${balance.marginModeType}_${balance.productId}`;
             const isPositiveBalance = balance.balanceAmount.gt(0);
+            const productNameWithMarginMode = getProductNameWithMarginMode(
+              balance.productName,
+              balance.marginModeType,
+            );
 
             const metrics = (
               <>
+                <ValueWithLabel.Horizontal
+                  sizeVariant="xs"
+                  label="Type"
+                  valueClassName="capitalize"
+                  valueContent={balance.marginModeType}
+                />
                 <ValueWithLabel.Horizontal
                   sizeVariant="xs"
                   label="Oracle Price"
@@ -185,7 +216,7 @@ export function PreLiquidationDetailsDialog(
                 value={accordionId}
                 active={openAccordionIds.includes(accordionId)}
                 productIconSrc={balance.iconSrc}
-                productName={balance.productName}
+                productName={productNameWithMarginMode}
                 sideLabel={isPositiveBalance ? 'LONG' : 'SHORT'}
                 isPositiveBalance={isPositiveBalance}
                 metrics={metrics}
@@ -196,4 +227,11 @@ export function PreLiquidationDetailsDialog(
       </BaseAppDialog.Body>
     </BaseAppDialog.Container>
   );
+}
+
+function getProductNameWithMarginMode(
+  productName: string,
+  marginModeType: MarginModeType,
+) {
+  return `${productName} (${marginModeType === 'isolated' ? 'Iso' : 'Cross'})`;
 }

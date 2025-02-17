@@ -1,15 +1,15 @@
 import {
-  QUOTE_PRODUCT_ID,
   addDecimals,
+  QUOTE_PRODUCT_ID,
   removeDecimals,
 } from '@vertex-protocol/client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   InputValidatorFn,
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
 import { useDebounce } from 'ahooks';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
@@ -17,7 +17,6 @@ import { useFormTokenAllowance } from 'client/hooks/ui/form/useFormTokenAllowanc
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
 import { useOnFractionSelectedHandler } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { SkateVaultFormErrorType } from 'client/modules/vaults/dialogs/types';
 import { useExecuteMintSkateVaultShares } from 'client/modules/vaults/hooks/execute/useExecuteMintSkateVaultShares';
@@ -40,7 +39,6 @@ export function useSkateVaultDepositDialog({
   const { primaryQuoteToken } = useVertexMetadataContext();
   const { dispatchNotification } = useNotificationManagerContext();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
-  const { trackEvent } = useAnalyticsContext();
 
   const quoteDecimals = primaryQuoteToken.tokenDecimals;
 
@@ -99,7 +97,7 @@ export function useSkateVaultDepositDialog({
   const { isLoading: isDepositTxLoading, isSuccess: isDepositTxSuccess } =
     useOnChainMutationStatus({
       mutationStatus: executeMintSkateVaultShares.status,
-      txResponse: executeMintSkateVaultShares.data,
+      txHash: executeMintSkateVaultShares.data,
     });
 
   useRunWithDelayOnCondition({
@@ -181,19 +179,13 @@ export function useSkateVaultDepositDialog({
     if (requiresApproval) {
       approve(validAmountWithAddedDecimals);
     } else {
-      const txResponsePromise = executeMintSkateVaultShares.mutateAsync(
+      const txHashPromise = executeMintSkateVaultShares.mutateAsync(
         {
           quoteAmount: validAmountWithAddedDecimals,
           vaultAddress: vaultAddress,
         },
         {
           onSuccess: () => {
-            trackEvent({
-              type: 'vault_dialog_deposit_placed',
-              data: {
-                vaultAddress,
-              },
-            });
             useSkateDepositForm.resetField('amount');
             useSkateDepositForm.setValue('percentageAmount', 0);
           },
@@ -204,7 +196,7 @@ export function useSkateVaultDepositDialog({
         type: 'action_error_handler',
         data: {
           errorNotificationTitle: 'Deposit Failed',
-          executionData: { txResponsePromise },
+          executionData: { txHashPromise },
         },
       });
     }

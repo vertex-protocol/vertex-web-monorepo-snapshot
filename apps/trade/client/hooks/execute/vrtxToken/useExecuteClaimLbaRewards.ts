@@ -7,13 +7,11 @@ import {
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { allDepositableTokenBalancesQueryKey } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
 import { accountTokenClaimStateQueryKey } from 'client/hooks/query/vrtxToken/useAccountTokenClaimState';
-import { lbaTokenWalletBalancesQueryKey } from 'client/hooks/query/vrtxToken/useLbaTokenWalletBalances';
 import { useCallback } from 'react';
 import { EmptyObject } from 'type-fest';
 
 const REFETCH_QUERY_KEYS: string[][] = [
   accountTokenClaimStateQueryKey(),
-  lbaTokenWalletBalancesQueryKey(),
   allDepositableTokenBalancesQueryKey(),
 ];
 
@@ -23,7 +21,8 @@ const REFETCH_QUERY_KEYS: string[][] = [
 export function useExecuteClaimLbaRewards() {
   const mutationFn = useExecuteInValidContext(
     useCallback(async (_: EmptyObject, context: ValidExecuteContext) => {
-      return context.vertexClient.rewards.claimLbaRewards();
+      const txResponse = await context.vertexClient.rewards.claimLbaRewards();
+      return txResponse.hash;
     }, []),
   );
 

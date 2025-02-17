@@ -2,48 +2,47 @@ import {
   mergeClassNames,
   WithChildren,
   WithClassnames,
+  WithRef,
 } from '@vertex-protocol/web-common';
-import {
-  ComponentProps,
-  forwardRef,
-  InputHTMLAttributes,
-  useId,
-  useMemo,
-} from 'react';
+import { ComponentProps, InputHTMLAttributes, useId, useMemo } from 'react';
 
-export type InputTextAreaProps = InputHTMLAttributes<HTMLInputElement>;
+export type InputTextAreaProps = WithRef<
+  InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
 
-const TextArea = forwardRef<HTMLInputElement, InputTextAreaProps>(
-  function TextArea(
-    { id, className, readOnly, type, disabled, ...rest }: InputTextAreaProps,
-    ref,
-  ) {
-    const generatedId = useId();
-    const inputId = useMemo(() => id ?? generatedId, [generatedId, id]);
+function TextArea({
+  id,
+  className,
+  readOnly,
+  type,
+  disabled,
+  ...rest
+}: InputTextAreaProps) {
+  const generatedId = useId();
+  const inputId = useMemo(() => id ?? generatedId, [generatedId, id]);
 
-    return (
-      <input
-        id={inputId}
-        name={inputId}
-        className={mergeClassNames(
-          // `w-full` to prevent the input from expanding to fit its `size` attribute
-          'w-full bg-transparent',
-          'placeholder:text-text-tertiary text-text-primary',
-          disabled && 'cursor-not-allowed',
-          readOnly && 'cursor-auto',
-          className,
-        )}
-        autoComplete="off"
-        step="any"
-        type={type}
-        disabled={disabled}
-        readOnly={readOnly}
-        ref={ref}
-        {...rest}
-      />
-    );
-  },
-);
+  return (
+    <input
+      id={inputId}
+      name={inputId}
+      className={mergeClassNames(
+        // `w-full` to prevent the input from expanding to fit its `size` attribute
+        'w-full bg-transparent',
+        'placeholder:text-text-tertiary text-text-primary',
+        disabled && 'cursor-not-allowed',
+        readOnly && 'cursor-auto',
+        className,
+      )}
+      autoComplete="off"
+      step="any"
+      type={type}
+      disabled={disabled}
+      readOnly={readOnly}
+      {...rest}
+    />
+  );
+}
 
 export interface InputContainerProps extends WithChildren, WithClassnames {
   isError?: boolean;
@@ -77,17 +76,14 @@ function Container({
   );
 }
 
-const Label = forwardRef<HTMLLabelElement, ComponentProps<'label'>>(
-  function Label({ className, ...rest }, ref) {
-    return (
-      <label
-        ref={ref}
-        className={mergeClassNames('text-text-tertiary', className)}
-        {...rest}
-      />
-    );
-  },
-);
+function Label({ className, ...rest }: ComponentProps<'label'>) {
+  return (
+    <label
+      className={mergeClassNames('text-text-tertiary', className)}
+      {...rest}
+    />
+  );
+}
 
 export const Input = {
   TextArea,

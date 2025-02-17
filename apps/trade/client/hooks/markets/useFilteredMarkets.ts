@@ -1,8 +1,8 @@
+import { AnnotatedMarket } from '@vertex-protocol/react-client';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
-import { useAllMarkets } from 'client/hooks/query/markets/useAllMarkets';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
+import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { AnnotatedMarket } from '@vertex-protocol/metadata';
 import { pickBy } from 'lodash';
 import { useCallback, useMemo } from 'react';
 

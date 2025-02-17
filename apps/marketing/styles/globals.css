@@ -3,98 +3,196 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    @apply bg-black-900;
+  button:focus,
+  a:focus {
+    @apply outline-none;
   }
 
-  button {
-    @apply select-none outline-none;
-  }
-  /* Fixes current issues with `/next/image` component 
-      see 'https://github.com/tailwindlabs/tailwindcss/discussions/9748' */
-  img,
-  video {
-    @apply h-max max-w-none;
-  }
-}
-
-/* Scroll-bar Customization */
-@layer components {
-  .custom-scrollbar::-webkit-scrollbar {
-    @apply bg-black-700 w-2 rounded-2xl bg-white;
+  button:focus-visible,
+  a:focus-visible {
+    @apply outline-none;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-black-700;
+  button:focus:not(:focus-visible),
+  a:focus:not(:focus-visible) {
+    @apply shadow-none outline-none;
   }
 
-  /* Handle */
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-white-600 rounded-2xl;
+  .motion-button-gradient {
+    @apply relative overflow-clip text-white transition-all duration-300;
   }
 
-  /* Handle on hover */
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-purple-900;
+  .motion-button-gradient:hover {
+    @apply text-white;
   }
 
-  /* Gradient Text */
-  .gradient-text {
-    @apply bg-clip-text text-transparent;
+  .motion-button-bg {
+    @apply relative overflow-clip;
+  }
+
+  .motion-button-bg::before {
+    @apply absolute inset-0 bg-repeat opacity-0 grayscale;
+    content: '';
+    background-image: url('../public/img/glow-effect.png');
+    background-size: 100%;
+    background-position: -10% 0;
+    animation: glowing-gray 7s linear infinite;
+  }
+
+  .motion-button-gradient::before {
+    @apply absolute inset-0 left-[-20px] z-[1] bg-repeat opacity-0 grayscale transition-all duration-300;
+    content: '';
+    background-image: url('../public/img/glow-effect.png');
+    background-size: 50%;
+    background-position: -10% 0;
+    animation: glowing-gray 7s linear infinite;
+  }
+
+  .motion-button-gradient:hover::before {
+    @apply left-0 opacity-50;
+  }
+
+  .launch-button-gradient {
+    @apply relative overflow-clip text-white transition-all duration-300;
+  }
+
+  .launch-button-gradient:hover {
+    @apply text-white;
+  }
+
+  .launch-button-bg {
+    @apply relative overflow-clip;
+  }
+
+  .launch-button-bg::before {
+    @apply absolute inset-0 bg-repeat brightness-200 contrast-150;
+    content: '';
+    background-image: url('../public/img/glow-effect.png');
+    background-size: 200%;
+    background-position: -10% 0;
+    animation: glowing 7s linear infinite;
+  }
+
+  .launch-button-gradient::before {
+    @apply absolute inset-0 left-[-20px] z-[1] bg-repeat opacity-10 transition-all duration-300;
+    content: '';
+    animation: glowing 7s linear infinite;
+    background-image: url('../public/img/glow-effect.png');
+    background-size: 100%;
+    background-position: -10% 0;
+    filter: brightness(1) contrast(1);
+  }
+
+  .launch-button-gradient:hover::before {
+    @apply left-0 opacity-50;
+  }
+
+  @media (max-width: 768px) {
+    .launch-button-gradient::before {
+      @apply opacity-50;
+    }
+  }
+
+  @keyframes glowing {
+    0% {
+      filter: blur(0) brightness(1.5) contrast(1);
+      background-position: 40% 45%;
+      background-size: 100%;
+    }
+    25% {
+      filter: blur(10px) brightness(1.5) contrast(1);
+      background-position: 30% 80%;
+      background-size: 130%;
+    }
+    50% {
+      filter: blur(20px) brightness(1.5) contrast(1);
+      background-position: 45% 65%;
+      background-size: 150%;
+    }
+    75% {
+      filter: blur(10px) brightness(1.5) contrast(1);
+      background-position: 60% 30%;
+      background-size: 125%;
+    }
+    100% {
+      filter: blur(0) brightness(1.5) contrast(1);
+      background-position: 40% 45%;
+      background-size: 100%;
+    }
+  }
+
+  @keyframes glowing-gray {
+    0% {
+      filter: blur(5px), brightness(1), grayscale(100%);
+      background-position: 20% 25%;
+      background-size: 120%;
+    }
+    25% {
+      filter: blur(10px), brightness(1), grayscale(100%);
+      background-position: 30% 60%;
+      background-size: 130%;
+    }
+    50% {
+      filter: blur(20px), brightness(1), grayscale(100%);
+      background-position: 25% 50%;
+      background-size: 140%;
+    }
+    75% {
+      filter: blur(10px), brightness(1), grayscale(100%);
+      background-position: 40% 30%;
+      background-size: 135%;
+    }
+    100% {
+      filter: blur(5px), brightness(1), grayscale(100%);
+      background-position: 20% 25%;
+      background-size: 120%;
+    }
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    @apply hidden;
+  }
+
+  #vrtx-lottie #circle {
+    filter: blur(20px);
+  }
+
+  img {
+    @apply pointer-events-none select-none;
+    -webkit-user-drag: none;
   }
 }
 
 @layer utilities {
-  .mask::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    border-radius: 8px;
-    padding: 1px; /* control the border thickness */
-    background: linear-gradient(
-      45deg,
-      rgba(181, 113, 125, 0.48),
-      rgba(89, 77, 248, 1)
-    );
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-  .mask-round::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    border-radius: 9999px;
-    padding: 1px; /* control the border thickness */
-    background: linear-gradient(
-      45deg,
-      rgba(181, 113, 125, 0.48),
-      rgba(89, 77, 248, 1)
-    );
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+  .text-balance {
+    text-wrap: balance;
   }
 
-  pre {
-    font-family: 'PPObjectSans';
+  .container-custom {
+    @apply mx-auto px-4;
+    max-width: 1200px;
   }
 
-  input[type='number'] {
-    -webkit-appearance: textfield;
-    appearance: textfield;
+  @media (min-width: 640px) {
+    .container-custom {
+      @apply px-8;
+    }
   }
 
-  input[type='number']::-webkit-inner-spin-button,
-  input[type='number']::-webkit-outer-spin-button {
-    -webkit-appearance: none;
+  .text-linear-header {
+    @apply bg-header-linear bg-clip-text text-transparent;
+  }
+
+  .text-gradient {
+    @apply bg-text-gradient bg-clip-text text-transparent;
+  }
+
+  .button-shadow {
+    box-shadow: '0px -2px 7px 0px rgba(114, 116, 120, 0.25), 0px 2px 5px 0px rgba(0, 0, 0, 0.90)';
   }
 }

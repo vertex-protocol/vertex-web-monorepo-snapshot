@@ -1,3 +1,4 @@
+import { toBigDecimal } from '@vertex-protocol/client';
 import { BigDecimal, BigDecimalish } from '@vertex-protocol/utils';
 import { useExecuteApproveAllowance } from 'client/hooks/execute/useExecuteApproveAllowance';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
@@ -57,7 +58,7 @@ export function useFormTokenAllowance({
   const { isLoading: isApprovalTxLoading, isSuccess: isApprovalTxSuccess } =
     useOnChainMutationStatus({
       mutationStatus: approveMutation.status,
-      txResponse: approveMutation.data,
+      txHash: approveMutation.data,
     });
   useRunWithDelayOnCondition({
     condition: isApprovalTxSuccess,
@@ -92,7 +93,7 @@ export function useFormTokenAllowance({
       const serverExecutionResult = approveMutation.mutateAsync({
         spenderAddress,
         tokenAddress,
-        amount: amount.toString(),
+        amount: BigInt(toBigDecimal(amount).toFixed()),
       });
       dispatchNotification({
         type: 'action_error_handler',

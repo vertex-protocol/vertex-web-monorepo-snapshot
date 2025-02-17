@@ -10,10 +10,16 @@ export interface InitialMaintMetrics {
   maintenance: BigDecimal;
 }
 
-export function calcPerpBalanceHealth(
+/**
+ * Calculates the value of the perp balance without leverage and pnl. This is used in the margin manager
+ * to show the amount of health consumed by a perp position without the impact of unsettled pnl
+ *
+ * @param balance
+ */
+export function calcPerpBalanceHealthWithoutPnl(
   balance: BalanceWithProduct,
 ): InitialMaintMetrics {
-  // Perp Balance health is calculated by using formula
+  // Perp Balance health w/o PnL is calculated by using formula
   // -1 * abs(notional value) / max leverage
 
   // Ex. if weight is 0.9, this is 0.1 (adjusts from entry cost INCLUDING 10x leverage)
@@ -138,6 +144,8 @@ export function calcSpreadBasisAmount(
  *     -15 BTC, +10 BTC-PERP = -10 BTC spread
  *     +15 BTC, +10 BTC-PERP = no spread
  *
+ * Logic from https://github.com/vertex-protocol/vertex-core/blob/develop/contracts/Clearinghouse.sol#L120
+ *
  * @param spotBalance
  * @param perpBalance
  */
@@ -145,76 +153,51 @@ export function calcSpreadHealthIncrease(
   spotBalance: SpotBalanceWithProduct,
   perpBalance: PerpBalanceWithProduct,
 ): InitialMaintMetrics {
-  const basisAmount = calcSpreadBasisAmount(
+  const basisSize = calcSpreadBasisAmount(
     spotBalance.amount,
     perpBalance.amount,
-  );
+  ).abs();
 
   // We don't calculate health if spread is zero.
-  if (basisAmount.isZero()) {
+  if (basisSize.isZero()) {
     return {
       initial: BigDecimals.ZERO,
       maintenance: BigDecimals.ZERO,
     };
   }
 
-  // Contracts use abs amount (size), which isn't 100% correct, but we'll do the same
-  const basisSize = basisAmount.abs();
-
-  // Contracts use perp weights in subaccount info query
   const longPerpWeights = getHealthWeights(BigDecimals.ONE, perpBalance);
+  const longSpotWeights = getHealthWeights(BigDecimals.ONE, spotBalance);
 
-  // For spreads, there's a penalty for liquidity considerations, which is
-  // penaltyMultiplier * (|spot value| + |perp value|) = penaltyMultiplier * basis size * (spot price + perp price)
-  // Random calc in contracts
-  const initialSpreadPenaltyMultiplier = BigDecimals.ONE.minus(
-    longPerpWeights.initial,
-  ).div(5);
-  const maintSpreadPenaltyMultiplier = BigDecimals.ONE.minus(
-    longPerpWeights.maintenance,
-  ).div(5);
+  const initialExistingPenalty = longSpotWeights.initial
+    .plus(longPerpWeights.initial)
+    .div(2);
+  const maintExistingPenalty = longSpotWeights.maintenance
+    .plus(longPerpWeights.maintenance)
+    .div(2);
+
+  // Spread penalty for liquidity considerations
+  const spreadLongWeights = spotBalance.amount.gt(0)
+    ? longPerpWeights
+    : longSpotWeights;
+  const initialSpreadPenalty = BigDecimals.ONE.minus(
+    BigDecimals.ONE.minus(spreadLongWeights.initial).div(5),
+  );
+  const maintSpreadPenalty = BigDecimals.ONE.minus(
+    BigDecimals.ONE.minus(spreadLongWeights.maintenance).div(5),
+  );
+
   const totalSpreadUnderlyingValue = basisSize.multipliedBy(
     spotBalance.oraclePrice.plus(perpBalance.oraclePrice),
   );
 
-  const initialSpreadPenalty = initialSpreadPenaltyMultiplier.multipliedBy(
-    totalSpreadUnderlyingValue,
-  );
-  const maintSpreadPenalty = maintSpreadPenaltyMultiplier.multipliedBy(
-    totalSpreadUnderlyingValue,
-  );
-
-  // Normal health for underlying balances in a spread = spot value * spot weight + perp value * perp weight + perp vquote
-  // Spread health = spot value + perp value + perp vquote - spread penalty
-  // Health increase = spread health - normal health = spot value * (1 - spot weight) + perp value * (1 - perp weight) - spread penalty
-  const spotValue = basisAmount.multipliedBy(spotBalance.oraclePrice);
-  const perpNotionaValue = basisAmount
-    .multipliedBy(perpBalance.oraclePrice)
-    .multipliedBy(-1); // As positive basis = short perp
-
-  const spotWeights = getHealthWeights(basisAmount, spotBalance);
-  const perpWeights = getHealthWeights(
-    basisAmount.multipliedBy(-1),
-    perpBalance,
-  );
-
   return {
-    initial: spotValue
-      .multipliedBy(BigDecimals.ONE.minus(spotWeights.initial))
-      .plus(
-        perpNotionaValue.multipliedBy(
-          BigDecimals.ONE.minus(perpWeights.initial),
-        ),
-      )
-      .minus(initialSpreadPenalty),
-    maintenance: spotValue
-      .multipliedBy(BigDecimals.ONE.minus(spotWeights.maintenance))
-      .plus(
-        perpNotionaValue.multipliedBy(
-          BigDecimals.ONE.minus(perpWeights.maintenance),
-        ),
-      )
-      .minus(maintSpreadPenalty),
+    initial: totalSpreadUnderlyingValue.multipliedBy(
+      initialSpreadPenalty.minus(initialExistingPenalty),
+    ),
+    maintenance: totalSpreadUnderlyingValue.multipliedBy(
+      maintSpreadPenalty.minus(maintExistingPenalty),
+    ),
   };
 }
 

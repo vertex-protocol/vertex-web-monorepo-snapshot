@@ -13,12 +13,13 @@
     "ahooks": "*",
     "jotai": "*",
     "react": "*",
-    "tailwind-merge": "^2.4.0"
+    "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
     "eslint": "*",
     "eslint-config-custom": "*",
     "ts-config": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "typescript-eslint": "*"
   }
 }

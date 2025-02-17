@@ -60,8 +60,69 @@
 }
 
 @layer utilities {
+  @keyframes background-slide {
+    from {
+      background-position: 0% 0%;
+    }
+    to {
+      background-position: 200% 0%;
+    }
+  }
+
   .title-text {
     /*tracking-normal to override tighter letter-spacing applied to Blitz*/
     @apply font-title font-medium tracking-normal;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+  }
+
+  .gradient-animated-text {
+    @apply gradient-text;
+    animation: background-slide 2.5s infinite linear;
+    background-size: 200%;
+  }
+
+  .text-vertex-animated-gradient-highlight {
+    @apply gradient-animated-text;
+    background-image: linear-gradient(
+      277deg,
+      #fff 0%,
+      #cd92ec 14.3%,
+      #85c5e0 84.72%,
+      #fff 100%
+    );
+  }
+
+  .text-vertex-gradient-highlight {
+    @apply gradient-text;
+    background-image: linear-gradient(
+      277deg,
+      #fff 1.88%,
+      #cd92ec 36.3%,
+      #85c5e0 74.72%
+    );
+  }
+
+  .text-sonic-animated-gradient-highlight {
+    @apply gradient-animated-text;
+    background-image: linear-gradient(
+      277deg,
+      #fff 0%,
+      #ff711b 14.3%,
+      #85c5e0 84.72%,
+      #fff 100%
+    );
+  }
+
+  .text-sonic-gradient-highlight {
+    @apply gradient-text;
+    background-image: linear-gradient(
+      277deg,
+      #fff 1.88%,
+      #ff711b 36.3%,
+      #85c5e0 74.72%
+    );
   }
 }

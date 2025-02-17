@@ -1,4 +1,3 @@
-import { toBigDecimal } from '@vertex-protocol/client';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { InputSummaryItem } from 'client/components/InputSummaryItem';
@@ -18,23 +17,27 @@ export function SubaccountQuoteTransferInputSummary({
   onFractionSelected,
   symbol,
 }: Props) {
+  const maxWithdrawableLabel = enableBorrows
+    ? 'Max with borrow:'
+    : 'Max amount:';
+
+  const maxWithdrawableDefinitionTooltipId = enableBorrows
+    ? 'maxWithBorrow'
+    : 'maxAmount';
+
   return (
     <div className="flex flex-col gap-y-0.5">
       <InputSummaryItem
-        label={enableBorrows ? 'Max with borrow:' : 'Max transfer:'}
+        label={maxWithdrawableLabel}
         currentValue={decimalAdjustedMaxWithdrawableWithFee}
         formatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
-        definitionTooltipId={
-          enableBorrows
-            ? 'subaccountQuoteTransferMaxWithBorrow'
-            : 'subaccountQuoteTransferMaxTransfer'
-        }
+        definitionTooltipId={maxWithdrawableDefinitionTooltipId}
         onValueClick={() => onFractionSelected(1)}
       />
       <ValueWithLabel.Horizontal
         label="Gas Fee:"
         tooltip={{ id: 'gasFee' }}
-        value={toBigDecimal(SUBACCOUNT_QUOTE_TRANSFER_FEE)}
+        value={SUBACCOUNT_QUOTE_TRANSFER_FEE}
         valueEndElement={symbol}
         numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
         valueClassName="text-text-secondary"

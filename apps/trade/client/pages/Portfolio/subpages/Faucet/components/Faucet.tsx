@@ -4,15 +4,15 @@ import { isSpotBalance } from '@vertex-protocol/client';
 import {
   AnnotatedSpotBalanceWithProduct,
   useVertexMetadataContext,
-} from '@vertex-protocol/metadata';
+} from '@vertex-protocol/react-client';
 import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { Card, PrimaryButton } from '@vertex-protocol/web-ui';
 import { useExecuteMintTokens } from 'client/hooks/execute/useExecuteMintTokens';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/useSubaccountSummary';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
 import { CollateralAssetSelect } from 'client/modules/collateral/components/CollateralAssetSelect';
-import { CollateralSpotProduct } from 'client/modules/collateral/types';
+import { CollateralSpotProductSelectValue } from 'client/modules/collateral/types';
 import { useEffect, useMemo, useState } from 'react';
 
 export const Faucet = () => {
@@ -21,7 +21,7 @@ export const Faucet = () => {
   const { data: subaccountSummary } = useSubaccountSummary();
   const { data: depositableTokenBalances } = useAllDepositableTokenBalances();
 
-  const availableProducts: (CollateralSpotProduct & {
+  const availableProducts: (CollateralSpotProductSelectValue & {
     tokenDecimals: number;
   })[] = useMemo(() => {
     if (!subaccountSummary) {
@@ -35,6 +35,7 @@ export const Faucet = () => {
         depositableTokenBalances?.[spotBalance.productId] ?? BigDecimals.ZERO;
 
       return {
+        selectId: token.symbol,
         productId: spotBalance.productId,
         icon: token.icon,
         symbol: token.symbol,
@@ -58,7 +59,7 @@ export const Faucet = () => {
 
   // Watch for tx status
   const txState = useOnChainTransactionState({
-    txResponse: mintTokens.data,
+    txHash: mintTokens.data,
   });
 
   // Derive status

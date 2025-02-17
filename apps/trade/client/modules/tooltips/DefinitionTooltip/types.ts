@@ -1,4 +1,4 @@
-import { Token } from '@vertex-protocol/metadata';
+import { Token } from '@vertex-protocol/react-client';
 import { ReactNode } from 'react';
 
 export interface DefinitionTooltipContent {

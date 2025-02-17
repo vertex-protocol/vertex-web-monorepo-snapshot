@@ -1,7 +1,8 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
 import { Form } from 'client/components/Form';
+import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { AdvancedOrderSettings } from 'client/modules/trading/components/AdvancedOrderSettings/AdvancedOrderSettings';
 import { OrderFormInputs } from 'client/modules/trading/components/OrderFormInputs';
 import { OrderFormSpreadWarningPanel } from 'client/modules/trading/components/OrderFormSpreadWarningPanel';
@@ -13,7 +14,6 @@ import { StopMarketOrderDismissible } from 'client/modules/trading/components/St
 import { StopOrderTriggerPriceInfo } from 'client/modules/trading/components/StopOrderTriggerPriceInfo';
 import { TradingErrorPanel } from 'client/modules/trading/components/TradingErrorPanel';
 import { useIsHighSpread } from 'client/modules/trading/hooks/useIsHighSpread';
-import { PredictionMarketInfo } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/PredictionMarketInfo';
 import { SpotLeverageOffDismissible } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotLeverageOffDismissible';
 import { SpotLeverageOnDisclosure } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotLeverageOnDisclosure';
 import { SpotMarginSwitch } from 'client/pages/SpotTrading/components/SpotOrderPlacementSection/components/SpotMarginSwitch';
@@ -50,6 +50,9 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
     leverageEnabled,
   } = useSpotTradingFormAccountInfo();
 
+  const { data: latestOrderFill } = useLatestOrderFill({
+    productId: currentMarket?.productId,
+  });
   const { showLeverageOnWarning, showLeverageOffWarning } =
     useShowLeverageWarnings();
   const isHighSpread = useIsHighSpread(currentMarket?.productId);
@@ -100,6 +103,7 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
               inputIncrements={inputIncrements}
               minAssetOrderSize={minAssetOrderSize}
               formError={formError}
+              lastFillPrice={latestOrderFill?.price}
             />
             <SpotTradingFormAccountInfo
               maxOrderSize={maxOrderSize}
@@ -133,7 +137,6 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
                   isStopOrder={isStopOrder}
                   orderSide={orderSide}
                 />
-                <PredictionMarketInfo />
               </div>
               {/*Margin for extra space between the divider and order summary*/}
               <Divider className="mb-3" />

@@ -1,5 +1,5 @@
 import { InputValidatorFn } from '@vertex-protocol/web-common';
-import { SharedProductMetadata, Token } from '@vertex-protocol/metadata';
+import { SharedProductMetadata, Token } from '@vertex-protocol/react-client';
 
 export type PairMetadata = {
   base: SharedProductMetadata;

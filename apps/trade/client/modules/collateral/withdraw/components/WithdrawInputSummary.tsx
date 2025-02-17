@@ -1,10 +1,10 @@
-import { BigDecimal } from '@vertex-protocol/utils';
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { useMemo } from 'react';
+import { BigDecimal } from '@vertex-protocol/utils';
 import {
   InputSummaryItem,
   InputSummaryItemProps,
 } from 'client/components/InputSummaryItem';
+import { useMemo } from 'react';
 
 interface Props {
   enableBorrows: boolean;
@@ -24,12 +24,10 @@ export function WithdrawInputSummary({
     definitionTooltipId,
   }: InputSummaryItemProps = useMemo(() => {
     return {
-      label: enableBorrows ? 'Max with borrow:' : 'Max withdrawal:',
+      label: enableBorrows ? 'Max with borrow:' : 'Max amount:',
       currentValue: selectedProductMaxWithdrawable,
       formatSpecifier: CustomNumberFormatSpecifier.NUMBER_PRECISE,
-      definitionTooltipId: enableBorrows
-        ? 'withdrawMaxWithBorrow'
-        : 'withdrawMaxWithdrawal',
+      definitionTooltipId: enableBorrows ? 'maxWithBorrow' : 'maxAmount',
     };
   }, [enableBorrows, selectedProductMaxWithdrawable]);
 

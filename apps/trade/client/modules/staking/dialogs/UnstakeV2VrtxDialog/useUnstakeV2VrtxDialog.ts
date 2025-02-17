@@ -1,4 +1,4 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { BigDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { useExecuteUnstakeV2Vrtx } from 'client/hooks/execute/vrtxToken/useExecuteUnstakeV2Vrtx';
 import { useOnChainMutationStatus } from 'client/hooks/query/useOnChainMutationStatus';
@@ -35,6 +35,7 @@ export function useUnstakeV2VrtxDialog() {
     instantUnstakeReceivedAmountFraction,
     instantUnstakeBurnAmountFraction,
     instantAmountToReceive,
+    instantUnstakeBurnedAmount,
     availableToUnstakeTimeMillis,
     unstakedLockPeriodDays,
   } = useMemo(() => {
@@ -48,6 +49,14 @@ export function useUnstakeV2VrtxDialog() {
         accountStakingV2State.toTreasuryRatio,
       ),
     );
+
+    const instantUnstakeBurnedAmount = (() => {
+      if (!instantUnstakeBurnAmountFraction) {
+        return undefined;
+      }
+
+      return currentBalance?.multipliedBy(instantUnstakeBurnAmountFraction);
+    })();
 
     const instantUnstakeReceivedAmountFraction = (() => {
       if (!instantUnstakeBurnAmountFraction) {
@@ -70,12 +79,13 @@ export function useUnstakeV2VrtxDialog() {
       instantUnstakeBurnAmountFraction,
       instantUnstakeReceivedAmountFraction,
       instantAmountToReceive,
+      instantUnstakeBurnedAmount,
       unstakedLockPeriodDays:
         accountStakingV2State?.unstakedLockPeriodMillis?.dividedBy(
           millisecondsInDay,
         ),
       availableToUnstakeTimeMillis:
-        accountStakingV2State?.availableToUnstakeTimeMillis?.toNumber(),
+        accountStakingV2State?.unstakedLockPeriodMillis.plus(now())?.toNumber(),
     };
   }, [accountStakingV2State, protocolTokenDecimals]);
 
@@ -86,7 +96,7 @@ export function useUnstakeV2VrtxDialog() {
   const { isLoading: isTxLoading, isSuccess: isTxSuccessful } =
     useOnChainMutationStatus({
       mutationStatus: executeUnstakeV1Vrtx.status,
-      txResponse: executeUnstakeV1Vrtx.data,
+      txHash: executeUnstakeV1Vrtx.data,
     });
 
   useRunWithDelayOnCondition({
@@ -95,7 +105,7 @@ export function useUnstakeV2VrtxDialog() {
   });
 
   const unstakeAll = useCallback(() => {
-    const txResponsePromise = unstakeV2VrtxMutation({
+    const txHashPromise = unstakeV2VrtxMutation({
       instant: selectedRadioId === 'instant',
     });
 
@@ -103,7 +113,7 @@ export function useUnstakeV2VrtxDialog() {
       type: 'action_error_handler',
       data: {
         errorNotificationTitle: 'Unstake VRTX Failed',
-        executionData: { txResponsePromise },
+        executionData: { txHashPromise },
       },
     });
   }, [unstakeV2VrtxMutation, dispatchNotification, selectedRadioId]);
@@ -133,6 +143,7 @@ export function useUnstakeV2VrtxDialog() {
     protocolTokenIconSrc,
     instantUnstakeBurnAmountFraction,
     instantUnstakeReceivedAmountFraction,
+    instantUnstakeBurnedAmount,
     disableButtons,
     unstakedLockPeriodDays,
     availableToUnstakeTimeMillis,

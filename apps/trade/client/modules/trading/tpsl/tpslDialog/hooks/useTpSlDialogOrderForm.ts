@@ -17,14 +17,19 @@ export interface UseTpSlDialogOrderForm
 
 interface Params {
   productId: number;
+  isoSubaccountName: string | null;
   isTakeProfit: boolean;
 }
 
 export function useTpSlDialogOrderForm({
   productId,
   isTakeProfit,
+  isoSubaccountName,
 }: Params): UseTpSlDialogOrderForm {
-  const tpSlPositionData = useTpSlPositionData({ productId });
+  const tpSlPositionData = useTpSlPositionData({
+    productId,
+    isoSubaccountName,
+  });
   const marketName = tpSlPositionData?.metadata?.marketName;
   const priceIncrement = tpSlPositionData?.priceIncrement;
   const lastPrice = tpSlPositionData?.lastPrice;
@@ -42,6 +47,7 @@ export function useTpSlDialogOrderForm({
     productId,
     isTakeProfit,
     longWeightInitial,
+    isoSubaccountName,
   });
 
   useRunWithDelayOnCondition({

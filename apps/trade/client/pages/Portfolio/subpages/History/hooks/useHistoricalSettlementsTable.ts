@@ -3,17 +3,17 @@ import {
   GetIndexerSubaccountSettlementEventsResponse,
   IndexerSettlementEvent,
 } from '@vertex-protocol/indexer-client';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   BigDecimal,
   BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useSubaccountPaginatedSettlementEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedSettlementEvents';
 import { MarketInfoCellData } from 'client/modules/tables/types/MarketInfoCellData';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
 

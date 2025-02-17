@@ -1,4 +1,4 @@
-import { WithClassnames, useCopyText } from '@vertex-protocol/web-common';
+import { useCopyText, WithClassnames } from '@vertex-protocol/web-common';
 import {
   CompactInput,
   IconButton,
@@ -60,7 +60,7 @@ export function PrivateKeyInput({
           1CT Private Key
         </Input.Label>
         <SecondaryButton
-          size="sm"
+          size="xs"
           onClick={setRandomPrivateKey}
           startIcon={<Icons.ArrowClockwise />}
           disabled={disabled}
@@ -94,6 +94,10 @@ export function PrivateKeyInput({
           disabled={disabled}
         />
       </div>
+      <span className="text-text-tertiary text-xs">
+        Use the same key to setup 1CT on other devices. No fee will apply when
+        the same key is used.
+      </span>
     </div>
   );
 }

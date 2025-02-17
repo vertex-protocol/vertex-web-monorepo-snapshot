@@ -5,7 +5,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { Value, SecondaryButton } from '@vertex-protocol/web-ui';
+import { SecondaryButton, Value } from '@vertex-protocol/web-ui';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { useSkateVaultApyFraction } from 'client/modules/vaults/hooks/query/useSkateVaultApyFraction';
 import { BLITZ_SPECIFIC_IMAGES, IMAGES } from 'common/brandMetadata/images';
@@ -33,7 +33,7 @@ export function BlitzVaultsOpportunityCardContent({
       )}
     >
       <Image src={IMAGES.partners.skate} alt="" className="h-4 w-auto" />
-      <Value endElement="APY" sizeVariant="lg" className="leading-none">
+      <Value endElement="APY" sizeVariant="lg">
         {formatNumber(vaultApy, {
           formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         })}

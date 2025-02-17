@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { ReactNode } from 'react';
 
 interface HeaderProps {
-  title: string;
+  title: ReactNode;
   description?: ReactNode;
 }
 

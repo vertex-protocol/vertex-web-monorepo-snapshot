@@ -35,6 +35,7 @@ export function MakerMetricChartLegend({ payload, setHiddenAddresses }: Props) {
 
         return (
           <TextButton
+            colorVariant="secondary"
             key={`item-${index}`}
             className={joinClassNames(
               'text-nowrap text-xs',

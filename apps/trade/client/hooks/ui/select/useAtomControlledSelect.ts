@@ -1,20 +1,22 @@
 import { PrimitiveAtom, useAtom } from 'jotai';
-import { useSelect, UseSelectParams } from '@vertex-protocol/web-ui';
+import {
+  SelectValue,
+  useSelect,
+  UseSelectParams,
+} from '@vertex-protocol/web-ui';
 
-export interface UseAtomControlledSelectParams<
-  TIdentifier extends string,
-  TValue,
-> extends Omit<
-    UseSelectParams<TIdentifier, TValue>,
+export interface UseAtomControlledSelectParams<TValue extends SelectValue>
+  extends Omit<
+    UseSelectParams<TValue>,
     'onSelectedValueChange' | 'selectedValue'
   > {
   valueAtom: PrimitiveAtom<TValue>;
 }
 
-export function useAtomControlledSelect<TIdentifier extends string, TValue>({
+export function useAtomControlledSelect<TValue extends SelectValue>({
   valueAtom,
   ...rest
-}: UseAtomControlledSelectParams<TIdentifier, TValue>) {
+}: UseAtomControlledSelectParams<TValue>) {
   const [value, setValue] = useAtom(valueAtom);
 
   return useSelect({

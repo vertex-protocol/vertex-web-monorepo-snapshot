@@ -1,4 +1,5 @@
 import { ChainEnv } from '@vertex-protocol/client';
+import { getChainEnvName } from '@vertex-protocol/react-client';
 import { PrimaryChain, useEVMContext } from '@vertex-protocol/react-client';
 import {
   UserStateError,
@@ -14,7 +15,7 @@ export const HANDLED_BUTTON_USER_STATE_ERRORS = {
     not_connected: false,
     incorrect_connected_chain: true,
     incorrect_chain_env: false,
-    requires_deposit: false,
+    requires_initial_deposit: false,
     requires_sign_once_approval: false,
     requires_single_signature_setup: false,
   },
@@ -23,11 +24,11 @@ export const HANDLED_BUTTON_USER_STATE_ERRORS = {
     not_connected: false,
     incorrect_connected_chain: false,
     incorrect_chain_env: true,
-    requires_deposit: false,
+    requires_initial_deposit: false,
     requires_sign_once_approval: false,
     requires_single_signature_setup: false,
   },
-};
+} satisfies Record<string, Record<UserStateError, boolean>>;
 
 export interface UseButtonUserStateErrorPropsParams {
   /** If undefined will default to handling all errors*/
@@ -73,7 +74,7 @@ export function useButtonUserStateErrorProps({
 
       return {
         onClick: () => setPrimaryChainEnv(destinationChainEnv),
-        children: `Switch to ${startCase(destinationChainEnv)}`,
+        children: `Switch to ${getChainEnvName(destinationChainEnv)}`,
       };
     case 'incorrect_connected_chain':
       const destinationChain = requiredConnectedChain ?? primaryChain;
@@ -82,7 +83,7 @@ export function useButtonUserStateErrorProps({
         onClick: () => switchConnectedChain(destinationChain.id),
         children: `Switch to ${startCase(destinationChain.name)}`,
       };
-    case 'requires_deposit':
+    case 'requires_initial_deposit':
       return {
         onClick: () => show({ type: 'deposit', params: {} }),
         children: 'Deposit Funds',

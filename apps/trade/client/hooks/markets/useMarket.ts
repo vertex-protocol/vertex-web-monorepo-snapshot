@@ -1,38 +1,37 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
-import {
-  AllMarketsSelectFn,
-  useAllMarkets,
-} from 'client/hooks/query/markets/useAllMarkets';
-import { AnnotatedMarket } from '@vertex-protocol/metadata';
-import { useCallback } from 'react';
+import { AnnotatedMarket } from '@vertex-protocol/react-client';
+import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
+import { useMemo } from 'react';
 
 interface Params {
-  productId?: number;
+  productId: number | undefined;
 }
 
 export function useMarket<TMarket extends AnnotatedMarket = AnnotatedMarket>({
   productId,
 }: Params) {
-  const select = useCallback<AllMarketsSelectFn<TMarket | undefined>>(
-    (data): TMarket | undefined => {
-      if (productId == null) {
-        return;
-      }
+  const { data, ...rest } = useAllMarkets();
 
-      if (productId === QUOTE_PRODUCT_ID) {
-        return data.primaryQuoteProduct as TMarket;
-      }
-      const spotMarket = data.spotMarkets[productId];
-      if (spotMarket) {
-        return spotMarket as TMarket;
-      }
-      const perpMarket = data.perpMarkets[productId];
-      if (perpMarket) {
-        return perpMarket as TMarket;
-      }
-    },
-    [productId],
-  );
+  const marketData = useMemo((): TMarket | undefined => {
+    if (productId === undefined || !data) {
+      return;
+    }
 
-  return useAllMarkets({ select });
+    if (productId === QUOTE_PRODUCT_ID) {
+      return data.primaryQuoteProduct as TMarket;
+    }
+    const spotMarket = data.spotMarkets[productId];
+    if (spotMarket) {
+      return spotMarket as TMarket;
+    }
+    const perpMarket = data.perpMarkets[productId];
+    if (perpMarket) {
+      return perpMarket as TMarket;
+    }
+  }, [data, productId]);
+
+  return {
+    ...rest,
+    data: marketData,
+  };
 }

@@ -1,21 +1,33 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
 import { Except } from 'type-fest';
 import { Button } from './Button';
 import { ButtonProps } from './types';
 
-export type TextButtonProps = Except<ButtonProps, 'isLoading'>;
-export const TextButton = forwardRef(function TextButton(
-  { children, className, ...rest }: TextButtonProps,
-  ref,
-) {
+type ColorVariant = 'secondary' | 'accent' | 'tertiary';
+
+export type TextButtonProps = Except<ButtonProps, 'isLoading'> & {
+  colorVariant: ColorVariant;
+};
+
+export function TextButton({
+  children,
+  className,
+  colorVariant,
+  ...rest
+}: TextButtonProps) {
+  const colorVariantClassName = {
+    accent: 'text-accent hover:text-accent hover:brightness-110',
+    secondary: 'text-text-secondary hover:text-text-primary',
+    tertiary: 'text-text-tertiary hover:text-text-secondary',
+  }[colorVariant];
+
   return (
     <Button
-      ref={ref}
       className={mergeClassNames(
-        'text-text-secondary hover:text-text-primary transition-colors',
         'disabled:text-disabled disabled:hover:text-disabled',
+        'transition-colors',
         'gap-x-1.5',
+        colorVariantClassName,
         className,
       )}
       {...rest}
@@ -23,4 +35,4 @@ export const TextButton = forwardRef(function TextButton(
       {children}
     </Button>
   );
-});
+}

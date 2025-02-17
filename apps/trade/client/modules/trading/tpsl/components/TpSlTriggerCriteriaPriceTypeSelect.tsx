@@ -10,12 +10,10 @@ interface Props {
 
 const OPTIONS = [
   {
-    id: 'last_price',
     label: 'Last Price',
     value: 'last_price',
   },
   {
-    id: 'oracle_price',
     label: 'Oracle Price',
     value: 'oracle_price',
   },

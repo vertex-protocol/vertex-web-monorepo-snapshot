@@ -1,10 +1,14 @@
+import {
+  KNOWN_CONNECTOR_IDS,
+  KnownConnectorID,
+} from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
-import { KnownConnectorID } from 'client/consts/knownConnectorIds';
 
+import binanceIcon from 'client/modules/app/dialogs/wallet/states/connect/assets/binance.svg';
 import coinbaseIcon from 'client/modules/app/dialogs/wallet/states/connect/assets/coinbase.svg';
-import walletconnectIcon from 'client/modules/app/dialogs/wallet/states/connect/assets/walletconnect.svg';
 import passkeyIcon from 'client/modules/app/dialogs/wallet/states/connect/assets/passkey.svg';
+import walletconnectIcon from 'client/modules/app/dialogs/wallet/states/connect/assets/walletconnect.svg';
 import { WALLET_BUTTON_ICON_SIZE_CLASSNAME } from 'client/modules/app/dialogs/wallet/states/connect/consts';
 import Image from 'next/image';
 import { ReactNode } from 'react';
@@ -14,14 +18,24 @@ export interface ConnectorMetadata {
   name: string;
 }
 
+const BINANCE_CONNECTOR_METADATA: ConnectorMetadata = {
+  icon: (
+    <Image
+      src={binanceIcon}
+      alt="binance"
+      className={WALLET_BUTTON_ICON_SIZE_CLASSNAME}
+    />
+  ),
+  name: 'Binance Wallet',
+};
+
 /**
  * Metadata overrides by connector ID. There is unfortunately no strict typing for this: https://github.com/wevm/wagmi/discussions/3399#discussioncomment-8055819
  */
-export const CUSTOM_CONNECTOR_METADATA_BY_ID: Record<
-  KnownConnectorID,
-  ConnectorMetadata
+export const CUSTOM_CONNECTOR_METADATA_BY_ID: Partial<
+  Record<KnownConnectorID, ConnectorMetadata>
 > = {
-  injected: {
+  [KNOWN_CONNECTOR_IDS.injected]: {
     icon: (
       <Icons.WalletFill
         className={joinClassNames(
@@ -32,7 +46,7 @@ export const CUSTOM_CONNECTOR_METADATA_BY_ID: Record<
     ),
     name: 'Browser Extension',
   },
-  coinbaseWalletSDK: {
+  [KNOWN_CONNECTOR_IDS.coinbaseWalletSDK]: {
     icon: (
       <Image
         src={coinbaseIcon}
@@ -42,7 +56,7 @@ export const CUSTOM_CONNECTOR_METADATA_BY_ID: Record<
     ),
     name: 'Coinbase Smart Wallet',
   },
-  walletConnect: {
+  [KNOWN_CONNECTOR_IDS.walletConnect]: {
     icon: (
       <Image
         src={walletconnectIcon}
@@ -52,7 +66,7 @@ export const CUSTOM_CONNECTOR_METADATA_BY_ID: Record<
     ),
     name: 'WalletConnect',
   },
-  passKeys: {
+  [KNOWN_CONNECTOR_IDS.passKeys]: {
     icon: (
       <Image
         src={passkeyIcon}
@@ -62,4 +76,6 @@ export const CUSTOM_CONNECTOR_METADATA_BY_ID: Record<
     ),
     name: 'Passkey',
   },
+  [KNOWN_CONNECTOR_IDS.binanceWallet]: BINANCE_CONNECTOR_METADATA,
+  [KNOWN_CONNECTOR_IDS.binanceApp]: BINANCE_CONNECTOR_METADATA,
 };

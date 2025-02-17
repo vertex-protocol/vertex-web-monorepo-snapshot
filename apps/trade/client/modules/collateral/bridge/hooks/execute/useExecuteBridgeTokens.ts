@@ -9,7 +9,6 @@ import { useExecuteInValidContext } from 'client/hooks/execute/util/useExecuteIn
 import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/useSquidSDK';
 import { getSquidRouteRequest } from 'client/modules/collateral/bridge/hooks/utils/getSquidRouteRequest';
 import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
-import { ContractTransactionResponse } from 'ethers';
 import { useCallback } from 'react';
 
 export function useExecuteBridgeTokens() {
@@ -55,9 +54,9 @@ export function useExecuteBridgeTokens() {
         const txResponse = (await squidSDK.executeRoute({
           route,
           signer,
-        })) as ContractTransactionResponse;
+        })) as { hash: string };
 
-        return txResponse;
+        return txResponse.hash;
       },
       [endpointAddress, signer, squidSDK],
     ),

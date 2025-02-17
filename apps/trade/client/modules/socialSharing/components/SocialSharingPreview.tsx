@@ -7,7 +7,7 @@ import { SocialSharingMarketInfo } from 'client/modules/socialSharing/components
 import { SocialSharingMetric } from 'client/modules/socialSharing/components/SocialSharingMetric';
 import { SocialSharingPnlInfo } from 'client/modules/socialSharing/components/SocialSharingPnlInfo';
 import { SocialSharingTheme } from 'client/modules/socialSharing/hooks/socialSharingConfig';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 type Props = {
   isRealized: boolean;

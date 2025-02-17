@@ -1,8 +1,8 @@
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
 import {
-  getMarketPriceFormatSpecifier,
   getMarketQuoteSizeFormatSpecifier,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
@@ -15,6 +15,7 @@ import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { AmountFilledCell } from 'client/modules/tables/cells/AmountFilledCell';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CancelAllOrdersHeaderCell } from 'client/modules/tables/cells/CancelAllOrdersHeaderCell';
@@ -48,12 +49,40 @@ export function OpenEngineOrdersTable({
 }: WithClassnames<Props>) {
   const { data, isLoading } = useOpenEngineOrdersTable(marketFilter);
 
+  const { isIsoMarginEnabled } = useEnabledFeatures();
   const isDesktop = useIsDesktop();
   const { show } = useDialog();
   const pushTradePage = usePushTradePage();
   const isConnected = useIsConnected();
 
   const columns: ColumnDef<OpenEngineOrderTableItem, any>[] = useMemo(() => {
+    const marginTransferColumn = columnHelper.accessor('isoMarginTransfer', {
+      header: ({ header }) => (
+        <HeaderCell
+          definitionTooltipId="openEngineOrdersIsoMargin"
+          header={header}
+        >
+          Margin
+        </HeaderCell>
+      ),
+      cell: (context) => {
+        const amount = context.getValue();
+
+        return (
+          <AmountWithSymbolCell
+            amount={amount}
+            // If no margin transfer, show just `-` without the USDC symbol
+            symbol={amount ? context.row.original.marketInfo.quoteSymbol : ''}
+            formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+          />
+        );
+      },
+      sortingFn: bigDecimalSortFn,
+      meta: {
+        cellContainerClassName: 'w-32',
+      },
+    });
+
     return [
       columnHelper.accessor('timePlacedMillis', {
         header: ({ header }) => <HeaderCell header={header}>Time</HeaderCell>,
@@ -68,7 +97,12 @@ export function OpenEngineOrdersTable({
       }),
       columnHelper.accessor('orderType', {
         header: ({ header }) => <HeaderCell header={header}>Type</HeaderCell>,
-        cell: (context) => <OrderTypeCell value={context.getValue()} />,
+        cell: (context) => (
+          <OrderTypeCell
+            marginModeType={context.row.original.marginModeType}
+            orderType={context.getValue()}
+          />
+        ),
         enableSorting: false,
         meta: {
           cellContainerClassName: 'w-28',
@@ -101,9 +135,7 @@ export function OpenEngineOrdersTable({
         cell: (context) => (
           <NumberCell
             value={context.getValue()}
-            formatSpecifier={getMarketPriceFormatSpecifier(
-              context.row.original.marketInfo.priceIncrement,
-            )}
+            formatSpecifier={context.row.original.priceFormatSpecifier}
           />
         ),
         sortingFn: bigDecimalSortFn,
@@ -141,6 +173,7 @@ export function OpenEngineOrdersTable({
           cellContainerClassName: 'w-32',
         },
       }),
+      ...(isIsoMarginEnabled ? [marginTransferColumn] : []),
       columnHelper.accessor('filled', {
         header: ({ header }) => <HeaderCell header={header}>Filled</HeaderCell>,
         cell: (context) => {
@@ -192,19 +225,12 @@ export function OpenEngineOrdersTable({
           />
         ),
         cell: (context) => {
-          const { productId, digest, totalAmount, orderType } =
-            context.row.original;
+          const { orderForCancellation } = context.row.original;
           return (
             <CancelOrderCell
-              order={{
-                productId,
-                digest,
-                totalAmount,
-                isTrigger: false,
-                orderType,
-              }}
+              order={orderForCancellation}
               // Provide a key to force a unique render. Without this, React will somehow perserve the success state on previously cancelled order rows
-              key={digest}
+              key={orderForCancellation.digest}
             />
           );
         },
@@ -213,7 +239,7 @@ export function OpenEngineOrdersTable({
         },
       }),
     ];
-  }, [marketFilter]);
+  }, [isIsoMarginEnabled, marketFilter]);
 
   const onRowClicked = (row: Row<OpenEngineOrderTableItem>) => {
     if (isDesktop || !isConnected) {

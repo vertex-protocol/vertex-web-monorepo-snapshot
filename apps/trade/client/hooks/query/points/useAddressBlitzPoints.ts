@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   createQueryKey,
   QueryDisabledError,
-  useIsChainType,
+  useIsChainEnvType,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
@@ -13,13 +13,14 @@ export function addressBlitzPointsQueryKey(sender?: string) {
 }
 
 export function useAddressBlitzPoints() {
-  const { isBlast } = useIsChainType();
+  const { isBlast } = useIsChainEnvType();
   const { currentSubaccount } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 
-  const disabled = !vertexClient || !isBlast;
   const addressForQuery =
     currentSubaccount.address ?? NOT_CONNECTED_ALT_QUERY_ADDRESS;
+
+  const disabled = !vertexClient || !isBlast;
 
   return useQuery({
     queryKey: addressBlitzPointsQueryKey(addressForQuery),
@@ -45,6 +46,8 @@ export function useAddressBlitzPoints() {
           totalPoints: blitz.referralPoints
             .plus(blitz.tradingPoints)
             .plus(blitz.initialPoints),
+          totalVolume: blitz.takerVolume.plus(blitz.makerVolume),
+          usersReferred: blitz.usersReferred,
         },
         blast,
       };

@@ -15,7 +15,7 @@ import {
   PositionsTableItem,
   useCommandCenterPositionsItems,
 } from 'client/modules/commandCenter/hooks/useCommandCenterPositionItems';
-import { MarketCategory } from '@vertex-protocol/metadata';
+import { MarketCategory } from '@vertex-protocol/react-client';
 import { useMemo, useState } from 'react';
 
 interface ItemsByGroupType {

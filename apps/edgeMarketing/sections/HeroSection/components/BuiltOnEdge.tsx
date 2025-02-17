@@ -17,6 +17,7 @@ import blitzLightLogoImage from 'public/img/blitz-logo-light.svg';
 import blitzLogoImage from 'public/img/blitz-logo.svg';
 import mantleImage from 'public/img/mantle-logo.svg';
 import seiImage from 'public/img/sei-logo.svg';
+import sonicImage from 'public/img/sonic-logo.svg';
 import vertexImage from 'public/img/vertex-app.png';
 import vertexLinkBgImage from 'public/img/vertex-button-bg.svg';
 import vertexLightLogoImage from 'public/img/vertex-logo-light.svg';
@@ -67,6 +68,7 @@ export function BuiltOnEdge() {
             <Image src={mantleImage} className="h-5 w-auto" alt="Mantle" />
             <Image src={seiImage} className="h-4 w-auto" alt="SEI" />
             <Image src={baseImage} className="h-4 w-auto" alt="Base" />
+            <Image src={sonicImage} className="h-4 w-auto" alt="Sonic" />
           </span>
         ),
       },

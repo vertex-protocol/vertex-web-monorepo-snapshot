@@ -11,7 +11,6 @@ export function useFundingRatePeriodSelect() {
 
   const options = useMemo(() => {
     return FUNDING_RATE_TIMESPANS.map((id) => ({
-      id,
       label: id,
       value: id,
     }));
@@ -20,7 +19,7 @@ export function useFundingRatePeriodSelect() {
   const { selectOptions, open, onValueChange, value, onOpenChange } = useSelect(
     {
       selectedValue: fundingRatePeriod,
-      onSelectedValueChange: (option) => setFundingRatePeriod(option),
+      onSelectedValueChange: setFundingRatePeriod,
       options,
     },
   );

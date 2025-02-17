@@ -1,5 +1,5 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { PerpProductMetadata } from '@vertex-protocol/metadata';
+import { PerpProductMetadata } from '@vertex-protocol/react-client';
 
 export const TRIGGER_CRITERIA_PRICE_TYPES = [
   'oracle_price',
@@ -20,15 +20,16 @@ export interface TpSlOrderInfo {
 
 export interface TpSlPositionData {
   pnlInfo: {
-    estimatedPnlUsd: BigDecimal;
-    estimatedPnlFrac: BigDecimal;
+    estimatedPnlUsd: BigDecimal | undefined;
+    estimatedPnlFrac: BigDecimal | undefined;
   };
   metadata: PerpProductMetadata | undefined;
   amount: BigDecimal;
-  averageEntryPrice: BigDecimal;
+  averageEntryPrice: BigDecimal | undefined;
   lastPrice: BigDecimal | undefined;
   fastOraclePrice: BigDecimal;
   sizeIncrement: BigDecimal | undefined;
   priceIncrement: BigDecimal | undefined;
+  isoLeverage: number | undefined;
   longWeightInitial: BigDecimal | undefined;
 }

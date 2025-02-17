@@ -5,7 +5,7 @@ import {
 import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
-import { useDerivedSubaccountOverview } from 'client/hooks/subaccount/useDerivedSubaccountOverview';
+import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { useSubaccountTimespanMetrics } from 'client/hooks/subaccount/useSubaccountTimespanMetrics';
 import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
@@ -13,7 +13,7 @@ import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/Def
 import { PORTFOLIO_CHART_TIMESPAN_METADATA } from 'client/pages/Portfolio/charts/consts';
 import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface PerpHeroHeaderProps {
   timespan: ChartTimespan;
@@ -23,14 +23,14 @@ export function PerpHeroMetricsHeader({ timespan }: PerpHeroHeaderProps) {
   const { data: timespanMetrics } = useSubaccountTimespanMetrics(
     PORTFOLIO_CHART_TIMESPAN_METADATA[timespan].durationInSeconds,
   );
-  const { data: subaccountSummary } = useDerivedSubaccountOverview();
+  const { data: subaccountOverview } = useSubaccountOverview();
 
   return (
     <PortfolioHeroMetricsPane.Header
       title="Total Perp PnL"
       definitionTooltipId="perpTotalPerpPnl"
       valueContent={formatNumber(
-        subaccountSummary?.perp.totalCumulativePnlUsd,
+        subaccountOverview?.perp.totalCumulativePnlUsd,
         {
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },

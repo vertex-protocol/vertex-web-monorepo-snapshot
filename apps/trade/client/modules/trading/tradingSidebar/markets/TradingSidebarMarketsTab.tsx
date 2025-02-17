@@ -13,12 +13,12 @@ import { FixedHeaderDataTable } from 'client/components/FixedHeaderDataTable';
 import { MarketCategoryFilter } from 'client/components/MarketCategoryFilter/MarketCategoryFilter';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
+import { FavoriteHeaderCell } from 'client/modules/tables/cells/FavoriteHeaderCell';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { TradingSidebarMarketData } from 'client/modules/trading/tradingSidebar/markets/types';
 import { useTradingSidebarMarketsTab } from 'client/modules/trading/tradingSidebar/markets/useTradingSidebarMarketsTab';
-import { FavoriteHeaderCell } from 'client/pages/Markets/components/FavoriteHeaderCell';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
@@ -165,7 +165,7 @@ export function TradingSidebarMarketsTab({ className }: WithClassnames) {
         isLoading={isLoading}
         // in trading sidebar, it makes sense to sort by market volume by default:
         // 1) in watchlist, sorting by favorite does not make sense (they're all favs)
-        // 2) all markets is for exploration (esp for sentiment/news) so sorting by volume
+        // 2) all markets is for exploration so sorting by volume
         //    is good for discovery, favs are directly accessible via Watchlist tab
         // 3) both tabs should have a consistent sorting order
         initialSortingState={[{ id: 'marketNameAndVolume', desc: true }]}

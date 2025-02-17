@@ -1,7 +1,7 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
-import { signDependentValue } from 'client/utils/signDependentValue';
+import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface Props {
   value: BigDecimal;

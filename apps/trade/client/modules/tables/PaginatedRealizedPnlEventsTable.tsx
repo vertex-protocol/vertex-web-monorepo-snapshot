@@ -14,6 +14,7 @@ import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { DateTimeCell } from 'client/modules/tables/cells/DateTimeCell';
+import { MarginModeTypeCell } from 'client/modules/tables/cells/MarginModeTypeCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { PerpStackedPnlCell } from 'client/modules/tables/cells/PerpStackedPnlCell';
@@ -83,6 +84,16 @@ export function PaginatedRealizedPnlEventsTable({
         enableSorting: false,
         meta: {
           cellContainerClassName: 'w-40',
+        },
+      }),
+      columnHelper.accessor('marginModeType', {
+        header: ({ header }) => <HeaderCell header={header}>Type</HeaderCell>,
+        cell: (context) => (
+          <MarginModeTypeCell marginModeType={context.getValue()} />
+        ),
+        enableSorting: false,
+        meta: {
+          cellContainerClassName: 'w-20',
         },
       }),
       columnHelper.accessor('entryPrice', {

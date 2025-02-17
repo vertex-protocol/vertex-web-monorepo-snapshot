@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { addDecimals } from '@vertex-protocol/utils';
-import { PLACE_ENGINE_ORDER_QUERY_KEYS } from 'client/hooks/execute/placeOrder/placeEngineOrderQueryKeys';
 import { usePlaceOrderMutationFn } from 'client/hooks/execute/placeOrder/usePlaceOrderMutationFn';
 import { getMarketOrderExecutionPrice } from 'client/hooks/execute/util/getMarketOrderExecutionPrice';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
+import { PLACE_ENGINE_ORDER_QUERY_KEYS } from 'client/hooks/execute/util/refetchQueryKeys';
 import {
   useExecuteInValidContext,
   ValidExecuteContext,
@@ -78,6 +78,7 @@ export function useExecuteCloseAllPositions() {
 
           await placeOrderMutationFn(
             {
+              subaccountName: position.iso?.subaccountName,
               price,
               amount: roundToString(
                 // Closing 100% of the position with close all positions feature
@@ -87,6 +88,12 @@ export function useExecuteCloseAllPositions() {
               productId,
               priceType: 'market',
               reduceOnly: true,
+              iso: position.iso
+                ? {
+                    borrowMargin: false,
+                    margin: 0,
+                  }
+                : undefined,
             },
             context,
           );

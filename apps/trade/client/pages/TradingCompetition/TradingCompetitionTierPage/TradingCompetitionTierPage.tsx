@@ -23,7 +23,6 @@ export function TradingCompetitionTierPage() {
     <>
       <TradingCompetitionTierPageHeader />
       <TradingCompetitionTierInfoCards />
-      <TradingCompetitionSwitchChainEnvCard />
       <TradingCompetitionLeaderboardHeader />
       <TradingCompetitionTable />
     </>

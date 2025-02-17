@@ -1,6 +1,6 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   addDecimals,
   BigDecimal,
@@ -20,15 +20,17 @@ import {
   OnFractionSelectedHandler,
   useOnFractionSelectedHandler,
 } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
+import { useIsSmartContractWalletConnected } from 'client/hooks/util/useIsSmartContractWalletConnected';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useWithdrawalsAreDelayed } from 'client/modules/collateral/hooks/useWithdrawalsAreDelayed';
 import { useWithdrawFormData } from 'client/modules/collateral/withdraw/hooks/useWithdrawFormData';
 import {
   WithdrawErrorType,
   WithdrawFormValues,
-  WithdrawProduct,
+  WithdrawProductSelectValue,
 } from 'client/modules/collateral/withdraw/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
+import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { watchFormError } from 'client/utils/form/watchFormError';
@@ -45,10 +47,11 @@ interface UseWithdrawForm {
   // $ Value for amount input
   amountInputValueUsd: BigDecimal | undefined;
   validPercentageAmount: number | undefined;
-  availableProducts: WithdrawProduct[];
+  availableProducts: WithdrawProductSelectValue[];
   withdrawMutation: ReturnType<typeof useExecuteWithdrawCollateral>;
   showGasWarning: boolean;
-  selectedProduct: WithdrawProduct | undefined;
+  showOneClickTradingPrompt: boolean;
+  selectedProduct: WithdrawProductSelectValue | undefined;
   selectedProductMaxWithdrawable: BigDecimal | undefined;
   buttonState: BaseActionButtonState;
   estimateStateTxs: SubaccountTx[];
@@ -71,7 +74,15 @@ export function useWithdrawForm({
 }): UseWithdrawForm {
   const { protocolTokenMetadata } = useVertexMetadataContext();
   const { dispatchNotification } = useNotificationManagerContext();
-  const withdrawalsDelayed = useWithdrawalsAreDelayed();
+  const areWithdrawalsDelayed = useWithdrawalsAreDelayed();
+
+  const isSmartContractWallet = useIsSmartContractWalletConnected();
+  const isSingleSignature = useIsSingleSignatureSession({
+    requireActive: true,
+  });
+  const showOneClickTradingPrompt = Boolean(
+    isSmartContractWallet && !isSingleSignature,
+  );
 
   const executeWithdrawCollateral = useExecuteWithdrawCollateral();
 
@@ -171,7 +182,7 @@ export function useWithdrawForm({
 
       // Check min
       if (toBigDecimal(parsedInput).lte(minInput)) {
-        return 'under_min';
+        return 'below_min';
       }
       // Then check max
       if (toBigDecimal(parsedInput).gt(maxInput)) {
@@ -326,7 +337,8 @@ export function useWithdrawForm({
         ? toBigDecimal(validAmount).multipliedBy(selectedProduct.oraclePriceUsd)
         : undefined,
     withdrawMutation: executeWithdrawCollateral,
-    showGasWarning: withdrawalsDelayed,
+    showGasWarning: areWithdrawalsDelayed,
+    showOneClickTradingPrompt,
     validPercentageAmount,
     availableProducts,
     selectedProduct,

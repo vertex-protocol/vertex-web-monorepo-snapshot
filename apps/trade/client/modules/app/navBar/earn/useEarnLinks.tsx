@@ -1,4 +1,4 @@
-import { PRIMARY_QUOTE_SYMBOLS } from '@vertex-protocol/metadata';
+import { PRIMARY_QUOTE_SYMBOLS } from '@vertex-protocol/react-client';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
 import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
@@ -19,12 +19,6 @@ interface UseEarnLinks {
   products: EarnLink[];
   ecosystem: EarnLink[];
 }
-
-const STAKE_LINK: EarnLink = {
-  label: 'Stake',
-  description: 'Staking Rewards',
-  href: ROUTES.vrtx,
-};
 
 const VAULTS_LINK: EarnLink = {
   label: (
@@ -59,15 +53,13 @@ const REWARDS_LINK: EarnLink = {
 };
 
 export function useEarnLinks(): UseEarnLinks {
-  const { isStakePageEnabled, isFuulEnabled, isVaultsEnabled } =
-    useEnabledFeatures();
+  const { isFuulEnabled, isVaultsEnabled } = useEnabledFeatures();
 
   const showVertexRewards = useIsEnabledForBrand(['vertex']);
 
   return useMemo(() => {
     return {
       products: [
-        ...(isStakePageEnabled ? [STAKE_LINK] : []),
         ...(showVertexRewards ? [REWARDS_LINK] : []),
         {
           label: 'Lend & Borrow',
@@ -83,5 +75,5 @@ export function useEarnLinks(): UseEarnLinks {
       ],
       ecosystem: [...(isVaultsEnabled ? [VAULTS_LINK] : [])],
     };
-  }, [isFuulEnabled, isStakePageEnabled, isVaultsEnabled, showVertexRewards]);
+  }, [isFuulEnabled, isVaultsEnabled, showVertexRewards]);
 }

@@ -1,8 +1,8 @@
 import { SavedUserSettings } from 'client/modules/localstorage/userSettings/types/SavedUserSettings';
-import { DEFAULT_ORDER_SLIPPAGE } from 'client/modules/trading/defaultOrderSlippage';
-import { cloneDeep } from 'lodash';
 import { settingsSchema } from 'client/modules/localstorage/userSettings/userSettingsSchema';
 import { validateOrReset } from 'client/modules/localstorage/utils/zodValidators';
+import { DEFAULT_ORDER_SLIPPAGE } from 'client/modules/trading/defaultOrderSlippage';
+import { cloneDeep } from 'lodash';
 
 const DEFAULT_USER_SETTINGS: SavedUserSettings =
   Object.freeze<SavedUserSettings>({
@@ -16,11 +16,15 @@ const DEFAULT_USER_SETTINGS: SavedUserSettings =
       isAddressPrivate: false,
     },
     profileBySubaccountKey: {},
-    selectedSubaccountNameByChainId: {},
+    selectedSubaccountNameByChainEnv: {},
     signingPreferenceBySubaccountKey: {},
     trading: {
       consolePosition: 'right',
       leverageByProductId: {},
+      marginMode: {
+        default: 'cross',
+        lastSelected: {},
+      },
       orderbookTickSpacingMultiplierByProductId: {},
       showOrderbookTotalInQuote: false,
       spotLeverageEnabled: false,
@@ -89,10 +93,10 @@ export function getUserSettingsWithDefaults(
       DEFAULT_USER_SETTINGS.profileBySubaccountKey,
       settingsSchema.shape.profileBySubaccountKey,
     ),
-    selectedSubaccountNameByChainId: validateOrReset(
-      currentSaved?.selectedSubaccountNameByChainId,
-      DEFAULT_USER_SETTINGS.selectedSubaccountNameByChainId,
-      settingsSchema.shape.selectedSubaccountNameByChainId,
+    selectedSubaccountNameByChainEnv: validateOrReset(
+      currentSaved?.selectedSubaccountNameByChainEnv,
+      DEFAULT_USER_SETTINGS.selectedSubaccountNameByChainEnv,
+      settingsSchema.shape.selectedSubaccountNameByChainEnv,
     ),
     signingPreferenceBySubaccountKey: validateOrReset(
       currentSaved?.signingPreferenceBySubaccountKey,
@@ -109,6 +113,11 @@ export function getUserSettingsWithDefaults(
         currentSaved?.trading?.leverageByProductId,
         DEFAULT_USER_SETTINGS.trading.leverageByProductId,
         tradingSchema.shape.leverageByProductId,
+      ),
+      marginMode: validateOrReset(
+        currentSaved?.trading?.marginMode,
+        DEFAULT_USER_SETTINGS.trading.marginMode,
+        tradingSchema.shape.marginMode,
       ),
       orderbookTickSpacingMultiplierByProductId: validateOrReset(
         currentSaved?.trading?.orderbookTickSpacingMultiplierByProductId,

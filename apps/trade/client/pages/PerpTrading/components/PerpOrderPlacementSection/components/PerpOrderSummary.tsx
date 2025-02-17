@@ -2,14 +2,14 @@ import {
   formatNumber,
   getMarketPriceFormatSpecifier,
   getMarketSizeFormatSpecifier,
+  PresetNumberFormatSpecifier,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { LinkButton } from '@vertex-protocol/web-ui';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { usePerpOrderFormContext } from 'client/pages/PerpTrading/context/PerpOrderFormContext';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
+import { usePerpOrderFormContext } from 'client/pages/PerpTrading/context/PerpOrderFormContext';
 import { TradingFormPerpTradingAccountMetrics } from 'client/pages/PerpTrading/hooks/usePerpTradingFormTradingAccountMetrics';
 
 interface Props {
@@ -20,8 +20,13 @@ interface Props {
 export function PerpOrderSummary({ currentState, estimatedState }: Props) {
   const { show } = useDialog();
   const { primaryQuoteToken } = useVertexMetadataContext();
-  const { slippageFraction, currentMarket, estimatedTradeEntry, priceType } =
-    usePerpOrderFormContext();
+  const {
+    slippageFraction,
+    currentMarket,
+    estimatedTradeEntry,
+    priceType,
+    marginMode,
+  } = usePerpOrderFormContext();
 
   const showSlippageMetric = priceType === 'market' || priceType === 'stop';
   const slippageToleranceMetric: ValueWithLabelProps = {
@@ -45,7 +50,7 @@ export function PerpOrderSummary({ currentState, estimatedState }: Props) {
 
   const showEstimatedFeeFireIcon = estimatedTradeEntry?.estimatedFee.isZero();
 
-  const metricItems: ValueWithLabelProps[] = [
+  const orderMetricItems: ValueWithLabelProps[] = [
     {
       label: 'Est. Price',
       value: estimatedTradeEntry?.avgFillPrice,
@@ -75,11 +80,24 @@ export function PerpOrderSummary({ currentState, estimatedState }: Props) {
     {
       label: 'Est. Liq Price',
       value: currentState?.estimatedLiquidationPrice ?? undefined,
-      newValue: estimatedState?.estimatedLiquidationPrice ?? undefined,
+      newValue: estimatedState?.estimatedLiquidationPrice,
       numberFormatSpecifier: getMarketPriceFormatSpecifier(
         currentMarket?.priceIncrement,
       ),
     },
+  ];
+
+  const showAvailableMargin = marginMode.mode === 'isolated';
+  const availableMarginMetric: ValueWithLabelProps = {
+    label: 'Available Margin',
+    numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+    value: currentState?.fundsAvailableUsdBounded,
+    newValue: estimatedState?.fundsAvailableUsdBounded,
+    tooltip: { id: 'fundsAvailable' },
+  };
+
+  const accountMetricItems: ValueWithLabelProps[] = [
+    ...(showAvailableMargin ? [availableMarginMetric] : []),
     {
       label: 'Margin Usage',
       value: currentState?.marginUsageBounded,
@@ -100,10 +118,19 @@ export function PerpOrderSummary({ currentState, estimatedState }: Props) {
 
   return (
     <div className="flex flex-col gap-y-1">
-      {metricItems.map((itemProps) => (
+      {orderMetricItems.map((itemProps) => (
         <ValueWithLabel.Horizontal
           sizeVariant="xs"
           key={itemProps.label?.toString()}
+          {...itemProps}
+        />
+      ))}
+      {/*Extra 4px of spacing between sections*/}
+      <span className="text-text-primary mt-1 text-xs">Cross Account</span>
+      {accountMetricItems.map((itemProps, index) => (
+        <ValueWithLabel.Horizontal
+          sizeVariant="xs"
+          key={index}
           {...itemProps}
         />
       ))}

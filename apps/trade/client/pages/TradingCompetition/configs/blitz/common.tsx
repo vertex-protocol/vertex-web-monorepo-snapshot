@@ -11,7 +11,8 @@ export const commonConfig: Omit<
   totalPrizePoolHeroImage: {
     mobileSrc: heroImageMobile,
     desktopSrc: heroImageDesktop,
-    alt: 'Prize is ~12.6 GOLD',
+    alt: 'Prize is 25k GOLD',
   },
-  totalPrizePool: [{ amount: '~12.6k', symbol: 'GOLD' }],
+  totalPrizePool: [{ amount: '25k', symbol: 'GOLD' }],
+  eligibilityRequirement: { eligibilityType: 'account_value' },
 };

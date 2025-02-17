@@ -1,9 +1,5 @@
-import {
-  joinClassNames,
-  mergeClassNames,
-  WithClassnames,
-} from '@vertex-protocol/web-common';
-import { CardButton } from '@vertex-protocol/web-ui';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { CardButton, Value } from '@vertex-protocol/web-ui';
 import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
@@ -50,14 +46,8 @@ export function OverviewInfoCardButton({
         </DefinitionTooltip>
         {pill}
       </div>
-      <PrivateContent
-        isPrivate={isPrivate}
-        className={mergeClassNames(
-          'text-text-primary flex text-xl leading-none',
-          valueClassName,
-        )}
-      >
-        {value}
+      <PrivateContent isPrivate={isPrivate}>
+        <Value className={valueClassName}>{value}</Value>
       </PrivateContent>
     </CardButton>
   );

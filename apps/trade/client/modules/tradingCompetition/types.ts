@@ -21,7 +21,21 @@ export interface TierData {
   participantPrizes: ReactNode[];
 }
 
-interface RequiredProductBalanceMetadata {
+type EligibilityRequirement =
+  | {
+      eligibilityType: 'product_balance';
+      productMetadata: ProductMetadata;
+    }
+  | {
+      eligibilityType: 'staked_vrtx';
+      productMetadata: ProductMetadata;
+    }
+  | {
+      eligibilityType: 'account_value';
+      productMetadata?: never;
+    };
+
+interface ProductMetadata {
   productId: number;
   symbol: string;
   iconSrc: NextImageSrc;
@@ -39,7 +53,15 @@ export interface TradingCompetitionConfig {
   totalPrizePool: PrizePool;
   tierDataByContestId: Record<number, TierData>;
   /**
-   * Relevant product metadata for contests with a min. required product balance.
+   * Configures the competition's eligibility requirement (e.g. min. account value).
    */
-  requiredProductBalanceMetadata?: RequiredProductBalanceMetadata;
+  eligibilityRequirement: EligibilityRequirement;
+  /**
+   * We don't really have the notion of "rounds" in a competition, as each competition is unique and not tied to others.
+   * This is a way for us to "hardcode" the number of rounds in a competition.
+   */
+  rounds?: {
+    total: number;
+    current: number;
+  };
 }

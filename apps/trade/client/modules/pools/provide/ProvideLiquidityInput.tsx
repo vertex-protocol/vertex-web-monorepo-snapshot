@@ -1,13 +1,13 @@
+import { TokenIconMetadata } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { WithClassnames } from '@vertex-protocol/web-common';
+import { WithClassnames, WithRef } from '@vertex-protocol/web-common';
 import { CompactInput } from '@vertex-protocol/web-ui';
 import { InputProductSymbolWithIcon } from 'client/components/InputProductSymbolWithIcon';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
-import { TokenIconMetadata } from '@vertex-protocol/metadata';
-import { forwardRef, InputHTMLAttributes, ReactNode } from 'react';
+import { InputHTMLAttributes, ReactNode } from 'react';
 
 export interface ProvideLiquidityInputProps
-  extends InputHTMLAttributes<HTMLInputElement>,
+  extends WithRef<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
     WithClassnames {
   error?: ReactNode;
   icon: TokenIconMetadata | undefined;
@@ -15,20 +15,14 @@ export interface ProvideLiquidityInputProps
   estimatedValueUsd: BigDecimal | undefined;
 }
 
-export const ProvideLiquidityInput = forwardRef<
-  HTMLInputElement,
-  ProvideLiquidityInputProps
->(function ProvideLiquidityInput(
-  {
-    className,
-    symbol,
-    icon,
-    error,
-    estimatedValueUsd,
-    ...rest
-  }: ProvideLiquidityInputProps,
-  ref,
-) {
+export function ProvideLiquidityInput({
+  className,
+  symbol,
+  icon,
+  error,
+  estimatedValueUsd,
+  ...rest
+}: ProvideLiquidityInputProps) {
   return (
     <CompactInput
       type="number"
@@ -44,8 +38,7 @@ export const ProvideLiquidityInput = forwardRef<
       endElement={
         <EstimatedCurrencyValueItem estimatedValueUsd={estimatedValueUsd} />
       }
-      ref={ref}
       {...rest}
     />
   );
-});
+}

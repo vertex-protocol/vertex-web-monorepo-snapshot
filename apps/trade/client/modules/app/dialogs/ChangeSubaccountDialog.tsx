@@ -1,17 +1,26 @@
-import { useEVMContext } from '@vertex-protocol/react-client';
 import { CompactInput, Input, PrimaryButton } from '@vertex-protocol/web-ui';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useRepeatedClickCountHandler } from 'client/hooks/ui/useRepeatedClickCountHandler';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { isAddress } from 'ethers';
+import { useSavedGlobalState } from 'client/modules/localstorage/globalState/useSavedGlobalState';
 import { useState } from 'react';
+import { isAddress } from 'viem';
 
 export function ChangeSubaccountDialog() {
   const { hide } = useDialog();
 
-  const { readOnlyAddressOverride, setReadOnlyAddressOverride } =
-    useEVMContext();
+  const {
+    savedGlobalState: { readOnlyAddressOverride },
+    setSavedGlobalState,
+  } = useSavedGlobalState();
+  const setReadOnlyAddressOverride = (address: string) => {
+    setSavedGlobalState((prev) => {
+      prev.readOnlyAddressOverride = address;
+      return prev;
+    });
+  };
+
   const {
     currentSubaccount: { name: currentSubaccountName },
     setCurrentSubaccountName,

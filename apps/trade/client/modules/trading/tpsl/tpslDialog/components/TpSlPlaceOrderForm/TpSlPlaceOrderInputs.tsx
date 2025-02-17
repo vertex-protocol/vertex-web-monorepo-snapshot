@@ -6,8 +6,8 @@ import {
 } from '@vertex-protocol/web-common';
 import { TradeInput } from 'client/modules/trading/components/TradeInput';
 import {
-  TpSlPlaceOrderFormValues,
   TpSlPlaceOrderErrorType,
+  TpSlPlaceOrderFormValues,
 } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/types';
 import { useTpSlPlaceOrderTriggerPriceErrorTooltipContent } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/useTpSlPlaceOrderTriggerPriceErrorTooltipContent';
 import { TriggerCriteriaPriceType } from 'client/modules/trading/tpsl/tpslDialog/types';
@@ -60,7 +60,7 @@ export function TpSlPlaceOrderInputs({
       <TradeInput
         {...form.register('gainOrLossPercentage')}
         label={isTakeProfit ? 'Gain' : 'Loss'}
-        symbol="%"
+        endElement="%"
         type="number"
         min={0}
         error={triggerPriceErrorTooltipContent}

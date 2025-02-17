@@ -80,7 +80,7 @@ function MobileNavMenu({ className }: WithClassnames) {
           <div className="flex gap-x-2">
             <StatusButton />
             <TextButton
-              className="text-text-secondary"
+              colorVariant="secondary"
               onClick={() => {
                 setOpenMobileNav(false);
                 show({ type: 'help_center', params: {} });

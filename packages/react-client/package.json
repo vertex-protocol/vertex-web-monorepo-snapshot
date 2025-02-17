@@ -10,20 +10,28 @@
   },
   "private": true,
   "dependencies": {
-    "d3-format": "*",
+    "@abstract-foundation/agw-client": "^1.3.1",
+    "@abstract-foundation/agw-react": "1.4.4",
+    "@binance/w3w-wagmi-connector-v2": "^1.2.4",
+    "@privy-io/cross-app-connect": "^0.1.5",
+    "@rainbow-me/rainbowkit": "^2.2.3",
     "@tanstack/react-query": "*",
     "@vertex-protocol/client": "*",
     "bignumber.js": "*",
+    "connectkit": "^1.8.2",
+    "d3-format": "*",
     "ethers": "*",
     "react": "*",
     "viem": "*",
-    "wagmi": "*"
+    "wagmi": "*",
+    "zksync-ethers": "^6.16.0"
   },
   "devDependencies": {
     "@types/d3-format": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
     "ts-config": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "typescript-eslint": "*"
   }
 }

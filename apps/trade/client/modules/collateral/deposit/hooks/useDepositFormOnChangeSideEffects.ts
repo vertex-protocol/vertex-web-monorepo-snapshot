@@ -2,7 +2,7 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
 import {
   DepositFormValues,
-  DepositProduct,
+  DepositProductSelectValue,
 } from 'client/modules/collateral/deposit/types';
 import { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -10,7 +10,7 @@ import { UseFormReturn } from 'react-hook-form';
 interface Params {
   useDepositForm: UseFormReturn<DepositFormValues>;
   productIdInput: number;
-  selectedProduct: DepositProduct | undefined;
+  selectedProduct: DepositProductSelectValue | undefined;
   validAmount: BigDecimal | undefined;
   validPercentageAmount: number | undefined;
 }

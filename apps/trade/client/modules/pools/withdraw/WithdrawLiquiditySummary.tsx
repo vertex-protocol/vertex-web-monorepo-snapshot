@@ -92,11 +92,11 @@ function TokenSummaryItem({
   iconSrc,
 }: TokenSummaryItemProps) {
   const amountWithSymbolContent = (
-    <span className="text-text-primary">
+    <span>
       {formatNumber(amount, {
         formatSpecifier: CustomNumberFormatSpecifier.NUMBER_AUTO,
       })}{' '}
-      <span className="text-text-tertiary">{symbol}</span>
+      {symbol}
     </span>
   );
 

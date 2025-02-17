@@ -2,7 +2,7 @@ import { WithClassnames } from '@vertex-protocol/web-common';
 import { SubaccountCountIndicatorKey } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { TabIdentifiable } from 'client/hooks/ui/tabs/types';
 import { SelectedFilterByTradingTableTab } from 'client/modules/localstorage/userSettings/types/tradingSettings';
-import React, { ReactNode } from 'react';
+import { ElementType, ReactNode } from 'react';
 
 export interface TradingSectionProps extends WithClassnames {
   productId: number | undefined;
@@ -37,8 +37,8 @@ export interface TradingLayoutProps {
   productId: number | undefined;
   desktopTradingTabs: TradingTab[];
   mobileTradingTabs: TradingTab[];
-  MarketSwitcher: React.ElementType<MarketSwitcherProps>;
-  InfoCards: React.ElementType<WithClassnames>;
-  OrderPlacement: React.ElementType<WithClassnames>;
-  ChartComponent: React.ElementType<TradingSectionProps>;
+  MarketSwitcher: ElementType<MarketSwitcherProps>;
+  InfoCards: ElementType<WithClassnames>;
+  OrderPlacement: ElementType<WithClassnames>;
+  ChartComponent: ElementType<TradingSectionProps>;
 }

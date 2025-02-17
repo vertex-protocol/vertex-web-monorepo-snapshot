@@ -1,4 +1,5 @@
 import { PaginatedHistoricalTradesTable } from 'client/modules/tables/PaginatedHistoricalTradesTable';
+import { MobileTradingTabHistoricalTrades } from 'client/modules/trading/components/MobileTradingTab/MobileTradingTabHistoricalTrades';
 import { useSelectedFilterByTradingTableTabSetting } from 'client/modules/trading/components/TradingTableTabs/hooks/useSelectedFilterByTradingTableTabSetting';
 import { HistoricalTradesFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import {
@@ -35,15 +36,11 @@ export const historicalTradesTableFilters: TradingTabFilters<HistoricalTradesFil
   };
 
 export function HistoricalTradesTab({
-  enableUserFiltering,
   productId,
-  defaultFilter,
   isDesktop,
 }: {
-  enableUserFiltering: boolean;
-  defaultFilter: MarketFilter | undefined;
   productId: number | undefined;
-  isDesktop: boolean;
+  isDesktop?: boolean;
 }) {
   const { selectedFilter } =
     useSelectedFilterByTradingTableTabSetting<HistoricalTradesFilterOptionID>({
@@ -63,11 +60,16 @@ export function HistoricalTradesTab({
     }
   }, [selectedFilter, productId]);
 
+  if (isDesktop) {
+    return (
+      <PaginatedHistoricalTradesTable marketFilter={userFilter} pageSize={10} />
+    );
+  }
+
   return (
-    <PaginatedHistoricalTradesTable
-      marketFilter={enableUserFiltering ? userFilter : defaultFilter}
-      pageSize={isDesktop ? 10 : 5}
-      showPagination={!isDesktop}
+    <MobileTradingTabHistoricalTrades
+      marketFilter={userFilter}
+      tradingTabFilters={historicalTradesTableFilters}
     />
   );
 }

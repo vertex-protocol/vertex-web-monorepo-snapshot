@@ -1,24 +1,24 @@
-import { Token } from '@vertex-protocol/metadata';
+import { Token } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { WithClassnames } from '@vertex-protocol/web-common';
+import { WithClassnames, WithRef } from '@vertex-protocol/web-common';
 import { CompactInput, CompactInputProps } from '@vertex-protocol/web-ui';
 import { InputProductSymbolWithIcon } from 'client/components/InputProductSymbolWithIcon';
 import { EstimatedCurrencyValueItem } from 'client/modules/collateral/components/EstimatedCurrencyValueItem';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-interface Props extends CompactInputProps {
+interface Props
+  extends WithClassnames<WithRef<CompactInputProps, HTMLInputElement>> {
   primaryQuoteToken: Token;
   estimatedValueUsd: BigDecimal | undefined;
   error?: ReactNode;
 }
 
-export const SubaccountQuoteTransferAmountInput = React.forwardRef<
-  HTMLInputElement,
-  WithClassnames<Props>
->(function SubaccountQuoteAmountInput(
-  { primaryQuoteToken, estimatedValueUsd, error, ...rest },
-  ref,
-) {
+export function SubaccountQuoteTransferAmountInput({
+  primaryQuoteToken,
+  estimatedValueUsd,
+  error,
+  ...rest
+}: Props) {
   return (
     <CompactInput
       type="number"
@@ -33,8 +33,7 @@ export const SubaccountQuoteTransferAmountInput = React.forwardRef<
       endElement={
         <EstimatedCurrencyValueItem estimatedValueUsd={estimatedValueUsd} />
       }
-      ref={ref}
       {...rest}
     />
   );
-});
+}

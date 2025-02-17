@@ -2,7 +2,7 @@ import { WithClassnames } from '@vertex-protocol/web-common';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
 import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
 import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
-import { StakeVrtxActionButtonState } from 'client/modules/rewards/dialogs/staking/StakeVrtxDialog/useStakeVrtxForm';
+import { StakeVrtxActionButtonState } from 'client/modules/staking/dialogs/StakeV2VrtxDialog/useStakeV2VrtxDialog';
 
 interface Props extends WithClassnames {
   state: StakeVrtxActionButtonState;

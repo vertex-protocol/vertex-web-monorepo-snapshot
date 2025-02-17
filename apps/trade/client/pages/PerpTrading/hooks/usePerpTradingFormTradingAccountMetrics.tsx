@@ -1,17 +1,29 @@
-import { BalanceSide, SubaccountTx } from '@vertex-protocol/client';
-import { AnnotatedPerpBalanceWithProduct } from '@vertex-protocol/metadata';
+import {
+  BalanceSide,
+  QUOTE_PRODUCT_ID,
+  SubaccountTx,
+} from '@vertex-protocol/client';
+import { AnnotatedPerpBalanceWithProduct } from '@vertex-protocol/react-client';
 import {
   addDecimals,
   BigDecimal,
+  BigDecimals,
   removeDecimals,
 } from '@vertex-protocol/utils';
-import { PerpStaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { PerpStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+import { useSubaccountIsolatedPositions } from 'client/hooks/query/subaccount/isolatedPositions/useSubaccountIsolatedPositions';
+
 import {
   AdditionalSubaccountInfoFactory,
   EstimatedSubaccountInfo,
   useEstimateSubaccountInfoChange,
 } from 'client/hooks/subaccount/useEstimateSubaccountInfoChange';
-import { calcEstimatedLiquidationPrice } from 'client/utils/calcs/calcEstimatedLiquidationPrice';
+import { MarginMode } from 'client/modules/localstorage/userSettings/types/tradingSettings';
+import { calcIsoPositionNetMargin } from 'client/utils/calcs/calcIsoPositionNetMargin';
+import {
+  calcEstimatedLiquidationPrice,
+  calcEstimatedLiquidationPriceFromBalance,
+} from 'client/utils/calcs/liquidationPriceCalcs';
 import { useCallback, useMemo } from 'react';
 
 interface AdditionalSubaccountInfo {
@@ -33,6 +45,8 @@ export interface TradingFormPerpTradingAccountMetrics {
 interface Params {
   orderSide: BalanceSide;
   enableMaxSizeLogic: boolean;
+  isReducingIsoPosition: boolean;
+  marginMode: MarginMode;
   validatedAssetAmountInput: BigDecimal | undefined;
   executionConversionPrice: BigDecimal | undefined;
   maxAssetOrderSize: BigDecimal | undefined;
@@ -46,21 +60,23 @@ export function usePerpTradingFormTradingAccountMetrics({
   executionConversionPrice,
   maxAssetOrderSize,
   enableMaxSizeLogic,
+  marginMode,
+  isReducingIsoPosition,
 }: Params): TradingFormPerpTradingAccountMetrics {
-  // Estimate state transactions
-  const estimateStateTxs = useMemo((): SubaccountTx[] => {
-    const invalidOrderSize =
+  const { data: isolatedPositions } = useSubaccountIsolatedPositions();
+
+  const amountDeltasWithDecimals = useMemo(() => {
+    const isInvalidOrderSize =
       enableMaxSizeLogic &&
       maxAssetOrderSize &&
       validatedAssetAmountInput?.isGreaterThan(maxAssetOrderSize);
 
     if (
-      !currentMarket?.productId ||
+      isInvalidOrderSize ||
       !validatedAssetAmountInput ||
-      !executionConversionPrice ||
-      invalidOrderSize
+      !executionConversionPrice
     ) {
-      return [];
+      return;
     }
 
     const assetAmountDelta = addDecimals(
@@ -68,53 +84,188 @@ export function usePerpTradingFormTradingAccountMetrics({
         ? validatedAssetAmountInput
         : validatedAssetAmountInput.negated(),
     );
-    const quoteAmountDelta = assetAmountDelta
+
+    const crossVQuoteAmountDelta = assetAmountDelta
       .multipliedBy(executionConversionPrice)
       .negated();
 
+    // The delta on the isolated position's net margin
+    // Does not account for fully closing the position (where net margin is all transferred out) because it doesn't affect any computed metrics
+    const isoNetMarginAmountDelta = (() => {
+      // Zero margin transfer when reducing position
+      if (marginMode.mode !== 'isolated' || isReducingIsoPosition) {
+        return BigDecimals.ZERO;
+      }
+
+      return assetAmountDelta
+        .multipliedBy(executionConversionPrice)
+        .abs()
+        .div(marginMode.leverage);
+    })();
+
+    // The quote balance delta for the cross margin balance
+    const isoCrossQuoteAmountDelta = (() => {
+      const existingIsolatedPosition = isolatedPositions?.find((position) => {
+        return position.baseBalance.productId === currentMarket?.productId;
+      });
+
+      if (isReducingIsoPosition) {
+        const newPositionAmount =
+          existingIsolatedPosition?.baseBalance.amount.plus(assetAmountDelta);
+
+        // If new position amount is zero, we are closing the position, and net margin (ie total margin + unsettled margin) is transferred to cross
+        // Otherwise, when reducing position, there is no margin transfer
+        return existingIsolatedPosition && newPositionAmount?.isZero()
+          ? calcIsoPositionNetMargin(
+              existingIsolatedPosition.baseBalance,
+              existingIsolatedPosition.quoteBalance,
+            )
+          : BigDecimals.ZERO;
+      }
+
+      // When increasing a position, the cross subaccount decreases in quote balance as the balance is transferred to the iso subaccount
+      return isoNetMarginAmountDelta.negated();
+    })();
+
+    return {
+      assetAmountDelta,
+      crossVQuoteAmountDelta,
+      isoNetMarginAmountDelta,
+      isoCrossQuoteAmountDelta,
+    };
+  }, [
+    currentMarket?.productId,
+    enableMaxSizeLogic,
+    executionConversionPrice,
+    isReducingIsoPosition,
+    isolatedPositions,
+    marginMode.leverage,
+    marginMode.mode,
+    maxAssetOrderSize,
+    orderSide,
+    validatedAssetAmountInput,
+  ]);
+
+  const estimateStateTxs = useMemo((): SubaccountTx[] => {
+    if (!currentMarket?.productId || !amountDeltasWithDecimals) {
+      return [];
+    }
+
+    // For cross, we apply a delta on the perp product
+    if (marginMode.mode === 'cross') {
+      return [
+        {
+          type: 'apply_delta',
+          tx: {
+            productId: currentMarket.productId,
+            amountDelta: amountDeltasWithDecimals.assetAmountDelta,
+            vQuoteDelta: amountDeltasWithDecimals.crossVQuoteAmountDelta,
+          },
+        },
+      ];
+    }
+    // For iso, only the cross quote balance changes
     return [
       {
         type: 'apply_delta',
         tx: {
-          productId: currentMarket.productId,
-          amountDelta: assetAmountDelta,
-          vQuoteDelta: quoteAmountDelta,
+          productId: QUOTE_PRODUCT_ID,
+          amountDelta: amountDeltasWithDecimals.isoCrossQuoteAmountDelta,
+          vQuoteDelta: BigDecimals.ZERO,
         },
       },
     ];
-  }, [
-    enableMaxSizeLogic,
-    maxAssetOrderSize,
-    validatedAssetAmountInput,
-    currentMarket?.productId,
-    executionConversionPrice,
-    orderSide,
-  ]);
+  }, [currentMarket?.productId, amountDeltasWithDecimals, marginMode.mode]);
 
   const additionalInfoFactory = useCallback<
     AdditionalSubaccountInfoFactory<AdditionalSubaccountInfo>
   >(
-    (summary): AdditionalSubaccountInfo => {
-      const balanceWithProduct = summary?.balances.find(
+    (summary, isEstimate): AdditionalSubaccountInfo => {
+      const crossBalanceWithProduct = summary?.balances.find(
         (product) => product.productId === currentMarket?.productId,
       ) as AnnotatedPerpBalanceWithProduct | undefined;
 
-      if (!balanceWithProduct) {
+      // The cross balance should always exist, even if its 0
+      if (!crossBalanceWithProduct) {
         return {
           positionAmount: undefined,
           estimatedLiquidationPrice: undefined,
         };
       }
 
+      // For cross, we can use the estimated summary directly
+      if (marginMode.mode === 'cross') {
+        if (!crossBalanceWithProduct) {
+          return {
+            positionAmount: undefined,
+            estimatedLiquidationPrice: undefined,
+          };
+        }
+
+        return {
+          positionAmount: removeDecimals(crossBalanceWithProduct?.amount),
+          estimatedLiquidationPrice: calcEstimatedLiquidationPriceFromBalance(
+            crossBalanceWithProduct,
+            summary.health.maintenance.health,
+          ),
+        };
+      }
+
+      // For isolated, we do a bit of a hack, `AdditionalSubaccountInfoFactory` doesn't have the ability to estimate
+      // changes in isolated positions, so we add stuff manually. This is OK for the time being because this hook
+      // is the only place where this pattern is used.
+      if (!isolatedPositions || !currentMarket) {
+        return {
+          positionAmount: undefined,
+          estimatedLiquidationPrice: undefined,
+        };
+      }
+      // Unlike cross, isolated positions do not exist if the amount is 0
+      const existingIsolatedPosition = isolatedPositions.find((position) => {
+        return position.baseBalance.productId === currentMarket.productId;
+      });
+
+      // Compute for position
+      const currentPositionAmount =
+        existingIsolatedPosition?.baseBalance.amount ?? BigDecimals.ZERO;
+      const newPositionAmount = amountDeltasWithDecimals
+        ? currentPositionAmount.plus(amountDeltasWithDecimals.assetAmountDelta)
+        : currentPositionAmount;
+      const positionAmountWithDecimals = isEstimate
+        ? newPositionAmount
+        : currentPositionAmount;
+
+      // Compute for net margin
+      const currentNetMargin = existingIsolatedPosition
+        ? calcIsoPositionNetMargin(
+            existingIsolatedPosition.baseBalance,
+            existingIsolatedPosition.quoteBalance,
+          )
+        : BigDecimals.ZERO;
+      // Assume no unsettled USDC changes
+      const newNetMargin = currentNetMargin.plus(
+        amountDeltasWithDecimals?.isoNetMarginAmountDelta ?? BigDecimals.ZERO,
+      );
+      const netMargin = isEstimate ? newNetMargin : currentNetMargin;
+
       return {
-        positionAmount: removeDecimals(balanceWithProduct?.amount),
-        estimatedLiquidationPrice: calcEstimatedLiquidationPrice(
-          balanceWithProduct,
-          summary.health.maintenance.health,
-        ),
+        positionAmount: removeDecimals(positionAmountWithDecimals),
+        estimatedLiquidationPrice: calcEstimatedLiquidationPrice({
+          longWeightMaintenance: crossBalanceWithProduct.longWeightMaintenance,
+          maintHealthOrNetMargin: netMargin,
+          oraclePrice: crossBalanceWithProduct.oraclePrice,
+          shortWeightMaintenance:
+            crossBalanceWithProduct.shortWeightMaintenance,
+          amount: positionAmountWithDecimals,
+        }),
       };
     },
-    [currentMarket],
+    [
+      currentMarket,
+      isolatedPositions,
+      marginMode.mode,
+      amountDeltasWithDecimals,
+    ],
   );
 
   // State change
@@ -137,8 +288,5 @@ export function usePerpTradingFormTradingAccountMetrics({
     };
   }, [currentState, estimatedState?.fundsAvailableUsdBounded]);
 
-  return useMemo(
-    () => ({ derivedMetrics, currentState, estimatedState }),
-    [currentState, derivedMetrics, estimatedState],
-  );
+  return { derivedMetrics, currentState, estimatedState };
 }

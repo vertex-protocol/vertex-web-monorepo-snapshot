@@ -1,5 +1,4 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
 import { Except } from 'type-fest';
 import { BorderRadiusVariant } from '../../../types';
 import { getStateOverlayClassNames } from '../../../utils';
@@ -11,15 +10,11 @@ export type CardButtonBaseProps = Except<ButtonProps, 'isLoading'> & {
   stateOverlayBorderRadiusVariant?: BorderRadiusVariant;
 };
 
-export const CardButton = forwardRef(function CardButton(
-  {
-    className,
-    stateOverlayBorderRadiusVariant,
-    children,
-    ...rest
-  }: CardButtonBaseProps,
-  ref,
-) {
+export function CardButton({
+  className,
+  stateOverlayBorderRadiusVariant,
+  ...rest
+}: CardButtonBaseProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
     disabled: rest.disabled,
     borderRadiusVariant: stateOverlayBorderRadiusVariant,
@@ -35,10 +30,7 @@ export const CardButton = forwardRef(function CardButton(
         stateOverlayClassNames,
         className,
       )}
-      ref={ref}
       {...rest}
-    >
-      {children}
-    </Button>
+    />
   );
-});
+}

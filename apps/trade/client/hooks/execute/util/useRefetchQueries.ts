@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
-import { TxResponse } from 'client/types/TxResponse';
 import { useEffect } from 'react';
 
 /**
@@ -11,7 +10,7 @@ import { useEffect } from 'react';
  */
 export function useRefetchQueries(
   queryKeys: unknown[][],
-  afterMillis: number = 50,
+  afterMillis: number = 150,
 ) {
   const queryClient = useQueryClient();
 
@@ -31,18 +30,18 @@ export function useRefetchQueries(
  * Refetches queries when a contract transaction is confirmed.
  *
  * @param queryKeys must be stable (i.e. a const or a memoized value)
- * @param txResponse
+ * @param txHash
  * @param afterMillis
  */
 export function useRefetchQueriesOnContractTransaction(
   queryKeys: unknown[][],
-  txResponse: TxResponse | undefined,
+  txHash: string | undefined,
   afterMillis: number = 2500,
 ) {
   const queryClient = useQueryClient();
 
   const { type } = useOnChainTransactionState({
-    txResponse,
+    txHash,
   });
 
   useEffect(() => {

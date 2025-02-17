@@ -1,15 +1,40 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Icons, SecondaryButton } from '@vertex-protocol/web-ui';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { useSelectedPerpLeverage } from 'client/pages/PerpTrading/hooks/useSelectedPerpLeverage';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
+import { useSelectedPerpMarginMode } from 'client/pages/PerpTrading/hooks/useSelectedPerpMarginMode';
 
 interface Props extends WithClassnames {
   productId: number | undefined;
 }
 
 export function PerpLeverageSelector({ productId, className }: Props) {
-  const { selectedLeverage } = useSelectedPerpLeverage(productId);
+  const { isIsoMarginEnabled } = useEnabledFeatures();
+  const { selectedMarginMode } = useSelectedPerpMarginMode(productId);
   const { show } = useDialog();
+
+  const currentLeverage = selectedMarginMode.leverage;
+  const buttonContent = (() => {
+    const currentLeverageContent = (
+      <span className="text-text-primary">{currentLeverage}x</span>
+    );
+
+    if (!isIsoMarginEnabled) {
+      return (
+        <>
+          Leverage:
+          {currentLeverageContent}
+        </>
+      );
+    }
+
+    return (
+      <>
+        {selectedMarginMode.mode === 'cross' ? 'Cross' : 'Isolated'}
+        {currentLeverageContent}
+      </>
+    );
+  })();
 
   return (
     <SecondaryButton
@@ -19,10 +44,17 @@ export function PerpLeverageSelector({ productId, className }: Props) {
           return;
         }
 
-        show({
-          type: 'perp_leverage',
-          params: { initialLeverage: selectedLeverage, productId },
-        });
+        if (isIsoMarginEnabled) {
+          show({
+            type: 'perp_margin_mode',
+            params: { productId },
+          });
+        } else {
+          show({
+            type: 'perp_leverage',
+            params: { productId, initialLeverage: currentLeverage },
+          });
+        }
       }}
       className={joinClassNames(
         'text-text-tertiary hover:text-text-tertiary bg-surface-1',
@@ -31,8 +63,7 @@ export function PerpLeverageSelector({ productId, className }: Props) {
       )}
       endIcon={<Icons.CaretDownFill />}
     >
-      Leverage:
-      <span className="text-text-primary">{selectedLeverage}x</span>
+      {buttonContent}
     </SecondaryButton>
   );
 }

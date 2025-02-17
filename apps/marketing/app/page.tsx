@@ -1,12 +1,16 @@
-import { HomePage } from 'client/pages/HomePage/HomePage';
-import { DesktopHomePageContent } from 'client/pages/HomePage/DesktopHomePageContent';
-import { MobileHomePageContent } from 'client/pages/HomePage/MobileHomePageContent';
+import { HeroSection } from 'client/sections/HeroSection/HeroSection';
+import dynamic from 'next/dynamic';
+import React from 'react';
+
+const BelowFoldSections = dynamic(
+  () => import('client/sections/BelowFoldSections/BelowFoldSections'),
+);
 
 export default function Home() {
   return (
-    <HomePage
-      desktopContent={<DesktopHomePageContent />}
-      mobileContent={<MobileHomePageContent />}
-    />
+    <>
+      <HeroSection />
+      <BelowFoldSections />
+    </>
   );
 }

@@ -6,18 +6,10 @@ import {
   useEVMContext,
 } from '@vertex-protocol/react-client';
 
-const BASE_SKATE_URL_BY_CHAIN: Record<ChainEnv, string | undefined> = {
+const BASE_SKATE_URL_BY_CHAIN: Partial<Record<ChainEnv, string>> = {
   arbitrum: 'https://derivatives.rangeprotocol.com/arbitrum/incentives/',
   blast: 'https://derivatives.rangeprotocol.com/blast/incentives/',
   mantle: 'https://derivatives.rangeprotocol.com/mantle/incentives/',
-  arbitrumTestnet: undefined,
-  base: undefined,
-  baseTestnet: undefined,
-  blastTestnet: undefined,
-  mantleTestnet: undefined,
-  sei: undefined,
-  seiTestnet: undefined,
-  local: undefined,
 };
 
 export function skateVaultApyQueryKey(vaultAddress?: string) {

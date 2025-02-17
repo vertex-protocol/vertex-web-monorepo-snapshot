@@ -1,5 +1,4 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
-import { forwardRef } from 'react';
 import { Except } from 'type-fest';
 import { getStateOverlayClassNames } from '../../utils';
 import { Button } from './Button';
@@ -10,10 +9,12 @@ export type TradeTabButtonProps = Except<ButtonProps, 'isLoading'> & {
   active?: boolean;
 };
 
-export const TradeTabButton = forwardRef<
-  HTMLButtonElement,
-  TradeTabButtonProps
->(function TradeTabButton({ children, active, side, className, ...rest }, ref) {
+export function TradeTabButton({
+  active,
+  side,
+  className,
+  ...rest
+}: TradeTabButtonProps) {
   const sideClassNames = side === 'long' ? 'text-positive' : 'text-negative';
 
   const stateOverlayClassNames = getStateOverlayClassNames({
@@ -30,10 +31,7 @@ export const TradeTabButton = forwardRef<
         stateOverlayClassNames,
         className,
       )}
-      ref={ref}
       {...rest}
-    >
-      {children}
-    </Button>
+    />
   );
-});
+}

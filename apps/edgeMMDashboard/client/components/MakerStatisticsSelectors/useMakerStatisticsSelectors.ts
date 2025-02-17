@@ -6,60 +6,52 @@ import { useEpochs } from 'client/hooks/query/useEpochs';
 import { first, last, sortBy, startCase } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 
-export const INTERVAL_OPTIONS = [
+export const INTERVAL_OPTIONS: SelectOption<number>[] = [
   {
-    id: 'past_15_minutes',
     label: 'Past 15 Minutes',
     value: 15 * TimeInSeconds.MINUTE,
   },
   {
-    id: 'past_1_hour',
     label: 'Past 1 Hour',
     value: TimeInSeconds.HOUR,
   },
   {
-    id: 'past_4_hours',
     label: 'Past 4 Hours',
     value: 4 * TimeInSeconds.HOUR,
   },
   {
-    id: 'past_1_day',
     label: 'Past 1 Day',
     value: TimeInSeconds.DAY,
   },
   {
-    id: 'past_2_days',
     label: 'Past 2 Days',
     value: 2 * TimeInSeconds.DAY,
   },
   {
-    id: 'past_1_week',
     label: 'Past 1 Week',
     value: 7 * TimeInSeconds.DAY,
   },
   {
-    id: 'past_2_weeks',
     label: 'Past 2 Weeks',
     value: 14 * TimeInSeconds.DAY,
   },
   {
-    id: 'past_1_month',
     label: 'Past 1 Month',
     value: 30 * TimeInSeconds.DAY,
   },
 ];
 
 export interface UseMakerStatisticsSelectors {
-  chainEnvOptions: SelectOption<string, ChainEnv>[];
+  chainEnvOptions: SelectOption<ChainEnv>[];
   setPrimaryChainEnv: (value: ChainEnv) => void;
   primaryChainEnv: ChainEnv;
-  productOptions: SelectOption<string, number>[];
+  productOptions: SelectOption<number>[];
   productId: number | undefined;
   setProductId: (value: number) => void;
-  epochOptions: SelectOption<string, number>[];
+  epochOptions: SelectOption<number>[];
   epoch: number | undefined;
   setEpoch: (value: number) => void;
-  intervalOptions: SelectOption<string, number>[];
+  intervalOptions: SelectOption<number>[];
   interval: number;
   setInterval: (value: number) => void;
 }
@@ -80,7 +72,6 @@ export function useMakerStatisticsSelectors() {
     }
     return sortBy(
       epochsData?.map(({ epoch }) => ({
-        id: epoch.toString(),
         value: epoch,
         label: epoch.toString(),
       })),
@@ -90,7 +81,6 @@ export function useMakerStatisticsSelectors() {
 
   const chainEnvOptions = useMemo(() => {
     return supportedChainEnvs.map((value) => ({
-      id: value,
       value,
       label: startCase(value),
     }));
@@ -102,7 +92,6 @@ export function useMakerStatisticsSelectors() {
     }
     return Object.entries(allMarketsData.allMarkets).map(
       ([productId, market]) => ({
-        id: productId,
         value: Number(productId),
         label: market.metadata.marketName,
       }),

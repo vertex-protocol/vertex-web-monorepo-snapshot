@@ -6,11 +6,11 @@ import {
 } from 'client/modules/trading/types';
 import { incrementValidator } from 'client/modules/trading/utils/incrementValidator';
 import { positiveBigDecimalValidator } from 'client/utils/inputValidators';
-import { MutableRefObject, useCallback } from 'react';
+import { RefObject, useCallback } from 'react';
 
 interface Params {
-  inputConversionPriceRef: MutableRefObject<BigDecimal | undefined>;
-  maxAssetOrderSizeRef: MutableRefObject<BigDecimal | undefined>;
+  inputConversionPriceRef: RefObject<BigDecimal | undefined>;
+  maxAssetOrderSizeRef: RefObject<BigDecimal | undefined>;
   sizeIncrement: BigDecimal | undefined;
   priceIncrement: BigDecimal | undefined;
   minAssetOrderSize: BigDecimal | undefined;

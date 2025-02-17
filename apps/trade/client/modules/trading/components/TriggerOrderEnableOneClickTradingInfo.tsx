@@ -20,8 +20,9 @@ export function TriggerOrderEnableOneClickTradingInfo() {
         Orders.
       </p>
       <TextButton
+        colorVariant="secondary"
         onClick={() => show({ type: 'signature_mode_settings', params: {} })}
-        className="text-text-primary underline"
+        className="underline"
       >
         Enable One-Click Trading
       </TextButton>

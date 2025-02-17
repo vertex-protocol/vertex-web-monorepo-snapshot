@@ -1,5 +1,5 @@
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 
 export function useNewMarkets() {
   const { data: allMarketsData } = useAllMarketsStaticData();

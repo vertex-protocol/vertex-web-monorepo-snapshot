@@ -2,11 +2,7 @@ export const TRADING_SIDEBAR_WATCHLIST_TAB_IDS = [
   'watchlist',
   'all_markets',
 ] as const;
-export const TRADING_SIDEBAR_TAB_IDS = [
-  'market_info',
-  'sentiment',
-  'news',
-] as const;
+export const TRADING_SIDEBAR_TAB_IDS = ['market_info'] as const;
 
 export type TradingSidebarWatchlistTabID =
   (typeof TRADING_SIDEBAR_WATCHLIST_TAB_IDS)[number];

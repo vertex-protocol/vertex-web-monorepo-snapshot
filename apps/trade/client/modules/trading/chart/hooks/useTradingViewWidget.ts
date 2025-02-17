@@ -13,11 +13,11 @@ import {
   IChartingLibraryWidget,
   Timezone,
 } from 'public/charting_library';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 
 interface UseTradingViewWidget {
   tvWidget: IChartingLibraryWidget | undefined;
-  chartContainerRef: MutableRefObject<HTMLDivElement | null>;
+  chartContainerRef: RefObject<HTMLDivElement | null>;
 }
 
 interface Params {
@@ -75,16 +75,16 @@ export function useTradingViewWidget({
   const [isReady, setIsReady] = useState<boolean>();
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
 
-  // Use synced refs as we don't want to reload the widget on changes of these data
+  // Use synced refs as we don't want to reload the widget on changes of the symbol - we have a listener to switch symbols when needed
   const selectedSymbolRef = useSyncedRef(selectedSymbolInfo);
-  // However, we want reloads when selected symbol goes from undefined -> defined
-  const hasSymbol = !!selectedSymbolRef.current;
+  // However, we want to trigger a load when we've first loaded the symbol, this is required for creation of the widget
+  const hasLoadedInitialSymbol = !!tvWidget || !!selectedSymbolInfo;
 
   useEffect(() => {
     const initialTicker = selectedSymbolRef.current?.ticker;
     if (
       !chartContainerRef.current ||
-      !hasSymbol ||
+      !hasLoadedInitialSymbol ||
       !datafeed ||
       !initialTicker ||
       !isClient
@@ -140,13 +140,14 @@ export function useTradingViewWidget({
   }, [
     chartContainerRef,
     datafeed,
-    hasSymbol,
+    hasLoadedInitialSymbol,
     isClient,
     selectedSymbolRef,
     sizeClass,
   ]);
 
-  const prevWidgetRef = useRef<IChartingLibraryWidget>();
+  const prevWidgetRef = useRef<IChartingLibraryWidget | undefined>(null);
+
   useEffect(() => {
     if (prevWidgetRef.current !== tvWidget) {
       prevWidgetRef.current?.remove();

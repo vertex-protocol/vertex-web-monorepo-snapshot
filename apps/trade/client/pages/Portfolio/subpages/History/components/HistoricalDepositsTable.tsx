@@ -41,15 +41,13 @@ export function HistoricalDepositsTable() {
             withLeftPadding: true,
           },
         }),
-        columnHelper.accessor('metadata', {
+        columnHelper.accessor('token', {
           header: ({ header }) => (
             <HeaderCell header={header}>Asset</HeaderCell>
           ),
           cell: (context) => {
             const metadata =
-              context.getValue<
-                HistoricalCollateralEventsTableItem['metadata']
-              >();
+              context.getValue<HistoricalCollateralEventsTableItem['token']>();
             return (
               <MarketProductInfoCell
                 symbol={metadata.symbol}
@@ -69,7 +67,7 @@ export function HistoricalDepositsTable() {
           cell: (context) => (
             <AmountWithSymbolCell
               amount={context.getValue()}
-              symbol={context.row.original.metadata.symbol}
+              symbol={context.row.original.token.symbol}
               formatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
             />
           ),

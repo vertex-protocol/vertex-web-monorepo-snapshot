@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
+import { ChainEnv } from '@vertex-protocol/client';
 import { GetIndexerMatchEventsParams } from '@vertex-protocol/indexer-client';
-import { BigDecimal } from '@vertex-protocol/utils';
 import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { BigDecimal } from '@vertex-protocol/utils';
 import { QueryState } from 'client/types/QueryState';
 import { calcOrderFillPrice } from 'client/utils/calcs/calcOrderFillPrice';
-import { ChainEnv } from '@vertex-protocol/client';
 
 /**
  * The maximum shown in the UI + some buffer for filtering out RFQ matches.
@@ -67,7 +67,17 @@ export function useLatestOrderFillsForProduct<
       .filter((event) => {
         // RFQ orders are "private" so we don't want them to reflect in the public facing UI
         const isRfq = 'match_orders_r_f_q' in event.tx;
-        return !isRfq;
+        // For non-USDC pairs, filtering on `product_id` will check both base & quote balances, so on a wETH-USDC market with an additional
+        // mETH-wETH market, a fill on mETH-wETH will actually come back in the query for wETH-USDC. As such, we need to filter these events out
+        const isCorrectProduct = (() => {
+          if ('match_orders' in event.tx) {
+            return event.tx.match_orders.product_id === productId;
+          }
+          // This should never happen
+          return true;
+        })();
+
+        return !isRfq && isCorrectProduct;
       })
       .map((event): LatestOrderFill => {
         return {

@@ -1,9 +1,9 @@
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
-import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
-import { KNOWN_PRODUCT_IDS } from '@vertex-protocol/metadata';
-import { useMemo } from 'react';
+import { KNOWN_PRODUCT_IDS } from '@vertex-protocol/react-client';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useLpYields } from 'client/hooks/markets/useLpYields';
+import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
+import { nonNullFilter } from '@vertex-protocol/web-common';
+import { useMemo } from 'react';
 
 const POOLS_PRODUCT_IDS: number[] = [
   KNOWN_PRODUCT_IDS.blast,

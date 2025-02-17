@@ -1,36 +1,44 @@
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { OrderType } from 'client/modules/trading/types';
 import { getOrderTypeLabel } from 'client/modules/trading/utils/getOrderTypeLabel';
 
 interface Props extends TableCellProps {
-  value: OrderType;
+  orderType: OrderType;
+  marginModeType: MarginModeType;
 }
 
-export function OrderTypeCell({ value, className }: WithClassnames<Props>) {
-  const textColorClass = (() => {
-    switch (value) {
+export function OrderTypeCell({
+  orderType,
+  marginModeType,
+  className,
+}: WithClassnames<Props>) {
+  const orderTypeColor = (() => {
+    switch (orderType) {
       case 'stop_loss':
         return 'text-negative';
       case 'take_profit':
         return 'text-positive';
       default:
-        return 'text-text-tertiary';
+        return '';
     }
   })();
 
   return (
     <TableCell
       className={joinClassNames(
-        'whitespace-normal text-xs uppercase',
-        textColorClass,
+        'text-text-tertiary whitespace-normal text-xs',
         className,
       )}
     >
-      {getOrderTypeLabel(value)}
+      <div className="flex flex-col">
+        <span className="capitalize">{marginModeType}</span>
+        <span className={orderTypeColor}>{getOrderTypeLabel(orderType)}</span>
+      </div>
     </TableCell>
   );
 }

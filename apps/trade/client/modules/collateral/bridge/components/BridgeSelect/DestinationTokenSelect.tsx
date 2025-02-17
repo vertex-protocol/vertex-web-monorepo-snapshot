@@ -1,18 +1,16 @@
-import { Select, SelectOption, useSelect } from '@vertex-protocol/web-ui';
+import { useSelect } from '@vertex-protocol/web-ui';
 import { BridgeSelect } from 'client/modules/collateral/bridge/components/BridgeSelect/BridgeSelect';
 import { BridgeFormValues } from 'client/modules/collateral/bridge/hooks/form/types';
-import { DestinationBridgeToken } from 'client/modules/collateral/bridge/types';
-import { useMemo } from 'react';
+import { DestinationBridgeTokenSelectValue } from 'client/modules/collateral/bridge/types';
+import { useCallback, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 interface Props {
   form: UseFormReturn<BridgeFormValues>;
-  selectedDestinationToken: DestinationBridgeToken | undefined;
-  allDestinationTokens: DestinationBridgeToken[];
+  selectedDestinationToken: DestinationBridgeTokenSelectValue | undefined;
+  allDestinationTokens: DestinationBridgeTokenSelectValue[];
   disabled?: boolean;
 }
-
-type TokenSelectOption = SelectOption<string, DestinationBridgeToken>;
 
 export function DestinationTokenSelect({
   form,
@@ -21,23 +19,25 @@ export function DestinationTokenSelect({
   disabled,
 }: Props) {
   const options = useMemo(() => {
-    return allDestinationTokens.map((token): TokenSelectOption => {
-      const vertexProductToken = token.vertexProduct.metadata.token;
-
+    return allDestinationTokens.map((token) => {
       return {
-        id: vertexProductToken.address,
-        label: vertexProductToken.symbol,
+        label: token.vertexProduct.metadata.token.symbol,
         value: token,
       };
     });
   }, [allDestinationTokens]);
 
+  const onSelectedValueChange = useCallback(
+    (newToken: DestinationBridgeTokenSelectValue) => {
+      form.setValue('destinationTokenAddress', newToken.address);
+    },
+    [form],
+  );
+
   const { open, onOpenChange, selectOptions, value, onValueChange } = useSelect(
     {
       selectedValue: selectedDestinationToken,
-      onSelectedValueChange: (newToken) => {
-        form.setValue('destinationTokenAddress', newToken.address);
-      },
+      onSelectedValueChange,
       options,
     },
   );
@@ -46,7 +46,7 @@ export function DestinationTokenSelect({
     selectedDestinationToken?.vertexProduct.metadata.token;
 
   return (
-    <Select.Root
+    <BridgeSelect.Root
       value={value}
       onValueChange={onValueChange}
       open={open}
@@ -65,6 +65,6 @@ export function DestinationTokenSelect({
           <BridgeSelect.Option option={option} key={option.original.address} />
         ))}
       </BridgeSelect.Options>
-    </Select.Root>
+    </BridgeSelect.Root>
   );
 }

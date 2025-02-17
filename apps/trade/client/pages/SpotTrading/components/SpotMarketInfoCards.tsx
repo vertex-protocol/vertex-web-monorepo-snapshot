@@ -2,6 +2,7 @@ import {
   CustomNumberFormatSpecifier,
   formatNumber,
   PresetNumberFormatSpecifier,
+  signDependentValue,
 } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Divider, Icons, TextButton } from '@vertex-protocol/web-ui';
@@ -10,7 +11,6 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { MarketInfoCardsContainer } from 'client/modules/trading/components/MarketInfoCardsContainer';
 import { useSpotMarketInfoCards } from 'client/pages/SpotTrading/hooks/useSpotMarketInfoCards';
-import { signDependentValue } from 'client/utils/signDependentValue';
 
 export function SpotMarketInfoCards({ className }: WithClassnames) {
   const { show } = useDialog();
@@ -85,6 +85,7 @@ export function SpotMarketInfoCards({ className }: WithClassnames) {
       {/* Market details entrypoint is pushed to the very right for large screens */}
       <Divider vertical className="ml-auto h-6" />
       <TextButton
+        colorVariant="secondary"
         className="px-2 text-xs"
         startIcon={<Icons.Info />}
         onClick={() => {

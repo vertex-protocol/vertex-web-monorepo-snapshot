@@ -1,9 +1,9 @@
 'use client';
 
 import {
-  Root as TabsRoot,
   TabsContent,
   TabsList,
+  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import {
@@ -12,7 +12,6 @@ import {
   UnderlinedTabs,
 } from '@vertex-protocol/web-ui';
 import { useIsDesktop } from 'client/hooks/ui/breakpoints';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
 import { PortfolioPageContentWrapper } from 'client/pages/Portfolio/components/PortfolioPageContentWrapper';
@@ -30,7 +29,6 @@ export function PortfolioHistoryPage() {
     enabledOptionalTabIds,
   } = usePortfolioHistoryTabs();
   const isDesktop = useIsDesktop();
-  const { trackEvent } = useAnalyticsContext();
 
   return (
     <PortfolioPageContentWrapper>
@@ -39,12 +37,6 @@ export function PortfolioHistoryPage() {
         className="flex flex-col gap-y-3"
         value={selectedTabId}
         onValueChange={(value) => {
-          trackEvent({
-            type: 'history_tabs_clicked',
-            data: {
-              historyTab: value,
-            },
-          });
           setSelectedUntypedTabId(value);
         }}
       >

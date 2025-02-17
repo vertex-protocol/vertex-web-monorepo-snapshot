@@ -1,17 +1,17 @@
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  getMarketPriceFormatSpecifier,
+  MarketCategory,
+  PerpProductMetadata,
+  SpotProductMetadata,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
-import { useVertexMetadataContext } from '@vertex-protocol/metadata';
-import { useAllMarketsHistoricalMetrics } from 'client/hooks/markets/useAllMarketsHistoricalMetrics';
+import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useFilteredMarkets } from 'client/hooks/markets/useFilteredMarkets';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
-import {
-  PerpProductMetadata,
-  SpotProductMetadata,
-  MarketCategory,
-} from '@vertex-protocol/metadata';
 import { useMemo } from 'react';
 
 export interface MarketTableItem {
@@ -22,7 +22,7 @@ export interface MarketTableItem {
     priceChangeFrac24h: BigDecimal | undefined;
     marketPriceFormatSpecifier: string;
   };
-  volume24hr: BigDecimal | undefined;
+  pastDayVolumeInPrimaryQuote: BigDecimal | undefined;
   isFavorited: boolean;
   isNewMarket: boolean;
   action: () => void;
@@ -40,7 +40,7 @@ export function useCommandCenterMarketItems({ marketCategory }: Params) {
 
   const { filteredMarkets } = useFilteredMarkets({ marketCategory });
   const { data: latestMarketPricesData } = useAllMarketsLatestPrices();
-  const { data: marketMetricsData } = useAllMarketsHistoricalMetrics();
+  const { data: marketStatsData } = useAllMarketsStats();
   const { favoritedMarketIds } = useFavoritedMarkets();
 
   const pushTradePage = usePushTradePage();
@@ -54,7 +54,7 @@ export function useCommandCenterMarketItems({ marketCategory }: Params) {
       .filter((market) => !getIsHiddenMarket(market.productId))
       .map((market) => {
         const productId = market.productId;
-        const marketMetrics = marketMetricsData?.metricsByMarket[productId];
+        const marketStats = marketStatsData?.statsByMarket[productId];
         const latestMarketPrices = latestMarketPricesData?.[productId];
 
         return {
@@ -62,12 +62,14 @@ export function useCommandCenterMarketItems({ marketCategory }: Params) {
           productId: market.productId,
           price: {
             currentPrice: latestMarketPrices?.safeAverage,
-            priceChangeFrac24h: marketMetrics?.pastDayPriceChangeFrac,
+            priceChangeFrac24h: marketStats?.pastDayPriceChangeFrac,
             marketPriceFormatSpecifier: getMarketPriceFormatSpecifier(
               market.priceIncrement,
             ),
           },
-          volume24hr: removeDecimals(marketMetrics?.pastDayVolumeInQuote),
+          pastDayVolumeInPrimaryQuote: removeDecimals(
+            marketStats?.pastDayVolumeInPrimaryQuote,
+          ),
           isNewMarket: getIsNewMarket(market.productId),
           isFavorited: favoritedMarketIds.has(market.productId),
           action: () => {
@@ -86,7 +88,7 @@ export function useCommandCenterMarketItems({ marketCategory }: Params) {
   }, [
     filteredMarkets,
     getIsHiddenMarket,
-    marketMetricsData?.metricsByMarket,
+    marketStatsData?.statsByMarket,
     latestMarketPricesData,
     getIsNewMarket,
     favoritedMarketIds,

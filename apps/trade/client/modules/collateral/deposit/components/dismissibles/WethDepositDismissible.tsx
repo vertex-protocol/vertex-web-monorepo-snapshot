@@ -9,10 +9,10 @@ export function WethDepositDismissible({
 }: {
   displayedInfoCardType: DepositInfoCardType | undefined;
 }) {
-  const { show } = useDialog();
+  const { push } = useDialog();
   const { primaryChain } = useEVMContext();
 
-  if (displayedInfoCardType !== 'weth') {
+  if (displayedInfoCardType !== 'wrap_weth') {
     return null;
   }
 
@@ -25,13 +25,14 @@ export function WethDepositDismissible({
           <p>Only wETH deposits are supported.</p>
           <p>
             Swap ETH to wETH via the cross-chain deposit dialog by selecting{' '}
-            {primaryChain.name} as the originating chain.
+            {/*We can't hardcode the chain name as this dismissible is also used on Blast*/}
+            {primaryChain.name} as the &quot;From&quot; chain.
           </p>
           <LinkButton
             colorVariant="primary"
             className="w-fit"
             onClick={() => {
-              show({
+              push({
                 type: 'bridge',
                 params: {},
               });

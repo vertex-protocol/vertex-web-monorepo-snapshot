@@ -1,16 +1,12 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
-import {
-  addDecimals,
-  BigDecimals,
-  removeDecimals,
-} from '@vertex-protocol/utils';
+import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
 import { useExecuteApproveAllowanceForProduct } from 'client/hooks/execute/useExecuteApproveAllowanceForProduct';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
 import { useTokenAllowanceForProduct } from 'client/hooks/query/useTokenAllowanceForProduct';
 import { useCallback, useMemo } from 'react';
 
-const FEE_AMOUNT_USDC = BigDecimals.ONE;
+export const SLOW_MODE_FEE_AMOUNT_USDC = 1;
 
 /**
  * Util hook for querying/mutating token allowance for slow mode transactions
@@ -34,7 +30,7 @@ export function useSlowModeFeeAllowance() {
     );
   }, [marketsStaticData, tokenAllowanceWithDecimals]);
 
-  const requiresApproval = quoteAllowance?.lt(FEE_AMOUNT_USDC);
+  const requiresApproval = quoteAllowance?.lt(SLOW_MODE_FEE_AMOUNT_USDC);
 
   const approveFeeAllowance = useCallback(async () => {
     if (!marketsStaticData) {
@@ -43,14 +39,14 @@ export function useSlowModeFeeAllowance() {
     return executeApproveAllowance.mutateAsync({
       productId: QUOTE_PRODUCT_ID,
       amount: addDecimals(
-        FEE_AMOUNT_USDC,
+        SLOW_MODE_FEE_AMOUNT_USDC,
         marketsStaticData.primaryQuote.metadata.token.tokenDecimals,
       ).toFixed(),
     });
   }, [executeApproveAllowance, marketsStaticData]);
 
   const approvalTxState = useOnChainTransactionState({
-    txResponse: executeApproveAllowance.data,
+    txHash: executeApproveAllowance.data,
   });
 
   return {

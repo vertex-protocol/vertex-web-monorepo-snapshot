@@ -2,8 +2,9 @@ import { useVertexClientContext } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
 import { useSavedSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSavedSubaccountSigningPreference';
-import { Wallet, ZeroAddress } from 'ethers';
+import { Wallet } from 'ethers';
 import { useEffect, useRef } from 'react';
+import { zeroAddress } from 'viem';
 
 /**
  * Synchronization of state for linked signers:
@@ -58,10 +59,14 @@ export function useLinkedSignerSync() {
   // state has not yet updated
   const hasRunBackendSyncRef = useRef(false);
 
-  // Reset on subaccount changes
+  // Reset on subaccount & chainenv changes
   useEffect(() => {
     hasRunBackendSyncRef.current = false;
-  }, [currentSubaccount]);
+  }, [
+    currentSubaccount.chainEnv,
+    currentSubaccount.address,
+    currentSubaccount.name,
+  ]);
 
   // Sync backend state & local state
   useEffect(() => {
@@ -73,7 +78,7 @@ export function useLinkedSignerSync() {
     ) {
       return;
     }
-    const backendIsSignOnce = backendLinkedSigner.signer !== ZeroAddress;
+    const backendIsSignOnce = backendLinkedSigner.signer !== zeroAddress;
 
     // Nothing configured locally
     if (savedSigningPreference == null && backendIsSignOnce) {

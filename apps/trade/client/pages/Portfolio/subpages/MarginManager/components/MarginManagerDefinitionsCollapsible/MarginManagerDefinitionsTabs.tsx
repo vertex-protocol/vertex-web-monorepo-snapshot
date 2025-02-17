@@ -1,7 +1,7 @@
 import {
+  Root as TabsRoot,
   TabsContent,
   TabsList,
-  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import { joinClassNames } from '@vertex-protocol/web-common';

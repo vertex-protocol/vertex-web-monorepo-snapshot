@@ -12,36 +12,59 @@ import {
 } from '@vertex-protocol/utils';
 import {
   CommonOrderParams,
+  ExecutePlaceEngineOrderIsolatedParams,
   ExecutePlaceEngineOrderParams,
   ExecutePlaceOrderParams,
   ExecutePlaceTriggerOrderParams,
 } from 'client/hooks/execute/placeOrder/types';
 import { useExecutePlaceOrder } from 'client/hooks/execute/placeOrder/useExecutePlaceOrder';
-import { StaticMarketData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { StaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
 import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
+import { MarginMode } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { BaseOrderFormValues } from 'client/modules/trading/types';
 import { calcMarketConversionPriceFromOraclePrice } from 'client/utils/calcs/calcMarketConversionPriceFromOraclePrice';
-import { MutableRefObject, useCallback } from 'react';
+import { RefObject, useCallback } from 'react';
 
-interface Params {
+interface BaseParams {
   mutateAsync: ReturnType<typeof useExecutePlaceOrder>['mutateAsync'];
-  allowAnyOrderSizeIncrement: boolean;
   // Used for stop orders as the stop price
-  inputConversionPriceRef: MutableRefObject<BigDecimal | undefined>;
+  inputConversionPriceRef: RefObject<BigDecimal | undefined>;
   // Used as the actual "price" field of an engine order
-  executionConversionPriceRef: MutableRefObject<BigDecimal | undefined>;
+  executionConversionPriceRef: RefObject<BigDecimal | undefined>;
   currentMarket: StaticMarketData | undefined;
   quoteProductId: number | undefined;
-  // For spot
-  spotLeverageEnabled?: boolean;
-  tpsl?: {
+}
+
+interface SpotParams {
+  spotLeverageEnabled: boolean;
+  allowAnyOrderSizeIncrement: boolean;
+  marginMode?: never;
+  tpsl?: never;
+  iso?: never;
+}
+
+export interface OrderFormSubmitHandlerIsoParams {
+  // The subaccount name of the isolated subaccount, undefined if there isn't an existing isolated position
+  subaccountName: string | undefined;
+  isReducingIsoPosition: boolean;
+}
+
+interface PerpParams {
+  spotLeverageEnabled?: never;
+  allowAnyOrderSizeIncrement?: never;
+  marginMode: MarginMode;
+  tpsl: {
     isTpSlEnabled: boolean;
     takeProfitOrderFormOnSubmit: () => void;
     stopLossOrderFormOnSubmit: () => void;
   };
+  iso: OrderFormSubmitHandlerIsoParams | undefined;
 }
+
+type Params = BaseParams & (SpotParams | PerpParams);
 
 export function useOrderFormSubmitHandler({
   currentMarket,
@@ -52,6 +75,8 @@ export function useOrderFormSubmitHandler({
   spotLeverageEnabled,
   allowAnyOrderSizeIncrement,
   tpsl,
+  marginMode,
+  iso,
 }: Params) {
   const { dispatchNotification } = useNotificationManagerContext();
   const { data: latestOraclePrices } = useLatestOraclePrices();
@@ -62,7 +87,19 @@ export function useOrderFormSubmitHandler({
       const inputConversionPrice = inputConversionPriceRef.current;
       const executionConversionPrice = executionConversionPriceRef.current;
 
-      if (!currentMarket || !data.assetAmount || !executionConversionPrice) {
+      if (
+        !currentMarket ||
+        !data.assetAmount ||
+        !executionConversionPrice ||
+        !inputConversionPrice
+      ) {
+        console.warn(
+          '[useOrderFormSubmitHandler] Skipping order placement, missing/invalid data.',
+          toPrintableObject(inputConversionPrice),
+          toPrintableObject(executionConversionPrice),
+          toPrintableObject(currentMarket),
+          data,
+        );
         return;
       }
 
@@ -89,8 +126,15 @@ export function useOrderFormSubmitHandler({
         return spotLeverageEnabled ?? false;
       })();
 
+      // Use the subaccount name of the isolated subaccount if reducing an iso position because `PlaceIsolatedOrder` does not support `reduce_only`
+      // Otherwise, we want to use `PlaceIsolatedOrder` with the parent cross subaccount, so that open orders can be queried via the cross subaccount
+      const reduceOnlyIsoSubaccountName = data.reduceOnly
+        ? iso?.subaccountName
+        : undefined;
+
       let mutationParams: ExecutePlaceOrderParams;
       const commonOrderParams: CommonOrderParams = {
+        subaccountName: reduceOnlyIsoSubaccountName,
         productId: currentMarket.productId,
         price: executionConversionPrice,
         amount: decimalAdjustedAmount,
@@ -119,7 +163,6 @@ export function useOrderFormSubmitHandler({
             : latestOraclePricesRef.current?.[quoteProductId]?.oraclePrice;
 
         if (
-          !inputConversionPrice ||
           !baseOraclePrice ||
           !quoteOraclePrice ||
           baseOraclePrice.isZero() ||
@@ -153,12 +196,47 @@ export function useOrderFormSubmitHandler({
           priceType: data.priceType,
           triggerPrice: inputConversionPrice,
         };
+        console.log(
+          '[useOrderFormSubmitHandler] Stop order mutation params',
+          toPrintableObject(triggerParams),
+        );
         mutationParams = triggerParams;
       } else {
+        const isolatedParams:
+          | ExecutePlaceEngineOrderIsolatedParams
+          | undefined = (() => {
+          if (marginMode?.mode === 'isolated') {
+            // No margin transfer if reducing
+            if (iso?.isReducingIsoPosition) {
+              return {
+                margin: BigDecimals.ZERO,
+                borrowMargin: false,
+              };
+            }
+
+            const leverage = marginMode.leverage;
+            // Use input conversion price to get the est. notional
+            const margin = decimalAdjustedAmount
+              .multipliedBy(inputConversionPrice)
+              .dividedBy(leverage)
+              .abs();
+
+            return {
+              margin,
+              borrowMargin: marginMode.enableBorrows,
+            };
+          }
+        })();
+
         const engineParams: ExecutePlaceEngineOrderParams = {
           ...commonOrderParams,
           priceType: data.priceType,
+          iso: isolatedParams,
         };
+        console.log(
+          '[useOrderFormSubmitHandler] Engine order mutation params',
+          toPrintableObject(engineParams),
+        );
         mutationParams = engineParams;
       }
 
@@ -193,12 +271,17 @@ export function useOrderFormSubmitHandler({
       inputConversionPriceRef,
       executionConversionPriceRef,
       currentMarket,
+      iso?.isReducingIsoPosition,
+      iso?.subaccountName,
       allowAnyOrderSizeIncrement,
       mutateAsync,
       dispatchNotification,
       spotLeverageEnabled,
       quoteProductId,
       latestOraclePricesRef,
+      marginMode?.mode,
+      marginMode?.leverage,
+      marginMode?.enableBorrows,
       tpsl,
     ],
   );

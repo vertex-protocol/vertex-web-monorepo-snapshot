@@ -5,7 +5,7 @@ import {
   SubaccountSignOncePreference,
 } from 'client/modules/singleSignatureSessions/types';
 
-export interface Subaccount {
+export interface AppSubaccount {
   name: string;
   chainEnv: ChainEnv;
   chainId: PrimaryChainID;

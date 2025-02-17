@@ -1,6 +1,6 @@
 import { mergeClassNames } from '@vertex-protocol/web-common';
 import Link from 'next/link';
-import { forwardRef, Ref } from 'react';
+import { Ref } from 'react';
 import { Spinner } from '../Spinner';
 import {
   ButtonAsDivProps,
@@ -9,10 +9,7 @@ import {
   ButtonProps,
 } from './types';
 
-export const Button = forwardRef(function Button(
-  props: ButtonProps,
-  ref: Ref<any>,
-) {
+export function Button(props: ButtonProps) {
   const {
     as: Component,
     className: baseClassName,
@@ -50,7 +47,7 @@ export const Button = forwardRef(function Button(
   );
 
   if (Component === Link) {
-    const { external, ...passthroughLinkProps } = rest as Omit<
+    const { external, style, ref, ...passthroughLinkProps } = rest as Omit<
       ButtonAsLinkProps,
       'as'
     >;
@@ -58,7 +55,11 @@ export const Button = forwardRef(function Button(
     // We can't easily disable link elements, so return a div with the same styling
     if (disableInteraction) {
       return (
-        <div className={className} style={rest.style} ref={ref}>
+        <div
+          className={className}
+          style={style}
+          ref={ref as Ref<HTMLDivElement>}
+        >
           {children}
         </div>
       );
@@ -87,7 +88,6 @@ export const Button = forwardRef(function Button(
       <div
         className={className}
         onClick={disableInteraction ? undefined : onClick}
-        ref={ref}
         {...passthroughDivProps}
       >
         {children}
@@ -100,7 +100,6 @@ export const Button = forwardRef(function Button(
 
   return (
     <button
-      ref={ref}
       className={className}
       onClick={disableInteraction ? undefined : onClick}
       disabled={disableInteraction}
@@ -110,4 +109,4 @@ export const Button = forwardRef(function Button(
       {children}
     </button>
   );
-});
+}

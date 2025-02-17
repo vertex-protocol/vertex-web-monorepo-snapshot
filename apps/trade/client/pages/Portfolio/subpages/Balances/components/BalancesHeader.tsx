@@ -2,7 +2,6 @@
 
 import { LinkButton } from '@vertex-protocol/web-ui';
 import { usePushHistoryPage } from 'client/hooks/ui/navigation/usePushHistoryPage';
-import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { PortfolioHeader } from 'client/pages/Portfolio/components/PortfolioHeader';
 
 export function BalancesHeader() {
@@ -16,7 +15,6 @@ export function BalancesHeader() {
 
 function HistoryPageActionButtons() {
   const pushHistoryPage = usePushHistoryPage();
-  const { trackEvent } = useAnalyticsContext();
 
   return (
     <div className="flex items-center gap-x-4">
@@ -24,12 +22,6 @@ function HistoryPageActionButtons() {
         colorVariant="primary"
         className="text-sm"
         onClick={() => {
-          trackEvent({
-            type: 'balances_history_link_clicked',
-            data: {
-              linkType: 'deposit',
-            },
-          });
           pushHistoryPage('deposits');
         }}
       >
@@ -39,12 +31,6 @@ function HistoryPageActionButtons() {
         colorVariant="primary"
         className="text-sm"
         onClick={() => {
-          trackEvent({
-            type: 'balances_history_link_clicked',
-            data: {
-              linkType: 'withdrawals',
-            },
-          });
           pushHistoryPage('withdrawals');
         }}
       >

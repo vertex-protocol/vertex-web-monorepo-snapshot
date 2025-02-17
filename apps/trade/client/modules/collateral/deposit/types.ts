@@ -1,12 +1,12 @@
 import { BigDecimal } from '@vertex-protocol/utils';
-import { CollateralSpotProduct } from 'client/modules/collateral/types';
+import { CollateralSpotProductSelectValue } from 'client/modules/collateral/types';
 import { LinkedPercentageAmountFormValues } from 'client/types/linkedPercentageAmountFormTypes';
 import { OnChainActionButtonStateWithApproval } from 'client/types/OnChainActionButtonStateWithApproval';
 // We do NOT check for max deposit based on user wallet balance because public RPCs can be unreliable, and we do not
 // want to block users from depositing if the RPC is down
 export type DepositErrorType =
   | 'invalid_input' // Form input is not valid
-  | 'under_min'; // below minimum amount
+  | 'below_min'; // below minimum amount
 
 export interface DepositFormValues extends LinkedPercentageAmountFormValues {
   productId: number;
@@ -14,7 +14,8 @@ export interface DepositFormValues extends LinkedPercentageAmountFormValues {
 
 export type DepositActionButtonState = OnChainActionButtonStateWithApproval;
 
-export interface DepositProduct extends CollateralSpotProduct {
+export interface DepositProductSelectValue
+  extends CollateralSpotProductSelectValue {
   tokenDecimals: number;
   decimalAdjustedVertexBalance: BigDecimal;
   decimalAdjustedWalletBalance: BigDecimal;
@@ -23,8 +24,9 @@ export interface DepositProduct extends CollateralSpotProduct {
 }
 
 export type DepositInfoCardType =
-  | 'weth'
-  | 'vrtx'
+  | 'wrap_weth'
+  | 'vrtx_margin'
   | 'blast_native_yield'
-  | 'wmnt'
-  | 'wsei';
+  | 'wrap_wmnt'
+  | 'wrap_wsei'
+  | 'wrap_ws';

@@ -10,7 +10,13 @@ type PillSizeVariant = Extract<SizeVariant, 'xs' | 'sm'>;
 type PillBorderRadiusVariant = Extract<BorderRadiusVariant, 'base' | 'full'>;
 
 export interface PillProps extends WithChildren<WithClassnames> {
-  colorVariant: 'accent' | 'primary' | 'tertiary' | 'positive' | 'negative';
+  colorVariant:
+    | 'accent'
+    | 'primary'
+    | 'tertiary'
+    | 'positive'
+    | 'negative'
+    | 'warning';
   sizeVariant: PillSizeVariant;
   borderRadiusVariant?: PillBorderRadiusVariant;
 }
@@ -24,6 +30,7 @@ export function Pill({
 }: PillProps) {
   const colorClassNames = {
     positive: 'text-positive bg-positive-muted',
+    warning: `text-warning bg-warning-muted`,
     accent: `text-accent ${COMMON_TRANSPARENCY_COLORS.bgAccent}`,
     negative: 'text-negative bg-negative-muted',
     primary: 'text-text-primary bg-surface-2',
@@ -31,8 +38,8 @@ export function Pill({
   }[colorVariant];
 
   const sizeClassNames = {
-    xs: 'text-xs',
-    sm: 'text-sm',
+    xs: 'text-xs py-1',
+    sm: 'text-sm py-1.5',
   }[sizeVariant];
 
   const roundedClassName = {
@@ -43,7 +50,7 @@ export function Pill({
   return (
     <div
       className={mergeClassNames(
-        'flex items-center gap-1 whitespace-nowrap px-2.5 py-1',
+        'flex items-center gap-1 whitespace-nowrap px-2.5 leading-none',
         colorClassNames,
         sizeClassNames,
         roundedClassName,

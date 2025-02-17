@@ -1,11 +1,11 @@
 import { SubaccountTx } from '@vertex-protocol/engine-client';
 import { addDecimals, BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
-import { DestinationBridgeToken } from 'client/modules/collateral/bridge/types';
+import { DestinationBridgeTokenSelectValue } from 'client/modules/collateral/bridge/types';
 import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
 import { useMemo } from 'react';
 
 interface Params {
-  selectedDestinationToken: DestinationBridgeToken | undefined;
+  selectedDestinationToken: DestinationBridgeTokenSelectValue | undefined;
   // Has token decimals removed (ex. 1.5, not 1.5e6)
   estimatedReceiveAmount: BigDecimal | undefined;
 }

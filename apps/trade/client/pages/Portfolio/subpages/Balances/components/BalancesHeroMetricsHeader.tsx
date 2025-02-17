@@ -1,7 +1,9 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import {
+  formatNumber,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
 
 interface BalancesHeroHeaderProps {
   netBalance: BigDecimal | undefined;

@@ -2,7 +2,7 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { useEffect, useRef, useState } from 'react';
 
 export function useLatestPriceChange(latestPrice?: BigDecimal) {
-  const latestPriceRef = useRef<BigDecimal>();
+  const latestPriceRef = useRef<BigDecimal>(undefined);
 
   const [latestPriceChange, setLatestPriceChange] = useState<BigDecimal>();
 

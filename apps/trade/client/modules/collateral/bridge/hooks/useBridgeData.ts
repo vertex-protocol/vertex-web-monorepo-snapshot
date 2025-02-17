@@ -1,23 +1,23 @@
 import { NATIVE_EVM_TOKEN_ADDRESS } from '@0xsquid/sdk/dist/constants';
 import { ChainType, Token as SquidToken } from '@0xsquid/squid-types';
 import { useEVMContext } from '@vertex-protocol/react-client';
-import { useAllMarketsStaticData } from 'client/hooks/markets/useAllMarketsStaticData';
+import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/useSquidSDK';
 import {
-  BridgeChain,
-  BridgeToken,
-  DestinationBridgeChain,
-  DestinationBridgeToken,
+  BridgeChainSelectValue,
+  BridgeTokenSelectValue,
+  DestinationBridgeChainSelectValue,
+  DestinationBridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
-import { nonNullFilter } from 'client/utils/nonNullFilter';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { groupBy, some } from 'lodash';
 import { useMemo } from 'react';
 
 interface Data {
   // Chain ID -> Chain Data. Does not include the primary chain (ex. Arbitrum)
-  sourceChains: Record<number, BridgeChain>;
+  sourceChains: Record<number, BridgeChainSelectValue>;
   // The primary (i.e. destination) chain to bridge to
-  destinationChain: DestinationBridgeChain;
+  destinationChain: DestinationBridgeChainSelectValue;
 }
 
 /**
@@ -38,8 +38,8 @@ export function useBridgeData() {
 
     const tokensByChainId = groupBy(tokens, (token) => token.chainId);
 
-    const sourceChains: Record<number, BridgeChain> = {};
-    let destinationChain: DestinationBridgeChain | undefined;
+    const sourceChains: Record<number, BridgeChainSelectValue> = {};
+    let destinationChain: DestinationBridgeChainSelectValue | undefined;
 
     chains.forEach((chain) => {
       // Only support EVM chains
@@ -61,7 +61,8 @@ export function useBridgeData() {
         return;
       }
 
-      const baseChainData: Omit<BridgeChain, 'tokens'> = {
+      const baseChainData: Omit<BridgeChainSelectValue, 'tokens'> = {
+        selectId: Number(chain.chainId),
         chainId: Number(chain.chainId),
         externalIconUrl: chain.chainIconURI,
         chainName: chain.networkName,
@@ -82,7 +83,7 @@ export function useBridgeData() {
         ];
 
         const destinationTokens = spotProducts
-          .map((product): DestinationBridgeToken | undefined => {
+          .map((product): DestinationBridgeTokenSelectValue | undefined => {
             const squidToken = tokens.find(
               (token) =>
                 token.address.toLowerCase() ===
@@ -123,8 +124,11 @@ export function useBridgeData() {
   }, [marketsStaticData, primaryChain.id, squidSDK, supportedChains]);
 }
 
-function toBridgeToken(token: SquidToken): BridgeToken {
+function toBridgeToken(token: SquidToken): BridgeTokenSelectValue {
   return {
+    // ID's must be unique, but addresses are shared between different source chains for native tokens (see nativeTokenConstant)
+    // so we need to prefix with the chain ID
+    selectId: `${token.chainId}_${token.address}`,
     address: token.address,
     isNativeToken: token.address === NATIVE_EVM_TOKEN_ADDRESS,
     oraclePriceUsd: token.usdPrice,

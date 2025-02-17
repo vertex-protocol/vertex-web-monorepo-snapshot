@@ -2,14 +2,14 @@ import { BigDecimal } from '@vertex-protocol/utils';
 import { useMemo } from 'react';
 import { UseMaxOrderSizeParams } from 'client/hooks/query/subaccount/useMaxOrderSize';
 import { useMaxOrderSizeEstimation } from 'client/hooks/subaccount/useMaxOrderSizeEstimation';
-import { RepayConvertProduct } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
+import { RepayConvertProductSelectValue } from 'client/modules/collateral/repay/hooks/useRepayConvertForm/types';
 import { roundToDecimalPlaces } from 'client/utils/rounding';
 
 interface Params {
   executionConversionPrice: BigDecimal | undefined;
   isSellOrder: boolean;
   marketProductId: number | undefined;
-  selectedRepayProduct: RepayConvertProduct | undefined;
+  selectedRepayProduct: RepayConvertProductSelectValue | undefined;
   allowAnyOrderSizeIncrement: boolean;
   roundAmount: (
     amount: BigDecimal,
