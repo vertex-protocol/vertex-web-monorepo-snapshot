@@ -29,6 +29,7 @@ import galaIcon from './tokens/gala.svg';
 import gmci30Icon from './tokens/gmci30.svg';
 import gmMemeIcon from './tokens/gmmeme.svg';
 import goatIcon from './tokens/goat.svg';
+import honey from './tokens/honey.svg';
 import icpIcon from './tokens/icp.svg';
 import imxIcon from './tokens/imx.svg';
 import injIcon from './tokens/inj.svg';
@@ -163,6 +164,9 @@ export const TOKEN_ICONS = {
   },
   goat: {
     asset: goatIcon,
+  },
+  honey: {
+    asset: honey,
   },
   icp: {
     asset: icpIcon,

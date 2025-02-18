@@ -3,6 +3,7 @@ import {
   ABSTRACT_CHAIN_ENVS,
   ARB_CHAIN_ENVS,
   BASE_CHAIN_ENVS,
+  BERACHAIN_CHAIN_ENVS,
   BLAST_CHAIN_ENVS,
   MANTLE_CHAIN_ENVS,
   SEI_CHAIN_ENVS,
@@ -20,7 +21,8 @@ export type ChainEnvType =
   | 'blast'
   | 'base'
   | 'sonic'
-  | 'abstract';
+  | 'abstract'
+  | 'berachain';
 
 export function getChainEnvType(chainEnv: ChainEnv): ChainEnvType {
   if (ARB_CHAIN_ENVS.includes(chainEnv)) {
@@ -43,6 +45,9 @@ export function getChainEnvType(chainEnv: ChainEnv): ChainEnvType {
   }
   if (ABSTRACT_CHAIN_ENVS.includes(chainEnv)) {
     return 'abstract';
+  }
+  if (BERACHAIN_CHAIN_ENVS.includes(chainEnv)) {
+    return 'berachain';
   }
   throw Error('Unsupported chain type');
 }

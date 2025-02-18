@@ -3,7 +3,7 @@ import BigDecimal from 'bignumber.js';
 import { useExecuteSubaccountQuoteTransfer } from 'client/hooks/execute/useExecuteSubaccountQuoteTransfer';
 import { useOnFractionSelectedHandler } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
-import { useSavedSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSavedSubaccountSigningPreference';
+import { useSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSubaccountSigningPreference';
 import { SUBACCOUNT_QUOTE_TRANSFER_FEE } from 'client/modules/subaccounts/consts';
 import {
   IsolatedAdjustMarginFormValues,
@@ -17,20 +17,16 @@ interface Params {
   form: UseFormReturn<IsolatedAdjustMarginFormValues>;
   executeFn: ReturnType<typeof useExecuteSubaccountQuoteTransfer>;
   validAmount: BigDecimal | undefined;
-  currentSubaccountName: string;
   subaccounts: Record<'sender' | 'recipient', string>;
 }
 
 export function useIsolatedAdjustMarginFormHandlers({
   executeFn,
-  currentSubaccountName,
   form,
   subaccounts: { sender, recipient },
 }: Params) {
   const { dispatchNotification } = useNotificationManagerContext();
-  const { signingPreference } = useSavedSubaccountSigningPreference(
-    currentSubaccountName,
-  );
+  const signingPreference = useSubaccountSigningPreference();
   const mutateQuoteTransferAsync = executeFn.mutateAsync;
 
   const onSubmitForm = useCallback(

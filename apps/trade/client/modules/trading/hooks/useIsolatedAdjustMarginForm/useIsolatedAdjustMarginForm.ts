@@ -114,10 +114,11 @@ export function useIsolatedAdjustMarginForm({
   const executeSubaccountQuoteTransfer = useExecuteSubaccountQuoteTransfer({
     isIsoTransfer: true,
   });
+  const { reset: resetMutationState } = executeSubaccountQuoteTransfer;
 
   useRunWithDelayOnCondition({
     condition: executeSubaccountQuoteTransfer.isSuccess,
-    fn: executeSubaccountQuoteTransfer.reset,
+    fn: resetMutationState,
   });
 
   const {
@@ -130,7 +131,6 @@ export function useIsolatedAdjustMarginForm({
     form: useIsolatedAdjustMarginForm,
     executeFn: executeSubaccountQuoteTransfer,
     validAmount,
-    currentSubaccountName,
     subaccounts,
   });
 
@@ -168,6 +168,11 @@ export function useIsolatedAdjustMarginForm({
     adjustmentMode,
     onFractionSelected,
   ]);
+
+  // Reset mutation status when the `adjustmentMode` changes.
+  useEffect(() => {
+    resetMutationState();
+  }, [adjustmentMode, resetMutationState]);
 
   return {
     form: useIsolatedAdjustMarginForm,

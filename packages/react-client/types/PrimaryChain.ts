@@ -6,6 +6,7 @@ import {
   arbitrumSepolia,
   base,
   baseSepolia,
+  berachain,
   berachainTestnet,
   blast,
   blastSepolia,
@@ -33,6 +34,7 @@ export const PRIMARY_CHAINS = [
   sonicTestnet,
   sonic,
   berachainTestnet,
+  berachain,
   abstractTestnet,
   abstract,
 ] as const;

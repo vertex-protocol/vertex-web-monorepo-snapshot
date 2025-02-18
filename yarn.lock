@@ -857,10 +857,10 @@
     style-mod "^4.1.0"
     w3c-keyname "^2.2.4"
 
-"@coinbase/wallet-sdk@4.2.3":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-4.2.3.tgz#a30fa0605b24bc42c37f52a62d2442bcbb7734af"
-  integrity sha512-BcyHZ/Ec84z0emORzqdXDv4P0oV+tV3a0OirfA8Ko1JGBIAVvB+hzLvZzCDvnuZx7MTK+Dd8Y9Tjlo446BpCIg==
+"@coinbase/wallet-sdk@4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-4.3.0.tgz#03b8fce92ac2b3b7cf132f64d6008ac081569b4e"
+  integrity sha512-T3+SNmiCw4HzDm4we9wCHCxlP0pqCiwKe4sOwPH3YAK2KSKjxPRydKu6UQJrdONFVLG7ujXvbd/6ZqmvJb8rkw==
   dependencies:
     "@noble/hashes" "^1.4.0"
     clsx "^1.2.1"
@@ -2180,10 +2180,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-3.1.1.tgz#e89b840a7af8097a8ed4953d8dc8470d1302d3ef"
   integrity sha512-ihb3B0T/wJm1eUuArYP4lCTSEoZsClHhuWyfo/kMX3m/odpqNcPfsz5O2A3NT7dXCAgWPGDQGPqygCpgeniKMw==
 
-"@metamask/sdk-communication-layer@0.31.0":
-  version "0.31.0"
-  resolved "https://registry.yarnpkg.com/@metamask/sdk-communication-layer/-/sdk-communication-layer-0.31.0.tgz#0acc063b62aa09d044c7aab65801712d760e53b2"
-  integrity sha512-V9CxdzabDPjQVgmKGHsyU3SYt4Af27g+4DbGCx0fLoHqN/i1RBDZqs/LYbJX3ykJCANzE+llz/MolMCMrzM2RA==
+"@metamask/sdk-communication-layer@0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@metamask/sdk-communication-layer/-/sdk-communication-layer-0.32.0.tgz#89710e807806836138ea5018b087731d6acab627"
+  integrity sha512-dmj/KFjMi1fsdZGIOtbhxdg3amxhKL/A5BqSU4uh/SyDKPub/OT+x5pX8bGjpTL1WPWY/Q0OIlvFyX3VWnT06Q==
   dependencies:
     bufferutil "^4.0.8"
     date-fns "^2.29.3"
@@ -2191,23 +2191,23 @@
     utf-8-validate "^5.0.2"
     uuid "^8.3.2"
 
-"@metamask/sdk-install-modal-web@0.31.5":
-  version "0.31.5"
-  resolved "https://registry.yarnpkg.com/@metamask/sdk-install-modal-web/-/sdk-install-modal-web-0.31.5.tgz#b5e903b63f936b9ae795f31137b4c9f0873c382d"
-  integrity sha512-ZfrVkPAabfH4AIxcTlxQN5oyyzzVXFTLZrm1/BJ+X632d9MiyAVHNtiqa9EZpZYkZGk2icmDVP+xCpvJmVOVpQ==
+"@metamask/sdk-install-modal-web@0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@metamask/sdk-install-modal-web/-/sdk-install-modal-web-0.32.0.tgz#86f80420ca364fa0d7710016fa5c81f95537ab23"
+  integrity sha512-TFoktj0JgfWnQaL3yFkApqNwcaqJ+dw4xcnrJueMP3aXkSNev2Ido+WVNOg4IIMxnmOrfAC9t0UJ0u/dC9MjOQ==
   dependencies:
     "@paulmillr/qr" "^0.2.1"
 
-"@metamask/sdk@0.31.5":
-  version "0.31.5"
-  resolved "https://registry.yarnpkg.com/@metamask/sdk/-/sdk-0.31.5.tgz#804b68382d9f4c74ab0296f1b5c54143622ef2c8"
-  integrity sha512-i7wteqO/fU2JWQrMZz+addHokYThHYznp4nYXviv+QysdxGVgAYvcW/PBA+wpeP3veX7QGfNqMPgSsZbBrASYw==
+"@metamask/sdk@0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@metamask/sdk/-/sdk-0.32.0.tgz#f0e179746fe69dccd032a9026884b45b519c1975"
+  integrity sha512-WmGAlP1oBuD9hk4CsdlG1WJFuPtYJY+dnTHJMeCyohTWD2GgkcLMUUuvu9lO1/NVzuOoSi1OrnjbuY1O/1NZ1g==
   dependencies:
     "@babel/runtime" "^7.26.0"
     "@metamask/onboarding" "^1.0.1"
     "@metamask/providers" "16.1.0"
-    "@metamask/sdk-communication-layer" "0.31.0"
-    "@metamask/sdk-install-modal-web" "0.31.5"
+    "@metamask/sdk-communication-layer" "0.32.0"
+    "@metamask/sdk-install-modal-web" "0.32.0"
     "@paulmillr/qr" "^0.2.1"
     bowser "^2.9.0"
     cross-fetch "^4.0.0"
@@ -4806,78 +4806,78 @@
   resolved "https://registry.yarnpkg.com/@vanilla-extract/sprinkles/-/sprinkles-1.6.3.tgz#733968d653cc2395538b5c29f04dcdb0a2ca15c5"
   integrity sha512-oCHlQeYOBIJIA2yWy2GnY5wE2A7hGHDyJplJo4lb+KEIBcJWRnDJDg8ywDwQS5VfWJrBBO3drzYZPFpWQjAMiQ==
 
-"@vertex-protocol/client@*", "@vertex-protocol/client@0.76.0":
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/@vertex-protocol/client/-/client-0.76.0.tgz#7446a5656788286ba2952d4c7b9a0186926bd2f3"
-  integrity sha512-PmxSgjee6b6QeBjlzo/kVvT4FCVdt7nc1Ge0QYxEShornNYCMNDc8fA/qAdtjDpMDzgGl3BLx/K753Y0zD4mrA==
+"@vertex-protocol/client@*", "@vertex-protocol/client@0.77.0":
+  version "0.77.0"
+  resolved "https://registry.yarnpkg.com/@vertex-protocol/client/-/client-0.77.0.tgz#eaeb7e0d78d548f6b798e63b933bb211a4890c34"
+  integrity sha512-VZKnYufoPALb5m6BMI71ub0RmlOwmtoCHZDZK4U1apfMcqOu1ymf0QLg50+NIn4uhrDqSCVcvSNBNsnLUpMc1A==
   dependencies:
-    "@vertex-protocol/contracts" "^0.76.0"
-    "@vertex-protocol/engine-client" "^0.76.0"
-    "@vertex-protocol/indexer-client" "^0.76.0"
-    "@vertex-protocol/trigger-client" "^0.76.0"
-    "@vertex-protocol/utils" "^0.76.0"
+    "@vertex-protocol/contracts" "^0.77.0"
+    "@vertex-protocol/engine-client" "^0.77.0"
+    "@vertex-protocol/indexer-client" "^0.77.0"
+    "@vertex-protocol/trigger-client" "^0.77.0"
+    "@vertex-protocol/utils" "^0.77.0"
     ts-mixer "*"
 
-"@vertex-protocol/contracts@^0.76.0":
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/@vertex-protocol/contracts/-/contracts-0.76.0.tgz#32a426989a52f970a6b13b6f1ce547a7322cbb85"
-  integrity sha512-btby76l4Y8dvrNB2lP5/LmXnxu7tyjPcPnBSuKHjXG0lxlNfv+xwHMWXD2LaXZ/qblqXTuxFkfwUELmsTEgAqg==
+"@vertex-protocol/contracts@^0.77.0":
+  version "0.77.0"
+  resolved "https://registry.yarnpkg.com/@vertex-protocol/contracts/-/contracts-0.77.0.tgz#de5da93f938340b7d295a84bdf9d07091ef71349"
+  integrity sha512-LmZnAt1ck1qKneRZHJUrudRdLWI/mid/Oe0z0P1hACXvmM9qskdgZ0k6pG9GVmaNdqeHQNT2RkrD4uGH+BQV7g==
   dependencies:
-    "@vertex-protocol/utils" "^0.76.0"
+    "@vertex-protocol/utils" "^0.77.0"
 
-"@vertex-protocol/engine-client@^0.76.0":
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/@vertex-protocol/engine-client/-/engine-client-0.76.0.tgz#ca5718d1684f5c32a6e1a2034cab29751e00e5f4"
-  integrity sha512-F9vBgYEkuaH3nHudCSGGcDGvR0xCxffDchM9Wn+qvMFOgKmkcDxpSPMG8xzZq9ACHomnntsZPnjBGoTf8cLzog==
+"@vertex-protocol/engine-client@^0.77.0":
+  version "0.77.0"
+  resolved "https://registry.yarnpkg.com/@vertex-protocol/engine-client/-/engine-client-0.77.0.tgz#fb45be615ab0ad90c98cfbfd75a9d60801287274"
+  integrity sha512-wSDjlgcKQ4/2EXeW7O7XFzHlWDKZy6WJPEx3Uf0yB5D+X2sjV0gib27V0ZsxUe9UP8+yybcI9vJWQivDgCtowQ==
   dependencies:
-    "@vertex-protocol/contracts" "^0.76.0"
-    "@vertex-protocol/utils" "^0.76.0"
+    "@vertex-protocol/contracts" "^0.77.0"
+    "@vertex-protocol/utils" "^0.77.0"
     axios "*"
     ts-mixer "*"
 
-"@vertex-protocol/indexer-client@^0.76.0":
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/@vertex-protocol/indexer-client/-/indexer-client-0.76.0.tgz#13400758d9332da982bda3eb2720217cf1381096"
-  integrity sha512-/f1jpmf3Tp3XVklHNTIZcUqBPSnqenj4CISCXpXfqfgJl4W4K0vbPv8hcFtqX3HdYTijgOa/VBunci/oe+TnxA==
+"@vertex-protocol/indexer-client@^0.77.0":
+  version "0.77.0"
+  resolved "https://registry.yarnpkg.com/@vertex-protocol/indexer-client/-/indexer-client-0.77.0.tgz#30c34795bfd1c1bece199e7cc9acdf43bc40923c"
+  integrity sha512-HHQLI1yEVBqi1fZzt8peZWnzmeY4s3s99b0kyiF2funVMi2ylkJW1RBLFWGT97c0wh6+qYmph71HjyUsgyErXg==
   dependencies:
-    "@vertex-protocol/contracts" "^0.76.0"
-    "@vertex-protocol/engine-client" "^0.76.0"
-    "@vertex-protocol/utils" "^0.76.0"
+    "@vertex-protocol/contracts" "^0.77.0"
+    "@vertex-protocol/engine-client" "^0.77.0"
+    "@vertex-protocol/utils" "^0.77.0"
     axios "*"
     ts-mixer "*"
 
-"@vertex-protocol/trigger-client@^0.76.0":
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/@vertex-protocol/trigger-client/-/trigger-client-0.76.0.tgz#ffbe7950da1cd6eb08b2bce22d17aa9a451bfa99"
-  integrity sha512-C1pt29a/VGrQBPikksYD91hsHH/ByqSqGkH7BO7gxcI4qHQHg3gnNEGyrONqN1QsJtgJVX7yAwTPn33jrW/WxA==
+"@vertex-protocol/trigger-client@^0.77.0":
+  version "0.77.0"
+  resolved "https://registry.yarnpkg.com/@vertex-protocol/trigger-client/-/trigger-client-0.77.0.tgz#6782c0a2978410c985c57d7f435ea6a438dd8701"
+  integrity sha512-BxQhndQzUIzjKoCjLSqswPC2g5tgGpxIzmhhmwh7Xw3E+yBWMfhbLPE2LxLf2VUb20MilWZq7qNCyTPpkE+8UA==
   dependencies:
-    "@vertex-protocol/contracts" "^0.76.0"
-    "@vertex-protocol/engine-client" "^0.76.0"
-    "@vertex-protocol/utils" "^0.76.0"
+    "@vertex-protocol/contracts" "^0.77.0"
+    "@vertex-protocol/engine-client" "^0.77.0"
+    "@vertex-protocol/utils" "^0.77.0"
     axios "*"
     ts-mixer "*"
 
-"@vertex-protocol/utils@^0.76.0":
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/@vertex-protocol/utils/-/utils-0.76.0.tgz#f9cbb152678aae9b2e7ab386ff82462154b5ea68"
-  integrity sha512-ePJAe3y0bljyQtO4j8Q0cmK21E2sRfLcJVg8I5vLQP3HQRIr/fvXsjm0o9o7mX/fTV0t7apSPtj5faoWUAuHRQ==
+"@vertex-protocol/utils@^0.77.0":
+  version "0.77.0"
+  resolved "https://registry.yarnpkg.com/@vertex-protocol/utils/-/utils-0.77.0.tgz#5a47be037513770ca930b2144236806d2104ab38"
+  integrity sha512-CyXboNQBOH5Gm5vKJaSyDcXeB/Mpf+hy5FhVkhHrTMiUs3X4RG/qbdCXvgSUYgCgca+ZL6cIiPiYkS8GuizpoQ==
 
-"@wagmi/connectors@5.7.5":
-  version "5.7.5"
-  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-5.7.5.tgz#59c4d3abfcb342aa4640749c7a0dcf96dcd5089d"
-  integrity sha512-btqHHUSTzg4BZe9at/7SnRPv4cz8O3pisbeZBh0qxKz7PVm+9vRxY0bSala3xQPDcS0PRTB30Vn/+lM73GCjbw==
+"@wagmi/connectors@5.7.7":
+  version "5.7.7"
+  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-5.7.7.tgz#35fe03d69ca3f1494c0e97a758884e06e535eefd"
+  integrity sha512-hveKxuR35ZQQyteLo7aiN/TBVECYKVbLNTYGGgqzTNHJ8vVoblTP9PwPrRPGOPi5ji8raYSFWShxNK7QpGL+Kg==
   dependencies:
-    "@coinbase/wallet-sdk" "4.2.3"
-    "@metamask/sdk" "0.31.5"
+    "@coinbase/wallet-sdk" "4.3.0"
+    "@metamask/sdk" "0.32.0"
     "@safe-global/safe-apps-provider" "0.18.5"
     "@safe-global/safe-apps-sdk" "9.1.0"
     "@walletconnect/ethereum-provider" "2.17.0"
     cbw-sdk "npm:@coinbase/wallet-sdk@3.9.3"
 
-"@wagmi/core@2.16.3":
-  version "2.16.3"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-2.16.3.tgz#abbff0a19e75beaad56ffb90da772641552d49c3"
-  integrity sha512-SVovoWHaQ2AIkmGf+ucNijT6AHXcTMffFcLmcFF6++y21x+ge7Gkh3UoJiU91SDDv8n08eTQ9jbyia3GEgU5jQ==
+"@wagmi/core@2.16.4":
+  version "2.16.4"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-2.16.4.tgz#96f1a2803dbf3ca110938402bdf2d99ab8da638e"
+  integrity sha512-E4jY4A98gwuHCjzuEajHIG/WhNDY5BChVHMjflV9Bx5CO7COqYRG2dcRLuF6Bo0LQNvVvXDAFUwR2JShJnT5pA==
   dependencies:
     eventemitter3 "5.0.1"
     mipd "0.0.7"
@@ -12329,10 +12329,10 @@ victory-vendor@^36.6.8:
     d3-time "^3.0.0"
     d3-timer "^3.0.1"
 
-viem@*, viem@2.22.17, viem@2.7.15, viem@^2.1.1:
-  version "2.22.17"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-2.22.17.tgz#71cb5793d898e7850d440653b0043803c2d00c8d"
-  integrity sha512-eqNhlPGgRLR29XEVUT2uuaoEyMiaQZEKx63xT1py9OYsE+ZwlVgjnfrqbXad7Flg2iJ0Bs5Hh7o0FfRWUJGHvg==
+viem@*, viem@2.23.2, viem@2.7.15, viem@^2.1.1:
+  version "2.23.2"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.23.2.tgz#db395c8cf5f4fb5572914b962fb8ce5db09f681c"
+  integrity sha512-NVmW/E0c5crMOtbEAqMF0e3NmvQykFXhLOc/CkLIXOlzHSA6KXVz3CYVmaKqBF8/xtjsjHAGjdJN3Ru1kFJLaA==
   dependencies:
     "@noble/curves" "1.8.1"
     "@noble/hashes" "1.7.1"
@@ -12348,13 +12348,13 @@ w3c-keyname@^2.2.4:
   resolved "https://registry.yarnpkg.com/w3c-keyname/-/w3c-keyname-2.2.8.tgz#7b17c8c6883d4e8b86ac8aba79d39e880f8869c5"
   integrity sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==
 
-wagmi@*, wagmi@2.14.9:
-  version "2.14.9"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-2.14.9.tgz#44c47ac6fc119e5ce40bee2c4e4dd5069a0d651a"
-  integrity sha512-nDJ5hwPaiVpn/8Bi82m5K4BCqDiOSnOV976p/jKXt0svQABGdAxUxej0UgDRoVlrp+NutmejN+SyQKmhV477/A==
+wagmi@*, wagmi@2.14.11:
+  version "2.14.11"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-2.14.11.tgz#bfdd479e88bb3907efb412d04b5135a0017d5090"
+  integrity sha512-Qj79cq+9MAcnKict9QLo60Lc4S2IXVVE94HBwCmczDrFtoM31NxfX4uQP73Elj2fV9lXH4/dw3jlb8eDhlm6iQ==
   dependencies:
-    "@wagmi/connectors" "5.7.5"
-    "@wagmi/core" "2.16.3"
+    "@wagmi/connectors" "5.7.7"
+    "@wagmi/core" "2.16.4"
     use-sync-external-store "1.4.0"
 
 warning@^4.0.2:

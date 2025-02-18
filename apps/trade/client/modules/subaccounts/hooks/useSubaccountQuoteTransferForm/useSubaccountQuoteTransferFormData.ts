@@ -7,10 +7,10 @@ import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useSubaccountNames } from 'client/context/subaccount/hooks/useSubaccountNames';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useMaxWithdrawableAmount } from 'client/hooks/query/subaccount/useMaxWithdrawableAmount';
-import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { AnnotatedSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/annotateSubaccountSummary';
-import { useSavedSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSavedSubaccountSigningPreference';
+import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
+import { useMaxWithdrawableAmount } from 'client/hooks/query/subaccount/useMaxWithdrawableAmount';
+import { useSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSubaccountSigningPreference';
 import { SUBACCOUNT_QUOTE_TRANSFER_FEE } from 'client/modules/subaccounts/consts';
 import { SubaccountProfile } from 'client/modules/subaccounts/types';
 import { useMemo } from 'react';
@@ -94,8 +94,8 @@ export function useSubaccountQuoteTransferFormData({
     return removeDecimals(maxWithdrawable).plus(SUBACCOUNT_QUOTE_TRANSFER_FEE);
   })();
 
-  const { signingPreference: senderSigningPreference } =
-    useSavedSubaccountSigningPreference(senderSubaccountName);
+  const senderSigningPreference =
+    useSubaccountSigningPreference(senderSubaccountName);
 
   const { primaryQuoteToken } = useVertexMetadataContext();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();

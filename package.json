@@ -40,7 +40,7 @@
     "@spindl-xyz/attribution": "^1.8.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vertex-protocol/client": "0.76.0",
+    "@vertex-protocol/client": "0.77.0",
     "ahooks": "^3.8.1",
     "autoprefixer": "^10.4.20",
     "bignumber.js": "9.1.2",
@@ -67,8 +67,8 @@
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.2",
     "typescript-plugin-css-modules": "^5.1.0",
-    "viem": "2.22.17",
-    "wagmi": "2.14.9"
+    "viem": "2.23.2",
+    "wagmi": "2.14.11"
   },
   "packageManager": "yarn@1.22.19",
   "dependencies": {}

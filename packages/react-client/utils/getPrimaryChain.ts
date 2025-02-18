@@ -6,6 +6,7 @@ import {
   arbitrumSepolia,
   base,
   baseSepolia,
+  berachain,
   berachainTestnet,
   blast,
   blastSepolia,
@@ -48,6 +49,8 @@ export function getPrimaryChain(chainEnv: ChainEnv): PrimaryChain {
       return sonic;
     case 'beraTestnet':
       return berachainTestnet;
+    case 'bera':
+      return berachain;
     case 'abstractTestnet':
       return abstractTestnet;
     case 'abstract':

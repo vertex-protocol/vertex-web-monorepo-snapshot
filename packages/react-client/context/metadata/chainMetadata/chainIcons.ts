@@ -24,6 +24,7 @@ export const CHAIN_ICON_BY_CHAIN_ENV: Record<ChainEnv, NextImageSrc> = {
   sonicTestnet: sonicLogo,
   sonic: sonicLogo,
   beraTestnet: berachainLogo,
+  bera: berachainLogo,
   abstractTestnet: abstractLogo,
   abstract: abstractLogo,
 };

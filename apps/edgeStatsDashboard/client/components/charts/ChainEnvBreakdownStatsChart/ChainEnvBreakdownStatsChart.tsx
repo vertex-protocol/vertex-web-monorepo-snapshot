@@ -128,6 +128,12 @@ export function ChainEnvBreakdownStatsChart({
           chartType,
           yAxisId: 'left',
         },
+        bera: {
+          label: 'Berachain',
+          dataKey: 'bera',
+          chartType,
+          yAxisId: 'left',
+        },
         abstractTestnet: {
           label: 'Abstract Testnet',
           dataKey: 'abstractTestnet',
