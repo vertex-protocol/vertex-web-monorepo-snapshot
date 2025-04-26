@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { EngineMintLpParams } from '@vertex-protocol/client';
-import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { MintLpParams } from '@vertex-protocol/client/src/apis/market/types';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   MAX_SIZE_QUERY_KEYS,
@@ -22,30 +21,20 @@ const REFETCH_QUERY_KEYS = [
 
 export function useExecuteMintLp() {
   const refetchQueries = useRefetchQueries(REFETCH_QUERY_KEYS);
-  const {
-    currentSubaccount: { name: currentSubaccountName },
-  } = useSubaccountContext();
 
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (
-        params: Pick<
-          EngineMintLpParams,
-          | 'amountBase'
-          | 'quoteAmountHigh'
-          | 'quoteAmountLow'
-          | 'productId'
-          | 'spotLeverage'
-        >,
+        params: Omit<MintLpParams, 'subaccountName'>,
         context: ValidExecuteContext,
       ) => {
         console.log('Minting LP', params);
         return context.vertexClient.market.mintLp({
-          subaccountName: currentSubaccountName,
+          subaccountName: context.subaccount.name,
           ...params,
         });
       },
-      [currentSubaccountName],
+      [],
     ),
   );
 

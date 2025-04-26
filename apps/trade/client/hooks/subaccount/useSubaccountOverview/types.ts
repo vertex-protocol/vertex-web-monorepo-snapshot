@@ -9,11 +9,13 @@ export interface SubaccountOverview {
   // Max of 1
   liquidationRiskFractionBounded: BigDecimal;
   // Min of 0, Maint health
-  fundsUntilLiquidationBounded: BigDecimal;
+  fundsUntilLiquidationBoundedUsd: BigDecimal;
   // Min of 0, Initial health
-  fundsAvailableBounded: BigDecimal;
+  fundsAvailableBoundedUsd: BigDecimal;
   spot: {
-    netBalance: BigDecimal;
+    // Includes both cross & isolated total net margin
+    netTotalBalanceUsd: BigDecimal;
+    netCrossBalanceUsd: BigDecimal;
     totalBorrowsValueUsd: BigDecimal;
     totalDepositsValueUsd: BigDecimal;
     averageBorrowAPRFraction: BigDecimal;

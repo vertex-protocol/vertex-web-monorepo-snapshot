@@ -1,6 +1,6 @@
+import { useEdgeMarketSnapshots } from '@vertex-protocol/react-client';
 import { StatsChartDataItem } from 'client/components/charts/StatsChart/types';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
-import { useEdgeMarketSnapshots } from 'client/hooks/useEdgeMarketSnapshots';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/usePrimaryQuotePriceUsd';
 import { calcTotalDecimalAdjustedDeltasUsd } from 'client/utils/calcTotalDecimalAdjustedDeltasUsd';
 import { getAverageOraclePricesByProductId } from 'client/utils/getAverageOraclePricesByProductId';

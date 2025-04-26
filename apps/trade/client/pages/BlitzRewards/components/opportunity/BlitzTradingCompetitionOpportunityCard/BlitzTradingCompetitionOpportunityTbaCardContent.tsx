@@ -9,8 +9,16 @@ export function BlitzTradingCompetitionOpportunityTbaCardContent({
 }: WithClassnames) {
   return (
     <div className={className}>
-      <ValueWithLabel.Vertical label="Prize Pool" valueContent="-" />
-      <ValueWithLabel.Vertical label="Date" valueContent="TBA" />
+      <ValueWithLabel.Vertical
+        sizeVariant="lg"
+        label="Prize Pool"
+        valueContent="-"
+      />
+      <ValueWithLabel.Vertical
+        sizeVariant="lg"
+        label="Date"
+        valueContent="TBA"
+      />
     </div>
   );
 }

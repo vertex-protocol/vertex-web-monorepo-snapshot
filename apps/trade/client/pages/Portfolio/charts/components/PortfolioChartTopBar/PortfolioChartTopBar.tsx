@@ -1,17 +1,19 @@
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import { TabIdentifiableList } from 'client/hooks/ui/tabs/types';
+import { ChartTimespanRadioGroup } from 'client/modules/charts/components/ChartTimespanRadioGroup';
 import { PortfolioChartTabs } from 'client/pages/Portfolio/charts/components/PortfolioChartTopBar/PortfolioChartTabs';
-import { PortfolioChartTimespanFilter } from 'client/pages/Portfolio/charts/components/PortfolioChartTopBar/PortfolioChartTimespanFilter';
+import { PORTFOLIO_CHART_TIMESPAN_METADATA } from 'client/pages/Portfolio/charts/consts';
 import {
-  ChartTimespan,
   PortfolioChartTab,
+  PortfolioChartTimespan,
 } from 'client/pages/Portfolio/charts/types';
+import { Dispatch, SetStateAction, useMemo } from 'react';
 
 interface Props<TTabID extends string> extends WithClassnames {
   tabs: TabIdentifiableList<PortfolioChartTab<TTabID>>;
-  timespan: ChartTimespan;
+  timespan: PortfolioChartTimespan;
   selectedTabId: TTabID;
-  setTimespan: (timespan: ChartTimespan) => void;
+  setTimespan: Dispatch<SetStateAction<PortfolioChartTimespan>>;
 }
 
 export function PortfolioChartTopBar<TTabID extends string>({
@@ -21,6 +23,15 @@ export function PortfolioChartTopBar<TTabID extends string>({
   selectedTabId,
   setTimespan,
 }: Props<TTabID>) {
+  const timespanOptions = useMemo(() => {
+    return Object.entries(PORTFOLIO_CHART_TIMESPAN_METADATA).map(
+      ([key, { shortLabel }]) => ({
+        label: shortLabel,
+        value: key as PortfolioChartTimespan,
+      }),
+    );
+  }, []);
+
   return (
     <div
       className={joinClassNames(
@@ -34,9 +45,10 @@ export function PortfolioChartTopBar<TTabID extends string>({
         tabs={tabs}
         className="sm:w-44"
       />
-      <PortfolioChartTimespanFilter
+      <ChartTimespanRadioGroup
         timespan={timespan}
         setTimespan={setTimespan}
+        timespanOptions={timespanOptions}
         className="self-end sm:self-auto"
       />
     </div>

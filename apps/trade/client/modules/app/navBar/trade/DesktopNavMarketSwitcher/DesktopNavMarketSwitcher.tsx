@@ -1,10 +1,6 @@
 import { MarketCategory } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import {
-  COMMON_TRANSPARENCY_COLORS,
-  NavCardButton,
-  SearchBar,
-} from '@vertex-protocol/web-ui';
+import { NavCardButton, SearchBar } from '@vertex-protocol/web-ui';
 import { useDebounceFn } from 'ahooks';
 import { useAnalyticsContext } from 'client/modules/analytics/AnalyticsContext';
 import { ROUTES } from 'client/modules/app/consts/routes';
@@ -50,7 +46,7 @@ export function DesktopNavMarketSwitcher() {
           Trade
         </AppNavItemButton>
       }
-      popoverClassName="h-[360px] w-[600px] flex gap-x-2"
+      popoverClassName="h-90 w-150 flex gap-x-2"
       popoverContent={
         <>
           <div className="flex flex-col gap-y-1.5">
@@ -121,7 +117,7 @@ function NavMarketSearch({
   return (
     <div
       className={joinClassNames(
-        COMMON_TRANSPARENCY_COLORS.bgOverlayHover,
+        'bg-overlay-hover',
         'flex flex-col rounded-md',
         'gap-y-3.5 p-1.5',
         className,

@@ -1,25 +1,24 @@
 /**
  * Disclosure keys for feature notifications
  */
-export const FEATURE_NOTIFICATION_DISCLOSURE_KEYS = [
-  'feb_13_delisting',
-  'bera_perp_feb_13',
-] as const;
+export const FEATURE_NOTIFICATION_DISCLOSURE_KEYS = ['ws_feb_21'] as const;
 
 export type FeatureNotificationDisclosureKey =
   (typeof FEATURE_NOTIFICATION_DISCLOSURE_KEYS)[number];
 
 /**
- * Disclosure keys for promo banners
+ * Disclosure keys for banners
  */
-export const PROMO_BANNER_DISCLOSURE_KEYS = [
-  'abstract_launch',
-  'abstract_discover_upvote',
+export const BANNER_DISCLOSURE_KEYS = [
+  'isolated_launch',
+  'sonic_incentives_app_banner',
+  'sonic_incentives_rewards_page_banner',
   'sonic_points_page_banner',
+  'money_market_details_promo_banner',
+  'avax_launch_app_banner',
 ];
 
-export type PromoBannerDisclosureKey =
-  (typeof PROMO_BANNER_DISCLOSURE_KEYS)[number];
+export type BannerDisclosureKey = (typeof BANNER_DISCLOSURE_KEYS)[number];
 
 /**
  * Disclosure keys for user info
@@ -37,6 +36,7 @@ const USER_INFO_DISCLOSURE_KEYS = [
   'swap_wmnt',
   'swap_wsei',
   'swap_ws',
+  'swap_wavax',
   'blast_native_yield_deposit_dialog',
   'edit_order_via_chart_dialog',
   'blitz_vaults_rewards',
@@ -46,12 +46,13 @@ const USER_INFO_DISCLOSURE_KEYS = [
   'no_partial_unstaking',
   'perp_margin_mode_iso_info',
   'perp_margin_mode_cross_info',
+  'trading_market_order_rewards',
 ] as const;
 
 export const USER_DISCLOSURE_KEYS = [
   ...USER_INFO_DISCLOSURE_KEYS,
   ...FEATURE_NOTIFICATION_DISCLOSURE_KEYS,
-  ...PROMO_BANNER_DISCLOSURE_KEYS,
+  ...BANNER_DISCLOSURE_KEYS,
 ] as const;
 
 export type UserDisclosureKey = (typeof USER_DISCLOSURE_KEYS)[number];

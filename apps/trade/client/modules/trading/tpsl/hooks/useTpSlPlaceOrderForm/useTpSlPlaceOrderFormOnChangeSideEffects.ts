@@ -2,8 +2,8 @@ import { BigDecimal, toBigDecimal } from '@vertex-protocol/client';
 import { TpSlPlaceOrderFormValues } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/types';
 import { TriggerCriteriaPriceType } from 'client/modules/trading/tpsl/tpslDialog/types';
 import { LinkedPercentageAmountSource } from 'client/types/linkedPercentageAmountFormTypes';
-import { calcPerpEntryCostBeforeLeverage } from 'client/utils/calcs/perpEntryCostCalcs';
-import { calcPnlFrac, calcUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
+import { calcPerpEntryCostBeforeLeverage } from 'client/utils/calcs/perp/perpEntryCostCalcs';
+import { calcPnlFrac, calcPnl } from 'client/utils/calcs/pnlCalcs';
 import { roundToIncrement, roundToString } from 'client/utils/rounding';
 import { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -69,7 +69,7 @@ export function useTpSlPlaceOrderFormOnChangeSideEffects({
       return;
     }
 
-    const unrealizedPnl = calcUnrealizedPnl(
+    const unrealizedPnl = calcPnl(
       positionAmount,
       validTriggerPrice,
       positionNetEntry,

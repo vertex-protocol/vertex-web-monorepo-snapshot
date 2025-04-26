@@ -12,11 +12,12 @@ import {
   WithClassnames,
   WithRef,
 } from '@vertex-protocol/web-common';
-import { ScrollShadowsContainer, SearchBar } from '@vertex-protocol/web-ui';
 import {
   DropdownUi,
   DropdownUiTriggerProps,
-} from '@vertex-protocol/web-ui/components/DropdownUi/DropdownUi';
+  ScrollShadowsContainer,
+  SearchBar,
+} from '@vertex-protocol/web-ui';
 import { Command } from 'cmdk';
 import { HTMLProps, ReactNode } from 'react';
 import { Merge } from 'type-fest';
@@ -113,7 +114,7 @@ function Options({
     <PopoverContent asChild sideOffset={sideOffset ?? 5} {...rest}>
       <DropdownUi.Content
         className={joinClassNames(
-          'min-w-[var(--radix-popover-trigger-width)] rounded',
+          'min-w-(--radix-popover-trigger-width) rounded-sm',
           className,
         )}
       >

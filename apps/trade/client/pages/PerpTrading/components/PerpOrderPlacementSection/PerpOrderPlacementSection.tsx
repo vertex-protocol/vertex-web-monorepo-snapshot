@@ -9,6 +9,7 @@ import { Form } from 'client/components/Form';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { AdvancedOrderSettings } from 'client/modules/trading/components/AdvancedOrderSettings/AdvancedOrderSettings';
+import { OrderFormTradingRewardsDismissibleBanner } from 'client/modules/trading/components/DismissibleMarketOrderTradingRewardsBanner/OrderFormTradingRewardsDismissibleBanner';
 import { OrderFormInputs } from 'client/modules/trading/components/OrderFormInputs';
 import { OrderFormSpreadWarningPanel } from 'client/modules/trading/components/OrderFormSpreadWarningPanel';
 import { OrderSideTabs } from 'client/modules/trading/components/OrderSideTabs';
@@ -18,7 +19,7 @@ import { StopMarketOrderDismissible } from 'client/modules/trading/components/St
 import { StopOrderTriggerPriceInfo } from 'client/modules/trading/components/StopOrderTriggerPriceInfo';
 import { TradingErrorPanel } from 'client/modules/trading/components/TradingErrorPanel';
 import { useIsHighSpread } from 'client/modules/trading/hooks/useIsHighSpread';
-import { PerpLeverageSelector } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpLeverageSelector';
+import { PerpMarginModeButton } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpMarginModeButton';
 import { PerpOrderSummary } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpOrderSummary';
 import { PerpTpSlSection } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/PerpTpSlSection/PerpTpSlSection';
 import { ProductPendingDelistInfoPanel } from 'client/pages/PerpTrading/components/PerpOrderPlacementSection/components/ProductPendingDelistInfoPanel';
@@ -73,7 +74,7 @@ export function PerpOrderPlacementSection({ className }: WithClassnames) {
       onSubmit={onSubmit}
       className={joinClassNames('flex flex-col gap-y-2.5 p-3', className)}
     >
-      <PerpLeverageSelector
+      <PerpMarginModeButton
         productId={currentMarket?.productId}
         className="px-4"
       />
@@ -133,6 +134,7 @@ export function PerpOrderPlacementSection({ className }: WithClassnames) {
               orderSide={orderSide}
             />
           </div>
+          <OrderFormTradingRewardsDismissibleBanner />
           <ProductPendingDelistInfoPanel currentMarket={currentMarket} />
           {/*Margin for extra space between the divider and order summary*/}
           <Divider className="mb-3" />

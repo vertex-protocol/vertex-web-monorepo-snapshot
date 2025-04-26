@@ -1,24 +1,24 @@
 import { usePrimaryQuotePriceUsd } from 'client/hooks/usePrimaryQuotePriceUsd';
+import { useAllEdgeSpotProducts } from 'client/pages/MainPage/components/TvlAndYieldTabContent/hooks/useAllEdgeSpotProducts';
 import { calcDecimalAdjustedUsdValue } from 'client/utils/calcDecimalAdjustedUsdValue';
-import { useMemo } from 'react';
-import { sumBy } from 'lodash';
-import { useAllEdgeSpotMarkets } from 'client/pages/MainPage/components/TvlAndYieldTabContent/hooks/useAllEdgeSpotMarkets';
 import { createPieChartDataForSpotProducts } from 'client/utils/createPieChartDataForSpotProducts';
+import { sumBy } from 'lodash';
+import { useMemo } from 'react';
 
 export function useEdgeDepositsPieChartData() {
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const {
-    data: allEdgeSpotMarketsData,
-    isLoading: isLoadingAllEdgeSpotMarketsData,
-  } = useAllEdgeSpotMarkets();
+    data: allEdgeSpotProductsData,
+    isLoading: isLoadingAllEdgeSpotProductsData,
+  } = useAllEdgeSpotProducts();
 
   const mappedData = useMemo(() => {
-    if (!allEdgeSpotMarketsData) {
+    if (!allEdgeSpotProductsData) {
       return;
     }
 
     const edgeTotalDepositsAtNowByProductUsd =
-      createPieChartDataForSpotProducts(allEdgeSpotMarketsData, (market) =>
+      createPieChartDataForSpotProducts(allEdgeSpotProductsData, (market) =>
         calcDecimalAdjustedUsdValue(
           market.product.totalDeposited.times(market.product.oraclePrice),
           primaryQuotePriceUsd,
@@ -33,10 +33,10 @@ export function useEdgeDepositsPieChartData() {
       edgeTotalDepositsAtNowUsd,
       edgeTotalDepositsAtNowByProductUsd,
     };
-  }, [allEdgeSpotMarketsData, primaryQuotePriceUsd]);
+  }, [allEdgeSpotProductsData, primaryQuotePriceUsd]);
 
   return {
     data: mappedData,
-    isLoading: isLoadingAllEdgeSpotMarketsData,
+    isLoading: isLoadingAllEdgeSpotProductsData,
   };
 }

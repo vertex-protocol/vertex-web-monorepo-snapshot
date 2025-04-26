@@ -1,8 +1,10 @@
 import { truncateAddress } from '@vertex-protocol/web-common';
 import { ChartTooltip } from 'client/components/MakerStatisticsCharts/MakerMetricChart/ChartTooltip';
 import { MakerMetricChartDataItem } from 'client/components/MakerStatisticsCharts/MakerMetricChart/types';
-import { getHexColorForAddress } from 'client/components/MakerStatisticsCharts/MakerMetricChart/utils';
-import { first } from 'lodash';
+import {
+  getHexColorForAddress,
+  getTooltipPayloadData,
+} from 'client/components/MakerStatisticsCharts/MakerMetricChart/utils';
 import {
   NameType,
   Payload,
@@ -24,9 +26,8 @@ export function MakerMetricChartTooltip({
   labelFormatter,
   hiddenAddresses,
 }: Props) {
-  // Payload is an array of displayed data points, each datapoint has a nested `payload` property of type MetricChartData
   const originalDataPayload: MakerMetricChartDataItem | undefined =
-    first(payload)?.payload;
+    getTooltipPayloadData(payload);
 
   if (!active || !originalDataPayload) {
     return null;

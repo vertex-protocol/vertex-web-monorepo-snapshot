@@ -1,8 +1,8 @@
 import { addDecimals, BigDecimal } from '@vertex-protocol/utils';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { useExecuteSubaccountQuoteTransfer } from 'client/hooks/execute/useExecuteSubaccountQuoteTransfer';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { SubaccountSigningPreference } from 'client/modules/singleSignatureSessions/types';
-import { SUBACCOUNT_QUOTE_TRANSFER_FEE } from 'client/modules/subaccounts/consts';
 import { SubaccountQuoteTransferFormValues } from 'client/modules/subaccounts/hooks/useSubaccountQuoteTransferForm/types';
 import { resolvePercentageAmountSubmitValue } from 'client/utils/form/resolvePercentageAmountSubmitValue';
 import { roundToString } from 'client/utils/rounding';
@@ -36,7 +36,7 @@ export function useSubaccountQuoteTransferFormSubmitHandler({
     );
 
     // Amount submitted via form is inclusive of fee, but the amount in tx is exclusive.
-    const amountToTransfer = inputAmount.minus(SUBACCOUNT_QUOTE_TRANSFER_FEE);
+    const amountToTransfer = inputAmount.minus(SEQUENCER_FEE_AMOUNT_USDC);
 
     if (amountToTransfer.lte(0)) {
       console.warn('Invalid transfer amount', amountToTransfer);

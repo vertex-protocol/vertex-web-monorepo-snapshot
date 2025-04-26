@@ -7,6 +7,6 @@ export function useRequiresApproveSignOnce() {
 
   return (
     currentSigningPreference?.type === 'sign_once' &&
-    !currentSigningPreference.authorizedWallet
+    !currentSigningPreference.linkedSigner
   );
 }

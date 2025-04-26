@@ -23,7 +23,7 @@ export function useEdgeVolumeOverviewData() {
     const edgeMarketSnapshotAtNow =
       marketSnapshotsAtHistoricalTimesData.now.edge;
     const edgeMarketSnapshotAt24h =
-      marketSnapshotsAtHistoricalTimesData['24hr'].edge;
+      marketSnapshotsAtHistoricalTimesData['24h'].edge;
 
     const cumulativeVolumesAtNowInPrimaryQuote =
       getVolumesInPrimaryQuoteByProductId(

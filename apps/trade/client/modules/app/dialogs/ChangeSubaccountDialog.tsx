@@ -72,7 +72,7 @@ export function ChangeSubaccountDialog() {
           placeholder="0x..."
           onChange={(e) => setAddressInput(e.target.value)}
         />
-        <p className="text-2xs text-text-tertiary ml-0.5 mt-0.5">
+        <p className="text-2xs text-text-tertiary mt-0.5 ml-0.5">
           View a read-only version of the app for another address. Leave blank
           to use your own account.
         </p>

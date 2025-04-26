@@ -20,9 +20,7 @@ export function useExecuteClaimAndStakeLiquidTokens() {
     useCallback(
       async (params: ClaimLiquidTokensParams, context: ValidExecuteContext) => {
         console.log('Claiming and staking Liquid Tokens', params);
-        const txResponse =
-          await context.vertexClient.rewards.claimAndStakeLiquidTokens(params);
-        return txResponse.hash;
+        return context.vertexClient.rewards.claimAndStakeLiquidTokens(params);
       },
       [],
     ),

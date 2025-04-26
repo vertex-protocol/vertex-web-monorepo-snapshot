@@ -1,6 +1,6 @@
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useFoundationToken } from 'client/modules/rewards/hooks/useFoundationToken';
-import { useClaimMantleRewards } from 'client/pages/VertexRewards/components/cards/MantleRewardsSummaryCard/useClaimMantleRewards';
+import { useClaimFoundationRewards } from 'client/pages/VertexRewards/hooks/useClaimFoundationRewards';
 import { useCompletedStateFoundationRewards } from 'client/pages/VertexRewards/hooks/useCompletedStateFoundationRewards';
 import { useMemo } from 'react';
 
@@ -10,8 +10,8 @@ export function useMantleRewardsSummaryCard() {
     claim,
     isSuccess: isClaimSuccess,
     isLoading: isClaiming,
-  } = useClaimMantleRewards();
-  const mantleToken = useFoundationToken();
+  } = useClaimFoundationRewards();
+  const foundationToken = useFoundationToken();
   const isConnected = useIsConnected();
 
   const mappedData = useMemo(() => {
@@ -33,7 +33,7 @@ export function useMantleRewardsSummaryCard() {
   return {
     ...mappedData,
     onClaimClick: claim,
-    mantleToken,
+    foundationToken,
     isClaimSuccess,
     isClaiming,
     disableClaimButton:

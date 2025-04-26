@@ -1,6 +1,9 @@
 import { ChainEnv } from '@vertex-protocol/client';
-import { getChainEnvName } from '@vertex-protocol/react-client';
-import { PrimaryChain, useEVMContext } from '@vertex-protocol/react-client';
+import {
+  getChainEnvName,
+  PrimaryChain,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
 import {
   UserStateError,
   useUserStateError,
@@ -86,7 +89,7 @@ export function useButtonUserStateErrorProps({
     case 'requires_initial_deposit':
       return {
         onClick: () => show({ type: 'deposit', params: {} }),
-        children: 'Deposit Funds',
+        children: 'Deposit Funds to Start Trading',
       };
     case 'requires_sign_once_approval':
       return {

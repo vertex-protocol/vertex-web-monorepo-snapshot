@@ -14,7 +14,8 @@ const blurRevealTexts: TextItem[] = [
   {
     element: 'h2',
     text: 'Multiple Chains, One Orderbook',
-    className: 'text-header-2 md:text-header-1 font-radioGrotesk mb-4 max-w-sm',
+    className:
+      'text-header-2 md:text-header-1 font-radio-grotesk mb-4 max-w-sm',
   },
   {
     element: 'p',

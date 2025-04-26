@@ -25,7 +25,7 @@ export function useWithdrawLiquidityValidators({
         return 'invalid_input';
       }
       if (currentLpAmount && currentLpAmount.lt(val)) {
-        return 'max_burn_exceeded';
+        return 'max_exceeded';
       }
     },
     [currentLpAmount],

@@ -1,4 +1,5 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   LatestMarketPrice,
   useAllMarketsLatestPrices,
@@ -20,6 +21,7 @@ export function useRepayConvertProducts({
   sourceProductIdInput,
   repayProductIdInput,
 }: Params) {
+  const { getIsHiddenMarket } = useVertexMetadataContext();
   const { balances } = useSpotBalances();
   const { data: allMarketPrices } = useAllMarketsLatestPrices();
 
@@ -59,6 +61,10 @@ export function useRepayConvertProducts({
       return (
         balances
           ?.filter((balance) => {
+            // Disable repaying with hidden markets
+            if (getIsHiddenMarket(balance.productId)) {
+              return false;
+            }
             // Only positive balances with quote = primary quote are allowed
             if (
               balance.amount.lte(0) ||
@@ -79,7 +85,7 @@ export function useRepayConvertProducts({
             );
           }) ?? []
       );
-    }, [selectedRepayProduct, balances, allMarketPrices]);
+    }, [selectedRepayProduct, balances, getIsHiddenMarket, allMarketPrices]);
 
   const selectedSourceProduct = useMemo(() => {
     return availableSourceProducts.find(

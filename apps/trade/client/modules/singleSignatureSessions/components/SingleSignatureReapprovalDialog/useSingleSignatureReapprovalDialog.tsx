@@ -46,11 +46,11 @@ export function useSingleSignatureReapprovalDialog() {
     });
 
     // In this case, we actually care about the returned data, so await the result
-    const [linkedSignerWallet] = await asyncResult(mutationResultPromise);
-    if (linkedSignerWallet) {
+    const [linkedSigner] = await asyncResult(mutationResultPromise);
+    if (linkedSigner) {
       signingPreference.update({
         type: 'sign_once',
-        authorizedWallet: linkedSignerWallet,
+        linkedSigner,
         rememberMe,
       });
     }

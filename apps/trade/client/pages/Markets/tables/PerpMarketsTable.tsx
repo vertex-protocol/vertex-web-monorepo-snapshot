@@ -24,13 +24,13 @@ import {
   usePerpMarketsTable,
 } from 'client/pages/Markets/hooks/usePerpMarketsTable';
 import { FundingRateCell } from 'client/pages/Markets/tables/components/FundingRateCell';
-import { FundingRatePeriodSelect } from 'client/pages/Markets/tables/components/FundingRatePeriodSelect';
+import { FundingRatePeriodSelect } from 'client/modules/trading/components/FundingRatePeriodSelect';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
-import { FundingRateTimespan } from 'client/utils/calcs/funding';
+import { FundingRatePeriod } from 'client/modules/localstorage/userState/types/userFundingRatePeriodTypes';
 import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<PerpMarketTableItem>();
-const FUNDING_PERIOD_SORT_KEY: FundingRateTimespan = 'hourly';
+const FUNDING_PERIOD_SORT_KEY: FundingRatePeriod = '1h';
 
 export function PerpMarketsTable({ query }: { query: string }) {
   const { primaryQuoteToken } = useVertexMetadataContext();
@@ -102,7 +102,7 @@ export function PerpMarketsTable({ query }: { query: string }) {
           cellContainerClassName: 'w-28',
         },
       }),
-      columnHelper.accessor('priceChangeFrac24hr', {
+      columnHelper.accessor('priceChangeFrac24h', {
         header: ({ header }) => (
           <HeaderCell header={header}>24h Change</HeaderCell>
         ),

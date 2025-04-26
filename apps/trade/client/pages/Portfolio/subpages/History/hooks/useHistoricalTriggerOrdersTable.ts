@@ -81,7 +81,7 @@ export function useHistoricalTriggerOrdersTable() {
         .map(
           (triggerOrderInfo): HistoricalTriggerOrdersTableItem | undefined => {
             const marketData =
-              marketsStaticData.all[triggerOrderInfo.order.productId];
+              marketsStaticData.allMarkets[triggerOrderInfo.order.productId];
             const quoteData =
               marketsStaticData.quotes[triggerOrderInfo.order.productId];
 

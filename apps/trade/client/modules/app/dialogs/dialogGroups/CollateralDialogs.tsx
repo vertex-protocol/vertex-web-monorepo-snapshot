@@ -1,6 +1,6 @@
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { BridgeDialog } from 'client/modules/collateral/bridge/components/BridgeDialog';
-import { DepositDialog } from 'client/modules/collateral/deposit/components/DepositDialog';
+import { DepositDialogWithFunkit } from 'client/modules/collateral/deposit/components/DepositDialogWithFunkit';
 import { FastWithdrawDialog } from 'client/modules/collateral/fastWithdraw/components/FastWithdrawDialog';
 import { RepayDialog } from 'client/modules/collateral/repay/RepayDialog';
 import { WithdrawDialog } from 'client/modules/collateral/withdraw/components/WithdrawDialog';
@@ -12,7 +12,7 @@ export function CollateralDialogs() {
   return (
     <>
       {currentDialog?.type === 'deposit' && (
-        <DepositDialog {...currentDialog.params} />
+        <DepositDialogWithFunkit {...currentDialog.params} />
       )}
       {currentDialog?.type === 'bridge' && <BridgeDialog />}
       {currentDialog?.type === 'withdraw' && (

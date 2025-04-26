@@ -40,8 +40,7 @@ export function useExecuteStakeV2Vrtx() {
             context.vertexClient.context.contractAddresses.vrtxToken,
           ),
         ];
-        const txResponse = await context.vertexClient.rewards.stakeV2(params);
-        return txResponse.hash;
+        return context.vertexClient.rewards.stakeV2(params);
       },
       [],
     ),

@@ -5,20 +5,19 @@ import {
 import { ChartTooltip } from 'client/components/ChartTooltip';
 import { FundingChartItem } from 'client/modules/trading/chart/funding/useFundingChart';
 import { signDependentValue } from '@vertex-protocol/react-client';
-import { first } from 'lodash';
 import { TooltipProps } from 'recharts';
 import {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent';
+import { getTooltipPayloadData } from 'client/utils/charts/getTooltipPayloadData';
 
 export function FundingChartTooltip({
   active,
   payload,
 }: TooltipProps<ValueType, NameType>) {
-  // Payload is an array of displayed data points, each datapoint has a nested `payload` property of type FundingChartItem
   const originalDataPayload: FundingChartItem | undefined =
-    first(payload)?.payload;
+    getTooltipPayloadData(payload);
 
   if (!active || !originalDataPayload) {
     return null;

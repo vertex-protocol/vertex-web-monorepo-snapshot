@@ -1,10 +1,11 @@
 import {
   addDecimals,
   BigDecimal,
-  QUOTE_PRODUCT_ID,
   removeDecimals,
   toBigDecimal,
 } from '@vertex-protocol/client';
+import { getStaticMarketDataForProductId } from 'client/hooks/markets/marketsStaticData/getStaticMarketDataForProductId';
+import { SpotStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useSubaccountFeeRates } from 'client/hooks/query/subaccount/useSubaccountFeeRates';
 import { useAllProductsWithdrawPoolLiquidity } from 'client/hooks/query/withdrawPool/useAllProductsWithdrawPoolLiquidity';
@@ -32,13 +33,10 @@ export function useFastWithdrawFormData({
   });
 
   const productMetadata = useMemo(() => {
-    if (!allMarketsStaticData) {
-      return;
-    }
-
-    return productId === QUOTE_PRODUCT_ID
-      ? allMarketsStaticData.primaryQuote.metadata
-      : allMarketsStaticData.spot[productId]?.metadata;
+    return getStaticMarketDataForProductId<SpotStaticMarketData>(
+      productId,
+      allMarketsStaticData,
+    )?.metadata;
   }, [allMarketsStaticData, productId]);
 
   const { data: withdrawPoolFeeAmountData } = useWithdrawPoolFeeAmount({

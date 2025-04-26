@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { range } from 'lodash';
-import { motion, LayoutGroup } from 'framer-motion';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { BlurRevealText } from 'client/components/RevealText/BlurRevealText';
+import { LayoutGroup, motion } from 'framer-motion';
+import { range } from 'lodash';
+import { useEffect, useState } from 'react';
 
 interface Props {
   combinations: string[];
@@ -28,7 +28,7 @@ export function AnimatedOrderList({
   const offerBidContainerClass =
     'bg-darkest border-light-03 max-w-max rounded-lg border-2 p-0.5';
   const offerBidInnerClass =
-    'bg-chain rounded border-l-4 py-2 pl-4 pr-8 whitespace-nowrap';
+    'bg-chain-gradient rounded-sm border-l-4 py-2 pl-4 pr-8 whitespace-nowrap';
 
   return (
     <div className="text-body-9 sm:text-body-12 flex flex-col gap-y-0.5">

@@ -1,5 +1,4 @@
 import { Switch } from '@vertex-protocol/web-ui';
-import React from 'react';
 
 interface Props {
   checked: boolean;

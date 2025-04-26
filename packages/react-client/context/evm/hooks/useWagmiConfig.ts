@@ -4,9 +4,14 @@ import { getWagmiConfig } from '../utils';
 
 export function useWagmiConfig({
   supportedChains,
-  connectorOptions,
+  connectors,
+  supportedChainEnvs,
 }: WagmiConfigParams) {
   return useMemo(() => {
-    return getWagmiConfig({ supportedChains, connectorOptions });
-  }, [connectorOptions, supportedChains]);
+    return getWagmiConfig({
+      supportedChains,
+      connectors,
+      supportedChainEnvs,
+    });
+  }, [supportedChains, connectors, supportedChainEnvs]);
 }

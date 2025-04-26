@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+@import '@vertex-protocol/web-ui/styles/vertex/dark-theme.css';
+@source "../../../packages/ui/**/*.{js,ts,jsx,tsx}";
+
+@theme inline static {
+  /* Fonts */
+  --font-default: var(--font-default);
+  --font-title: var(--font-title);
+
+  --color-*: initial; /* Reset all color variables */
+
+  /* Background Color */
+  --color-background: var(--color-background);
+
+  /* Surface Colors */
+  --color-surface-card: var(--color-surface-card);
+  --color-surface-1: var(--color-surface-1);
+  --color-surface-2: var(--color-surface-2);
+  --color-surface-3: var(--color-surface-3);
+
+  /* Border Colors */
+  --color-stroke: var(--color-stroke);
+
+  /* Text Colors */
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-tertiary: var(--color-text-tertiary);
+  --color-text-button-primary: var(--color-text-button-primary);
+
+  /* Misc Theme Colors */
+  --color-accent: var(--color-accent);
+  --color-accent-alt: var(--color-accent-alt);
+  --color-accent-info: var(--color-accent-info);
+  --color-accent-warning: var(--color-accent-warning);
+  --color-disabled: var(--color-disabled);
+  --color-positive: var(--color-positive);
+  --color-positive-muted: var(--color-positive-muted);
+  --color-primary: var(--color-primary);
+  --color-negative: var(--color-negative);
+  --color-negative-muted: var(--color-negative-muted);
+  --color-warning: var(--color-warning);
+  --color-warning-muted: var(--color-warning-muted);
+
+  /* Overlay Colors */
+  --color-overlay-accent: var(--color-overlay-accent);
+  --color-overlay-disabled: var(--color-overlay-disabled);
+  --color-overlay-divider: var(--color-overlay-divider);
+  --color-overlay-hover: var(--color-overlay-hover);
+
+  /* Gradient Stops */
+  --color-grad-overlay-dialog-start: var(--color-grad-overlay-dialog-start);
+  --color-grad-overlay-dialog-end: var(--color-grad-overlay-dialog-end);
+
+  /* Box Shadows */
+  --shadow-elevation-card: var(--shadow-elevation-card);
+  --shadow-elevation-strong: var(--shadow-elevation-strong);
+  --shadow-elevation-dialog: var(--shadow-elevation-dialog);
+
+  /* Breakpoints */
+  --breakpoint-*: initial; /* Reset default values */
+  --breakpoint-sm: 56rem;
+  --breakpoint-lg: 75rem;
+
+  /* Font Sizes */
+  --text-*: initial; /* Reset default values */
+  --text-3xs: 0.625rem;
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.375rem;
+  --text-3xl: 1.625rem;
+  --text-4xl: 1.875rem;
+  --text-5xl: 2.5rem;
+}

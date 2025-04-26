@@ -83,7 +83,7 @@ export function DesktopNavBarContent() {
   );
 
   return (
-    <div className="h-navbar flex w-full items-center gap-x-3 pl-6 pr-3">
+    <div className="h-navbar flex w-full items-center gap-x-3 pr-3 pl-6">
       <div className="flex items-center">
         <div className="pr-4">
           <AppNavLogo />

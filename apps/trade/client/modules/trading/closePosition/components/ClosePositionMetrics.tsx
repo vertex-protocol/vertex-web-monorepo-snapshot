@@ -2,10 +2,10 @@ import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames, NextImageSrc } from '@vertex-protocol/web-common';
 import { Card, Divider } from '@vertex-protocol/web-ui';
-import { MarketInfoWithSide } from 'client/components/MarketInfoWithSide';
-import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { MarginInfoPill } from 'client/components/MarginInfoPill';
+import { MarketInfoWithSide } from 'client/components/MarketInfoWithSide';
 import { PnlValueWithPercentage } from 'client/components/PnlValueWithPercentage';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 
 interface ClosePositionMetricsProps {
   iconSrc: NextImageSrc | undefined;
@@ -40,7 +40,7 @@ export function ClosePositionMetrics({
     <Card
       className={joinClassNames(
         'flex flex-col gap-y-2 px-3.5 py-3',
-        'bg-surface-1 rounded',
+        'bg-surface-1 rounded-sm',
       )}
     >
       <div className="flex items-center justify-between">

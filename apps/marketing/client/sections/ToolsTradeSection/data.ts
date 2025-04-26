@@ -1,6 +1,6 @@
-// import toolsImage1 from 'public/img/tools/tools-1.png';
 import { TradingFeature } from 'client/sections/ToolsTradeSection/types';
-// import toolsImage1Mobile from "public/img/tools/tools-1-mobile.png";
+import toolsImage1Mobile from 'public/img/tools/tools-1-mobile.png';
+import toolsImage1 from 'public/img/tools/tools-1.png';
 import toolsImage2Mobile from 'public/img/tools/tools-2-mobile.png';
 import toolsImage2 from 'public/img/tools/tools-2.png';
 import toolsImage3Mobile from 'public/img/tools/tools-3-mobile.png';
@@ -12,14 +12,14 @@ import toolsImage5 from 'public/img/tools/tools-5.png';
 
 // Array of trading features
 export const TRADING_FEATURES: TradingFeature[] = [
-  /** @todo ADD BACK IN WHEN READY - import toolsImage1Mobile and toolsImage1 also */
-  // {
-  //   id: 1,
-  //   title: "Cross & Isolated Margin",
-  //   content: "Trade with capital efficiency and manage risk how you want.",
-  //   image: toolsImage1,
-  //   mobileImage: toolsImage1Mobile,
-  // },
+  {
+    id: 1,
+    title: 'Cross & Isolated Margin',
+    content:
+      'Trade with maximum capital efficiency and manage risk how you want.',
+    image: toolsImage1,
+    mobileImage: toolsImage1Mobile,
+  },
   {
     id: 2,
     title: 'Customization',

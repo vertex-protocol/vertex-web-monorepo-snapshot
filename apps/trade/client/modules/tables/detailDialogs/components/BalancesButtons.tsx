@@ -1,4 +1,8 @@
-import { BigDecimal, QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
+import {
+  BigDecimal,
+  QUOTE_PRODUCT_ID,
+  VLP_PRODUCT_ID,
+} from '@vertex-protocol/client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
@@ -16,7 +20,8 @@ export function BalancesButtons({ productId, balanceAmount }: Props) {
   const pushTradePage = usePushTradePage();
 
   const isConnected = useIsConnected();
-  const disableTrade = productId === QUOTE_PRODUCT_ID;
+  const disableTrade =
+    productId === QUOTE_PRODUCT_ID || productId === VLP_PRODUCT_ID;
   const disableDeposit = !isConnected;
   const disableBorrow = !isConnected;
   const disableRepay = !isConnected || balanceAmount.gte(0);

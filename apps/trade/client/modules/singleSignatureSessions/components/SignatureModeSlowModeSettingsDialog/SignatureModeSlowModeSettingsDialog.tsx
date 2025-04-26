@@ -2,7 +2,7 @@ import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { Divider } from '@vertex-protocol/web-ui';
 import { ErrorPanel } from 'client/components/ErrorPanel';
 import { Form } from 'client/components/Form';
-import { SLOW_MODE_FEE_AMOUNT_USDC } from 'client/hooks/subaccount/useSlowModeFeeAllowance';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useSignatureModeSlowModeSettingsDialog } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/hooks/useSignatureModeSlowModeSettingsDialog';
@@ -61,7 +61,7 @@ export function SignatureModeSlowModeSettingsDialog() {
           {hasInsufficientBalanceForFee && (
             <ErrorPanel>
               Insufficient {primaryQuoteSymbol} balance. Please ensure that you
-              have {SLOW_MODE_FEE_AMOUNT_USDC} {primaryQuoteSymbol} in your
+              have {SEQUENCER_FEE_AMOUNT_USDC} {primaryQuoteSymbol} in your
               wallet to pay the transaction fee.
             </ErrorPanel>
           )}

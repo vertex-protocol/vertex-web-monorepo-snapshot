@@ -1,15 +1,11 @@
 export const NAV_ACCOUNT_PIN_STORAGE_IDS = [
   'accountValue',
-  'assets',
-  'borrows',
-  'perpPnl',
-  '24hPnl',
+  '24hChange',
   'fundsAvailable',
-  'fundsUntilLiquidation',
-  'marginUsage',
+  'unrealizedPnl',
   'leverage',
   'liquidationRisk',
-  'lpPositions',
+  'isoMargin',
 ] as const;
 
 export type NavAccountPinID = (typeof NAV_ACCOUNT_PIN_STORAGE_IDS)[number];

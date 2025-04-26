@@ -1,7 +1,7 @@
 import { BigDecimals } from '@vertex-protocol/client';
+import { useEdgeMarketSnapshots } from '@vertex-protocol/react-client';
 import { StatsChartDataItem } from 'client/components/charts/StatsChart/types';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
-import { useEdgeMarketSnapshots } from 'client/hooks/useEdgeMarketSnapshots';
 import { ProductSelectValue } from 'client/pages/MainPage/components/common/ProductsSelect/useProductsSelect';
 import { get } from 'lodash';
 import { useMemo } from 'react';

@@ -22,7 +22,7 @@ export function TpSlMetricsCard({ productId, isoSubaccountName }: Props) {
   );
 
   return (
-    <Card className="bg-surface-1 flex flex-col gap-y-2 rounded px-3.5 py-3">
+    <Card className="bg-surface-1 flex flex-col gap-y-2 rounded-sm px-3.5 py-3">
       <div className="flex items-center justify-between">
         <MarketInfoWithSide
           isPerp

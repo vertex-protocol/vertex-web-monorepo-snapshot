@@ -4,7 +4,7 @@ import {
 } from '@vertex-protocol/react-client';
 import { ChartTooltip } from 'client/components/ChartTooltip';
 import { DepthChartItem } from 'client/modules/trading/chart/depth/useDepthChart';
-import { first } from 'lodash';
+import { getTooltipPayloadData } from 'client/utils/charts/getTooltipPayloadData';
 import { TooltipProps } from 'recharts';
 import {
   NameType,
@@ -24,9 +24,8 @@ export function DepthChartTooltip({
   priceFormatSpecifier,
   symbol,
 }: Props) {
-  // Payload is an array of displayed data points, each datapoint has a nested `payload` property of type DepthChartItem
   const originalDataPayload: DepthChartItem | undefined =
-    first(payload)?.payload;
+    getTooltipPayloadData(payload);
 
   if (!active || !originalDataPayload) {
     return null;

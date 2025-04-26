@@ -1,35 +1,24 @@
-import { joinClassNames, WithChildren } from '@vertex-protocol/web-common';
+import { WithChildren } from '@vertex-protocol/web-common';
+import { AppRootLayout } from 'app/AppRootLayout';
 import { ClientLayout } from 'client/components/ClientLayout/ClientLayout';
 import { CookieNoticeBanner } from 'client/components/CookieNoticeBanner/CookieNoticeBanner';
 import { Navigation } from 'client/components/Navigation/Navigation';
 import { Footer } from 'client/sections/Footer/Footer';
-import { interFont, radioGroteskFont } from 'client/utils/fonts';
 import { Metadata, Viewport } from 'next';
 
 import 'styles/globals.css';
 
 export default function RootLayout({ children }: WithChildren) {
   return (
-    <html
-      lang="en"
-      className={joinClassNames(
-        'font-sans',
-        'antialiased',
-        interFont.variable,
-        radioGroteskFont.variable,
-        'scroll-smooth',
-      )}
-    >
-      <body className="bg-dark overflow-x-clip">
-        <ClientLayout>
-          <AppSeoInfo />
-          <Navigation />
-          <main>{children}</main>
-          <Footer />
-          <CookieNoticeBanner />
-        </ClientLayout>
-      </body>
-    </html>
+    <AppRootLayout>
+      <ClientLayout>
+        <AppSeoInfo />
+        <Navigation />
+        <main>{children}</main>
+        <Footer />
+        <CookieNoticeBanner />
+      </ClientLayout>
+    </AppRootLayout>
   );
 }
 

@@ -91,9 +91,9 @@ export function PerpOrderSummary({ currentState, estimatedState }: Props) {
   const availableMarginMetric: ValueWithLabelProps = {
     label: 'Available Margin',
     numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-    value: currentState?.fundsAvailableUsdBounded,
-    newValue: estimatedState?.fundsAvailableUsdBounded,
-    tooltip: { id: 'fundsAvailable' },
+    value: currentState?.fundsAvailableBoundedUsd,
+    newValue: estimatedState?.fundsAvailableBoundedUsd,
+    tooltip: { id: 'fundsAvailableUsd' },
   };
 
   const accountMetricItems: ValueWithLabelProps[] = [

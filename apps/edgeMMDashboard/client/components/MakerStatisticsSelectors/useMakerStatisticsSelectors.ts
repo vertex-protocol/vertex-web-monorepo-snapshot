@@ -2,8 +2,8 @@ import { ChainEnv, TimeInSeconds } from '@vertex-protocol/client';
 import { useEVMContext } from '@vertex-protocol/react-client';
 import { SelectOption } from '@vertex-protocol/web-ui';
 import { useAllMarkets } from 'client/hooks/query/useAllMarkets';
-import { useEpochs } from 'client/hooks/query/useEpochs';
-import { first, last, sortBy, startCase } from 'lodash';
+import { useLatestEpoch } from 'client/hooks/query/useLatestEpoch';
+import { first, last, range, startCase } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 
 export const INTERVAL_OPTIONS: SelectOption<number>[] = [
@@ -58,26 +58,27 @@ export interface UseMakerStatisticsSelectors {
 
 export function useMakerStatisticsSelectors() {
   const { data: allMarketsData } = useAllMarkets();
-  const { data: epochsData } = useEpochs();
+  const { data: latestEpochData } = useLatestEpoch();
   const { setPrimaryChainEnv, primaryChainEnv, supportedChainEnvs } =
     useEVMContext();
 
   const [epoch, setEpoch] = useState<number>();
-  const [interval, setInterval] = useState<number>(INTERVAL_OPTIONS[0].value);
+  const [interval, setInterval] = useState<number>(INTERVAL_OPTIONS[3].value); // Past 1 Day as default interval.
   const [productId, setProductId] = useState<number>();
 
   const epochOptions = useMemo(() => {
-    if (!epochsData) {
+    if (!latestEpochData) {
       return [];
     }
-    return sortBy(
-      epochsData?.map(({ epoch }) => ({
-        value: epoch,
-        label: epoch.toString(),
-      })),
-      ({ value }) => value,
-    );
-  }, [epochsData]);
+
+    // Epochs always go from 1 to latest epoch.
+    const epochs = range(1, latestEpochData.epoch + 1);
+
+    return epochs.map((epoch) => ({
+      value: epoch,
+      label: epoch.toString(),
+    }));
+  }, [latestEpochData]);
 
   const chainEnvOptions = useMemo(() => {
     return supportedChainEnvs.map((value) => ({

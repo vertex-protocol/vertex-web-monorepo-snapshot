@@ -16,8 +16,8 @@ export interface SpotMarketTableItem {
   metadata: SpotProductMetadata;
   productId: number;
   currentPrice: BigDecimal | undefined;
-  priceChange24hr: BigDecimal | undefined;
-  priceChangeFrac24hr: BigDecimal | undefined;
+  priceChange24h: BigDecimal | undefined;
+  priceChangeFrac24h: BigDecimal | undefined;
   volume24h: BigDecimal | undefined;
   isNewMarket: boolean;
   isFavorited: boolean;
@@ -51,8 +51,8 @@ export function useSpotMarketsTable() {
           metadata: market.metadata,
           productId: market.productId,
           currentPrice: latestMarketPrices?.safeAverage,
-          priceChange24hr: marketStats?.pastDayPriceChange,
-          priceChangeFrac24hr: marketStats?.pastDayPriceChangeFrac,
+          priceChange24h: marketStats?.pastDayPriceChange,
+          priceChangeFrac24h: marketStats?.pastDayPriceChangeFrac,
           volume24h: removeDecimals(marketStats?.pastDayVolumeInPrimaryQuote),
           isNewMarket: getIsNewMarket(productId),
           isFavorited: favoritedMarketIds.has(productId),

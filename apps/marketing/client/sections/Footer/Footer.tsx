@@ -1,10 +1,10 @@
 'use client';
 
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { FooterColumn } from 'client/sections/Footer/FooterColumn';
 import EdgeIcon from 'client/icons/EdgeIcon';
 import Logo from 'client/icons/Logo';
 import { FOOTER_DATA } from 'client/sections/Footer/data';
+import { FooterColumn } from 'client/sections/Footer/FooterColumn';
 import {
   CONTAINER_VARIANTS,
   ITEM_VARIANTS,
@@ -21,7 +21,7 @@ export function Footer() {
   const navClasses = joinClassNames(
     'border-glass shadow-glass',
     'rounded-lg border p-4',
-    'backdrop-blur-sm lg:p-8 lg:backdrop-blur-md',
+    'backdrop-blur-xs lg:p-8 lg:backdrop-blur-md',
   );
   const logoSectionClasses = joinClassNames(
     'col-span-2 grid grid-cols-2 gap-5',
@@ -33,7 +33,7 @@ export function Footer() {
       <Image
         alt=""
         src={FooterBg}
-        className="container-custom absolute bottom-0 left-0 right-0 mx-auto h-auto w-full object-contain pb-8"
+        className="container-custom absolute right-0 bottom-0 left-0 mx-auto h-auto w-full object-contain pb-8"
         aria-hidden="true"
       />
 

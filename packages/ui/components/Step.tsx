@@ -3,7 +3,6 @@ import {
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS } from '../consts';
 import { Icons } from './Icons';
 
 interface StepLabelProps extends WithClassnames, WithChildren {
@@ -46,10 +45,10 @@ function StepCheckmarkIndicator({
 }: WithClassnames<StepCheckmarkIndicatorProps>) {
   const stateClassNames = (() => {
     if (isCompleted) {
-      return 'border-accent/10';
+      return 'border-overlay-accent';
     }
     if (active) {
-      return 'border-accent';
+      return 'border-primary';
     }
     return 'border-stroke';
   })();
@@ -58,8 +57,7 @@ function StepCheckmarkIndicator({
     <div
       className={joinClassNames(
         'flex aspect-square rounded-full p-px',
-        COMMON_TRANSPARENCY_COLORS.bgAccent,
-        'text-accent border-2',
+        'text-accent bg-overlay-accent border-2',
         stateClassNames,
         className,
       )}

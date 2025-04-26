@@ -1,3 +1,4 @@
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { ProfileAvatar } from 'client/modules/subaccounts/types';
 
 /**
@@ -8,7 +9,5 @@ export const PRIMARY_SUBACCOUNT_NAME = 'default';
 
 export const DEFAULT_SUBACCOUNT_AVATAR: ProfileAvatar = { type: 'default' };
 
-export const SUBACCOUNT_QUOTE_TRANSFER_FEE = 1;
-
 export const SUBACCOUNT_QUOTE_TRANSFER_MIN_AMOUNT_WITH_FEE =
-  5 + SUBACCOUNT_QUOTE_TRANSFER_FEE;
+  5 + SEQUENCER_FEE_AMOUNT_USDC;

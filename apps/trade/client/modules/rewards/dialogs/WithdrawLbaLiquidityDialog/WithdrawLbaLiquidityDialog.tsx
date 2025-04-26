@@ -1,6 +1,6 @@
+import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { WithdrawLiquidityInput } from 'client/modules/pools/withdraw/WithdrawLiquidityInput';
@@ -59,7 +59,6 @@ export function WithdrawLbaLiquidityDialog() {
             <FractionAmountButtons
               onFractionSelected={onFractionSelected}
               selectedFraction={validPercentageAmount}
-              className="pt-0.5"
             />
           </div>
           <div className="flex flex-col gap-y-4">

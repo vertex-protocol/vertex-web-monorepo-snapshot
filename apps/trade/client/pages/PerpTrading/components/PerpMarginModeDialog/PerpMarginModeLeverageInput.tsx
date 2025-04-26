@@ -1,4 +1,4 @@
-import { GradientPill } from '@vertex-protocol/web-ui';
+import { LeveragePill } from 'client/components/LeveragePill';
 import { PerpStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 
 import { RangeSlider } from 'client/modules/trading/components/RangeSlider';
@@ -31,9 +31,7 @@ export function PerpMarginModeLeverageInput({
         <span className="text-text-primary text-base">
           {currentMarket.metadata.marketName}
         </span>
-        <GradientPill className="ml-auto">
-          MAX {currentMarket.maxLeverage}x
-        </GradientPill>
+        <LeveragePill>MAX {currentMarket.maxLeverage}x</LeveragePill>
       </div>
       <RangeSlider
         min={1}

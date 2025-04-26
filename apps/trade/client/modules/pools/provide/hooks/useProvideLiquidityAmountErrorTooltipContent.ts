@@ -10,7 +10,7 @@ export function useProvideLiquidityAmountErrorTooltipContent({
     switch (formError) {
       case 'invalid_input':
         return 'Please enter a valid amount.';
-      case 'max_mint_exceeded':
+      case 'max_exceeded':
         return 'This exceeds your max. Please enter a valid amount.';
       default:
         return null;

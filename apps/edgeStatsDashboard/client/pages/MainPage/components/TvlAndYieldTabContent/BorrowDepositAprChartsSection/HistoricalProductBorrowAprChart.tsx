@@ -1,14 +1,14 @@
-import { EDGE_COLORS } from '@vertex-protocol/web-ui';
 import { percentagePreciseAxisFormatter } from 'client/components/charts/axisFormatters';
 import { StatsChart } from 'client/components/charts/StatsChart/StatsChart';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
 import { ProductsSelect } from 'client/pages/MainPage/components/common/ProductsSelect/ProductsSelect';
 import { useProductsSelect } from 'client/pages/MainPage/components/common/ProductsSelect/useProductsSelect';
 import { useHistoricalProductBorrowAprChartData } from 'client/pages/MainPage/components/TvlAndYieldTabContent/BorrowDepositAprChartsSection/useHistoricalProductBorrowAprChartData';
-import { useAllEdgeSpotMarkets } from 'client/pages/MainPage/components/TvlAndYieldTabContent/hooks/useAllEdgeSpotMarkets';
+import { useAllEdgeSpotProducts } from 'client/pages/MainPage/components/TvlAndYieldTabContent/hooks/useAllEdgeSpotProducts';
+import { getEdgeStatsColorVar } from 'client/theme/colorVars';
 
 export function HistoricalProductBorrowAprChart() {
-  const { data: allEdgeSpotMarketsData } = useAllEdgeSpotMarkets();
+  const { data: allEdgeSpotProductsData } = useAllEdgeSpotProducts();
   const {
     selectOptions,
     open: selectOpen,
@@ -16,7 +16,7 @@ export function HistoricalProductBorrowAprChart() {
     value: selectValue,
     onOpenChange: onSelectOpenChange,
     selectedOption,
-  } = useProductsSelect({ markets: allEdgeSpotMarketsData });
+  } = useProductsSelect({ markets: allEdgeSpotProductsData });
 
   const { xAxisTickFormatter } = useChartTimeframe();
   const { data, isLoading } = useHistoricalProductBorrowAprChartData({
@@ -40,7 +40,7 @@ export function HistoricalProductBorrowAprChart() {
       }
       configByDataKey={{
         borrowAprFraction: {
-          color: EDGE_COLORS['chart-fill'].DEFAULT,
+          color: getEdgeStatsColorVar('chart-fill'),
           dataKey: 'borrowAprFraction',
           label: 'Borrow APR',
           chartType: 'line',

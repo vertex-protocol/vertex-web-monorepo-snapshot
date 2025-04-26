@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { getValidatedAddress } from '@vertex-protocol/utils';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import { useExecuteInValidContext } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
@@ -18,11 +19,9 @@ export function useExecuteStakingSetTradingWallet() {
   const mutationFn = useExecuteInValidContext(
     useCallback(async (params: Params, context) => {
       console.log('Setting Trading Wallet', params);
-      const txResponse =
-        await context.vertexClient.context.contracts.vrtxStakingV2.connectTradingWallet(
-          params.address,
-        );
-      return txResponse.hash;
+      return context.vertexClient.context.contracts.vrtxStakingV2.write.connectTradingWallet(
+        [getValidatedAddress(params.address)],
+      );
     }, []),
   );
 

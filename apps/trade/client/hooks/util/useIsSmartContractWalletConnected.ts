@@ -6,7 +6,7 @@ import {
   useEVMContext,
   usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
-import { Address } from 'viem';
+import { getValidatedAddress } from '@vertex-protocol/utils';
 
 const KNOWN_SC_WALLET_IDS: string[] = [
   KNOWN_CONNECTOR_IDS.coinbaseWalletSDK,
@@ -36,7 +36,9 @@ export function useIsSmartContractWalletConnected() {
       if (disableQuery) {
         throw new QueryDisabledError();
       }
-      const code = await publicClient.getCode({ address: address as Address });
+      const code = await publicClient.getCode({
+        address: getValidatedAddress(address),
+      });
 
       return !!code && code !== '0x';
     },

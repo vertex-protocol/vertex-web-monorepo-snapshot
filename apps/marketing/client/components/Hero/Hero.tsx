@@ -19,7 +19,7 @@ export function Hero() {
   const isInView = useInView(textRef, { once: true, amount: 0.1 });
 
   const badgeClasses = joinClassNames(
-    'bg-light-03 py-1.5 px-2 rounded border',
+    'bg-light-03 py-1.5 px-2 rounded-sm border',
     'border-new-website-overlay-8',
     'flex items-center gap-x-2 text-body-13',
   );
@@ -40,7 +40,7 @@ export function Hero() {
         <HeroBg className="max-w-full md:absolute md:max-w-none" />
       </motion.div>
       <div className="relative">
-        <div className="mx-auto mb-10 w-[30vh]">
+        <div className="mx-auto w-[30vh] md:mb-10">
           <HeroLottie lottieRef={lottieRef} />
         </div>
         <motion.div
@@ -51,14 +51,14 @@ export function Hero() {
         >
           <div className={badgeClasses}>
             <span className="text-body-gray">Available on</span>
-            <div className="flex gap-x-0.5">
+            <div className="flex">
               {NETWORKS.map((network, index) => (
                 <motion.div
                   key={network.name}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: 0.9 + index * 0.05 }}
-                  className="h-3.5 w-3.5 rounded-full text-white"
+                  className="bg-dark -ml-1.5 rounded-full p-0.5 text-white first:-ml-0"
                 >
                   <Tooltip trigger={network.icon}>{network.name}</Tooltip>
                 </motion.div>
@@ -76,7 +76,7 @@ export function Hero() {
         </motion.div>
         <motion.div
           ref={textRef}
-          className="font-radioGrotesk"
+          className="font-radio-grotesk"
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
           variants={{

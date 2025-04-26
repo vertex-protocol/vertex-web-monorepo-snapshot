@@ -14,8 +14,7 @@ export function ExternalNavCardButton({
 }: NavCardBaseProps) {
   return (
     <CardButton
-      className={joinClassNames('rounded px-4 py-3', className)}
-      stateOverlayBorderRadiusVariant="base"
+      className={className}
       endIcon={<Icons.ArrowUpRight size={20} className="text-text-tertiary" />}
       {...rest}
     >

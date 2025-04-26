@@ -33,6 +33,7 @@ export function FuulReferralEarningsCard() {
         )}
       >
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Total Earned"
           value={totalRewardsEarnedUsdc}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
@@ -64,6 +65,7 @@ export function FuulReferralEarningsCard() {
         )}
       >
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Available to Claim"
           value={claimableRewardsUsdc}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}

@@ -4,6 +4,7 @@ export const PORTFOLIO_HISTORY_TAB_IDS = [
   'withdrawals',
   'transfers',
   'pools',
+  'vlp',
   'liquidations',
   'settlements',
   'trigger_orders',

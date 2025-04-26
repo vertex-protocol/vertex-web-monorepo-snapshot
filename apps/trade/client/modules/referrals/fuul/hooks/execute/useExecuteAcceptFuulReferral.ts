@@ -1,7 +1,6 @@
 import { Fuul } from '@fuul/sdk';
 import { useMutation } from '@tanstack/react-query';
-import { getChainIdFromSigner, nowInSeconds } from '@vertex-protocol/client';
-import { asyncResult } from '@vertex-protocol/utils';
+import { nowInSeconds } from '@vertex-protocol/client';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   useExecuteInValidContext,
@@ -31,17 +30,13 @@ export function useExecuteAcceptFuulReferral() {
         console.log('Accepting Referral', params);
         const message = `I confirm that I am accepting a referral from ${params.referralCode} at time ${nowInSeconds()}`;
 
-        const signature = await context.signer.signMessage(message);
-        // Provide chain ID if possible, but its an optional param. This is required for smart contract wallets though
-        const [chainId] = await asyncResult(
-          getChainIdFromSigner(context.signer),
-        );
+        const signature = await context.walletClient.signMessage({ message });
 
         return Fuul.sendConnectWallet({
           address: context.subaccount.address,
           signature,
           message,
-          accountChainId: chainId != null ? Number(chainId) : undefined,
+          accountChainId: context.walletClient.chain.id,
         });
       },
       [],

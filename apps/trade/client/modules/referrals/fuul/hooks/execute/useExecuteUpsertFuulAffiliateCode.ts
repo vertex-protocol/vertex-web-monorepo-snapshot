@@ -30,7 +30,7 @@ export function useExecuteUpsertFuulAffiliateCode() {
         ? `I confirm that I am updating my code to ${params.code} on Fuul`
         : `I confirm that I am creating the ${params.code} code on Fuul`;
 
-      const signature = await context.signer.signMessage(message);
+      const signature = await context.walletClient.signMessage({ message });
 
       const execute = hasCode
         ? Fuul.updateAffiliateCode

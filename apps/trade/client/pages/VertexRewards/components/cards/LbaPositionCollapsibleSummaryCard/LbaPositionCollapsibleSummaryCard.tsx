@@ -12,10 +12,8 @@ import { LbaPositionTable } from 'client/pages/VertexRewards/components/cards/Lb
 import { useLbaPositionSummaryCard } from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/useLbaPositionSummaryCard';
 import poolIcon from 'client/pages/VertexRewards/components/cards/LbaPositionCollapsibleSummaryCard/vrtx-lba-pool-icon.svg';
 import { RewardsSummaryCard } from 'client/pages/VertexRewards/components/cards/RewardsSummaryCard';
-import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
 import { isBefore } from 'date-fns';
 import { now } from 'lodash';
-import Link from 'next/link';
 
 export function LbaPositionCollapsibleSummaryCard() {
   const {
@@ -59,11 +57,13 @@ export function LbaPositionCollapsibleSummaryCard() {
   const metricItems = (
     <>
       <ValueWithLabel.Vertical
+        sizeVariant="lg"
         tooltip={{ id: 'rewardsLbaPositionValue' }}
         label="Position"
         valueContent={positionValueContent}
       />
       <ValueWithLabel.Vertical
+        sizeVariant="lg"
         tooltip={{ id: 'rewardsLbaTotalRewardsEarned' }}
         label="Total Rewards"
         value={totalRewardsEarned}
@@ -79,16 +79,6 @@ export function LbaPositionCollapsibleSummaryCard() {
         Summary
       </RewardsSummaryCard.CollapsibleTitle>
       <LbaPositionTable />
-      <LinkButton
-        className="w-max gap-x-1 text-xs"
-        colorVariant="primary"
-        as={Link}
-        href={VERTEX_SPECIFIC_LINKS.vestingScheduleGraphic}
-        withExternalIcon
-        external
-      >
-        See vesting schedule
-      </LinkButton>
     </>
   );
 
@@ -121,6 +111,7 @@ export function LbaPositionCollapsibleSummaryCard() {
         }
         actionMetric={
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             tooltip={{ id: 'rewardsLbaPositionAvailableToClaim' }}
             label="Available to Claim"
             value={claimableLbaRewards}

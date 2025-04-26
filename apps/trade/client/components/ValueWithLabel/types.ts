@@ -22,6 +22,7 @@ interface LabelContentProps extends SizeVariantProps {
   labelClassName?: string;
   labelStartIcon?: IconComponent;
   labelEndIcon?: IconComponent;
+  labelIconClassName?: string;
   tooltip?: {
     id: DefinitionTooltipID;
     infoIcon?: true;
@@ -32,6 +33,7 @@ interface WithValueContent {
   valueContent: ReactNode;
   valueClassName?: string;
   valueEndElement?: ReactNode;
+  isValuePrivate?: boolean;
 }
 
 interface WithFormatValue {
@@ -47,6 +49,7 @@ interface WithFormatValue {
   newValue?: NumberFormatValue | null;
   /** When overriding icon size use `size-` className. ex. `size-4`  */
   changeArrowClassName?: string;
+  isValuePrivate?: boolean;
 }
 
 export type ValueContentProps = (WithFormatValue | WithValueContent) &

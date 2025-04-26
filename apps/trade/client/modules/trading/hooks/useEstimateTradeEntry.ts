@@ -53,7 +53,7 @@ export function useEstimateTradeEntry({
 
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
   const marketStaticData = productId
-    ? allMarketsStaticData?.all[productId]
+    ? allMarketsStaticData?.allMarkets[productId]
     : undefined;
 
   return useMemo((): TradeEntryEstimate | undefined => {

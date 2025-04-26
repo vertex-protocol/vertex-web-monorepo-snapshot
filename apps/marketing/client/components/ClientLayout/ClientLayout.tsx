@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ChainEnv } from '@vertex-protocol/client';
 import {
   EVMContextProvider,
+  REACT_QUERY_CONFIG,
   useWagmiConfig,
   VertexClientContextProvider,
 } from '@vertex-protocol/react-client';
@@ -19,7 +20,13 @@ import { noop } from 'lodash';
 import { WagmiProvider } from 'wagmi';
 import { arbitrum } from 'wagmi/chains';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: REACT_QUERY_CONFIG.defaultQueryStaleTime,
+    },
+  },
+});
 
 const SUPPORTED_CHAIN_ENVS = ['arbitrum'] satisfies ChainEnv[];
 
@@ -34,7 +41,10 @@ const SUPPORTED_CHAINS = [arbitrum];
 export function ClientLayout({ children }: WithChildren) {
   const { areCookiesAccepted } = useVertexCookiePreference();
 
-  const wagmiConfig = useWagmiConfig({ supportedChains: SUPPORTED_CHAINS });
+  const wagmiConfig = useWagmiConfig({
+    supportedChains: SUPPORTED_CHAINS,
+    supportedChainEnvs: SUPPORTED_CHAIN_ENVS,
+  });
 
   return (
     <QueryClientProvider client={queryClient}>

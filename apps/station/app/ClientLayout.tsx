@@ -2,10 +2,15 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ChainEnv } from '@vertex-protocol/client';
+import {
+  ChainEnv,
+  MAINNET_CHAIN_ENVS,
+  TESTNET_CHAIN_ENVS,
+} from '@vertex-protocol/client';
 import {
   EVMContextProvider,
   getPrimaryChain,
+  REACT_QUERY_CONFIG,
   useWagmiConfig,
   VertexClientContextProvider,
 } from '@vertex-protocol/react-client';
@@ -16,24 +21,17 @@ import {
 } from 'client/consts/store';
 import { WagmiProvider } from 'wagmi';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: REACT_QUERY_CONFIG.defaultQueryStaleTime,
+    },
+  },
+});
 
 const SUPPORTED_CHAIN_ENVS: ChainEnv[] = [
-  // Mainnets
-  'arbitrum',
-  'mantle',
-  'sei',
-  'blast',
-  'base',
-  'abstract',
-  // Testnets
-  'arbitrumTestnet',
-  'mantleTestnet',
-  'seiTestnet',
-  'blastTestnet',
-  'baseTestnet',
-  'sonicTestnet',
-  'abstractTestnet',
+  ...MAINNET_CHAIN_ENVS,
+  ...TESTNET_CHAIN_ENVS,
 ];
 
 const SUPPORTED_CHAINS = SUPPORTED_CHAIN_ENVS.map(getPrimaryChain);
@@ -51,7 +49,10 @@ export function ClientLayout({ children }: WithChildren) {
     return children;
   })();
 
-  const wagmiConfig = useWagmiConfig({ supportedChains: SUPPORTED_CHAINS });
+  const wagmiConfig = useWagmiConfig({
+    supportedChains: SUPPORTED_CHAINS,
+    supportedChainEnvs: SUPPORTED_CHAIN_ENVS,
+  });
 
   return (
     <QueryClientProvider client={queryClient}>

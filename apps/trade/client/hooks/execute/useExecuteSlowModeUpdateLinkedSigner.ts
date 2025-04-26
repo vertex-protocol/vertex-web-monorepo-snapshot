@@ -8,14 +8,12 @@ import {
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { subaccountLinkedSignerQueryKey } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
-import { Wallet } from 'ethers';
 import { useCallback } from 'react';
 import {
-  Address,
+  Account,
   encodeAbiParameters,
   encodePacked,
   parseAbiParameters,
-  toBytes,
   zeroAddress,
 } from 'viem';
 
@@ -23,7 +21,7 @@ const REFETCH_QUERY_KEYS = [subaccountLinkedSignerQueryKey()];
 
 interface Params {
   // If null, the linked signer will be removed and set to zero address
-  wallet: Wallet | null;
+  account: Account | null;
 }
 
 // If an on-chain (slow-mode) tx is executed, returns the tx hash
@@ -33,7 +31,7 @@ export function useExecuteSlowModeUpdateLinkedSigner() {
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (
-        { wallet }: Params,
+        { account }: Params,
         context: ValidExecuteContext,
       ): Promise<Data> => {
         // Query the current linked signer, if this matches with the wallet, then skip authorization
@@ -50,7 +48,7 @@ export function useExecuteSlowModeUpdateLinkedSigner() {
         const currentLinkedSignerAddress =
           currentLinkedSigner.signer.toLowerCase();
         const newLinkedSignerAddress =
-          wallet?.address.toLowerCase() ?? zeroAddress;
+          account?.address.toLowerCase() ?? zeroAddress;
 
         if (currentLinkedSignerAddress === newLinkedSignerAddress) {
           // No on-chain transaction is needed
@@ -70,7 +68,7 @@ export function useExecuteSlowModeUpdateLinkedSigner() {
         const encodedTx = encodeAbiParameters(
           // Sender, signer, nonce
           parseAbiParameters('bytes32, bytes32, uint64'),
-          [tx.sender as Address, tx.signer as Address, BigInt(tx.nonce)],
+          [tx.sender, tx.signer, BigInt(tx.nonce)],
         );
         const encodedSlowModeTx = encodePacked(
           ['uint8', 'bytes'],
@@ -81,11 +79,9 @@ export function useExecuteSlowModeUpdateLinkedSigner() {
           ],
         );
 
-        const txResponse =
-          await context.vertexClient.context.contracts.endpoint.submitSlowModeTransaction(
-            toBytes(encodedSlowModeTx),
-          );
-        return txResponse.hash;
+        return context.vertexClient.context.contracts.endpoint.write.submitSlowModeTransaction(
+          [encodedSlowModeTx],
+        );
       },
       [],
     ),

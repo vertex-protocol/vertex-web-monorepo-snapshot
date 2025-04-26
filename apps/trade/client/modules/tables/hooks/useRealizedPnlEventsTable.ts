@@ -21,7 +21,7 @@ import {
 import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { RealizedPnlEventsTableItem } from 'client/modules/tables/types/RealizedPnlEventsTableItem';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { calcPerpEntryCostBeforeLeverage } from 'client/utils/calcs/perpEntryCostCalcs';
+import { calcPerpEntryCostBeforeLeverage } from 'client/utils/calcs/perp/perpEntryCostCalcs';
 import { calcPnlFrac } from 'client/utils/calcs/pnlCalcs';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { secondsToMilliseconds } from 'date-fns';
@@ -86,7 +86,8 @@ export const useRealizedPnlEventsTable = ({
 
     return pageData
       .map((event): RealizedPnlEventsTableItem | undefined => {
-        const staticMarketData = allMarketsStaticData.all[event.productId];
+        const staticMarketData =
+          allMarketsStaticData.allMarkets[event.productId];
         const staticQuoteData = allMarketsStaticData.quotes[event.productId];
 
         if (!staticMarketData || !staticQuoteData) {

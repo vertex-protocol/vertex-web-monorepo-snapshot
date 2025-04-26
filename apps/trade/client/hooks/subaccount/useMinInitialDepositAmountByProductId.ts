@@ -14,10 +14,9 @@ export function useMinInitialDepositAmountByProductId() {
     if (!data) {
       return;
     }
-    const { primaryQuoteProduct, spotMarkets } = data;
     const amountByProductId: Record<number, BigDecimal> = {};
 
-    [primaryQuoteProduct, ...Object.values(spotMarkets)].forEach((market) => {
+    Object.values(data.spotProducts).forEach((market) => {
       amountByProductId[market.productId] = toBigDecimal(5)
         .div(market.product.oraclePrice)
         .precision(2, BigDecimal.ROUND_UP);

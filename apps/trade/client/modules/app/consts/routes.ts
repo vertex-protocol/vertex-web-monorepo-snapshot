@@ -4,7 +4,6 @@ export const PORTFOLIO_SUBROUTES = {
   overview: 'overview',
   balances: 'balances',
   positions: 'positions',
-  pools: 'pools',
   orders: 'orders',
   marginManager: 'margin-manager',
   history: 'history',
@@ -12,6 +11,11 @@ export const PORTFOLIO_SUBROUTES = {
 };
 
 export const ROUTES = {
+  gems: '/gems',
+  markets: '/markets',
+  moneyMarkets: '/money-markets',
+  perpTrading: '/perpetuals',
+  pools: '/pools',
   portfolio: {
     base: ROUTE_APP_PORTFOLIO_PREFIX,
     overview: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.overview}`,
@@ -20,17 +24,12 @@ export const ROUTES = {
     orders: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.orders}`,
     marginManager: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.marginManager}`,
     history: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.history}`,
-    pools: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.pools}`,
     faucet: `${ROUTE_APP_PORTFOLIO_PREFIX}/${PORTFOLIO_SUBROUTES.faucet}`,
   },
-  spotTrading: '/spot',
-  perpTrading: '/perpetuals',
-  pools: '/pools',
-  markets: '/markets',
-  moneyMarkets: '/money-markets',
-  rewards: '/rewards',
   referrals: '/referrals',
+  rewards: '/rewards',
+  spotTrading: '/spot',
   staking: '/staking',
-  gems: '/gems',
   vaults: '/vaults',
+  vlp: '/vlp',
 } as const;

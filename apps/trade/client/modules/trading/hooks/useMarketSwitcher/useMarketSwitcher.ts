@@ -56,7 +56,7 @@ export function useMarketSwitcher(
       return [];
     }
 
-    return Object.values(allMarketsStaticData.all)
+    return Object.values(allMarketsStaticData.allMarkets)
       .filter((market) => !getIsHiddenMarket(market.productId))
       .map((market) =>
         getMappedMarket(

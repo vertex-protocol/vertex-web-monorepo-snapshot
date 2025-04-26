@@ -1,6 +1,6 @@
 import { WithChildren } from '@vertex-protocol/web-common';
-import { BrandName } from '@vertex-protocol/web-ui';
 import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
+import { BrandName } from 'common/environment/types';
 
 interface Props extends WithChildren {
   enabledBrands: BrandName[];

@@ -1,12 +1,14 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { isSpotProduct } from '@vertex-protocol/contracts';
+import {
+  calcUtilizationRatio,
+  isSpotProduct,
+} from '@vertex-protocol/contracts';
 import {
   AnnotatedSpotBalanceWithProduct,
-  SpotProductMetadata,
-} from '@vertex-protocol/react-client';
-import {
   createQueryKey,
   QueryDisabledError,
+  REACT_QUERY_CONFIG,
+  SpotProductMetadata,
 } from '@vertex-protocol/react-client';
 import {
   BigDecimal,
@@ -22,11 +24,13 @@ import {
   calcSpotBalanceHealth,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
-import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 
 export interface SpotBalanceItem {
   metadata: SpotProductMetadata;
   productId: number;
+  /**
+   * Decimal adjusted balance amount
+   */
   amount: BigDecimal;
   amountBorrowed: BigDecimal;
   amountDeposited: BigDecimal;
@@ -36,6 +40,7 @@ export interface SpotBalanceItem {
   healthMetrics: InitialMaintMetrics;
   depositAPR: BigDecimal | undefined;
   borrowAPR: BigDecimal | undefined;
+  utilizationRatioFrac: BigDecimal | undefined;
 }
 
 interface UseSpotBalances {
@@ -94,6 +99,7 @@ export function useSpotBalances(): UseSpotBalances {
         })();
 
         const healthMetrics = calcSpotBalanceHealth(balanceWithProduct);
+        const utilizationRatioFrac = calcUtilizationRatio(balanceWithProduct);
 
         return {
           productId: balanceWithProduct.productId,
@@ -113,6 +119,7 @@ export function useSpotBalances(): UseSpotBalances {
           },
           depositAPR: spotInterestRates?.[balance.productId]?.deposit,
           borrowAPR: spotInterestRates?.[balance.productId]?.borrow,
+          utilizationRatioFrac,
         };
       });
   };

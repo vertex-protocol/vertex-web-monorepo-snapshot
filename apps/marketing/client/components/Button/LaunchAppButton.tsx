@@ -58,7 +58,7 @@ function LaunchAppButtonContent({ children, ...rest }: WithChildren) {
     'shadow-button',
     'bg-button-gradient',
     'relative',
-    'w-full h-[36px] lg:h-[40px]',
+    'w-full h-9 lg:h-10',
     'rounded-md',
   );
 
@@ -70,7 +70,7 @@ function LaunchAppButtonContent({ children, ...rest }: WithChildren) {
   );
 
   const textClasses = joinClassNames(
-    'relative z-[1]',
+    'relative z-1',
     'leading-normal text-body-13',
     'tracking-[-0.3px]',
   );

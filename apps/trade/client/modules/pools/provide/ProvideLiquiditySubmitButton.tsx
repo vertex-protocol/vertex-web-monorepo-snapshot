@@ -11,7 +11,7 @@ interface Props extends WithClassnames {
 export function ProvideLiquiditySubmitButton({ className, state }: Props) {
   const labelContent = (() => {
     if (state === 'disabled') {
-      return 'Enter amount';
+      return 'Enter Amount';
     }
     if (state === 'success') {
       return <ButtonStateContent.Success message="Liquidity Provided" />;

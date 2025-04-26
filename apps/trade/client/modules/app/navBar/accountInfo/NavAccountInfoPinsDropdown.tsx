@@ -1,28 +1,28 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { DropdownUi, UpDownChevronIcon } from '@vertex-protocol/web-ui';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { NavAccountInfoPinsDropdownContent } from 'client/modules/app/navBar/accountInfo/NavAccountInfoPinsDropdownContent';
-import { PinnedNavAccountInfoItem } from 'client/modules/app/navBar/accountInfo/PinnedNavAccountInfoItem';
 import { useNavAccountInfoPins } from 'client/modules/app/navBar/accountInfo/useNavAccountInfoPins';
 import { NavPopoverContentContainer } from 'client/modules/app/navBar/components/NavPopoverContentContainer';
+import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
 import { useState } from 'react';
 
 export function NavAccountInfoPinsDropdown() {
   const { pinnedItems } = useNavAccountInfoPins();
   const [open, setOpen] = useState(false);
 
+  const [arePinValuesPrivate] = usePrivacySetting('areAccountValuesPrivate');
+
   const accountButtonContent = pinnedItems.length ? (
-    pinnedItems.map(
-      ({ localStorageId, isPinned, label, value, valueClassName }) => (
-        <PinnedNavAccountInfoItem
-          key={localStorageId}
-          localStorageId={localStorageId}
-          isPinned={isPinned}
-          label={label}
-          value={value}
-          valueClassName={valueClassName}
-        />
-      ),
-    )
+    pinnedItems.map(({ localStorageId, ...valueWithLabelProps }) => (
+      <ValueWithLabel.Vertical
+        {...valueWithLabelProps}
+        isValuePrivate={arePinValuesPrivate}
+        key={localStorageId}
+        className="w-max px-1"
+        sizeVariant="xs"
+      />
+    ))
   ) : (
     <span className="px-0.5 text-xs">Account</span>
   );

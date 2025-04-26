@@ -1,6 +1,7 @@
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
+  signDependentValue,
 } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { joinClassNames } from '@vertex-protocol/web-common';
@@ -11,30 +12,26 @@ import { PrivateContent } from 'client/modules/privacy/components/PrivateContent
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { PORTFOLIO_CHART_TIMESPAN_METADATA } from 'client/pages/Portfolio/charts/consts';
-import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
+import { PortfolioChartTimespan } from 'client/pages/Portfolio/charts/types';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface PerpHeroHeaderProps {
-  timespan: ChartTimespan;
+  timespan: PortfolioChartTimespan;
 }
 
 export function PerpHeroMetricsHeader({ timespan }: PerpHeroHeaderProps) {
   const { data: timespanMetrics } = useSubaccountTimespanMetrics(
     PORTFOLIO_CHART_TIMESPAN_METADATA[timespan].durationInSeconds,
   );
-  const { data: subaccountOverview } = useSubaccountOverview();
+  const { data: overview } = useSubaccountOverview();
 
   return (
     <PortfolioHeroMetricsPane.Header
       title="Total Perp PnL"
       definitionTooltipId="perpTotalPerpPnl"
-      valueContent={formatNumber(
-        subaccountOverview?.perp.totalCumulativePnlUsd,
-        {
-          formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-        },
-      )}
+      valueContent={formatNumber(overview?.perp.totalCumulativePnlUsd, {
+        formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+      })}
       changeContent={
         <PerpPnl
           timespan={timespan}
@@ -53,7 +50,7 @@ export function PerpHeroMetricsHeader({ timespan }: PerpHeroHeaderProps) {
 interface PerpPnlProps {
   cumulativeTotalPerpPnl: BigDecimal | undefined;
   cumulativeTotalPerpPnlFrac?: BigDecimal | undefined;
-  timespan: ChartTimespan;
+  timespan: PortfolioChartTimespan;
 }
 
 function PerpPnl({
@@ -64,6 +61,8 @@ function PerpPnl({
   const [areAccountValuesPrivate] = usePrivacySetting(
     'areAccountValuesPrivate',
   );
+
+  const pnlTimespanLabel = `${PORTFOLIO_CHART_TIMESPAN_METADATA[timespan].longLabel} PnL`;
 
   return (
     <div className="text-2xs flex items-center gap-x-2 sm:text-xs">
@@ -100,7 +99,7 @@ function PerpPnl({
         definitionId="perpPnLOverTime"
         contentWrapperClassName="text-text-tertiary"
       >
-        {PORTFOLIO_CHART_TIMESPAN_METADATA[timespan].longLabel}
+        {pnlTimespanLabel}
       </DefinitionTooltip>
     </div>
   );

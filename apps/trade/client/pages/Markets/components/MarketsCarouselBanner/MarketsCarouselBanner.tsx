@@ -9,23 +9,26 @@ import {
   COMMON_SWIPER_CLASSNAME,
   COMMON_SWIPER_PROPS,
 } from 'client/pages/Markets/components/consts';
+import avaxLaunchBanner from 'client/pages/Markets/components/MarketsCarouselBanner/assets/avax-launch-banner-bg.png';
+import blitzIsolatedBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/blitz-isolated-trading-banner-bg.png';
+import blitzMultipleAccountBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/blitz-multiple-accounts-bg.png';
+import blitzRewardsBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/blitz-trading-rewards-bg.png';
+import blitzWatchlistBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/blitz-watchlist-bg.png';
+import edgeAvaxLogo from 'client/pages/Markets/components/MarketsCarouselBanner/assets/edge-avax-logo.svg';
+import mobileAvaxLaunchBanner from 'client/pages/Markets/components/MarketsCarouselBanner/assets/mobile-avax-launch-banner-bg.png';
+import mobileBlitzBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/mobile-blitz-banner-bg.png';
+import mobileVertexBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/mobile-vertex-banner-bg.png';
+import vertexIsolatedBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/vertex-isolated-trading-banner-bg.png';
+import vertexMultipleAccountBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/vertex-multiple-accounts-bg.png';
+import vertexRewardsBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/vertex-trading-rewards-bg.png';
+import vertexWatchlistBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/vertex-watchlist-bg.png';
 import { SwiperNavigation } from 'client/pages/Markets/components/SwiperNavigation';
+import { LINKS } from 'common/brandMetadata/links/links';
 import { clientEnv } from 'common/environment/clientEnv';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReactNode, useMemo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-import desktopAbstractLaunchBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/abstract-launch-banner-bg.png';
-import mobileAbstractLaunchBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/abstract-mobile-launch-banner-bg.png';
-import blitzMultipleAccountBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/blitz-multiple-accounts-bg.png';
-import blitzRewardsBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/blitz-trading-rewards-bg.png';
-import blitzWatchlistBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/blitz-watchlist-bg.png';
-import mobileBlitzBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/mobile-blitz-banner-bg.png';
-import mobileVertexBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/mobile-vertex-banner-bg.png';
-import vertexMultipleAccountBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/vertex-multiple-accounts-bg.png';
-import vertexRewardsBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/vertex-trading-rewards-bg.png';
-import vertexWatchlistBg from 'client/pages/Markets/components/MarketsCarouselBanner/assets/vertex-watchlist-bg.png';
 
 export function MarketsCarouselBanner() {
   const banners = useMarketsCarouselBanner();
@@ -101,23 +104,38 @@ function useMarketsCarouselBanner() {
   const isVertex = clientEnv.base.brandName === 'vertex';
 
   return useMemo((): BannerConfig[] => {
-    const abstractBanner: BannerConfig = {
-      title: 'Abstract Launch',
-      description: (
-        <>
-          <p>
-            Vertex Edge launches 7th Chain -{' '}
-            <span className="text-text-primary font-bold">Abstract</span>.
-          </p>
-          <p>Switch chains and trade now!</p>
-        </>
-      ),
-      desktopBgImgSrc: desktopAbstractLaunchBg,
-      mobileBgImgSrc: mobileAbstractLaunchBg,
-    };
-
     return [
-      ...(isVertex ? [abstractBanner] : []),
+      ...(isVertex
+        ? [
+            {
+              title: <Image src={edgeAvaxLogo} alt="" />,
+              description: (
+                <>
+                  Vertex Edge launches 8th Chain -{' '}
+                  <span className="text-text-primary">Avalanche</span>.{' '}
+                </>
+              ),
+              desktopBgImgSrc: avaxLaunchBanner,
+              mobileBgImgSrc: mobileAvaxLaunchBanner,
+            },
+          ]
+        : []),
+      {
+        title: 'Isolated Trading is here!',
+        description: (
+          <>
+            Trade perpetuals with isolated margin.{' '}
+            <LinkButton
+              as={Link}
+              colorVariant="accent"
+              href={LINKS.isolatedDocs}
+            >
+              Learn More
+            </LinkButton>
+          </>
+        ),
+        desktopBgImgSrc: isVertex ? vertexIsolatedBg : blitzIsolatedBg,
+      },
       {
         title: 'Trading Rewards',
         ...(isVertex

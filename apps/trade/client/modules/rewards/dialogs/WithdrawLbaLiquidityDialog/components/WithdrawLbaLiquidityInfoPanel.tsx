@@ -26,7 +26,7 @@ export function WithdrawLbaLiquidityInfoPanel({
       className={joinClassNames(
         'flex flex-col gap-y-3.5 px-3.5 py-3',
         'bg-surface-card text-xs',
-        'border-stroke rounded border',
+        'border-stroke rounded-sm border',
       )}
     >
       <LpInfoPanelTokenPairHeader metadata={metadata} />

@@ -1,24 +1,19 @@
-import { joinClassNames, WithChildren } from '@vertex-protocol/web-common';
+import { WithChildren } from '@vertex-protocol/web-common';
+import { AppRootLayout } from 'app/AppRootLayout';
 import { ClientLayout } from 'components/ClientLayout';
 import { SEO_INFO } from 'config/seoInfo';
 import { Metadata } from 'next';
-import { sansFont } from 'utils/fonts';
 
 import 'styles/globals.css';
 
 export default function RootLayout({ children }: WithChildren) {
   return (
-    <html
-      lang="en"
-      className={joinClassNames('antialiased', sansFont.className)}
-    >
-      <body className="h-dvh min-h-dvh">
-        <ClientLayout>
-          <AppSeoInfo />
-          <main className="h-full">{children}</main>
-        </ClientLayout>
-      </body>
-    </html>
+    <AppRootLayout>
+      <ClientLayout>
+        <AppSeoInfo />
+        <main className="h-full">{children}</main>
+      </ClientLayout>
+    </AppRootLayout>
   );
 }
 

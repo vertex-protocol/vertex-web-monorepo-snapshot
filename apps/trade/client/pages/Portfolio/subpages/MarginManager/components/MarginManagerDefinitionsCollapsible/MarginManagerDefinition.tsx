@@ -3,12 +3,8 @@ import {
   WithClassnames,
   joinClassNames,
 } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 
-export function GradientText({
-  children,
-  className,
-}: WithClassnames<WithChildren>) {
+function AccentText({ children, className }: WithClassnames<WithChildren>) {
   return (
     <span className={joinClassNames('text-accent', className)}>{children}</span>
   );
@@ -29,11 +25,7 @@ function Description({ children, className }: WithClassnames<WithChildren>) {
 function InfoCard({ children, className }: WithChildren<WithClassnames>) {
   return (
     <div
-      className={joinClassNames(
-        'rounded-xl p-3',
-        COMMON_TRANSPARENCY_COLORS.bgAccent,
-        className,
-      )}
+      className={joinClassNames('bg-overlay-accent rounded-xl p-3', className)}
     >
       <div className="text-accent">{children}</div>
     </div>
@@ -44,8 +36,8 @@ function InfoPill({ children, className }: WithChildren<WithClassnames>) {
   return (
     <div
       className={joinClassNames(
-        'text-text-primary whitespace-nowrap rounded-3xl px-4 py-1 text-xs',
-        COMMON_TRANSPARENCY_COLORS.bgAccent,
+        'rounded-3xl px-4 py-1 text-xs whitespace-nowrap',
+        'text-text-primary bg-overlay-accent',
         className,
       )}
     >
@@ -85,5 +77,5 @@ export const MarginManagerDefinition = {
   Description,
   InfoCard,
   InfoPill,
-  GradientText,
+  AccentText,
 };

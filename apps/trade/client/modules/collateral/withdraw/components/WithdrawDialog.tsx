@@ -69,7 +69,6 @@ export function WithdrawDialog({
             <EnableBorrowsSwitch
               enableBorrows={enableBorrows}
               onEnableBorrowsChange={onEnableBorrowsChange}
-              className="px-1"
             />
             <div className="flex flex-col gap-y-1.5">
               <CollateralSelectInput

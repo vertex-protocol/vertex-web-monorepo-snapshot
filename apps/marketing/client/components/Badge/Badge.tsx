@@ -1,10 +1,9 @@
-import React from 'react';
 import { joinClassNames, WithChildren } from '@vertex-protocol/web-common';
 
 export function Badge({ children }: WithChildren) {
   const badgeClass = joinClassNames(
     'flex max-h-6 max-w-fit items-center justify-center px-2 py-0.5',
-    'rounded border bg-light-03 border-new-website-overlay-8',
+    'rounded-sm border bg-light-03 border-new-website-overlay-8',
   );
 
   const textClass = joinClassNames(

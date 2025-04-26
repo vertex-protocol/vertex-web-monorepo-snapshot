@@ -18,7 +18,7 @@ export function StatusButton() {
       as={Link}
       href={LINKS.appStatus}
       className={joinClassNames(
-        'rounded border px-2 py-px text-xs no-underline',
+        'rounded-sm border px-2 py-px text-xs no-underline',
         statusButtonClasses,
       )}
     >

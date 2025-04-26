@@ -13,9 +13,10 @@ interface NotifiConfig extends EnvironmentConfig {
 
 export function NotifiContextProviderWrapper({ children }: any) {
   const {
-    connectionStatus: { connector, address: account, signer },
+    connectionStatus: { connector, address, walletClient },
     primaryChainEnv,
   } = useEVMContext();
+
   const notifiConfig = ((): NotifiConfig | undefined => {
     switch (primaryChainEnv) {
       case 'arbitrum':
@@ -38,10 +39,28 @@ export function NotifiContextProviderWrapper({ children }: any) {
           env: 'Production',
           cardId: SENSITIVE_DATA.notifiCardId.baseProd,
         };
+      case 'sonic':
+        return {
+          env: 'Production',
+          cardId: SENSITIVE_DATA.notifiCardId.sonicProd,
+        };
+      case 'sei':
+        return {
+          env: 'Production',
+          cardId: SENSITIVE_DATA.notifiCardId.seiProd,
+        };
+      case 'avax':
+        return {
+          env: 'Production',
+          cardId: SENSITIVE_DATA.notifiCardId.avalancheProd,
+        };
       case 'arbitrumTestnet':
       case 'mantleTestnet':
       case 'blastTestnet':
       case 'baseTestnet':
+      case 'seiTestnet':
+      case 'sonicTestnet':
+      case 'avaxTestnet':
         return {
           env: 'Production',
           //we use arbitrumTestnet for test in testnet purpose, we are only support arbitrum chain test in testnet
@@ -52,12 +71,13 @@ export function NotifiContextProviderWrapper({ children }: any) {
     }
   })();
 
-  if (!account || !signer || !notifiConfig || !connector) {
+  if (!address || !walletClient || !notifiConfig || !connector) {
     return null;
   }
 
   const signMessage = async (message: Uint8Array) => {
-    const result = (await signer?.signMessage(message)) ?? '';
+    const result =
+      (await walletClient.signMessage({ message: { raw: message } })) ?? '';
     return toBytes(result);
   };
 
@@ -70,10 +90,10 @@ export function NotifiContextProviderWrapper({ children }: any) {
       toggleTargetAvailability={{ wallet: isCoinbaseWallet }}
       cardId={notifiConfig.cardId}
       walletBlockchain="ARBITRUM"
-      walletPublicKey={account}
+      walletPublicKey={address}
       signMessage={signMessage}
       inputs={{
-        walletAddress: [{ label: '', value: account }],
+        walletAddress: [{ label: '', value: address }],
       }}
     >
       {children}

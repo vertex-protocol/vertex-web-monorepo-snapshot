@@ -4,19 +4,20 @@ import { Card } from '@vertex-protocol/web-ui';
 import { BrandLoadingWrapper } from 'client/components/BrandIconLoadingWrapper/BrandLoadingWrapper';
 import { TabIdentifiableList } from 'client/hooks/ui/tabs/types';
 import { PortfolioChartTopBar } from 'client/pages/Portfolio/charts/components/PortfolioChartTopBar/PortfolioChartTopBar';
-import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
 import {
-  ChartTimespan,
-  PortfolioChartTab,
+  PortfolioChartDataItem,
+  PortfolioChartTimespan,
 } from 'client/pages/Portfolio/charts/types';
+import { PortfolioChartTab } from 'client/pages/Portfolio/charts/types';
+import { Dispatch, SetStateAction } from 'react';
 
 interface Props<TTabId extends string> extends WithClassnames {
   chartData?: PortfolioChartDataItem[];
   tabs: TabIdentifiableList<PortfolioChartTab<TTabId>>;
-  timespan: ChartTimespan;
+  timespan: PortfolioChartTimespan;
   selectedTabId: TTabId;
   setSelectedUntypedTabId: (id: string) => void;
-  setTimespan: (timespan: ChartTimespan) => void;
+  setTimespan: Dispatch<SetStateAction<PortfolioChartTimespan>>;
   isPrivate: boolean;
 }
 
@@ -57,7 +58,7 @@ export function PortfolioChart<TTabID extends string>({
         {/*Chart*/}
         {/*Setting height to prevent collapse on mobile, height needs to be specified here for chart responsive container to work*/}
         {/*On large screens, height is derived from the parent container, so no need to specify height here*/}
-        <div className="flex h-[300px] min-h-[300px] w-full flex-1 lg:h-auto">
+        <div className="flex h-74 min-h-74 flex-1 lg:h-auto">
           <BrandLoadingWrapper
             iconSizeVariant="sm"
             isLoading={!chartData}

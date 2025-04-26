@@ -21,6 +21,7 @@ function Base({
   sizeVariantOverrides,
   labelStartIcon,
   labelEndIcon,
+  labelIconClassName,
   tooltip,
   ...valueContentProps
 }: ValueWithLabelProps) {
@@ -29,6 +30,7 @@ function Base({
     sm: 'gap-1',
     base: 'gap-1.5',
     lg: 'gap-1.5',
+    xl: 'gap-1.5',
   }[sizeVariant];
 
   return (
@@ -43,6 +45,7 @@ function Base({
           sizeVariant={sizeVariantOverrides?.label ?? sizeVariant}
           startIcon={labelStartIcon}
           endIcon={labelEndIcon}
+          iconClassName={labelIconClassName}
         >
           {label}
         </Label>
@@ -69,6 +72,7 @@ function ValueContent({
   sizeVariantOverrides,
   valueClassName,
   valueEndElement,
+  isValuePrivate,
   ...unionProps
 }: ValueContentProps) {
   const valueSizeVariant = sizeVariantOverrides?.value ?? sizeVariant;
@@ -81,6 +85,7 @@ function ValueContent({
         sizeVariant={valueSizeVariant}
         className={valueClassName}
         endElement={valueEndElement}
+        isValuePrivate={isValuePrivate}
       >
         {content}
       </Value>
@@ -118,6 +123,7 @@ function ValueContent({
       newValue={newValueContent}
       endElement={valueEndElement}
       arrowClassName={changeArrowClassName}
+      isValuePrivate={isValuePrivate}
     />
   );
 }
@@ -155,12 +161,16 @@ function Vertical({
       value: 'sm',
     },
     base: {
-      label: 'sm',
+      label: 'xs',
       value: 'base',
     },
     lg: {
       label: 'sm',
       value: 'lg',
+    },
+    xl: {
+      label: 'sm',
+      value: 'xl',
     },
   }[sizeVariant] as ValueWithLabelSizeVariants;
 

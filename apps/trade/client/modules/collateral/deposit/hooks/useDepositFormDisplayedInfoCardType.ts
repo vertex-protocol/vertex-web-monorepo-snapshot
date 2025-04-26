@@ -22,7 +22,7 @@ export function useDepositFormDisplayedInfoCardType({
   const {
     protocolTokenMetadata: { productId: protocolTokenProductId },
   } = useVertexMetadataContext();
-  const { isArb, isBase, isBlast, isMantle, isSei, isSonic } =
+  const { isArb, isBase, isBlast, isMantle, isSei, isSonic, isAvax } =
     useIsChainEnvType();
 
   return useMemo((): DepositInfoCardType | undefined => {
@@ -100,6 +100,15 @@ export function useDepositFormDisplayedInfoCardType({
     ) {
       return 'wrap_ws';
     }
+
+    // Avax
+    if (
+      isAvax &&
+      selectedProduct.productId === KNOWN_PRODUCT_IDS.wavax &&
+      hasLoadedDepositableBalances
+    ) {
+      return 'wrap_wavax';
+    }
   }, [
     selectedProduct,
     isArb,
@@ -109,6 +118,7 @@ export function useDepositFormDisplayedInfoCardType({
     isMantle,
     isSei,
     isSonic,
+    isAvax,
     protocolTokenProductId,
   ]);
 }

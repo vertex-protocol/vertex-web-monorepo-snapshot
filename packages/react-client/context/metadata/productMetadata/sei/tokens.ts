@@ -1,7 +1,8 @@
-import { seiTestnet, sei } from 'viem/chains';
+import { sei, seiTestnet } from 'viem/chains';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { TOKEN_ICONS } from '../tokenIcons';
 import { Token } from '../types';
+import { VLP_TOKEN_INFO } from '../vlpTokenInfo';
 
 const seiTestnetChainId = seiTestnet.id;
 const seiChainId = sei.id;
@@ -24,6 +25,14 @@ export const WSEI_SEI_TESTNET: Token = {
   tokenDecimals: 18,
   symbol: 'wSEI',
   icon: TOKEN_ICONS.sei,
+};
+
+export const VLP_SEI_TESTNET: Token = {
+  address: '0xAa9E9F9b4e45a090c5be4a3d1985623DC947Bef5',
+  chainId: seiTestnetChainId,
+  tokenDecimals: 18,
+  symbol: VLP_TOKEN_INFO.symbol,
+  icon: TOKEN_ICONS.vlp,
 };
 
 /**

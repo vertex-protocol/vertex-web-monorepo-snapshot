@@ -59,28 +59,28 @@ export function SpotMarketInfoCards({ className }: WithClassnames) {
         label="24h Change"
         value={
           <div
-            className={signDependentValue(spotMarketInfo?.priceChange24hr, {
+            className={signDependentValue(spotMarketInfo?.priceChange24h, {
               positive: 'text-positive',
               negative: 'text-negative',
               zero: 'text-text-secondary',
             })}
           >
-            {formatNumber(spotMarketInfo?.priceChangeFrac24hr, {
+            {formatNumber(spotMarketInfo?.priceChangeFrac24h, {
               formatSpecifier:
                 PresetNumberFormatSpecifier.SIGNED_PERCENTAGE_2DP,
             })}
           </div>
         }
-        flashOnChangeKey={spotMarketInfo?.priceChangeFrac24hr}
+        flashOnChangeKey={spotMarketInfo?.priceChangeFrac24h}
       />
       <Divider vertical className="h-6" />
       <MarketInfoCard
         label="24h Volume"
         labelPostfix={spotMarketInfo?.quoteSymbol}
-        value={formatNumber(spotMarketInfo?.quoteVolume24hr, {
+        value={formatNumber(spotMarketInfo?.quoteVolume24h, {
           formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
         })}
-        flashOnChangeKey={spotMarketInfo?.quoteVolume24hr}
+        flashOnChangeKey={spotMarketInfo?.quoteVolume24h}
       />
       {/* Market details entrypoint is pushed to the very right for large screens */}
       <Divider vertical className="ml-auto h-6" />

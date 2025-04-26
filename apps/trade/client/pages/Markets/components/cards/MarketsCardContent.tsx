@@ -53,7 +53,7 @@ export function MarketsCardContent({
         </span>
       </h3>
       <div className={mergeClassNames('flex-1 py-4', contentClassName)}>
-        {isLoading ? <SpinnerContainer className="py-12" /> : children}
+        {isLoading ? <SpinnerContainer className="py-10" /> : children}
       </div>
     </div>
   );

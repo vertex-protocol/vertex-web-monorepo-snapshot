@@ -4,27 +4,23 @@ import {
   signDependentValue,
 } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { FundingChartSelect } from 'client/modules/trading/chart/funding/FundingChartSelect';
-import { FundingRateTimespan } from 'client/utils/calcs/funding';
+import { FundingRatePeriodSelect } from 'client/modules/trading/components/FundingRatePeriodSelect';
 
 interface Props extends WithClassnames {
-  timespan: FundingRateTimespan;
-  setTimespan: (val: FundingRateTimespan) => void;
   predictedFundingRate: BigDecimal | undefined;
 }
 
-export function FundingChartHeader({
-  predictedFundingRate,
-  setTimespan,
-  timespan,
-  className,
-}: Props) {
+export function FundingChartHeader({ predictedFundingRate, className }: Props) {
   return (
-    <div className={joinClassNames('flex items-center gap-x-2', className)}>
+    <div
+      className={joinClassNames('flex items-center gap-x-1 text-xs', className)}
+    >
       <ValueWithLabel.Horizontal
-        sizeVariant="sm"
+        // on mobile, we do show "Predicted Funding" in the primarily historical chart
+        // as funding may not be always visible in infobar depending scroll position
+        className="lg:hidden"
+        sizeVariant="xs"
         label="Predicted Funding"
         value={predictedFundingRate}
         numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_UPTO_4DP}
@@ -34,7 +30,8 @@ export function FundingChartHeader({
           zero: 'text-text-tertiary',
         })}
       />
-      <FundingChartSelect setTimespan={setTimespan} timespan={timespan} />
+      <span className="hidden lg:flex">Standardize rates to</span>
+      <FundingRatePeriodSelect />
     </div>
   );
 }

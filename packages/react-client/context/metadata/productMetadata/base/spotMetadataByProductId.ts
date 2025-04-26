@@ -1,12 +1,14 @@
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { QUOTE_PRODUCT_ID, VLP_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { KNOWN_PRODUCT_IDS } from '../knownProductIds';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { SpotProductMetadata } from '../types';
+import { VLP_TOKEN_INFO } from '../vlpTokenInfo';
 import {
   BENJI_BASE,
   BENJI_BASE_SEPOLIA,
   USDC_BASE,
   USDC_BASE_SEPOLIA,
+  VLP_BASE_SEPOLIA,
   WETH_BASE,
   WETH_BASE_SEPOLIA,
 } from './tokens';
@@ -64,5 +66,11 @@ export const BASE_TESTNET_SPOT_METADATA_BY_PRODUCT_ID: Record<
     marketName: `BENJI-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
     quoteProductId: QUOTE_PRODUCT_ID,
     marketCategories: new Set(['spot', 'meme']),
+  },
+  [VLP_PRODUCT_ID]: {
+    token: VLP_BASE_SEPOLIA,
+    marketName: VLP_TOKEN_INFO.symbol,
+    quoteProductId: QUOTE_PRODUCT_ID,
+    marketCategories: new Set(['spot']),
   },
 };

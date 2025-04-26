@@ -1,18 +1,18 @@
-import { InputValidatorFn } from '@vertex-protocol/web-common';
 import { SharedProductMetadata, Token } from '@vertex-protocol/react-client';
+import { InputValidatorFn } from '@vertex-protocol/web-common';
 
-export type PairMetadata = {
+export interface PairMetadata {
   base: SharedProductMetadata;
   quote: Token;
-};
+}
 
 export type ProvideLiquidityErrorType =
   | 'invalid_input' // Form input is not valid
-  | 'max_mint_exceeded'; // Form input is greater than max available
+  | 'max_exceeded'; // Form input is greater than max available
 
 export type WithdrawLiquidityErrorType =
-  | 'max_burn_exceeded' // Form input is greater than max available;
-  | 'invalid_input'; // Form input is not valid
+  | 'invalid_input' // Form input is not valid
+  | 'max_exceeded'; // Form input is greater than max available;
 
 export interface ProvideFormValidators {
   validateBaseAmount: InputValidatorFn<string, ProvideLiquidityErrorType>;

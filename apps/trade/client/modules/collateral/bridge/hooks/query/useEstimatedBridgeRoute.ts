@@ -6,7 +6,7 @@ import {
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
-import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/useSquidSDK';
+import { useSquidSDKQuery } from 'client/modules/collateral/bridge/hooks/useSquidSDKQuery';
 import { getSquidRouteRequest } from 'client/modules/collateral/bridge/hooks/utils/getSquidRouteRequest';
 import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
 
@@ -33,7 +33,7 @@ function estimatedBridgeRouteQueryKey(
 export function useEstimatedBridgeRoute(
   params: BridgeRequestParams | undefined,
 ) {
-  const squidSDK = useSquidSDK();
+  const squidSDK = useSquidSDKQuery();
   const vertexClient = usePrimaryChainVertexClient();
   const {
     currentSubaccount: { address: subaccountAddress, name: subaccountName },

@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { PlatformComparisonColumn } from 'client/sections/ComparisonSection/data';
 import { ComparisonCell } from 'client/components/ComparisonCell/ComparisonCell';
+import { PlatformComparisonColumn } from 'client/sections/ComparisonSection/data';
+import { motion } from 'framer-motion';
 
 interface Props {
   column: PlatformComparisonColumn;
@@ -16,7 +15,7 @@ export function ComparisonColumn({ column, index, isInView }: Props) {
   const columnClassName = joinClassNames(
     'w-64 overflow-hidden rounded-lg border-y-2',
     index === 0
-      ? 'shadow-table border-table border-x-2 bg-table text-white'
+      ? 'shadow-table border-table border-x-2 bg-table-gradient text-white'
       : 'border-transparent text-body-gray',
   );
 

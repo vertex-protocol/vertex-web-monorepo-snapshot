@@ -9,10 +9,10 @@ interface Props {
 
 export function BlitzEarningsContentValueCard({ label, value }: Props) {
   return (
-    <div className="bg-surface-1 flex justify-center rounded p-4">
+    <div className="bg-surface-1 flex justify-center rounded-sm p-4">
       <ValueWithLabel.Vertical
         className="items-center"
-        sizeVariant="lg"
+        sizeVariant="xl"
         label={label}
         value={value}
         numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}

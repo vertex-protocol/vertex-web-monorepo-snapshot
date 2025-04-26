@@ -1,7 +1,7 @@
 import {
-  Root as TabsRoot,
   TabsContent,
   TabsList,
+  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import { joinClassNames } from '@vertex-protocol/web-common';
@@ -11,11 +11,11 @@ import {
   ScrollShadowsContainer,
 } from '@vertex-protocol/web-ui';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
-import { HowToUseTheMarginManagerDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/HowToUseTheMarginManagerDefinition';
-import { InitialAndMaintenanceWeightsDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/InitialAndMaintenanceWeightsDefinition';
-import { InitialVsMaintenanceDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/InitialVsMaintenanceDefinition';
-import { LiquidationRiskAndFundsAvailableDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/LiquidationRiskAndFundsAvailableDefinition';
-import { MarginUsageAndFundsAvailableDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/MarginUsageAndFundsAvailableDefinition';
+import { HowToUseTheMarginManagerDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/definitions/HowToUseTheMarginManagerDefinition';
+import { InitialAndMaintenanceWeightsDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/definitions/InitialAndMaintenanceWeightsDefinition';
+import { InitialVsMaintenanceDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/definitions/InitialVsMaintenanceDefinition';
+import { LiquidationRiskAndFundsAvailableDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/definitions/LiquidationRiskAndFundsAvailableDefinition';
+import { MarginUsageAndFundsAvailableDefinition } from 'client/pages/Portfolio/subpages/MarginManager/components/MarginManagerDefinitionsCollapsible/definitions/MarginUsageAndFundsAvailableDefinition';
 
 const MARGIN_MANAGER_TABS = [
   {
@@ -71,7 +71,7 @@ export function MarginManagerDefinitionsTabs() {
 
             const stateClassNames = (() => {
               if (isSelected) {
-                return ['border-accent', 'text-text-primary'];
+                return ['border-primary', 'text-text-primary'];
               }
               return [
                 'text-text-tertiary',

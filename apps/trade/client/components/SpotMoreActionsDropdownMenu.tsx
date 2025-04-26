@@ -29,10 +29,10 @@ export function SpotMoreActionsDropdownMenu({
   const isRepayDisabled = balanceAmount.gte(0);
 
   const hoverStateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
   });
   const activeStateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
     active: true,
   });
 
@@ -62,7 +62,7 @@ export function SpotMoreActionsDropdownMenu({
           className={joinClassNames(
             'flex flex-col',
             'min-w-24 p-1',
-            'bg-surface-2 rounded',
+            'bg-surface-2 rounded-sm',
             'text-xs',
           )}
           onClick={(event) => {

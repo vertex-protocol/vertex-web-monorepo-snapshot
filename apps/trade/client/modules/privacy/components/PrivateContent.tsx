@@ -1,6 +1,6 @@
-import { ComponentPropsWithoutRef } from 'react';
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { PRIVACY_BLUR_CLASSNAME } from 'client/modules/privacy/consts';
+import { PRIVACY_BLUR_CLASSNAME } from '@vertex-protocol/web-ui';
+import { ComponentPropsWithoutRef } from 'react';
 
 interface Props extends ComponentPropsWithoutRef<'div'> {
   isPrivate: boolean;

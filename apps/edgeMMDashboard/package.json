@@ -27,11 +27,11 @@
     "sharp": "*"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "*",
     "@tanstack/react-query-devtools": "*",
     "@types/lodash": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
-    "autoprefixer": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
     "postcss": "*",

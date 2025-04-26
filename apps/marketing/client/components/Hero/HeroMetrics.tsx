@@ -5,7 +5,7 @@ import {
   formatNumber,
 } from '@vertex-protocol/react-client';
 import { HeroMetricColumn } from 'client/components/Hero/HeroMetricsColums';
-import { ExternalLink } from 'client/components/Link/Link';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import { useEdgeVolume } from 'client/hooks/useEdgeVolume';
 import { LINKS } from 'config/links';
 import { motion, useInView } from 'framer-motion';

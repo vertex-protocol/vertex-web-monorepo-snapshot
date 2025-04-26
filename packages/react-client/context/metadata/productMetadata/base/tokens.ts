@@ -2,6 +2,7 @@ import { base, baseSepolia } from 'viem/chains';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { TOKEN_ICONS } from '../tokenIcons';
 import { Token } from '../types';
+import { VLP_TOKEN_INFO } from '../vlpTokenInfo';
 
 /**
  * Base
@@ -57,4 +58,12 @@ export const BENJI_BASE_SEPOLIA: Token = {
   tokenDecimals: 18,
   symbol: 'BENJI',
   icon: TOKEN_ICONS.benji,
+};
+
+export const VLP_BASE_SEPOLIA: Token = {
+  address: '0x99819a099A342aa4637a041dC20Bb5Fe2bB5A3A4',
+  chainId: baseSepolia.id,
+  tokenDecimals: 18,
+  symbol: VLP_TOKEN_INFO.symbol,
+  icon: TOKEN_ICONS.vlp,
 };

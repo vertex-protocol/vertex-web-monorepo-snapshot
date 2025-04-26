@@ -1,8 +1,8 @@
 import { useEVMContext } from '@vertex-protocol/react-client';
-import { BrandName } from '@vertex-protocol/web-ui';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { UtmCampaignID } from 'client/modules/utm/dialogs/UtmCampaignDialog/UtmCampaignDialog';
 import { clientEnv } from 'common/environment/clientEnv';
+import { BrandName } from 'common/environment/types';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 

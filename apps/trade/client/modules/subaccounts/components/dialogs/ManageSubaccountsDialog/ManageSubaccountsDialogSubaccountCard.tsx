@@ -85,7 +85,7 @@ export function ManageSubaccountsDialogSubaccountCard({
           />
           <span className="w-full truncate">{subaccount.profile.username}</span>
         </div>
-        <Value className="text-text-primary">
+        <Value sizeVariant="lg" className="text-text-primary">
           {formatNumber(subaccount.portfolioValueUsd, {
             formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
           })}

@@ -1,5 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { GetEngineAllMarketsResponse } from '@vertex-protocol/client';
+import {
+  GetEngineAllMarketsResponse,
+  VLP_PRODUCT_ID,
+} from '@vertex-protocol/client';
 import {
   ChainEnv,
   ProductEngineType,
@@ -8,17 +11,15 @@ import {
 import {
   AnnotatedPerpMarket,
   AnnotatedSpotMarket,
-  useVertexMetadataContext,
-  VertexMetadataContextData,
-} from '@vertex-protocol/react-client';
-import {
   getPrimaryChain,
   QueryDisabledError,
   useVertexClientContext,
+  useVertexMetadataContext,
+  VertexMetadataContextData,
 } from '@vertex-protocol/react-client';
 import { AllMarketsForChainEnv } from 'client/hooks/query/markets/allMarkets/types';
 import { useOperationTimeLogger } from 'client/hooks/util/useOperationTimeLogger';
-import { mapValues } from 'lodash';
+import { get } from 'lodash';
 
 type Data = Partial<Record<ChainEnv, AllMarketsForChainEnv>>;
 
@@ -51,16 +52,24 @@ export function useAllMarketsByChainEnv() {
       await primaryChainVertexClient.client.market.getEdgeAllEngineMarkets();
     endProfiling();
 
-    return mapValues(vertexClientsByChainEnv, (vertexClient) => {
-      const dataForChainEnv =
-        baseResponse[getPrimaryChain(vertexClient.chainEnv).id];
-      return getAllMarketsForChainEnv({
+    const allMarketsByChainEnv: Data = {};
+
+    Object.values(vertexClientsByChainEnv).forEach((vertexClient) => {
+      const primaryChainId = getPrimaryChain(vertexClient.chainEnv).id;
+      const dataForChainEnv = get(baseResponse, primaryChainId, undefined);
+      if (!dataForChainEnv) {
+        return;
+      }
+
+      allMarketsByChainEnv[vertexClient.chainEnv] = getAllMarketsForChainEnv({
         data: dataForChainEnv,
         chainEnv: vertexClient.chainEnv,
         getSpotMetadataByChainEnv,
         getPerpMetadata,
       });
     });
+
+    return allMarketsByChainEnv;
   };
 
   return useQuery({
@@ -83,7 +92,8 @@ function getAllMarketsForChainEnv({
   getSpotMetadataByChainEnv: VertexMetadataContextData['getSpotMetadataByChainEnv'];
   getPerpMetadata: VertexMetadataContextData['getPerpMetadata'];
 }): AllMarketsForChainEnv {
-  let primaryQuoteProduct: AnnotatedSpotMarket | undefined = undefined;
+  let primaryQuoteProduct: AnnotatedSpotMarket | undefined;
+  let vlpProduct: AnnotatedSpotMarket | undefined;
   const spotMarkets: Record<number, AnnotatedSpotMarket> = {};
   const perpMarkets: Record<number, AnnotatedPerpMarket> = {};
 
@@ -101,6 +111,8 @@ function getAllMarketsForChainEnv({
 
       if (market.productId === QUOTE_PRODUCT_ID) {
         primaryQuoteProduct = annotatedSpotMarket;
+      } else if (market.productId === VLP_PRODUCT_ID) {
+        vlpProduct = annotatedSpotMarket;
       } else {
         spotMarkets[market.productId] = annotatedSpotMarket;
       }
@@ -124,7 +136,7 @@ function getAllMarketsForChainEnv({
   });
 
   if (primaryQuoteProduct == null) {
-    throw Error('Quote product not found');
+    throw new Error('Quote product not found');
   }
 
   const spotMarketsProductIds = Object.keys(spotMarkets).map(Number);
@@ -132,6 +144,12 @@ function getAllMarketsForChainEnv({
 
   return {
     primaryQuoteProduct,
+    vlpProduct,
+    spotProducts: {
+      [QUOTE_PRODUCT_ID]: primaryQuoteProduct,
+      ...(vlpProduct ? { [vlpProduct.productId]: vlpProduct } : {}),
+      ...spotMarkets,
+    },
     spotMarkets,
     perpMarkets,
     allMarkets: { ...spotMarkets, ...perpMarkets },

@@ -20,7 +20,7 @@ export function IconButton({
   iconClassName,
   size,
   tooltipLabel,
-  borderRadiusVariant = 'base',
+  borderRadiusVariant = 'sm',
   ...rest
 }: Props) {
   const stateOverlayClassNames = getStateOverlayClassNames({
@@ -48,10 +48,14 @@ export function IconButton({
       paddingClassName: 'p-3',
       iconSize: 24,
     },
+    xl: {
+      paddingClassName: 'p-3',
+      iconSize: 24,
+    },
   }[size];
 
   const roundedClassNames = {
-    base: 'rounded',
+    xs: 'rounded-xs',
     sm: 'rounded-sm',
     md: 'rounded-md',
     lg: 'rounded-lg',

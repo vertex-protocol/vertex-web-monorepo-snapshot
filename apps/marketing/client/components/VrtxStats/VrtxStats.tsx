@@ -51,7 +51,7 @@ export function VrtxStats({ containerVariants, itemVariants }: Props) {
         >
           <motion.p
             variants={itemVariants}
-            className="text-header-2 md:text-header-1 text-header-linear font-radioGrotesk"
+            className="text-header-2 md:text-header-1 text-header-linear font-radio-grotesk"
           >
             {formattedApr}
           </motion.p>

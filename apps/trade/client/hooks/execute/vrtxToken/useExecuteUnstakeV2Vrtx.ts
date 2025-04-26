@@ -25,17 +25,13 @@ export function useExecuteUnstakeV2Vrtx() {
   const mutationFn = useExecuteInValidContext(
     useCallback(async (params: Params, context: ValidExecuteContext) => {
       console.log('Unstaking v2 VRTX', params);
-      const txResponse = await (() => {
-        if (params.instant) {
-          // Unstaked tokens are available for withdrawal instantly, but face a token penalty that is redirected
-          // based on `toTreasuryRatio` and `toDistributeRatio` parameters.
-          return context.vertexClient.rewards.unstakeV2();
-        }
-        // Unstaked tokens undergo an "unlock" period and must subsequently be withdrawn
-        return context.vertexClient.rewards.unstakeV2Slow();
-      })();
-
-      return txResponse.hash;
+      if (params.instant) {
+        // Unstaked tokens are available for withdrawal instantly, but face a token penalty that is redirected
+        // based on `toTreasuryRatio` and `toDistributeRatio` parameters.
+        return context.vertexClient.rewards.unstakeV2();
+      }
+      // Unstaked tokens undergo an "unlock" period and must subsequently be withdrawn
+      return context.vertexClient.rewards.unstakeV2Slow();
     }, []),
   );
 

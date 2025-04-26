@@ -1,37 +1,38 @@
 import { useMutation } from '@tanstack/react-query';
 import {
   useEVMContext,
-  usePrimaryChainVertexClient,
+  walletClientToSigner,
 } from '@vertex-protocol/react-client';
 import { toPrintableObject } from '@vertex-protocol/utils';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import { useExecuteInValidContext } from 'client/hooks/execute/util/useExecuteInValidContext';
-import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/useSquidSDK';
+import { useSquidSDKQuery } from 'client/modules/collateral/bridge/hooks/useSquidSDKQuery';
 import { getSquidRouteRequest } from 'client/modules/collateral/bridge/hooks/utils/getSquidRouteRequest';
 import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
 import { useCallback } from 'react';
 
 export function useExecuteBridgeTokens() {
-  const squidSDK = useSquidSDK();
-  const vertexClient = usePrimaryChainVertexClient();
-
+  const squidSDK = useSquidSDKQuery();
   const {
-    connectionStatus: { signer },
+    connectionStatus: { walletClient },
   } = useEVMContext();
-  const endpointAddress = vertexClient?.context.contractAddresses.endpoint;
 
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (params: BridgeRequestParams, context) => {
         if (!squidSDK) {
-          throw Error('Squid SDK not initialized');
+          throw new Error('Squid SDK not initialized');
         }
-        if (!endpointAddress) {
-          throw Error('No Vertex endpoint address');
+        // Note: we need to use `walletClient` from EVMContext instead of `context.walletClient`
+        // This is because the wallet client is NOT expected to be on the primary chain (as we're bridging from a another chain)
+        // but `context.walletClient` is set to the primary chain
+        if (!walletClient) {
+          throw new Error('Wallet client not initialized');
         }
-        if (!signer) {
-          throw Error('Signer not initialized');
-        }
+
+        const signer = walletClientToSigner(walletClient);
+        const endpointAddress =
+          context.vertexClient.context.contractAddresses.endpoint;
 
         const transferParams = getSquidRouteRequest({
           ...params,
@@ -58,7 +59,7 @@ export function useExecuteBridgeTokens() {
 
         return txResponse.hash;
       },
-      [endpointAddress, signer, squidSDK],
+      [squidSDK, walletClient],
     ),
   );
 

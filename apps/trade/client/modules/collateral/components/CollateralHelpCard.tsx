@@ -9,7 +9,7 @@ function Container({ className, children }: WithClassnames<WithChildren>) {
   return (
     <div
       className={joinClassNames(
-        'bg-surface-1 flex flex-col gap-y-2 rounded p-3',
+        'bg-surface-1 flex flex-col gap-y-2 rounded-sm p-3',
         className,
       )}
     >
@@ -39,7 +39,9 @@ function Title({ className, title, icon }: TitleProps) {
         className,
       )}
     >
-      <div className="bg-surface-2 flex items-center rounded p-1">{icon}</div>
+      <div className="bg-surface-2 flex items-center rounded-sm p-1">
+        {icon}
+      </div>
       {title}
     </div>
   );

@@ -4,16 +4,15 @@ import {
 } from '@vertex-protocol/react-client';
 import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { PerpMarketTableItem } from 'client/pages/Markets/hooks/usePerpMarketsTable';
-import { marketsPageFundingRatePeriodAtom } from 'client/store/marketsPageStore';
 import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
-import { useAtom } from 'jotai';
+import { useFundingRatePeriod } from 'client/modules/trading/hooks/useFundingRatePeriod';
 
 interface Props {
   value: PerpMarketTableItem['fundingRates'];
 }
 
 export function FundingRateCell({ value }: Props) {
-  const [fundingRatePeriod] = useAtom(marketsPageFundingRatePeriodAtom);
+  const { fundingRatePeriod } = useFundingRatePeriod();
 
   const color = getSignDependentColorClassName(value?.[fundingRatePeriod]);
 

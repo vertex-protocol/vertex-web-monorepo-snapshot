@@ -1,11 +1,13 @@
+import {
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import {
   WithClassnames,
   joinClassNames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { formatNumber } from '@vertex-protocol/react-client';
 import { getLiquidationRiskLevelClassNames } from 'client/utils/getLiquidationRiskLevelClassNames';
 import { useMemo } from 'react';
 
@@ -17,6 +19,8 @@ export function LiquidationRiskBar({
   className,
   liquidationRiskFraction,
 }: Props) {
+  const hasShadow = !liquidationRiskFraction?.isZero();
+
   const colorClassNames = getLiquidationRiskLevelClassNames(
     liquidationRiskFraction,
   );
@@ -31,22 +35,22 @@ export function LiquidationRiskBar({
   return (
     <div
       className={mergeClassNames(
-        'relative isolate rounded-sm',
+        'relative isolate rounded-xs',
         'h-1.5 w-16',
         className,
       )}
     >
       <div
         className={joinClassNames(
-          'absolute inset-0 -z-10 rounded-sm',
-          'from-risk-low via-risk-medium to-risk-extreme bg-gradient-to-r opacity-30',
+          'absolute inset-0 -z-10 rounded-xs',
+          'from-risk-low via-risk-medium to-risk-extreme bg-linear-to-r opacity-30',
         )}
       />
       <div
         className={joinClassNames(
-          'shadow-elevation-risk-bar absolute inset-0 origin-left rounded-sm',
+          'absolute inset-0 origin-left rounded-xs',
           colorClassNames.bg,
-          colorClassNames.shadow,
+          hasShadow && ['shadow-elevation-risk-bar', colorClassNames.shadow],
         )}
         style={{
           width: liquidationRiskBarWidth,

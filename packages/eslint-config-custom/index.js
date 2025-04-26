@@ -9,7 +9,7 @@ const nextConfig = new FlatCompat({ baseDirectory: __dirname }).extends('next');
 
 module.exports = tseslint.config(
   nextConfig,
-  turboConfig,
+  turboConfig.default,
   prettierConfig,
   { ignores: ['.next'] },
   {

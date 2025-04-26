@@ -56,7 +56,7 @@ export function StakingV2PositionCard({
             <GradientTextPill />
           </>
         }
-        sizeVariant="lg"
+        sizeVariant="xl"
         value={currentBalance}
         valueEndElement={
           <StakingUsdValueEndElement
@@ -111,7 +111,7 @@ export function StakingV2PositionCard({
 
 function GradientTextPill() {
   return (
-    <Pill colorVariant="accent" borderRadiusVariant="base" sizeVariant="xs">
+    <Pill colorVariant="accent" borderRadiusVariant="sm" sizeVariant="xs">
       <div className="text-vertex-gradient-highlight text-xs">
         Auto-compounding
       </div>

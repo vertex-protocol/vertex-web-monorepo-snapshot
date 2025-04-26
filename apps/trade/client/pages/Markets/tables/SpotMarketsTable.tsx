@@ -93,7 +93,7 @@ export function SpotMarketsTable() {
           cellContainerClassName: 'w-28',
         },
       }),
-      columnHelper.accessor('priceChangeFrac24hr', {
+      columnHelper.accessor('priceChangeFrac24h', {
         header: ({ header }) => (
           <HeaderCell header={header}>24h Change</HeaderCell>
         ),

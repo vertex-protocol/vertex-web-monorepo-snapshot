@@ -2,7 +2,6 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import {
-  COMMON_TRANSPARENCY_COLORS,
   Divider,
   Icons,
   NavBarCardButton,
@@ -39,8 +38,7 @@ function MobileNavMenu({ className }: WithClassnames) {
       className={joinClassNames(
         'w-screen',
         'no-scrollbar flex flex-col justify-between overflow-y-auto',
-        'bg-background border-t',
-        COMMON_TRANSPARENCY_COLORS.border,
+        'bg-background border-overlay-divider border-t',
         className,
       )}
       style={{

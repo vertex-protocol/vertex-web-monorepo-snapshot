@@ -1,11 +1,11 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { EDGE_COLORS } from '@vertex-protocol/web-ui';
 import {
   ChainEnvBreakdownStatsChartConfigByDataKey,
   ChainEnvBreakdownStatsChartDataItem,
 } from 'client/components/charts/ChainEnvBreakdownStatsChart/types';
 import { StatsChart } from 'client/components/charts/StatsChart/StatsChart';
 import { LabelWithEdgeLogo } from 'client/components/LabelWithEdgeLogo';
+import { getEdgeStatsColorVar } from 'client/theme/colorVars';
 import { useMemo } from 'react';
 import { XAxisProps, YAxisProps } from 'recharts';
 
@@ -146,9 +146,21 @@ export function ChainEnvBreakdownStatsChart({
           chartType,
           yAxisId: 'left',
         },
+        avaxTestnet: {
+          label: 'Avalanche Testnet',
+          dataKey: 'avaxTestnet',
+          chartType,
+          yAxisId: 'left',
+        },
+        avax: {
+          label: 'Avalanche',
+          dataKey: 'avax',
+          chartType,
+          yAxisId: 'left',
+        },
         edge: {
           // No color for bar chart since it doesn't appear on the chart.
-          color: isBar ? null : EDGE_COLORS['chart-fill'].DEFAULT,
+          color: isBar ? null : getEdgeStatsColorVar('chart-fill'),
           label: <LabelWithEdgeLogo label="Total" />,
           dataKey: 'edge',
           chartType: 'line',
@@ -160,7 +172,7 @@ export function ChainEnvBreakdownStatsChart({
         },
         // Edge cumulative shows only on bar chart.
         edgeCumulative: {
-          color: EDGE_COLORS['chart-fill'].DEFAULT,
+          color: getEdgeStatsColorVar('chart-fill'),
           hasTooltipTopDivider: true,
           label: <LabelWithEdgeLogo label="Cumulative" />,
           dataKey: 'edgeCumulative',

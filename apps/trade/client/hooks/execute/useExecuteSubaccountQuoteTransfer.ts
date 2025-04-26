@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { TransferQuoteParams } from '@vertex-protocol/client';
+import { getWalletClientForLinkedSignerAccount } from '@vertex-protocol/react-client';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   MAX_SIZE_QUERY_KEYS,
@@ -18,6 +19,7 @@ import { subaccountPaginatedCollateralEventsQueryKey } from 'client/hooks/query/
 import { subaccountReferralCodeQueryKey } from 'client/hooks/query/subaccount/useSubaccountReferralCode';
 import { SubaccountSigningPreference } from 'client/modules/singleSignatureSessions/types';
 import { useCallback } from 'react';
+import { Chain } from 'viem/chains';
 
 const COMMON_REFETCH_QUERY_KEYS = [
   subaccountPaginatedCollateralEventsQueryKey(),
@@ -61,17 +63,23 @@ export function useExecuteSubaccountQuoteTransfer({
         // Then, after the transfer, we set it back to the current subaccount's.
         //
         // If the sender is the current subaccount, it's basically a no-op.
-        const currentLinkedSigner = context.vertexClient.context.linkedSigner;
+        const currentLinkedSignerWalletClient =
+          context.vertexClient.context.linkedSignerWalletClient;
         context.vertexClient.setLinkedSigner(
-          getAuthorizedWallet(params.senderSigningPreference),
+          getLinkedSignerWalletClient(
+            params.senderSigningPreference,
+            context.walletClient.chain,
+          ),
         );
 
         try {
-          return await context.vertexClient.subaccount.transferQuote(params);
+          return await context.vertexClient.spot.transferQuote(params);
         } catch (e) {
           throw e;
         } finally {
-          context.vertexClient.setLinkedSigner(currentLinkedSigner ?? null);
+          context.vertexClient.setLinkedSigner(
+            currentLinkedSignerWalletClient ?? null,
+          );
         }
       },
       [],
@@ -101,11 +109,18 @@ export function useExecuteSubaccountQuoteTransfer({
   return mutation;
 }
 
-function getAuthorizedWallet(
+function getLinkedSignerWalletClient(
   signingPreference: SubaccountSigningPreference | undefined,
+  chain: Chain,
 ) {
-  if (signingPreference?.type === 'sign_once') {
-    return signingPreference.authorizedWallet ?? null;
+  if (
+    signingPreference?.type === 'sign_once' &&
+    signingPreference.linkedSigner
+  ) {
+    return getWalletClientForLinkedSignerAccount(
+      signingPreference.linkedSigner.account,
+      chain,
+    );
   }
 
   return null;

@@ -1,10 +1,10 @@
 'use client';
 
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { motion } from 'framer-motion';
-import { ExternalLink } from 'client/components/Link/Link';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import { ITEM_VARIANTS } from 'client/sections/Footer/motionVariants';
 import { LINKS } from 'config/links';
+import { motion } from 'framer-motion';
 
 interface Props {
   title?: string;
@@ -22,7 +22,7 @@ export function FooterColumn({ title, links, orderClass, lastColumn }: Props) {
   const linksListClasses = joinClassNames('flex flex-1 flex-col', 'gap-y-4');
   const linkClasses = joinClassNames(
     'text-body-13 md:text-body-14',
-    'rounded-sm transition-colors hover:text-white',
+    'rounded-xs transition-colors hover:text-white',
   );
   const designByClasses = joinClassNames(
     'text-body-13 text-body-dark-gray',

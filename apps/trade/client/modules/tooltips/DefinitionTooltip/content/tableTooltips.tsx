@@ -34,9 +34,20 @@ const perpPositionsTooltips = {
     title: `Funding`,
     content: `The total funding payments you have received (+) or paid (-). Payments are made hourly in ${primaryQuoteToken.symbol}. The funding rate for payments is calculated based on the difference between the the market's TWAP orderbook price and the spot index price.`,
   }),
-  perpPositionsMargin: {
-    title: `Position Margin`,
-    content: `The initial margin required to maintain this position.`,
+  perpPositionsMarginLeverage: {
+    title: `Margin/Leverage`,
+    content: (
+      <>
+        <p>
+          <span className="text-text-primary">Cross positions:</span> The
+          initial cross account margin required to maintain this position.
+        </p>
+        <p>
+          <span className="text-text-primary">Isolated positions:</span> the
+          margin currently deposited and the current leverage for the position.
+        </p>
+      </>
+    ),
   },
   perpPositionsEstimatedLiqPrice: {
     title: `Est. Liq. Price`,
@@ -206,6 +217,13 @@ const historicalLpEventsTooltips = {
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
+const historicalVlpEventsTooltips = {
+  historicalVlpChangeInBalances: {
+    title: `Change in Balances`,
+    content: `The change in asset balances for this transaction. The transaction fee is included in the amounts shown.`,
+  },
+};
+
 const historicalSettlementsTooltips = {
   historicalSettlement: ({ primaryQuoteToken }) => ({
     title: `Settlement`,
@@ -270,6 +288,13 @@ const historicalLiquidationTooltips = {
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
+const moneyMarketsTooltips = {
+  moneyMarketsUtilizationRatio: {
+    title: 'Utilization Ratio',
+    content: 'The percentage of deposited funds that have been borrowed.',
+  },
+} as const satisfies Record<string, DefinitionTooltipConfig>;
+
 export const tableTooltips = {
   ...lpMarketsTooltips,
   ...spotBalancesTooltips,
@@ -280,10 +305,12 @@ export const tableTooltips = {
   ...interestPaymentsTooltips,
   ...realizedPnlEventsTooltips,
   ...historicalLpEventsTooltips,
+  ...historicalVlpEventsTooltips,
   ...historicalLiquidationTooltips,
   ...historicalSettlementsTooltips,
   ...historicalWithdrawalsTooltips,
   ...fundingRateMarketsTooltips,
   ...perpMarketsTooltips,
   ...lbaPositionTooltips,
+  ...moneyMarketsTooltips,
 } as const satisfies Record<string, DefinitionTooltipConfig>;

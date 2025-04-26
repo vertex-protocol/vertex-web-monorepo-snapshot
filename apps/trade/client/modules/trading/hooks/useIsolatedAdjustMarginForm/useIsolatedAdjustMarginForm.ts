@@ -5,13 +5,13 @@ import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useExecuteSubaccountQuoteTransfer } from 'client/hooks/execute/useExecuteSubaccountQuoteTransfer';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useMaxWithdrawableAmount } from 'client/hooks/query/subaccount/useMaxWithdrawableAmount';
 import { useLinkedPercentageAmountInputEffects } from 'client/hooks/ui/form/useLinkedPercentageAmountInputEffects';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
-import { SUBACCOUNT_QUOTE_TRANSFER_FEE } from 'client/modules/subaccounts/consts';
 import {
   IsolatedAdjustMarginFormErrorType,
   IsolatedAdjustMarginFormValues,
@@ -77,7 +77,7 @@ export function useIsolatedAdjustMarginForm({
       return BigDecimals.ZERO;
     }
 
-    return removeDecimals(maxWithdrawable).plus(SUBACCOUNT_QUOTE_TRANSFER_FEE);
+    return removeDecimals(maxWithdrawable).plus(SEQUENCER_FEE_AMOUNT_USDC);
   }, [maxWithdrawable]);
 
   // Amount input

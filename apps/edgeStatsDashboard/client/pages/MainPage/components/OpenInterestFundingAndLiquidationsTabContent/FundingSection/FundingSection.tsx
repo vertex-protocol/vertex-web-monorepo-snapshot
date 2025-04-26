@@ -1,20 +1,21 @@
-import { EDGE_COLORS, LinkButton } from '@vertex-protocol/web-ui';
+import {
+  PresetNumberFormatSpecifier,
+  signDependentValue,
+} from '@vertex-protocol/react-client';
+import { LinkButton } from '@vertex-protocol/web-ui';
+import { percentagePreciseAxisFormatter } from 'client/components/charts/axisFormatters';
 import { StatsChart } from 'client/components/charts/StatsChart/StatsChart';
 import { MarketWithRateList } from 'client/components/MarketWithRateList';
 import { StatsSection } from 'client/components/StatsSection';
 import { LINKS } from 'client/config/links';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
-import { useHistoricalFundingChartData } from 'client/pages/MainPage/components/OpenInterestFundingAndLiquidationsTabContent/FundingSection/useHistoricalFundingChartData';
-import { useEdgeTopFundingRatesCardData } from 'client/pages/MainPage/components/OpenInterestFundingAndLiquidationsTabContent/FundingSection/useEdgeTopFundingRatesCardData';
-import Link from 'next/link';
-import {
-  PresetNumberFormatSpecifier,
-  signDependentValue,
-} from '@vertex-protocol/react-client';
-import { percentagePreciseAxisFormatter } from 'client/components/charts/axisFormatters';
-import { useAllEdgePerpMarkets } from 'client/pages/MainPage/components/OpenInterestFundingAndLiquidationsTabContent/hooks/useAllEdgePerpMarkets';
 import { ProductsSelect } from 'client/pages/MainPage/components/common/ProductsSelect/ProductsSelect';
 import { useProductsSelect } from 'client/pages/MainPage/components/common/ProductsSelect/useProductsSelect';
+import { useEdgeTopFundingRatesCardData } from 'client/pages/MainPage/components/OpenInterestFundingAndLiquidationsTabContent/FundingSection/useEdgeTopFundingRatesCardData';
+import { useHistoricalFundingChartData } from 'client/pages/MainPage/components/OpenInterestFundingAndLiquidationsTabContent/FundingSection/useHistoricalFundingChartData';
+import { useAllEdgePerpMarkets } from 'client/pages/MainPage/components/OpenInterestFundingAndLiquidationsTabContent/hooks/useAllEdgePerpMarkets';
+import { getEdgeStatsColorVar } from 'client/theme/colorVars';
+import Link from 'next/link';
 
 export function FundingSection() {
   const { data: allEdgePerpMarketsData } = useAllEdgePerpMarkets();
@@ -87,7 +88,7 @@ export function FundingSection() {
         data={fundingChartData?.fundingRates}
         configByDataKey={{
           fundingRate: {
-            color: EDGE_COLORS['chart-fill'].DEFAULT,
+            color: getEdgeStatsColorVar('chart-fill'),
             dataKey: 'fundingRate',
             label: 'Funding Rate',
             chartType: 'line',

@@ -9,10 +9,12 @@ import { NavCardBaseProps } from './types';
 export type NavCardButtonProps = NavCardBaseProps & {
   active?: boolean;
   stateClassNameOverrides?: string;
+  titleClassName?: string;
 };
 
 export function NavCardButton({
   title,
+  titleClassName,
   description,
   icon,
   active,
@@ -42,6 +44,7 @@ export function NavCardButton({
       <NavCardButtonContent
         icon={icon}
         title={title}
+        titleClassName={titleClassName}
         description={description}
         className={joinClassNames('flex-1', contentClassName)}
       />

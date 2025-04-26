@@ -1,7 +1,10 @@
 import { ProductEngineType } from '@vertex-protocol/client';
-import { TokenIconMetadata } from '@vertex-protocol/react-client';
+import {
+  ChainEnvWithEdge,
+  TokenIconMetadata,
+} from '@vertex-protocol/react-client';
 import { SelectValueWithIdentifier, useSelect } from '@vertex-protocol/web-ui';
-import { ChainEnvWithEdge, EdgeAnnotatedMarket } from 'client/hooks/types';
+import { EdgeAnnotatedMarket } from 'client/hooks/types';
 import { getMarketName } from 'client/utils/getMarketName';
 import { getSpotMarketTokenName } from 'client/utils/getSpotMarketTokenName';
 import { first } from 'lodash';

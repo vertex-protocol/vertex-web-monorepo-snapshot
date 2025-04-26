@@ -18,7 +18,7 @@ export function TradeTabButton({
   const sideClassNames = side === 'long' ? 'text-positive' : 'text-negative';
 
   const stateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
     disabled: rest.disabled,
     active,
   });
@@ -26,7 +26,7 @@ export function TradeTabButton({
   return (
     <Button
       className={mergeClassNames(
-        'bg-surface-1 rounded py-1.5 text-xs uppercase',
+        'bg-surface-1 rounded-sm py-1.5 text-xs uppercase',
         active ? sideClassNames : 'text-text-tertiary',
         stateOverlayClassNames,
         className,

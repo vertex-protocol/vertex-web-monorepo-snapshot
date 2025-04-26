@@ -7,7 +7,7 @@ import {
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { SecondaryButton, Value } from '@vertex-protocol/web-ui';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { useSkateVaultApyFraction } from 'client/modules/vaults/hooks/query/useSkateVaultApyFraction';
+import { useSkateVaultApyFraction } from 'client/modules/skateVaults/hooks/query/useSkateVaultApyFraction';
 import { BLITZ_SPECIFIC_IMAGES, IMAGES } from 'common/brandMetadata/images';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -33,7 +33,7 @@ export function BlitzVaultsOpportunityCardContent({
       )}
     >
       <Image src={IMAGES.partners.skate} alt="" className="h-4 w-auto" />
-      <Value endElement="APY" sizeVariant="lg">
+      <Value endElement="APY" sizeVariant="xl">
         {formatNumber(vaultApy, {
           formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         })}

@@ -24,11 +24,7 @@ export function BlitzPointsEarningsCardContent() {
           'text-text-secondary text-xs',
         )}
       >
-        <Pill
-          sizeVariant="xs"
-          borderRadiusVariant="base"
-          colorVariant="tertiary"
-        >
+        <Pill sizeVariant="xs" borderRadiusVariant="sm" colorVariant="tertiary">
           Rank:
           <span className="text-text-primary">
             {formatNumber(currentEpoch?.rank, {

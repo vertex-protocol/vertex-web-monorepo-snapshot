@@ -23,11 +23,8 @@ import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<LpTableItem>();
 
-export function LpBalancesTable({
-  className,
-  showZeroBalances,
-}: WithClassnames<{ showZeroBalances?: boolean }>) {
-  const { data: pools, isLoading } = useLpTable({ showZeroBalances });
+export function LpBalancesTable({ className }: WithClassnames) {
+  const { data: pools, isLoading } = useLpTable();
 
   const { show } = useDialog();
   const isDesktop = useIsDesktop();

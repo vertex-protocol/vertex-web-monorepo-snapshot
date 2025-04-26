@@ -34,7 +34,7 @@ function SegmentedControlButton({
   return (
     <Button
       className={mergeClassNames(
-        'whitespace-nowrap rounded',
+        'rounded-sm whitespace-nowrap',
         STANDARD_BUTTON_VERTICAL_PADDING_CLASSNAME[size],
         STANDARD_BUTTON_HORIZONTAL_PADDING_CLASSNAME[size],
         STANDARD_BUTTON_TEXT_SIZE_CLASSNAME[size],
@@ -54,7 +54,7 @@ function SegmentedControlContainer({
   return (
     <div
       className={mergeClassNames(
-        'bg-surface-1 flex items-center rounded p-0.5',
+        'bg-surface-1 flex items-center rounded-sm p-0.5',
         className,
       )}
       {...rest}

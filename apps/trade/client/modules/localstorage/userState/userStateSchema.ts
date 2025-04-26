@@ -5,6 +5,7 @@ import {
   TRADING_SIDEBAR_WATCHLIST_TAB_IDS,
   TRADING_SIDEBAR_TAB_IDS,
 } from 'client/modules/localstorage/userState/types/userTradingSidebarTypes';
+import { FUNDING_RATE_PERIODS } from 'client/modules/localstorage/userState/types/userFundingRatePeriodTypes';
 
 // Make dismissedDisclosures array more general so that removal of obsolete dismiss keys doesn't invalidate entire array
 interface SavedUserStateSchema
@@ -24,4 +25,5 @@ export const stateSchema = z.object({
     selectedWatchlistTabId: z.enum(TRADING_SIDEBAR_WATCHLIST_TAB_IDS),
     selectedTabId: z.enum(TRADING_SIDEBAR_TAB_IDS),
   }),
+  fundingRatePeriod: z.enum(FUNDING_RATE_PERIODS),
 }) satisfies z.ZodType<SavedUserStateSchema>;

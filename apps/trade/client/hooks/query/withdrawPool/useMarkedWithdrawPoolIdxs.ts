@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ChainEnv } from '@vertex-protocol/client';
+import { ChainEnv, toBigInt } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
@@ -40,9 +40,9 @@ export function useMarkedWithdrawPoolIdxs({
       }
 
       const baseResponse =
-        await vertexClient.context.contracts.withdrawPool.checkMarkedIdxs(
-          submissionIndices,
-        );
+        await vertexClient.context.contracts.withdrawPool.read.checkMarkedIdxs([
+          submissionIndices.map(toBigInt),
+        ]);
 
       const checkMarkedBySubmissionIndex: Record<string, boolean> = {};
 

@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { Card, Divider, IconComponent } from '@vertex-protocol/web-ui';
+import { ReactNode } from 'react';
 
 interface Props {
   title: string;

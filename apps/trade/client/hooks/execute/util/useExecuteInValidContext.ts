@@ -1,21 +1,28 @@
-import { VertexClient } from '@vertex-protocol/client';
+import { VertexClient, WalletClientWithAccount } from '@vertex-protocol/client';
 import {
-  useEVMContext,
   usePrimaryChainPublicClient,
   usePrimaryChainVertexClient,
   usePrimaryChainWalletClient,
 } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { AppSubaccount } from 'client/context/subaccount/types';
-import { Signer } from 'ethers';
 import { useCallback } from 'react';
+import { PublicClient } from 'viem';
 
 export interface ValidExecuteContext {
+  /**
+   * Vertex client on the current chain
+   */
   vertexClient: VertexClient;
-  publicClient: NonNullable<ReturnType<typeof usePrimaryChainPublicClient>>;
-  walletClient: NonNullable<ReturnType<typeof usePrimaryChainWalletClient>>;
+  /**
+   * Public client on the current chain
+   */
+  publicClient: PublicClient;
+  /**
+   * Wallet client on the current chain
+   */
+  walletClient: WalletClientWithAccount;
   subaccount: Required<AppSubaccount>;
-  signer: Signer;
 }
 
 /**
@@ -29,9 +36,6 @@ export function useExecuteInValidContext<TParams = unknown, TData = unknown>(
   const publicClient = usePrimaryChainPublicClient();
   const walletClient = usePrimaryChainWalletClient();
 
-  const {
-    connectionStatus: { signer },
-  } = useEVMContext();
   const { currentSubaccount } = useSubaccountContext();
 
   return useCallback(
@@ -48,15 +52,14 @@ export function useExecuteInValidContext<TParams = unknown, TData = unknown>(
 
       // Need to destructure here for typecheck statement on address to work
       const { address, chainEnv, chainId, name } = currentSubaccount;
-      if (!address || !signer) {
-        throw new Error('Wallet not connected');
+      if (!address) {
+        throw new Error('No connected address found');
       }
 
       const executeContext: ValidExecuteContext = {
         vertexClient,
         publicClient,
         walletClient,
-        signer,
         subaccount: {
           address,
           chainEnv,
@@ -67,6 +70,6 @@ export function useExecuteInValidContext<TParams = unknown, TData = unknown>(
 
       return fn(params, executeContext);
     },
-    [currentSubaccount, fn, signer, vertexClient, publicClient, walletClient],
+    [currentSubaccount, fn, vertexClient, publicClient, walletClient],
   );
 }

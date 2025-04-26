@@ -29,6 +29,7 @@ export function WseiDepositDismissible({
             as={Link}
             href={VERTEX_SPECIFIC_LINKS.wrapSei}
             external
+            withExternalIcon
           >
             Swap SEI to wSEI
           </LinkButton>

@@ -15,6 +15,7 @@ const DEFAULT_USER_STATE: SavedUserState = Object.freeze<SavedUserState>({
     selectedWatchlistTabId: 'watchlist',
     selectedTabId: 'market_info',
   },
+  fundingRatePeriod: '1h',
 });
 
 // See getUserSettingsWithDefaults for explanation of implementation
@@ -64,6 +65,11 @@ export function getUserStateWithDefaults(
         sidebarSchema.shape.selectedTabId,
       ),
     },
+    fundingRatePeriod: validateOrReset(
+      currentSaved?.fundingRatePeriod,
+      DEFAULT_USER_STATE.fundingRatePeriod,
+      stateSchema.shape.fundingRatePeriod,
+    ),
   };
 
   return cloneDeep(withDefaults);

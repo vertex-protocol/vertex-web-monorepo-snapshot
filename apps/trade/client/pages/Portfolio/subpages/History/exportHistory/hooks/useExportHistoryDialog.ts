@@ -1,12 +1,17 @@
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { useExecuteExportHistory } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/useExecuteExportHistory';
-import { HistoryExportType } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
+import {
+  ExportHistoryDialogParams,
+  HistoryExportType,
+} from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { endOfDay, startOfDay, subMonths, subWeeks, subYears } from 'date-fns';
 import { useMemo, useState } from 'react';
 
-export function useExportHistoryDialog() {
+export function useExportHistoryDialog({
+  initialExportType,
+}: ExportHistoryDialogParams) {
   const { dispatchNotification } = useNotificationManagerContext();
   // We can safely assume that the current date will not meaningfully change during the lifetime of this hook
   const nowDate = useMemo(() => {
@@ -15,11 +20,12 @@ export function useExportHistoryDialog() {
 
   const [startDate, setStartDateState] = useState<Date>();
   const [endDate, setEndDateState] = useState<Date>();
+  const [progressFrac, setProgressFrac] = useState<number>(0);
   const [selectedExportType, setSelectedExportType] =
-    useState<HistoryExportType>('trades');
+    useState<HistoryExportType>(initialExportType ?? 'trades');
 
   const { mutateAsync, isSuccess, isPending, reset } =
-    useExecuteExportHistory();
+    useExecuteExportHistory(setProgressFrac);
 
   useRunWithDelayOnCondition({
     condition: isSuccess,
@@ -101,5 +107,6 @@ export function useExportHistoryDialog() {
     setSelectedExportType,
     onSubmit,
     buttonState,
+    progressFrac,
   };
 }

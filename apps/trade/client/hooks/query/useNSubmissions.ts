@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { toBigDecimal } from '@vertex-protocol/utils';
 import {
   QueryDisabledError,
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { toBigDecimal } from '@vertex-protocol/utils';
 
 export function useNSubmissions() {
   const { primaryChainEnv } = useEVMContext();
@@ -18,7 +18,7 @@ export function useNSubmissions() {
         throw new QueryDisabledError();
       }
       return toBigDecimal(
-        await vertexClient.context.contracts.endpoint.nSubmissions(),
+        await vertexClient.context.contracts.endpoint.read.nSubmissions(),
       );
     },
     enabled: !disabled,

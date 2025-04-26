@@ -16,15 +16,15 @@ function SideIcon({
   return (
     <div
       className={joinClassNames(
-        'bg-background flex h-24 w-full overflow-hidden rounded border p-1 sm:h-20',
+        'bg-background flex h-24 w-full overflow-hidden rounded-sm border p-1 sm:h-20',
         side === 'left' ? 'justify-start' : 'justify-end',
-        active ? 'border-accent' : ['border-stroke', stateOverlayClassNames],
+        active ? 'border-primary' : ['border-stroke', stateOverlayClassNames],
       )}
     >
       <div
         className={joinClassNames(
-          'h-full w-8 rounded',
-          active ? 'bg-accent' : 'bg-surface-2',
+          'h-full w-8 rounded-sm',
+          active ? 'bg-primary' : 'bg-surface-2',
         )}
       />
     </div>

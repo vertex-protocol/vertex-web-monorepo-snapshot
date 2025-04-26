@@ -8,13 +8,13 @@ import { removeDecimals } from '@vertex-protocol/utils';
 import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
-import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
+import { useAllMarkets24hFundingRates } from 'client/hooks/query/markets/useAllMarkets24hFundingRates';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
 import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
 import { useTextSearch } from 'client/hooks/ui/useTextSearch';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
-import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
+import { FundingRates, getFundingRates } from 'client/utils/calcs/perp/funding';
 import { useMemo } from 'react';
 
 export interface PerpMarketTableItem {
@@ -24,8 +24,8 @@ export interface PerpMarketTableItem {
   indexPrice: BigDecimal | undefined;
   oraclePrice: BigDecimal | undefined;
   openInterestQuote: BigDecimal | undefined;
-  priceChange24hr: BigDecimal | undefined;
-  priceChangeFrac24hr: BigDecimal | undefined;
+  priceChange24h: BigDecimal | undefined;
+  priceChangeFrac24h: BigDecimal | undefined;
   volume24h: BigDecimal | undefined;
   isNewMarket: boolean;
   isFavorited: boolean;
@@ -41,7 +41,7 @@ export function usePerpMarketsTable({ query }: { query: string }) {
   const { data: latestOraclePricesData } = useLatestOraclePrices();
   const { data: marketStatsData } = useAllMarketsStats();
   const { data: latestMarketPricesData } = useAllMarketsLatestPrices();
-  const { data: fundingRateData } = useAllMarkets24HrFundingRates();
+  const { data: fundingRateData } = useAllMarkets24hFundingRates();
   const { favoritedMarketIds, toggleIsFavoritedMarket } = useFavoritedMarkets();
   const isConnected = useIsConnected();
   const perpMarkets = allMarketData?.perpMarkets;
@@ -68,8 +68,8 @@ export function usePerpMarketsTable({ query }: { query: string }) {
           currentPrice: latestMarketPrices?.safeAverage,
           oraclePrice,
           indexPrice: latestPerpPrices?.indexPrice,
-          priceChange24hr: marketStats?.pastDayPriceChange,
-          priceChangeFrac24hr: marketStats?.pastDayPriceChangeFrac,
+          priceChange24h: marketStats?.pastDayPriceChange,
+          priceChangeFrac24h: marketStats?.pastDayPriceChangeFrac,
           volume24h: removeDecimals(marketStats?.pastDayVolumeInPrimaryQuote),
           openInterestQuote: removeDecimals(marketStats?.openInterestQuote),
           isNewMarket: getIsNewMarket(productId),

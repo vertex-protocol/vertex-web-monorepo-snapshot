@@ -1,11 +1,23 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["SENTRY_AUTH_TOKEN"],
+  "globalEnv": [
+    "SENTRY_AUTH_TOKEN"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "env": ["NEXT_RUNTIME", "NODE_ENV", "SENTRY_AUTH_TOKEN"],
-      "outputs": ["dist/**", ".next/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NEXT_RUNTIME",
+        "NODE_ENV",
+        "SENTRY_AUTH_TOKEN",
+        "XRP_LINKED_SIGNER_SECRET_SALT"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
     },
     "lint": {
       "outputs": []

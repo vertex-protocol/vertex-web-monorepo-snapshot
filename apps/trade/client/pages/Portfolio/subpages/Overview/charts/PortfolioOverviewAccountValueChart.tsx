@@ -4,23 +4,25 @@ import {
 } from '@vertex-protocol/react-client';
 import { ChartTooltip } from 'client/components/ChartTooltip';
 import {
+  AREA_CHART_DEFAULTS,
+  CHART_DOT_DEFAULTS,
+  CHART_GRID_DEFAULTS,
+  CHART_TOOLTIP_DEFAULTS,
+  CHART_XAXIS_DEFAULTS,
+  CHART_YAXIS_DEFAULTS,
+} from 'client/modules/charts/config';
+import { currencyAxisFormatter } from 'client/modules/charts/utils/axisFormatters';
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
+import {
   PortfolioChartTooltip,
   PortfolioChartTooltipBodyRenderFn,
 } from 'client/pages/Portfolio/charts/components/PortfolioChartTooltip';
-import {
-  AREA_CHART_DEFAULTS,
-  PORTFOLIO_CHART_DOT_DEFAULTS,
-  PORTFOLIO_CHART_GRADIENT_URLS,
-  PORTFOLIO_CHART_GRID_DEFAULTS,
-  PORTFOLIO_CHART_TOOLTIP_DEFAULTS,
-  PORTFOLIO_CHART_XAXIS_DEFAULTS,
-  PORTFOLIO_CHART_YAXIS_DEFAULTS,
-} from 'client/pages/Portfolio/charts/consts';
-import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
+import { PORTFOLIO_CHART_GRADIENT_URLS } from 'client/pages/Portfolio/charts/consts';
 import { usePortfolioChartXAxisFormatter } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartXAxisFormatter';
-import { ChartComponentProps } from 'client/pages/Portfolio/charts/types';
-import { currencyAxisFormatter } from 'client/pages/Portfolio/charts/utils/axisFormatters';
-import { COLORS } from 'common/theme/colors';
+import {
+  PortfolioChartComponentProps,
+  PortfolioChartDataItem,
+} from 'client/pages/Portfolio/charts/types';
 import {
   Area,
   AreaChart,
@@ -52,36 +54,33 @@ const renderTooltipBodyContent: PortfolioChartTooltipBodyRenderFn = ({
 export function PortfolioOverviewAccountValueChart({
   data,
   isPrivate,
-}: ChartComponentProps) {
+}: PortfolioChartComponentProps) {
   const xAxisFormatter = usePortfolioChartXAxisFormatter();
 
   return (
     <ResponsiveContainer>
       <AreaChart data={data}>
-        <CartesianGrid {...PORTFOLIO_CHART_GRID_DEFAULTS} />
+        <CartesianGrid {...CHART_GRID_DEFAULTS} />
         <Tooltip
-          {...PORTFOLIO_CHART_TOOLTIP_DEFAULTS}
+          {...CHART_TOOLTIP_DEFAULTS}
           content={
             <PortfolioChartTooltip renderBody={renderTooltipBodyContent} />
           }
         />
-        <XAxis
-          {...PORTFOLIO_CHART_XAXIS_DEFAULTS}
-          tickFormatter={xAxisFormatter}
-        />
+        <XAxis {...CHART_XAXIS_DEFAULTS} tickFormatter={xAxisFormatter} />
         <YAxis
-          {...PORTFOLIO_CHART_YAXIS_DEFAULTS}
+          {...CHART_YAXIS_DEFAULTS}
           tickFormatter={currencyAxisFormatter}
           hide={isPrivate}
         />
         <Area
           {...AREA_CHART_DEFAULTS}
           dataKey={cumulativeAccountValueUsdDataKey}
-          stroke={COLORS.accent.DEFAULT}
+          stroke={getTradeAppColorVar('accent')}
           fill={PORTFOLIO_CHART_GRADIENT_URLS.accountValue}
           activeDot={{
-            ...PORTFOLIO_CHART_DOT_DEFAULTS,
-            stroke: COLORS.accent.DEFAULT,
+            ...CHART_DOT_DEFAULTS,
+            stroke: getTradeAppColorVar('accent'),
           }}
         />
       </AreaChart>

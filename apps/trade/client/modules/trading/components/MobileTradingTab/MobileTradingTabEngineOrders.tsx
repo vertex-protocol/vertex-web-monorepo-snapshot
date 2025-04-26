@@ -2,21 +2,20 @@ import { ProductEngineType } from '@vertex-protocol/client';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
+  signDependentValue,
 } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { CancelAllOrdersButton } from 'client/components/ActionButtons/CancelAllOrdersButton';
+import { CancelOrderButton } from 'client/components/ActionButtons/CancelOrderButton';
 import { DataCard } from 'client/components/DataCard';
 import { useOpenEngineOrdersTable } from 'client/modules/tables/hooks/useOpenEngineOrdersTable';
+import { MobileTradingTabActions } from 'client/modules/trading/components/MobileTradingTab/components/MobileTradingTabActions';
 import { MobileTradingTabDataCardHeader } from 'client/modules/trading/components/MobileTradingTab/components/MobileTradingTabDataCardHeader';
 import { MobileTradingTabDataCards } from 'client/modules/trading/components/MobileTradingTab/components/MobileTradingTabDataCards';
-import { MobileTradingTabActions } from 'client/modules/trading/components/MobileTradingTab/components/MobileTradingTabActions';
 import { OpenOrdersFilterOptionID } from 'client/modules/trading/components/TradingTableTabs/types';
 import { TradingTabFilters } from 'client/modules/trading/layout/types';
 import { getOrderSideLabel } from 'client/modules/trading/utils/getOrderSideLabel';
 import { MarketFilter } from 'client/types/MarketFilter';
-import { signDependentValue } from '@vertex-protocol/react-client';
-import { CancelOrderButton } from 'client/components/ActionButtons/CancelOrderButton';
-import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 
 interface Props {
   marketFilter: MarketFilter | undefined;
@@ -27,7 +26,6 @@ export function MobileTradingTabEngineOrders({
   marketFilter,
   tradingTabFilters,
 }: Props) {
-  const { isIsoMarginEnabled } = useEnabledFeatures();
   const { data, isLoading } = useOpenEngineOrdersTable(marketFilter);
 
   return (
@@ -87,17 +85,15 @@ export function MobileTradingTabEngineOrders({
                 numberFormatSpecifier={order.sizeFormatSpecifier}
                 valueEndElement={order.marketInfo.symbol}
               />
-              {isIsoMarginEnabled && (
-                <DataCard.Item
-                  label="Margin"
-                  value={order.isoMarginTransfer}
-                  numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-                  // If no margin transfer, show just `-` without the USDC symbol
-                  valueEndElement={
-                    order.isoMarginTransfer ? order.marketInfo.quoteSymbol : ''
-                  }
-                />
-              )}
+              <DataCard.Item
+                label="Margin"
+                value={order.isoMarginTransfer}
+                numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+                // If no margin transfer, show just `-` without the USDC symbol
+                valueEndElement={
+                  order.isoMarginTransfer ? order.marketInfo.quoteSymbol : ''
+                }
+              />
               <DataCard.Item
                 label="Filled / %"
                 valueContent={`${formatNumber(order.filled.amount.abs(), {

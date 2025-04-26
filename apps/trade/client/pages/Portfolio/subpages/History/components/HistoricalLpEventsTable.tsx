@@ -142,7 +142,6 @@ export function HistoricalLpEventsTable({ className }: WithClassnames) {
       paginationState={paginationState}
       pageCount={pageCount}
       setPaginationState={setPaginationState}
-      dataRowClassName="h-20"
       hasBackground
     />
   );

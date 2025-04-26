@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ChainEnv } from '@vertex-protocol/client';
 import {
   EVMContextProvider,
+  REACT_QUERY_CONFIG,
   useWagmiConfig,
   VertexClientContextProvider,
 } from '@vertex-protocol/react-client';
@@ -16,10 +17,7 @@ import { WagmiProvider } from 'wagmi';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Stale time determines when a new component mount should trigger a refresh. By default this is 0,
-      // which results in repeated fetches if a query is used in multiple components.
-      // We usually specify query refreshes manually, so we set this to a higher value to avoid unnecessary fetches.
-      staleTime: 30000,
+      staleTime: REACT_QUERY_CONFIG.defaultQueryStaleTime,
     },
   },
 });
@@ -31,7 +29,10 @@ const SUPPORTED_CHAINS = [arbitrum];
 export function ClientLayout({ children }: WithChildren) {
   const { areCookiesAccepted } = useEdgeCookiePreference();
 
-  const wagmiConfig = useWagmiConfig({ supportedChains: SUPPORTED_CHAINS });
+  const wagmiConfig = useWagmiConfig({
+    supportedChains: SUPPORTED_CHAINS,
+    supportedChainEnvs: SUPPORTED_CHAIN_ENVS,
+  });
 
   return (
     <QueryClientProvider client={queryClient}>

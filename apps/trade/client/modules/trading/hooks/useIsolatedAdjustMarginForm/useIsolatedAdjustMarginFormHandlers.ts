@@ -1,10 +1,10 @@
 import { addDecimals, toBigDecimal } from '@vertex-protocol/client';
 import BigDecimal from 'bignumber.js';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { useExecuteSubaccountQuoteTransfer } from 'client/hooks/execute/useExecuteSubaccountQuoteTransfer';
 import { useOnFractionSelectedHandler } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { useSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSubaccountSigningPreference';
-import { SUBACCOUNT_QUOTE_TRANSFER_FEE } from 'client/modules/subaccounts/consts';
 import {
   IsolatedAdjustMarginFormValues,
   IsolatedAdjustMarginMode,
@@ -39,7 +39,7 @@ export function useIsolatedAdjustMarginFormHandlers({
 
       // Amount submitted via form is inclusive of fee, but the amount in tx is exclusive.
       const amountToTransfer = addDecimals(
-        inputAmount.minus(SUBACCOUNT_QUOTE_TRANSFER_FEE),
+        inputAmount.minus(SEQUENCER_FEE_AMOUNT_USDC),
       );
 
       const serverExecutionResult = mutateQuoteTransferAsync(

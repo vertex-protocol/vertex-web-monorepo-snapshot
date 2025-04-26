@@ -9,21 +9,21 @@ import {
 
 import { KNOWN_CONNECTOR_IDS } from '../consts';
 
-const PASSKEYS_CHAIN_ENVS: ChainEnv[] = [
+export const PASSKEYS_CHAIN_ENVS: ChainEnv[] = [
   ...ARB_CHAIN_ENVS,
   ...MANTLE_CHAIN_ENVS,
 ];
-const COINBASE_SMART_WALLET_CHAIN_ENVS: ChainEnv[] = [
+export const COINBASE_SMART_WALLET_CHAIN_ENVS: ChainEnv[] = [
   ...ARB_CHAIN_ENVS,
   ...BASE_CHAIN_ENVS,
 ];
-const BINANCE_WALLET_CHAIN_ENVS: ChainEnv[] = [
+export const BINANCE_WALLET_CHAIN_ENVS: ChainEnv[] = [
   ...ARB_CHAIN_ENVS,
   ...BASE_CHAIN_ENVS,
   ...MANTLE_CHAIN_ENVS,
   ...BLAST_CHAIN_ENVS,
 ];
-const ABSTRACT_GW_CHAIN_ENVS: ChainEnv[] = [...ABSTRACT_CHAIN_ENVS];
+export const ABSTRACT_GW_CHAIN_ENVS: ChainEnv[] = [...ABSTRACT_CHAIN_ENVS];
 
 export function getIsConnectorEnabledForChainEnv(
   connectorId: string,

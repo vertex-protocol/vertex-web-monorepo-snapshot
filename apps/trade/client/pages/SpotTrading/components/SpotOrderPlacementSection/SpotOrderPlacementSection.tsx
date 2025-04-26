@@ -4,6 +4,7 @@ import { Divider } from '@vertex-protocol/web-ui';
 import { Form } from 'client/components/Form';
 import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { AdvancedOrderSettings } from 'client/modules/trading/components/AdvancedOrderSettings/AdvancedOrderSettings';
+import { OrderFormTradingRewardsDismissibleBanner } from 'client/modules/trading/components/DismissibleMarketOrderTradingRewardsBanner/OrderFormTradingRewardsDismissibleBanner';
 import { OrderFormInputs } from 'client/modules/trading/components/OrderFormInputs';
 import { OrderFormSpreadWarningPanel } from 'client/modules/trading/components/OrderFormSpreadWarningPanel';
 import { OrderFormVrtxBorrowWarningPanel } from 'client/modules/trading/components/OrderFormVrtxBorrowWarningPanel';
@@ -138,6 +139,7 @@ export function SpotOrderPlacementSection({ className }: WithClassnames) {
                   orderSide={orderSide}
                 />
               </div>
+              <OrderFormTradingRewardsDismissibleBanner />
               {/*Margin for extra space between the divider and order summary*/}
               <Divider className="mb-3" />
               <SpotOrderSummary

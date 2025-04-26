@@ -2,13 +2,13 @@ import { BigDecimal } from '@vertex-protocol/client';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
 import {
   CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
   formatNumber,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { ActionSummary } from 'client/components/ActionSummary';
-import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
 import { useMemo } from 'react';
 

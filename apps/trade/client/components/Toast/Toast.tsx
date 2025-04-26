@@ -18,10 +18,10 @@ function Container({ visible, children, className }: ToastContainerProps) {
   return (
     <div
       className={mergeClassNames(
-        'flex flex-col rounded px-2 transition-opacity',
+        'flex flex-col rounded-sm px-2 transition-opacity',
         'bg-background border-stroke group cursor-default overflow-clip border',
-        // Apply a min-width to fit content without overflow with w-[360px] as the ideal width
-        'max-w-screen w-[360px] min-w-min',
+        // Apply a min-width to fit content without overflow with 360px as the ideal width
+        'w-90 max-w-screen min-w-min',
         'max-h-[50vh] sm:max-h-72',
         visible ? 'opacity-100' : 'opacity-0',
         className,

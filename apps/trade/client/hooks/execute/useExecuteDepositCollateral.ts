@@ -18,7 +18,7 @@ import { subaccountReferralCodeQueryKey } from 'client/hooks/query/subaccount/us
 import { tokenAllowanceQueryKey } from 'client/hooks/query/useTokenAllowance';
 import { useCallback } from 'react';
 
-const REFETCH_QUERY_KEYS = [
+export const EXECUTE_DEPOSIT_COLLATERAL_REFETCH_QUERY_KEYS = [
   subaccountCreationTimeQueryKey(),
   subaccountReferralCodeQueryKey(),
   allDepositableTokenBalancesQueryKey(),
@@ -42,13 +42,12 @@ export function useExecuteDepositCollateral() {
         console.log('Depositing Collateral', params);
         const currentSubaccountName = context.subaccount.name;
 
-        const txResponse = await context.vertexClient.spot.deposit({
+        return context.vertexClient.spot.deposit({
           subaccountName: currentSubaccountName,
           productId: params.productId,
           amount: params.amount,
           referralCode: params.referralCode,
         });
-        return txResponse.hash;
       },
       [],
     ),
@@ -61,7 +60,10 @@ export function useExecuteDepositCollateral() {
     },
   });
 
-  useRefetchQueriesOnContractTransaction(REFETCH_QUERY_KEYS, mutation.data);
+  useRefetchQueriesOnContractTransaction(
+    EXECUTE_DEPOSIT_COLLATERAL_REFETCH_QUERY_KEYS,
+    mutation.data,
+  );
 
   return mutation;
 }

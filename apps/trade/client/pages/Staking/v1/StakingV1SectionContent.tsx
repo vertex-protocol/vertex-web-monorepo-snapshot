@@ -36,7 +36,7 @@ export function StakingV1SectionContent({ className }: WithClassnames) {
             <Pill
               colorVariant="warning"
               sizeVariant="xs"
-              borderRadiusVariant="base"
+              borderRadiusVariant="sm"
             >
               Actions Needed
             </Pill>

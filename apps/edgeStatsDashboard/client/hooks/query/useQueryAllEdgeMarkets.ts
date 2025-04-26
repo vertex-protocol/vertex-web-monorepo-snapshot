@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { VLP_PRODUCT_ID } from '@vertex-protocol/client';
 import {
   ChainEnv,
   ProductEngineType,
@@ -9,8 +10,8 @@ import {
   getPrimaryChain,
   QueryDisabledError,
   useVertexClientContext,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   EdgeAnnotatedMarket,
   EdgeAnnotatedPerpMarket,
@@ -28,9 +29,13 @@ export interface AllEdgeMarketsData {
   spotMarketsProductIds: number[];
   perpMarketsProductIds: number[];
   /**
-    Primary quote requires special treatment as these share same product id between chains
-  */
-  primaryQuoteProductByChainEnv: Record<ChainEnv, EdgeAnnotatedMarket>;
+   * Primary quote requires special treatment as these share same product id between chains
+   */
+  primaryQuoteProductByChainEnv: Record<ChainEnv, EdgeAnnotatedSpotMarket>;
+  /**
+   * VLP requires special treatment as these share same product id between chains
+   */
+  vlpProductByChainEnv: Record<ChainEnv, EdgeAnnotatedSpotMarket>;
 }
 
 /**
@@ -45,7 +50,7 @@ export function useQueryAllEdgeMarkets() {
 
   const disabled = !vertexClientsByChainEnv || !primaryChainVertexClient;
 
-  const queryFn = async () => {
+  const queryFn = async (): Promise<AllEdgeMarketsData> => {
     if (disabled) {
       throw new QueryDisabledError();
     }
@@ -56,6 +61,7 @@ export function useQueryAllEdgeMarkets() {
       string,
       EdgeAnnotatedSpotMarket
     > = {};
+    const vlpProductByChainEnv: Record<string, EdgeAnnotatedSpotMarket> = {};
 
     const edgeAllEngineMarketsResponse =
       await primaryChainVertexClient.client.market.getEdgeAllEngineMarkets();
@@ -82,8 +88,9 @@ export function useQueryAllEdgeMarkets() {
           };
 
           if (market.productId === QUOTE_PRODUCT_ID) {
-            // Add quote market to primaryQuoteProductByChainEnv
             primaryQuoteProductByChainEnv[chainEnv] = annotatedSpotMarket;
+          } else if (market.productId === VLP_PRODUCT_ID) {
+            vlpProductByChainEnv[chainEnv] = annotatedSpotMarket;
           } else {
             spotMarkets[market.productId] = annotatedSpotMarket;
           }
@@ -123,6 +130,7 @@ export function useQueryAllEdgeMarkets() {
       spotMarketsProductIds,
       perpMarketsProductIds,
       primaryQuoteProductByChainEnv,
+      vlpProductByChainEnv,
     };
   };
 

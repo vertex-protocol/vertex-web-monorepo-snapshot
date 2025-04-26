@@ -94,7 +94,7 @@ export function useClosePositionForm({
     return perpPositionItem?.estimatedPnlUsd?.times(fractionToClose);
   }, [perpPositionItem?.estimatedPnlUsd, fractionToClose]);
 
-  const staticMarketData = staticMarketsData?.perp[productId];
+  const staticMarketData = staticMarketsData?.perpMarkets[productId];
   const sizeIncrement = staticMarketData?.sizeIncrement;
   const priceIncrement = staticMarketData?.priceIncrement;
 

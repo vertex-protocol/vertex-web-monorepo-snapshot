@@ -1,12 +1,11 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { addDecimals, removeDecimals } from '@vertex-protocol/utils';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { useExecuteApproveAllowanceForProduct } from 'client/hooks/execute/useExecuteApproveAllowanceForProduct';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
 import { useTokenAllowanceForProduct } from 'client/hooks/query/useTokenAllowanceForProduct';
 import { useCallback, useMemo } from 'react';
-
-export const SLOW_MODE_FEE_AMOUNT_USDC = 1;
 
 /**
  * Util hook for querying/mutating token allowance for slow mode transactions
@@ -26,21 +25,21 @@ export function useSlowModeFeeAllowance() {
     }
     return removeDecimals(
       tokenAllowanceWithDecimals,
-      marketsStaticData.primaryQuote.metadata.token.tokenDecimals,
+      marketsStaticData.primaryQuoteProduct.metadata.token.tokenDecimals,
     );
   }, [marketsStaticData, tokenAllowanceWithDecimals]);
 
-  const requiresApproval = quoteAllowance?.lt(SLOW_MODE_FEE_AMOUNT_USDC);
+  const requiresApproval = quoteAllowance?.lt(SEQUENCER_FEE_AMOUNT_USDC);
 
   const approveFeeAllowance = useCallback(async () => {
     if (!marketsStaticData) {
-      throw Error('Quote decimals not yet loaded');
+      throw new Error('Quote decimals not yet loaded');
     }
     return executeApproveAllowance.mutateAsync({
       productId: QUOTE_PRODUCT_ID,
       amount: addDecimals(
-        SLOW_MODE_FEE_AMOUNT_USDC,
-        marketsStaticData.primaryQuote.metadata.token.tokenDecimals,
+        SEQUENCER_FEE_AMOUNT_USDC,
+        marketsStaticData.primaryQuoteProduct.metadata.token.tokenDecimals,
       ).toFixed(),
     });
   }, [executeApproveAllowance, marketsStaticData]);

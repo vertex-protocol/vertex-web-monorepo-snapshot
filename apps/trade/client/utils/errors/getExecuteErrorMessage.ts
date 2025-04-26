@@ -13,13 +13,13 @@ export function getExecuteErrorMessage(err?: any): string {
     return err.responseData.error;
   }
   // Handle generic errors
-  if (err instanceof Error || typeof err?.message === 'string') {
-    return err.message ? err.message : 'Unknown error';
+  if (err && typeof err.message === 'string' && !!err.message) {
+    return err.message;
   }
   // Fallback to the entire error
   try {
     return JSON.stringify(err);
   } catch (e) {
-    return `Non-serializable error (${e})`;
+    return `Unknown Error: ${e}`;
   }
 }

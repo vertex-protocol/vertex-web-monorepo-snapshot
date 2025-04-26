@@ -10,7 +10,7 @@ export function useWithdrawLiquidityAmountErrorTooltipContent({
     switch (formError) {
       case 'invalid_input':
         return 'Please enter a valid amount.';
-      case 'max_burn_exceeded':
+      case 'max_exceeded':
         return 'This exceeds the max LP tokens to withdraw. Please enter a valid amount.';
       default:
         return null;

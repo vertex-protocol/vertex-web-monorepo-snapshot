@@ -1,13 +1,13 @@
 import {
   CustomNumberFormatSpecifier,
-  PresetNumberFormatSpecifier,
   formatNumber,
   getMarketPriceFormatSpecifier,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { NextImageSrc, WithClassnames } from '@vertex-protocol/web-common';
-import { Summary } from 'client/components/Summary';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
+import { LpDialogActionSummary } from 'client/modules/pools/components/LpDialogActionSummary';
 import { PairMetadata } from 'client/modules/pools/types';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import Image from 'next/image';
@@ -39,7 +39,7 @@ export function WithdrawLiquiditySummary({
   quoteSymbol,
 }: Props) {
   return (
-    <Summary.Container className={className}>
+    <LpDialogActionSummary.Container className={className}>
       <div className="text-text-tertiary flex flex-col gap-y-1.5 text-xs">
         <p className="text-text-secondary">Est. Receive</p>
         <TokenSummaryItem
@@ -55,10 +55,10 @@ export function WithdrawLiquiditySummary({
           valueUsd={estimatedQuoteValueUsd}
         />
         {feeAmount !== null && (
-          <Summary.Item
+          <LpDialogActionSummary.Item
             label="Gas Fee:"
             valueEndElement={quoteSymbol}
-            numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+            numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
             value={feeAmount}
             definitionTooltipId="gasFee"
           />
@@ -74,7 +74,7 @@ export function WithdrawLiquiditySummary({
           {metadata.quote.symbol}
         </DefinitionTooltip>
       </div>
-    </Summary.Container>
+    </LpDialogActionSummary.Container>
   );
 }
 

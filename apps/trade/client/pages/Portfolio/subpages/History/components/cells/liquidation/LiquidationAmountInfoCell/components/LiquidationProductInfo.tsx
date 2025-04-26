@@ -26,7 +26,7 @@ export function LiquidationProductInfo({
         return (
           <p
             className={joinClassNames(
-              'text-3xs rounded uppercase',
+              'text-3xs rounded-sm uppercase',
               isLong ? 'text-positive' : 'text-negative',
             )}
           >

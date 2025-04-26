@@ -1,6 +1,6 @@
 import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Card, Icons, TextButton } from '@vertex-protocol/web-ui';
-import { VaultPartnerLogoPill } from 'client/modules/vaults/components/VaultPartnerLogoPill';
+import { VaultPartnerLogoPill } from 'client/modules/skateVaults/components/VaultPartnerLogoPill';
 import { IMAGES } from 'common/brandMetadata/images';
 import { LINKS } from 'common/brandMetadata/links/links';
 import Link from 'next/link';

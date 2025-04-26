@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ILBA, LBA_AIRDROP_EPOCH } from '@vertex-protocol/client';
+import { LBA_AIRDROP_EPOCH } from '@vertex-protocol/client';
 import { QueryDisabledError } from '@vertex-protocol/react-client';
 import { nowInSeconds } from '@vertex-protocol/utils';
 import { useLbaConfig } from 'client/hooks/query/vrtxToken/useLbaConfig';
@@ -26,8 +26,11 @@ export type TokenLaunchStage =
 export interface TokenLaunchStageData {
   stage: TokenLaunchStage;
   stageConfigTimestampsMillis: {
-    [key in keyof ILBA.ConfigStruct]: number;
-  } & {
+    depositStartTime: number;
+    depositEndTime: number;
+    withdrawEndTime: number;
+    lpVestStartTime: number;
+    lpVestEndTime: number;
     // This is given from token claim deadlines
     initialPhaseLiquidClaimEndTime: number;
   };

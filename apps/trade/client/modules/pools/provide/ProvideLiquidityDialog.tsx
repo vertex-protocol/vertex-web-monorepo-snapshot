@@ -1,7 +1,9 @@
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS, Icons } from '@vertex-protocol/web-ui';
+import {
+  CustomNumberFormatSpecifier,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
+import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
+import { Icons } from '@vertex-protocol/web-ui';
 import { Form } from 'client/components/Form';
 import { FractionAmountButtons } from 'client/components/FractionAmountButtons';
 import { InputSummaryItem } from 'client/components/InputSummaryItem';
@@ -9,11 +11,11 @@ import { useSubaccountHealthCheckSequencerFee } from 'client/hooks/subaccount/us
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { LpInfoPanel } from 'client/modules/pools/components/LpInfoPanel/LpInfoPanel';
+import { useProvideLiquidityAmountErrorTooltipContent } from 'client/modules/pools/provide/hooks/useProvideLiquidityAmountErrorTooltipContent';
+import { useProvideLiquidityForm } from 'client/modules/pools/provide/hooks/useProvideLiquidityForm';
 import { ProvideLiquidityInput } from 'client/modules/pools/provide/ProvideLiquidityInput';
 import { ProvideLiquiditySubmitButton } from 'client/modules/pools/provide/ProvideLiquiditySubmitButton';
 import { ProvideLiquiditySummary } from 'client/modules/pools/provide/ProvideLiquiditySummary';
-import { useProvideLiquidityAmountErrorTooltipContent } from 'client/modules/pools/provide/hooks/useProvideLiquidityAmountErrorTooltipContent';
-import { useProvideLiquidityForm } from 'client/modules/pools/provide/hooks/useProvideLiquidityForm';
 
 export interface ProvideLiquidityDialogParams {
   productId: number;
@@ -62,62 +64,60 @@ export function ProvideLiquidityDialog({
             currentLpBalance={currentLpBalance}
             currentYield={currentYield}
           />
-          <div className="flex flex-col gap-y-2">
-            <div className="flex gap-x-0.5">
-              <Linker
-                // 18px from top to properly align with the 2 input components
-                className="relative top-[18px] h-20 w-4"
-              />
-              <div className="flex flex-1 flex-col gap-y-1.5">
-                <div className="flex flex-col gap-y-1">
-                  <ProvideLiquidityInput
-                    {...form.register('baseAmount', {
-                      validate: validateBaseAmount,
-                    })}
-                    icon={pairMetadata?.base.icon}
-                    symbol={pairMetadata?.base.symbol}
-                    estimatedValueUsd={estimatedChangeAmounts?.baseValueUsd}
-                    error={amountErrorTooltipContent}
-                    onFocus={() => {
-                      form.setValue('amountSource', 'base');
-                    }}
-                  />
-                  <InputSummaryItem
-                    label="Balance:"
-                    definitionTooltipId="lpUnderlyingBalance"
-                    currentValue={underlyingBaseBalance}
-                    onValueClick={onMaxSelected}
-                    formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                  />
-                </div>
-                <div className="flex flex-col gap-y-1">
-                  <ProvideLiquidityInput
-                    {...form.register('quoteAmount', {
-                      validate: validateQuoteAmount,
-                    })}
-                    icon={pairMetadata?.quote.icon}
-                    symbol={pairMetadata?.quote.symbol}
-                    estimatedValueUsd={estimatedChangeAmounts?.quoteValueUsd}
-                    error={amountErrorTooltipContent}
-                    onFocus={() => {
-                      form.setValue('amountSource', 'quote');
-                    }}
-                  />
-                  <InputSummaryItem
-                    label="Balance:"
-                    definitionTooltipId="lpUnderlyingBalance"
-                    currentValue={underlyingQuoteBalance}
-                    onValueClick={onMaxSelected}
-                    formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
-                  />
-                </div>
+          <div className="flex gap-x-0.5">
+            <Linker
+              // 18px from top to properly align with the 2 input components
+              className="relative top-4.5 h-20 w-4"
+            />
+            <div className="flex flex-1 flex-col gap-y-1.5">
+              <div className="flex flex-col gap-y-1">
+                <ProvideLiquidityInput
+                  {...form.register('baseAmount', {
+                    validate: validateBaseAmount,
+                  })}
+                  icon={pairMetadata?.base.icon}
+                  symbol={pairMetadata?.base.symbol}
+                  estimatedValueUsd={estimatedChangeAmounts?.baseValueUsd}
+                  error={amountErrorTooltipContent}
+                  onFocus={() => {
+                    form.setValue('amountSource', 'base');
+                  }}
+                />
+                <InputSummaryItem
+                  label="Balance:"
+                  definitionTooltipId="lpUnderlyingBalance"
+                  currentValue={underlyingBaseBalance}
+                  onValueClick={onMaxSelected}
+                  formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+                />
+              </div>
+              <div className="flex flex-col gap-y-1">
+                <ProvideLiquidityInput
+                  {...form.register('quoteAmount', {
+                    validate: validateQuoteAmount,
+                  })}
+                  icon={pairMetadata?.quote.icon}
+                  symbol={pairMetadata?.quote.symbol}
+                  estimatedValueUsd={estimatedChangeAmounts?.quoteValueUsd}
+                  error={amountErrorTooltipContent}
+                  onFocus={() => {
+                    form.setValue('amountSource', 'quote');
+                  }}
+                />
+                <InputSummaryItem
+                  label="Balance:"
+                  definitionTooltipId="lpUnderlyingBalance"
+                  currentValue={underlyingQuoteBalance}
+                  onValueClick={onMaxSelected}
+                  formatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
+                />
               </div>
             </div>
-            <FractionAmountButtons
-              onFractionSelected={onFractionSelected}
-              selectedFraction={validPercentageAmount}
-            />
           </div>
+          <FractionAmountButtons
+            onFractionSelected={onFractionSelected}
+            selectedFraction={validPercentageAmount}
+          />
           <ProvideLiquiditySummary
             lpValueUsd={estimatedChangeAmounts?.lpValueUsd}
             lpAmount={estimatedChangeAmounts?.lpTokens}
@@ -135,8 +135,7 @@ function Linker({ className }: WithClassnames) {
   return (
     <div
       className={joinClassNames(
-        'rounded-l border border-r-0',
-        COMMON_TRANSPARENCY_COLORS.border,
+        'border-overlay-divider rounded-l border border-r-0',
         className,
       )}
     >

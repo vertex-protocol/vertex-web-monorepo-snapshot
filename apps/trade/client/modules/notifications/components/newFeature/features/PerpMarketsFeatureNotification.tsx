@@ -40,7 +40,7 @@ export function PerpMarketsFeatureNotification({
       </p>
       <div className="grid max-w-[80%] grid-cols-2 justify-items-start gap-2">
         {productIds.map((productId) => {
-          const market = allMarketsStaticData.perp[productId];
+          const market = allMarketsStaticData.perpMarkets[productId];
 
           if (!market) {
             return null;

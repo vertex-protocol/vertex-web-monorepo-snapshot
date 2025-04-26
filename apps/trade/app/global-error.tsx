@@ -1,6 +1,7 @@
 'use client';
 
 import { captureException } from '@sentry/nextjs';
+import { AppRootLayout } from 'app/AppRootLayout';
 import { ErrorPage } from 'client/pages/Error/ErrorPage';
 import { useEffect } from 'react';
 
@@ -14,12 +15,8 @@ export default function GlobalError({ error }: Props) {
   }, [error]);
 
   return (
-    // <html> and <body> tags are required in global-error component to render correctly
-    // see https://nextjs.org/docs/app/building-your-application/routing/error-handling#handling-global-errorsds
-    <html>
-      <body>
-        <ErrorPage statusCode={500} />
-      </body>
-    </html>
+    <AppRootLayout>
+      <ErrorPage statusCode={500} />
+    </AppRootLayout>
   );
 }

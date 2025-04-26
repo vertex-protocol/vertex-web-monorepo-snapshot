@@ -57,7 +57,7 @@ function Disclosure({
         isHighlighted={isHighlighted}
       />
       {open && (
-        <div className="flex flex-col gap-y-2 px-3 pb-3 pt-1">
+        <div className="flex flex-col gap-y-2 px-3 pt-1 pb-3">
           {expandableContent}
         </div>
       )}
@@ -69,7 +69,7 @@ function Container({ className, children }: WithClassnames<WithChildren>) {
   return (
     <div
       className={mergeClassNames(
-        'bg-surface-1 flex flex-col rounded',
+        'bg-surface-1 flex flex-col rounded-sm',
         className,
       )}
     >

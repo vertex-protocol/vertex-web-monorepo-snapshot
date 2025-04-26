@@ -88,7 +88,7 @@ export function useFundingPaymentsTable({
     const mappedData: FundingPaymentsTableItem[] = pageData
       .map(
         (item: IndexerProductPayment): FundingPaymentsTableItem | undefined => {
-          const perpProduct = allMarketsStaticData.perp[item.productId];
+          const perpProduct = allMarketsStaticData.perpMarkets[item.productId];
 
           if (!perpProduct) {
             return;

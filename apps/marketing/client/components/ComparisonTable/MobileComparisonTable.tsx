@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { useSwipeable } from 'react-swipeable';
 import { ComparisonCell } from 'client/components/ComparisonCell/ComparisonCell';
 import {
-  PLATFORM_COMPARISON_KEYS,
   PLATFORM_COMPARISON_COLUMNS,
+  PLATFORM_COMPARISON_KEYS,
   PlatformComparisonKey,
 } from 'client/sections/ComparisonSection/data';
+import { motion, useInView } from 'framer-motion';
+import { useRef, useState } from 'react';
+import { useSwipeable } from 'react-swipeable';
 
 type SwipeDirection = 'left' | 'right';
 
@@ -85,7 +85,7 @@ export function MobileComparisonTable() {
                   }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                   onAnimationComplete={() => setIsAnimating(false)}
-                  className="bg-table border-table rounded-lg border-2"
+                  className="bg-table-gradient border-table rounded-lg border-2"
                 >
                   <div className="flex flex-col">
                     {Object.values(

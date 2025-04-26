@@ -12,19 +12,19 @@ import { TopBar } from 'sections/HeroSection/components/TopBar';
  */
 export function HeroSection() {
   return (
-    <div className="relative flex h-full w-full p-3 md:px-7 md:py-5">
-      <div className="border-pink relative flex-1 border-x px-4">
-        <span className="border-pink absolute left-2 top-0 size-12 border-l border-t md:left-4" />
-        <span className="border-pink absolute right-2 top-0 size-12 border-r border-t md:right-4" />
-        <span className="border-pink absolute bottom-0 left-2 right-2 h-12 border border-t-0 md:left-4 md:right-4" />
-        <div className="flex h-full flex-col justify-between">
+    <div className="relative h-full w-full p-3 md:px-7 md:py-5">
+      <div className="border-pink relative flex h-full flex-col border-x px-4">
+        <span className="border-pink absolute top-0 left-2 size-12 border-t border-l md:left-4" />
+        <span className="border-pink absolute top-0 right-2 size-12 border-t border-r md:right-4" />
+        <span className="border-pink absolute right-2 bottom-0 left-2 h-12 border border-t-0 md:right-4 md:left-4" />
+        <div className="flex flex-1 flex-col justify-between">
           <TopBar />
           <div className="flex flex-col gap-y-10 px-4 md:px-10">
             <div className="flex flex-col gap-y-4">
               <Image
                 src={logo}
                 alt="blitz-logo"
-                className="max-w-80"
+                className="max-w-64 lg:max-w-80"
                 priority
               />
               <h2 className="font-ibm sm:text-md max-w-[624px] text-sm md:text-base">
@@ -38,10 +38,10 @@ export function HeroSection() {
               START TRADING
             </BlitzLinkButton>
           </div>
-          <BottomBar />
         </div>
+        <BottomBar />
       </div>
-      <CookieNoticeBanner className="absolute bottom-2 right-0" />
+      <CookieNoticeBanner className="absolute right-0 bottom-2" />
     </div>
   );
 }

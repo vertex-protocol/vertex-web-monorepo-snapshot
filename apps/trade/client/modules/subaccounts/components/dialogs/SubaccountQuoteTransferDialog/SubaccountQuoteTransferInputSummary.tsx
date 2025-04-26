@@ -1,8 +1,10 @@
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  CustomNumberFormatSpecifier,
+  PresetNumberFormatSpecifier,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { InputSummaryItem } from 'client/components/InputSummaryItem';
-import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { SUBACCOUNT_QUOTE_TRANSFER_FEE } from 'client/modules/subaccounts/consts';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 
 interface Props {
   decimalAdjustedMaxWithdrawableWithFee: BigDecimal | undefined;
@@ -34,15 +36,12 @@ export function SubaccountQuoteTransferInputSummary({
         definitionTooltipId={maxWithdrawableDefinitionTooltipId}
         onValueClick={() => onFractionSelected(1)}
       />
-      <ValueWithLabel.Horizontal
+      <InputSummaryItem
         label="Gas Fee:"
-        tooltip={{ id: 'gasFee' }}
-        value={SUBACCOUNT_QUOTE_TRANSFER_FEE}
+        formatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
+        currentValue={SEQUENCER_FEE_AMOUNT_USDC}
         valueEndElement={symbol}
-        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
-        valueClassName="text-text-secondary"
-        sizeVariant="xs"
-        fitWidth
+        definitionTooltipId="gasFee"
       />
     </div>
   );

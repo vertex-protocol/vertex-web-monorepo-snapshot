@@ -4,7 +4,7 @@ import { useWindowSize } from '@vertex-protocol/web-common';
 import { ClientVideo } from 'client/components/ClientVideo/ClientVideo';
 import { BlurRevealText } from 'client/components/RevealText/BlurRevealText';
 import { motion } from 'framer-motion';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 
 interface Props {
   title: string;
@@ -64,7 +64,7 @@ export function FeatureHighlight({
           {
             element: 'h2',
             text: title,
-            className: 'text-header-3 font-radioGrotesk mb-4',
+            className: 'text-header-3 font-radio-grotesk mb-4',
           },
         ]}
       />

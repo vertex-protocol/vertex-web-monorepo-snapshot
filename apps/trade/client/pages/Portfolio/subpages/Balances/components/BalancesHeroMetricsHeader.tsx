@@ -6,17 +6,17 @@ import {
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
 
 interface BalancesHeroHeaderProps {
-  netBalance: BigDecimal | undefined;
+  netTotalBalanceUsd: BigDecimal | undefined;
 }
 
 export function BalancesHeroMetricsHeader({
-  netBalance,
+  netTotalBalanceUsd,
 }: BalancesHeroHeaderProps) {
   return (
     <PortfolioHeroMetricsPane.Header
       title="Net Balance"
       definitionTooltipId="balancesNetBalance"
-      valueContent={formatNumber(netBalance, {
+      valueContent={formatNumber(netTotalBalanceUsd, {
         formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
       })}
     />

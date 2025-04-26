@@ -80,6 +80,7 @@ export function TradingCompetitionTierDetailsCard({
         <TradingCompetitionCard.Body className="grid grid-cols-2 gap-x-4 sm:p-10">
           <div className="flex flex-col">
             <ValueWithLabel.Vertical
+              sizeVariant="lg"
               label={header}
               labelClassName="text-lg sm:text-2xl"
               valueContent={prizePool?.map((prize) => (

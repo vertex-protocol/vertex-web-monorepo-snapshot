@@ -4,6 +4,7 @@ import { clientEnv } from 'common/environment/clientEnv';
 interface ChainEnvSwitcherOption {
   label: string;
   chainEnv: ChainEnv;
+  promoteNewRewards?: boolean;
 }
 
 export const CHAIN_ENV_SWITCHER_OPTIONS = ((): ChainEnvSwitcherOption[] => {
@@ -34,6 +35,11 @@ export const CHAIN_ENV_SWITCHER_OPTIONS = ((): ChainEnvSwitcherOption[] => {
           label: 'Abstract',
           chainEnv: 'abstractTestnet',
         },
+        {
+          label: 'Avalanche',
+          promoteNewRewards: true,
+          chainEnv: 'avaxTestnet',
+        },
       ];
     case 'vertexMainnet':
       return [
@@ -61,12 +67,13 @@ export const CHAIN_ENV_SWITCHER_OPTIONS = ((): ChainEnvSwitcherOption[] => {
           label: 'Abstract',
           chainEnv: 'abstract',
         },
+        {
+          label: 'Avalanche',
+          promoteNewRewards: true,
+          chainEnv: 'avax',
+        },
       ];
     default:
-      console.log(
-        '[ChainEnvSwitcherDropdown] Invalid dataEnv for chain switcher',
-        clientEnv.base.dataEnv,
-      );
       return [];
   }
 })();

@@ -1,9 +1,12 @@
 import {
   ExportHistoryCollateralItem,
+  ExportHistoryFundingItem,
+  ExportHistoryInterestItem,
   ExportHistoryLiquidationItem,
   ExportHistoryLpItem,
   ExportHistoryRealizedPnlItem,
   ExportHistoryTradeItem,
+  ExportHistoryVlpItem,
   HistoryExportType,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 
@@ -48,6 +51,12 @@ const LP_HEADINGS: HeadingsForItem<ExportHistoryLpItem> = {
   primaryQuoteAmountDelta: 'Change in Quote',
 };
 
+const VLP_HEADINGS: HeadingsForItem<ExportHistoryVlpItem> = {
+  time: 'Time',
+  vlpAmountDelta: 'Change in VLP Tokens',
+  primaryQuoteAmountDelta: 'Change in Quote',
+};
+
 const TRADES_HEADINGS: HeadingsForItem<ExportHistoryTradeItem> = {
   time: 'Time',
   marketName: 'Market',
@@ -70,12 +79,29 @@ const REALIZED_PNL_HEADINGS: HeadingsForItem<ExportHistoryRealizedPnlItem> = {
   pnl: 'PnL',
 };
 
+const FUNDING_HEADINGS: HeadingsForItem<ExportHistoryFundingItem> = {
+  time: 'Time',
+  marketName: 'Market',
+  annualRateFrac: 'Annualized Funding Rate',
+  fundingPaymentAmount: 'Funding Payment Amount',
+};
+
+const INTEREST_HEADINGS: HeadingsForItem<ExportHistoryInterestItem> = {
+  time: 'Time',
+  asset: 'Asset',
+  annualRateFrac: 'Annualized Interest Rate',
+  interestPaymentAmount: 'Interest Payment Amount',
+};
+
 export const EXPORT_HISTORY_HEADINGS_BY_TYPE = {
   deposits: COLLATERAL_HEADINGS,
   withdrawals: COLLATERAL_HEADINGS,
   transfers: TRANSFER_HEADINGS,
   lp: LP_HEADINGS,
+  vlp: VLP_HEADINGS,
   liquidations: LIQUIDATION_HEADINGS,
   realized_pnl: REALIZED_PNL_HEADINGS,
   trades: TRADES_HEADINGS,
+  funding: FUNDING_HEADINGS,
+  interest: INTEREST_HEADINGS,
 } satisfies Record<HistoryExportType, Record<string, string>>;

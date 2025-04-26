@@ -25,7 +25,7 @@ export function SecondaryButton({
   ...rest
 }: SecondaryButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
     disabled: rest.disabled,
     isLoading: rest.isLoading,
   });
@@ -43,7 +43,7 @@ export function SecondaryButton({
   return (
     <Button
       className={mergeClassNames(
-        'bg-surface-2 rounded border',
+        'bg-surface-2 rounded-sm border',
         stateClassNames,
         stateOverlayClassNames,
         STANDARD_BUTTON_HORIZONTAL_PADDING_CLASSNAME[size],

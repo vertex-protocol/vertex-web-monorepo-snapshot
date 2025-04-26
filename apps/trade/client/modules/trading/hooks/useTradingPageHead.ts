@@ -23,7 +23,7 @@ export function useTradingPageHead({ productId }: Props) {
   const debouncedFill = useDebounce(latestPrice, { wait: 1000 });
 
   const marketData = productId
-    ? allMarketsStaticData?.all[productId]
+    ? allMarketsStaticData?.allMarkets[productId]
     : undefined;
 
   // Since the data is client-side, we directly update the `document` title

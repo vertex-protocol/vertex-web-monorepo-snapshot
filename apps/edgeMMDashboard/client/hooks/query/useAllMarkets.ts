@@ -1,18 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
+import { VLP_PRODUCT_ID } from '@vertex-protocol/client';
 import {
   ChainEnv,
   ProductEngineType,
   QUOTE_PRODUCT_ID,
 } from '@vertex-protocol/contracts';
 import {
-  QueryDisabledError,
-  useEVMContext,
-  usePrimaryChainVertexClient,
-} from '@vertex-protocol/react-client';
-import {
   AnnotatedMarket,
   AnnotatedPerpMarket,
   AnnotatedSpotMarket,
+  QueryDisabledError,
+  useEVMContext,
+  usePrimaryChainVertexClient,
   useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 
@@ -29,6 +28,10 @@ export interface AllMarketsData {
    * This is a market for typing purposes but only the product is relevant
    */
   primaryQuoteProduct: AnnotatedSpotMarket;
+  /**
+   * This is also a market for typing purposes only, but only the product is relevant because VLP does not have a spot market
+   */
+  vlpProduct: AnnotatedSpotMarket | undefined;
   /**
    * Registered markets from product id -> data
    */
@@ -60,7 +63,8 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
 
     const baseResponse = await vertexClient.market.getAllEngineMarkets();
 
-    let primaryQuoteProduct: AnnotatedSpotMarket | undefined = undefined;
+    let primaryQuoteProduct: AnnotatedSpotMarket | undefined;
+    let vlpProduct: AnnotatedSpotMarket | undefined;
     const spotMarkets: Record<number, AnnotatedSpotMarket> = {};
     const perpMarkets: Record<number, AnnotatedPerpMarket> = {};
 
@@ -76,6 +80,8 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
 
         if (market.productId === QUOTE_PRODUCT_ID) {
           primaryQuoteProduct = annotatedSpotMarket;
+        } else if (market.productId === VLP_PRODUCT_ID) {
+          vlpProduct = annotatedSpotMarket;
         } else {
           spotMarkets[market.productId] = annotatedSpotMarket;
         }
@@ -99,7 +105,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
     });
 
     if (primaryQuoteProduct == null) {
-      throw Error('Quote product not found');
+      throw new Error('Quote product not found');
     }
 
     const spotMarketsProductIds = Object.keys(spotMarkets).map(Number);
@@ -107,6 +113,7 @@ export function useAllMarkets<TSelectedData = AllMarketsData>(
 
     return {
       primaryQuoteProduct,
+      vlpProduct,
       spotMarkets,
       perpMarkets,
       allMarkets: { ...spotMarkets, ...perpMarkets },

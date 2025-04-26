@@ -3,7 +3,7 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Container } from 'client/components/Container/Container';
 import { EcosystemCardWrapper } from 'client/components/EcosystemCardWrapper/EcosystemCardWrapper';
-import { ExternalLink } from 'client/components/Link/Link';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import { BlurRevealText } from 'client/components/RevealText/BlurRevealText';
 import { Section } from 'client/components/Section/Section';
 import {
@@ -40,7 +40,7 @@ export function EcosystemSection() {
                     element: 'h2',
                     text: 'Ecosystem',
                     className:
-                      'text-header-2 md:text-header-1 font-radioGrotesk mb-4',
+                      'text-header-2 md:text-header-1 font-radio-grotesk mb-4',
                   },
                   {
                     element: 'p',

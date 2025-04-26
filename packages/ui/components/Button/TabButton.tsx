@@ -10,7 +10,7 @@ export type TabButtonProps = Except<ButtonProps, 'isLoading'> & {
 
 export function TabButton({ className, active, ...rest }: TabButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
     disabled: rest.disabled,
     active,
   });
@@ -18,7 +18,7 @@ export function TabButton({ className, active, ...rest }: TabButtonProps) {
   return (
     <Button
       className={mergeClassNames(
-        'bg-surface-1 rounded px-2.5 py-1 text-sm',
+        'bg-surface-1 rounded-sm px-2.5 py-1 text-sm',
         active ? 'text-text-primary' : 'text-text-tertiary',
         stateOverlayClassNames,
         className,

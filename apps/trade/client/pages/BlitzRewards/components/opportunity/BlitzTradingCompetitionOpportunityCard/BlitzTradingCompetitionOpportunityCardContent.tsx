@@ -59,6 +59,7 @@ function CompetitionContestStatus({
 
   return (
     <ValueWithLabel.Vertical
+      sizeVariant="lg"
       label={
         <>
           <TradingCompetitionStatusBadge status={currentContestStatus} />
@@ -88,12 +89,13 @@ function CompetitionPrizePool({
 }) {
   return (
     <ValueWithLabel.Vertical
+      sizeVariant="lg"
       label="Prize Pool"
       // To keep value aligned with CompetitionContestStatus Countdown
       className="justify-between"
       valueClassName="flex items-center gap-x-3"
       valueContent={totalPrizePool.map((prizePool, index) => (
-        <Value key={index} endElement={prizePool.symbol}>
+        <Value sizeVariant="lg" key={index} endElement={prizePool.symbol}>
           {prizePool.amount}
         </Value>
       ))}

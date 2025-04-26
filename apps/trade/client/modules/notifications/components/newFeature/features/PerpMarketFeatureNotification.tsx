@@ -35,7 +35,7 @@ export function PerpMarketFeatureNotification({
     onDismiss();
   };
 
-  const metadata = allMarketsStaticData?.perp[productId]?.metadata;
+  const metadata = allMarketsStaticData?.perpMarkets[productId]?.metadata;
 
   if (!metadata) {
     return null;

@@ -1,0 +1,41 @@
+/* To apply this theme, add the following attribute: data-theme="edgeLight" */
+/* Then apply these variables to any custom Tailwind config variables located inside `@theme` */
+
+/* Edge Light Theme */
+[data-theme='edgeLight'] {
+  /* Colors */
+  --color-background: #ffffff;
+
+  --color-surface-card: #ffffff;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #ffffff;
+  --color-surface-3: #ffffff;
+
+  --color-text-primary: #181818;
+  --color-text-secondary: #808080;
+  --color-text-tertiary: #a6a6a6;
+
+  --color-primary: #fafafa;
+  --color-stroke: #e0e0e0;
+  --color-disabled: #bfbfbf;
+  --color-accent: #181818;
+  --color-positive: #2bab69;
+  --color-positive-muted: #def7ea;
+  --color-negative: #b8302e;
+  --color-negative-muted: #f5d7d6;
+  --color-warning: #d1a816;
+  --color-warning-muted: #232015;
+
+  --color-overlay-divider: hsl(0 0% 0% / 0.1);
+  --color-overlay-accent: hsl(243 92% 80% / 0.2);
+  --color-overlay-hover: hsl(0 0% 50% / 0.05);
+  --color-overlay-disabled: hsl(0 0% 25% / 0.5);
+
+  /* Box Shadows */
+  --shadow-elevation-card: 0px 2px 4px 0px rgba(0, 0, 0, 0.04),
+    0px 1px 2px 0px rgba(0, 0, 0, 0.04);
+
+  /* Fonts */
+  --font-default: var(--font-inter);
+  --font-title: var(--font-inter);
+}

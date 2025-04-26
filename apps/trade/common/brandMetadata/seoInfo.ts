@@ -1,5 +1,5 @@
-import { BrandName } from '@vertex-protocol/web-ui';
 import { clientEnv } from 'common/environment/clientEnv';
+import { BrandName } from 'common/environment/types';
 
 interface BrandSeoMetadata {
   title: string;

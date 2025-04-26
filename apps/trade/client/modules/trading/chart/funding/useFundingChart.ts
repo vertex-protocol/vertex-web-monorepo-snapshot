@@ -1,17 +1,11 @@
 import { TimeInSeconds } from '@vertex-protocol/client';
-import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
-import { useMarketSnapshots } from 'client/hooks/query/markets/useMarketSnapshots';
-import {
-  FundingRateTimespan,
-  getFundingRates,
-} from 'client/utils/calcs/funding';
-import {
-  millisecondsToSeconds,
-  secondsToMilliseconds,
-  startOfHour,
-} from 'date-fns';
-import { now } from 'lodash';
-import { useMemo, useState } from 'react';
+import { useEdgeMarketSnapshots } from '@vertex-protocol/react-client';
+import { nonNullFilter } from '@vertex-protocol/web-common';
+import { useAllMarkets24hFundingRates as useAllMarkets24hFundingRates } from 'client/hooks/query/markets/useAllMarkets24hFundingRates';
+import { useFundingRatePeriod } from 'client/modules/trading/hooks/useFundingRatePeriod';
+import { getFundingRates } from 'client/utils/calcs/perp/funding';
+import { secondsToMilliseconds } from 'date-fns';
+import { useMemo } from 'react';
 
 export interface FundingChartItem {
   timestampMillis: number;
@@ -23,22 +17,17 @@ interface Params {
 }
 
 export function useFundingChart({ productId }: Params) {
-  const [timespan, setTimespan] = useState<FundingRateTimespan>('hourly');
+  const { fundingRatePeriod } = useFundingRatePeriod();
 
-  // The maxTimeInclusive is set to 15 seconds past the current hour to ensure the latest funding rate is included.
-  // This is necessary since there can be a delay for snapshots to be indexed.
-  const maxTimeInclusive =
-    millisecondsToSeconds(startOfHour(now()).getTime()) + 15;
-
-  const { data: marketSnapshots, isLoading: isLoadingMarketSnapshots } =
-    useMarketSnapshots({
-      productIds: productId ? [productId] : undefined,
-      granularity: TimeInSeconds.HOUR,
-      limit: 30,
-      disabled: productId == null,
-      maxTimeInclusive,
-    });
-  const { data: currentFundingRates } = useAllMarkets24HrFundingRates();
+  const {
+    data: edgeMarketSnapshotsData,
+    isLoading: isLoadingEdgeMarketSnapshotsData,
+  } = useEdgeMarketSnapshots({
+    granularity: TimeInSeconds.HOUR,
+    limit: 30,
+    disabled: productId == null,
+  });
+  const { data: currentFundingRates } = useAllMarkets24hFundingRates();
 
   const predictedFundingRates = useMemo(() => {
     if (!productId || !currentFundingRates) {
@@ -48,19 +37,19 @@ export function useFundingChart({ productId }: Params) {
   }, [currentFundingRates, productId]);
 
   const mappedFundingRates = useMemo((): FundingChartItem[] => {
-    if (!productId || !marketSnapshots) {
+    if (!productId || !edgeMarketSnapshotsData) {
       return [];
     }
 
     return (
-      Object.values(marketSnapshots)
-        .map((snapshot) => {
+      edgeMarketSnapshotsData.edge
+        .map((currentSnapshot) => {
           const timestampMillis = secondsToMilliseconds(
-            snapshot.timestamp.toNumber(),
+            currentSnapshot.timestamp.toNumber(),
           );
 
           const fundingRate = (() => {
-            const snapshotFundingRate = snapshot.fundingRates[productId];
+            const snapshotFundingRate = currentSnapshot.fundingRates[productId];
 
             if (!snapshotFundingRate) {
               return 0;
@@ -71,7 +60,7 @@ export function useFundingChart({ productId }: Params) {
               snapshotFundingRate.multipliedBy(24),
             );
 
-            return fundingRates[timespan].toNumber();
+            return fundingRates[fundingRatePeriod].toNumber();
           })();
 
           return {
@@ -79,16 +68,16 @@ export function useFundingChart({ productId }: Params) {
             fundingRate,
           };
         })
+        .filter(nonNullFilter)
         // Data from query needs to be reversed so we have the most recent timestamps last.
         .reverse()
     );
-  }, [marketSnapshots, productId, timespan]);
+  }, [edgeMarketSnapshotsData, productId, fundingRatePeriod]);
 
   return {
     mappedFundingRates,
-    predictedFundingRate: predictedFundingRates?.[timespan],
-    isLoadingMarketSnapshots,
-    setTimespan,
-    timespan,
+    predictedFundingRate: predictedFundingRates?.[fundingRatePeriod],
+    isLoadingEdgeMarketSnapshotsData,
+    fundingRatePeriod,
   };
 }

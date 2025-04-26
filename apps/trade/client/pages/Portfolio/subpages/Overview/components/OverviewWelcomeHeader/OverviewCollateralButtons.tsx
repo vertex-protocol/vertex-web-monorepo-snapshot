@@ -1,9 +1,9 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { SecondaryButton } from '@vertex-protocol/web-ui';
+import { CardButton } from '@vertex-protocol/web-ui';
 import { useIsMobile } from 'client/hooks/ui/breakpoints';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { DepositOptionsDropdown } from 'client/modules/collateral/deposit/components/DepositOptionsDropdown/DepositOptionsDropdown';
+import { DepositEntrypointButton } from 'client/modules/collateral/deposit/components/DepositEntrypointButton/DepositEntrypointButton';
 
 export function OverviewCollateralButtons({ className }: WithClassnames) {
   const { show } = useDialog();
@@ -13,11 +13,11 @@ export function OverviewCollateralButtons({ className }: WithClassnames) {
 
   return (
     <div className={joinClassNames('flex gap-x-2.5', className)}>
-      <DepositOptionsDropdown
+      <DepositEntrypointButton
         hideTriggerIcons={isMobile}
         triggerClassName="flex-1"
       />
-      <SecondaryButton
+      <CardButton
         className="flex-1"
         disabled={!isConnected}
         onClick={() => {
@@ -25,7 +25,7 @@ export function OverviewCollateralButtons({ className }: WithClassnames) {
         }}
       >
         Withdraw
-      </SecondaryButton>
+      </CardButton>
     </div>
   );
 }

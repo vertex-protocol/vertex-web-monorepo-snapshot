@@ -1,5 +1,5 @@
 import { ChainEnv } from '@vertex-protocol/client';
-import { useEVMContext } from '@vertex-protocol/react-client';
+import { SONIC_CHAIN_ENVS, useEVMContext } from '@vertex-protocol/react-client';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import {
   FEATURE_NOTIFICATION_DISCLOSURE_KEYS,
@@ -19,8 +19,7 @@ type EnabledChainEnvsFilter = ChainEnv[] | undefined;
  */
 const ENABLED_NOTIFICATION_CHAIN_ENVS: Record<string, EnabledChainEnvsFilter> =
   {
-    feb_13_delisting: undefined,
-    bera_perp_feb_13: undefined,
+    ws_feb_21: SONIC_CHAIN_ENVS,
   } satisfies Record<FeatureNotificationDisclosureKey, EnabledChainEnvsFilter>;
 
 export function FeatureNotificationsEmitter() {

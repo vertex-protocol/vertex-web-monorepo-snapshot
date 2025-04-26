@@ -31,7 +31,7 @@ export function BridgeDestinationInput({
   receiveAmount,
   estimatedReceiveValueUsd,
 }: Props) {
-  const { primaryChainMetadata } = useVertexMetadataContext();
+  const { primaryChainEnvMetadata } = useVertexMetadataContext();
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -66,11 +66,11 @@ export function BridgeDestinationInput({
           </span>
           <div className="flex items-center gap-x-0.5">
             <Image
-              src={primaryChainMetadata.chainIcon}
+              src={primaryChainEnvMetadata.chainIcon}
               alt=""
               className="size-4 rounded-full"
             />
-            {startCase(primaryChainMetadata.name)}
+            {startCase(primaryChainEnvMetadata.name)}
           </div>
         </div>
       </div>

@@ -40,7 +40,9 @@ export function BalancesHeroSection() {
   return (
     <PortfolioHeroSection.Container>
       <PortfolioHeroSection.MetricsPane>
-        <BalancesHeroMetricsHeader netBalance={overview?.spot.netBalance} />
+        <BalancesHeroMetricsHeader
+          netTotalBalanceUsd={overview?.spot.netTotalBalanceUsd}
+        />
         <BalancesHeroMetricsItems overview={overview} />
       </PortfolioHeroSection.MetricsPane>
       <PortfolioHeroSection.Chart

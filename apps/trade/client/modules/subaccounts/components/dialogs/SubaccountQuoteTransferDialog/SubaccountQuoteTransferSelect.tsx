@@ -1,8 +1,16 @@
-import { Select, UpDownChevronIcon, useSelect } from '@vertex-protocol/web-ui';
+import {
+  Select,
+  SelectValueWithIdentifier,
+  UpDownChevronIcon,
+  useSelect,
+} from '@vertex-protocol/web-ui';
 import { SubaccountQuoteTransferFormValues } from 'client/modules/subaccounts/hooks/useSubaccountQuoteTransferForm/types';
 import { QuoteTransferSubaccount } from 'client/modules/subaccounts/hooks/useSubaccountQuoteTransferForm/useSubaccountQuoteTransferFormData';
 import { useCallback, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+
+type QuoteTransferSubaccountSelectValue = QuoteTransferSubaccount &
+  SelectValueWithIdentifier;
 
 interface Props {
   id: 'senderSubaccountName' | 'recipientSubaccountName';
@@ -22,13 +30,19 @@ export function SubaccountQuoteTransferSelect({
   const options = useMemo(() => {
     return subaccounts.map((subaccount) => ({
       label: subaccount.profile.username,
-      value: subaccount.subaccountName,
+      value: getQuoteTransferSelectValue(subaccount),
     }));
   }, [subaccounts]);
 
   const onSelectedValueChange = useCallback(
-    (option: string) => form.setValue(id, option),
+    (option: QuoteTransferSubaccountSelectValue) =>
+      form.setValue(id, option.subaccountName),
     [form, id],
+  );
+
+  const selectedValue = useMemo(
+    () => getQuoteTransferSelectValue(selectedSubaccount),
+    [selectedSubaccount],
   );
 
   const {
@@ -39,7 +53,7 @@ export function SubaccountQuoteTransferSelect({
     selectOptions,
     selectedOption,
   } = useSelect({
-    selectedValue: selectedSubaccount.subaccountName,
+    selectedValue,
     onSelectedValueChange,
     options,
   });
@@ -73,4 +87,16 @@ export function SubaccountQuoteTransferSelect({
       </Select.Root>
     </div>
   );
+}
+
+function getQuoteTransferSelectValue(
+  subaccount: QuoteTransferSubaccount,
+): QuoteTransferSubaccountSelectValue {
+  const { subaccountName } = subaccount;
+
+  return {
+    // Use 'empty' as the ID when subaccountName is empty, since the select value cannot be an empty string.
+    selectId: subaccountName ? subaccountName : 'empty',
+    ...subaccount,
+  };
 }

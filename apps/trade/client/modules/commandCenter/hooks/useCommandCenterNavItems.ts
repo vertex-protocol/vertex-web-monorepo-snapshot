@@ -1,3 +1,4 @@
+import { VLP_TOKEN_INFO } from '@vertex-protocol/react-client';
 import {
   IconComponent,
   Icons,
@@ -28,8 +29,12 @@ export interface NavItem {
 export function useCommandCenterNavItems() {
   const { show } = useDialog();
   const router = useRouter();
-  const { isOnrampEnabled, isBridgeEnabled, isStakeActionEnabled } =
-    useEnabledFeatures();
+  const {
+    isOnrampEnabled,
+    isBridgeEnabled,
+    isStakeActionEnabled,
+    isVlpEnabled,
+  } = useEnabledFeatures();
   const isConnected = useIsConnected();
 
   const canShowDepositOrRepay = isConnected;
@@ -38,6 +43,7 @@ export function useCommandCenterNavItems() {
   const canShowOnramp = isOnrampEnabled && isConnected;
   const canShowBridge = isBridgeEnabled && isConnected;
   const canShowStake = isStakeActionEnabled && isConnected;
+  const canShowVlp = isVlpEnabled && isConnected;
 
   const navItems: NavItem[] = useMemo(
     () => [
@@ -125,7 +131,7 @@ export function useCommandCenterNavItems() {
               icon: Icons.CurrencyCircleDollar,
               action: () => show({ type: 'transak_onramp_notice', params: {} }),
               actionText: 'Open Dialog',
-              searchKey: 'Onramp',
+              searchKey: 'Onramp Deposit',
               type: 'navItems' as const,
             },
           ]
@@ -137,7 +143,7 @@ export function useCommandCenterNavItems() {
               icon: Icons.ShuffleSimple,
               action: () => show({ type: 'bridge', params: {} }),
               actionText: 'Open Dialog',
-              searchKey: 'Bridge/Cross-Chain',
+              searchKey: 'Bridge Cross-Chain Deposit',
               type: 'navItems' as const,
             },
           ]
@@ -154,14 +160,35 @@ export function useCommandCenterNavItems() {
             },
           ]
         : []),
+      ...(canShowVlp
+        ? [
+            {
+              label: `Provide ${VLP_TOKEN_INFO.symbol} Liquidity`,
+              icon: Icons.ArrowDownLeft,
+              action: () => show({ type: 'provide_vlp_liquidity', params: {} }),
+              actionText: 'Open Dialog',
+              searchKey: `Provide ${VLP_TOKEN_INFO.symbol} Liquidity`,
+              type: 'navItems' as const,
+            },
+            {
+              label: `Redeem ${VLP_TOKEN_INFO.symbol} Liquidity`,
+              icon: Icons.ArrowUpRight,
+              action: () => show({ type: 'redeem_vlp_liquidity', params: {} }),
+              actionText: 'Open Dialog',
+              searchKey: `Redeem ${VLP_TOKEN_INFO.symbol} Liquidity`,
+              type: 'navItems' as const,
+            },
+          ]
+        : []),
     ],
     [
-      canShowTransfer,
       canShowDepositOrRepay,
+      canShowTransfer,
       canShowWithdrawOrBorrow,
       canShowOnramp,
       canShowBridge,
       canShowStake,
+      canShowVlp,
       router,
       show,
     ],

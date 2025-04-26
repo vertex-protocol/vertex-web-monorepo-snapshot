@@ -8,10 +8,10 @@ export const LINKS = {
   blog: 'https://medium.com/@vertex_edge',
   cookiePolicy: '/docs/CookiePolicy.pdf',
   docs: 'https://docs.vertexprotocol.com/getting-started/vertex-edge',
-  dashboard:
-    'https://flipsidecrypto.xyz/the_watchmen/vertex-edge---cross-chain-liquidity-HDYU-y?tabIndex=1',
+  dashboard: 'https://stats.vertexprotocol.com/',
   vertex: 'https://vertexprotocol.com',
   blitz: 'https://blitz.exchange',
+  broTrade: 'https://bro.trade',
   termsOfUse: '/docs/TermsOfUse.pdf',
 };
 

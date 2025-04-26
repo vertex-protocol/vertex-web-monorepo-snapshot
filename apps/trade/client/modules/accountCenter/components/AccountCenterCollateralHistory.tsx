@@ -18,7 +18,7 @@ export function AccountCenterCollateralHistory() {
     }
     if (eventsWithDate.length === 0) {
       return (
-        <span className="text-text-tertiary">
+        <span className="text-text-tertiary text-sm">
           Your deposits, withdrawals, and transfers will
           <br /> appear here.
         </span>
@@ -29,7 +29,10 @@ export function AccountCenterCollateralHistory() {
       <div className="flex flex-col gap-y-3">
         {eventsWithDate.map((item) => {
           return (
-            <div key={item.dateLabel} className="flex flex-col gap-y-1 text-xs">
+            <div
+              key={item.dateLabel}
+              className="flex flex-col gap-y-0.5 text-xs"
+            >
               <span className="text-text-tertiary text-left">
                 {item.dateLabel}
               </span>
@@ -98,7 +101,7 @@ export function AccountCenterCollateralHistory() {
   })();
 
   return (
-    <div className="flex flex-col gap-y-2 text-sm">
+    <div className="mt-auto flex flex-col gap-y-2">
       <span className="text-text-primary">Funding Activity</span>
       {listContent}
       {eventsWithDate.length !== 0 && (
@@ -107,7 +110,7 @@ export function AccountCenterCollateralHistory() {
           as={Link}
           href={ROUTES.portfolio.history}
           onClick={hide}
-          className="flex-1 self-end text-xs"
+          className="self-end text-xs"
           endIcon={<Icons.ArrowRight />}
         >
           See full history

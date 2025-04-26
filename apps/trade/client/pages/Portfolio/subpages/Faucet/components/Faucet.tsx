@@ -118,7 +118,7 @@ export const Faucet = () => {
             onProductSelected={(productId: number) => {
               setSelectedProductId(productId);
             }}
-            className="bg-surface-2 h-full w-full rounded"
+            className="bg-surface-2 h-full w-full rounded-sm"
           />
         </div>
       </div>

@@ -16,12 +16,15 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { MarketInfoCardsContainer } from 'client/modules/trading/components/MarketInfoCardsContainer';
 import { usePerpMarketInfoCards } from 'client/pages/PerpTrading/hooks/usePerpMarketInfoCards';
-import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
+import { FundingRatePeriodSelect } from 'client/modules/trading/components/FundingRatePeriodSelect';
+import { useFundingRatePeriod } from 'client/modules/trading/hooks/useFundingRatePeriod';
 
 export function PerpMarketInfoCards({ className }: WithClassnames) {
   const { show } = useDialog();
   const { productId, millisToNextFunding, perpMarketInfo, quoteSymbol } =
     usePerpMarketInfoCards();
+  const { fundingRatePeriod } = useFundingRatePeriod();
+  const fundingRate = perpMarketInfo?.fundingRates?.[fundingRatePeriod];
 
   return (
     <MarketInfoCardsContainer className={className}>
@@ -62,16 +65,16 @@ export function PerpMarketInfoCards({ className }: WithClassnames) {
       <Divider vertical className="h-7" />
       <MarketInfoCard
         label="24h Change"
-        flashOnChangeKey={perpMarketInfo?.priceChangeFrac24hr}
+        flashOnChangeKey={perpMarketInfo?.priceChangeFrac24h}
         value={
           <div
-            className={signDependentValue(perpMarketInfo?.priceChangeFrac24hr, {
+            className={signDependentValue(perpMarketInfo?.priceChangeFrac24h, {
               positive: 'text-positive',
               negative: 'text-negative',
               zero: 'text-text-secondary',
             })}
           >
-            {formatNumber(perpMarketInfo?.priceChangeFrac24hr, {
+            {formatNumber(perpMarketInfo?.priceChangeFrac24h, {
               formatSpecifier:
                 PresetNumberFormatSpecifier.SIGNED_PERCENTAGE_2DP,
             })}
@@ -82,10 +85,10 @@ export function PerpMarketInfoCards({ className }: WithClassnames) {
       <MarketInfoCard
         label="24h Volume"
         labelPostfix={quoteSymbol}
-        value={formatNumber(perpMarketInfo?.quoteVolume24hr, {
+        value={formatNumber(perpMarketInfo?.quoteVolume24h, {
           formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
         })}
-        flashOnChangeKey={perpMarketInfo?.quoteVolume24hr}
+        flashOnChangeKey={perpMarketInfo?.quoteVolume24h}
       />
       <Divider vertical className="h-6" />
       <MarketInfoCard
@@ -120,45 +123,30 @@ export function PerpMarketInfoCards({ className }: WithClassnames) {
         label="Predicted Funding"
         definitionTooltipId="perpFundingRate1h"
         value={
-          <div
-            className={signDependentValue(
-              perpMarketInfo?.fundingRates?.hourly,
-              {
+          <div className="flex gap-x-1">
+            <div
+              className={signDependentValue(fundingRate, {
                 positive: 'text-positive',
                 negative: 'text-negative',
                 zero: 'text-text-secondary',
-              },
-            )}
-          >
-            {formatNumber(perpMarketInfo?.fundingRates?.hourly, {
-              formatSpecifier:
-                PresetNumberFormatSpecifier.SIGNED_PERCENTAGE_4DP,
-            })}
+              })}
+            >
+              {formatNumber(fundingRate, {
+                formatSpecifier:
+                  PresetNumberFormatSpecifier.SIGNED_PERCENTAGE_4DP,
+              })}
+            </div>
+            {/* Reduce padding to make it fit within infobar */}
+            <FundingRatePeriodSelect className="py-0" />
           </div>
         }
-        flashOnChangeKey={perpMarketInfo?.fundingRates?.hourly}
+        flashOnChangeKey={fundingRate}
       />
       <MarketInfoCard
-        label="Countdown"
+        label="Next Funding"
         value={formatDurationMillis(millisToNextFunding, {
           formatSpecifier: TimeFormatSpecifier.MM_SS,
         })}
-      />
-      <Divider vertical className="h-6" />
-      <MarketInfoCard
-        label="Annualized Funding"
-        value={
-          <div
-            className={getSignDependentColorClassName(
-              perpMarketInfo?.fundingRates?.annualized,
-            )}
-          >
-            {formatNumber(perpMarketInfo?.fundingRates?.annualized, {
-              formatSpecifier:
-                PresetNumberFormatSpecifier.SIGNED_PERCENTAGE_2DP,
-            })}
-          </div>
-        }
       />
 
       {/* Market details entrypoint is pushed to the very right for large screens */}

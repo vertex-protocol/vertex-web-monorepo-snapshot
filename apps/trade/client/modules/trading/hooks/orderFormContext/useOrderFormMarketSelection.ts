@@ -40,8 +40,8 @@ export function useOrderFormMarketSelection<
 
   const availableMarketsByProductId = (
     marketType === ProductEngineType.SPOT
-      ? allMarketsStaticData?.spot
-      : allMarketsStaticData?.perp
+      ? allMarketsStaticData?.spotMarkets
+      : allMarketsStaticData?.perpMarkets
   ) as Record<number, StaticDataByProductType[TMarketType]> | undefined;
 
   const availableMarkets = availableMarketsByProductId

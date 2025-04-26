@@ -14,7 +14,7 @@
     "@next/third-parties": "*",
     "@tanstack/react-query": "*",
     "@vertex-protocol/web-common": "*",
-    "framer-motion": "^11.11.17",
+    "framer-motion": "*",
     "jotai": "*",
     "lodash": "*",
     "next": "*",
@@ -24,8 +24,8 @@
     "sharp": "*"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "*",
     "@types/lodash": "*",
-    "autoprefixer": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
     "postcss": "*",

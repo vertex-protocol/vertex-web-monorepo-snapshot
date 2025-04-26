@@ -6,14 +6,16 @@ import {
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { SpotProductMetadata } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
+import { getStaticMarketDataForProductId } from 'client/hooks/markets/marketsStaticData/getStaticMarketDataForProductId';
+import { SpotStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedPaymentEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedPaymentEvents';
-import { nonNullFilter } from '@vertex-protocol/web-common';
+import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { secondsToMilliseconds } from 'date-fns';
 import { useMemo } from 'react';
-import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 
 export interface InterestPaymentsTableItem {
   timestampMillis: number;
@@ -89,9 +91,10 @@ export function useInterestPaymentsTable({
     return pageData
       .map((item: IndexerProductPayment) => {
         const spotProduct =
-          item.productId === QUOTE_PRODUCT_ID
-            ? allMarketsStaticData.primaryQuote
-            : allMarketsStaticData.spot[item.productId];
+          getStaticMarketDataForProductId<SpotStaticMarketData>(
+            item.productId,
+            allMarketsStaticData,
+          );
 
         if (!spotProduct) {
           return;

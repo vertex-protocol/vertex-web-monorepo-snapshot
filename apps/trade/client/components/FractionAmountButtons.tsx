@@ -1,12 +1,12 @@
 import {
+  PresetNumberFormatSpecifier,
+  formatNumber,
+} from '@vertex-protocol/react-client';
+import {
   WithClassnames,
   joinClassNames,
   mergeClassNames,
 } from '@vertex-protocol/web-common';
-import {
-  PresetNumberFormatSpecifier,
-  formatNumber,
-} from '@vertex-protocol/react-client';
 import { SecondaryButton } from '@vertex-protocol/web-ui';
 
 const fractions = [0.25, 0.5, 0.75, 1];
@@ -64,7 +64,7 @@ function FractionAmountButton({
       return 'bg-surface-1 border-transparent text-disabled';
     }
     if (isSelected) {
-      return 'bg-surface-3 border-accent text-text-primary';
+      return 'bg-surface-3 border-primary text-text-primary';
     }
     return 'bg-surface-2 border-transparent text-text-secondary';
   })();

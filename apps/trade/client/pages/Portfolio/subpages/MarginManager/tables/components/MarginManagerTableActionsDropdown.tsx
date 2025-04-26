@@ -37,7 +37,7 @@ export function MarginManagerTableActionsDropdown({
       <DropdownMenu.Trigger asChild>
         <SecondaryButton
           className={joinClassNames(
-            'flex items-center justify-center rounded',
+            'flex items-center justify-center rounded-sm',
             'px-1.5',
             className,
           )}

@@ -27,8 +27,16 @@ export const SENSITIVE_DATA = {
     mantleProd: '',
     blastProd: '',
     baseProd: '',
+    seiProd: '',
+    sonicProd: '',
+    avalancheProd: '',
     arbitrumTestnet: '',
   },
   sentryDsn: '',
   exodusWalletAppId: '',
+  funkitApiKey: {
+    vertex: '',
+    blitz: '',
+  },
+  xummApiKey: '',
 } as const;

@@ -124,7 +124,6 @@ export function StakeV2VrtxDialog() {
           <FractionAmountButtons
             onFractionSelected={onFractionSelected}
             selectedFraction={validPercentageAmount}
-            className="pt-0.5"
           />
           <Divider />
           <StakeV2VrtxSummary validAmount={validAmount} />

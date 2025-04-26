@@ -1,9 +1,10 @@
-import { BigDecimals } from '@vertex-protocol/client';
+import {
+  calcAnnualizedInterestRate,
+  useEdgeMarketSnapshots,
+} from '@vertex-protocol/react-client';
 import { StatsChartDataItem } from 'client/components/charts/StatsChart/types';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
-import { useEdgeMarketSnapshots } from 'client/hooks/useEdgeMarketSnapshots';
 import { ProductSelectValue } from 'client/pages/MainPage/components/common/ProductsSelect/useProductsSelect';
-import { calcAnnualizedInterestRate } from 'client/pages/MainPage/components/TvlAndYieldTabContent/utils/calcAnnualizedInterestRate';
 import { get } from 'lodash';
 import { useMemo } from 'react';
 
@@ -50,9 +51,9 @@ export function useHistoricalProductDepositAprChartData({
           get(
             currentSnapshot.depositRates,
             selectedProduct.productId,
-            BigDecimals.ZERO,
+            undefined,
           ),
-        ).toNumber();
+        )?.toNumber();
 
         depositAprs.push({
           data: {

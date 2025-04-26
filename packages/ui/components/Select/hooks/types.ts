@@ -28,6 +28,7 @@ export interface UseSelect<TValue extends SelectValue> {
   open: boolean;
   onValueChange: (value: string) => void;
   value: string | undefined;
+  label?: string | number;
   onOpenChange: (open: boolean) => void;
   selectOptions: SelectComponentOption<TValue>[];
   selectedOption: SelectOption<TValue> | undefined;

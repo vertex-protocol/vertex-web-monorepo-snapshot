@@ -1,6 +1,6 @@
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
 import { PORTFOLIO_CHART_GRADIENT_URLS } from 'client/pages/Portfolio/charts/consts';
 import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
-import { COLORS } from 'common/theme/colors';
 import { first, last } from 'lodash';
 import { useMemo } from 'react';
 
@@ -11,9 +11,7 @@ export function usePnlChartColors({
   data?: PortfolioChartDataItem[];
   valueKey: Extract<
     keyof PortfolioChartDataItem,
-    | 'cumulativeAccountPnlUsd'
-    | 'cumulativeTotalPerpPnlUsd'
-    | 'cumulativeLpPnlUsd'
+    'cumulativeAccountPnlUsd' | 'cumulativeTotalPerpPnlUsd'
   >;
 }) {
   return useMemo(() => {
@@ -22,7 +20,7 @@ export function usePnlChartColors({
     if (endItemValue == null || startItemValue == null) {
       return {
         fill: PORTFOLIO_CHART_GRADIENT_URLS.pnlPositive,
-        stroke: COLORS.positive.DEFAULT,
+        stroke: getTradeAppColorVar('positive'),
       };
     }
     const isPositivePnl = endItemValue >= startItemValue;
@@ -31,7 +29,9 @@ export function usePnlChartColors({
       fill: isPositivePnl
         ? PORTFOLIO_CHART_GRADIENT_URLS.pnlPositive
         : PORTFOLIO_CHART_GRADIENT_URLS.pnlNegative,
-      stroke: isPositivePnl ? COLORS.positive.DEFAULT : COLORS.negative.DEFAULT,
+      stroke: isPositivePnl
+        ? getTradeAppColorVar('positive')
+        : getTradeAppColorVar('negative'),
     };
   }, [data, valueKey]);
 }

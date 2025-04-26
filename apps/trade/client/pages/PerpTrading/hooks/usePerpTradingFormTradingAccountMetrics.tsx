@@ -19,11 +19,12 @@ import {
   useEstimateSubaccountInfoChange,
 } from 'client/hooks/subaccount/useEstimateSubaccountInfoChange';
 import { MarginMode } from 'client/modules/localstorage/userSettings/types/tradingSettings';
-import { calcIsoPositionNetMargin } from 'client/utils/calcs/calcIsoPositionNetMargin';
+import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
+import { calcIsoPositionNetMargin } from 'client/utils/calcs/perp/calcIsoPositionNetMargin';
 import {
   calcEstimatedLiquidationPrice,
   calcEstimatedLiquidationPriceFromBalance,
-} from 'client/utils/calcs/liquidationPriceCalcs';
+} from 'client/utils/calcs/perp/liquidationPriceCalcs';
 import { useCallback, useMemo } from 'react';
 
 interface AdditionalSubaccountInfo {
@@ -85,7 +86,7 @@ export function usePerpTradingFormTradingAccountMetrics({
         : validatedAssetAmountInput.negated(),
     );
 
-    const crossVQuoteAmountDelta = assetAmountDelta
+    const vQuoteDelta = assetAmountDelta
       .multipliedBy(executionConversionPrice)
       .negated();
 
@@ -129,7 +130,7 @@ export function usePerpTradingFormTradingAccountMetrics({
 
     return {
       assetAmountDelta,
-      crossVQuoteAmountDelta,
+      vQuoteDelta,
       isoNetMarginAmountDelta,
       isoCrossQuoteAmountDelta,
     };
@@ -159,7 +160,7 @@ export function usePerpTradingFormTradingAccountMetrics({
           tx: {
             productId: currentMarket.productId,
             amountDelta: amountDeltasWithDecimals.assetAmountDelta,
-            vQuoteDelta: amountDeltasWithDecimals.crossVQuoteAmountDelta,
+            vQuoteDelta: amountDeltasWithDecimals.vQuoteDelta,
           },
         },
       ];
@@ -225,45 +226,74 @@ export function usePerpTradingFormTradingAccountMetrics({
         return position.baseBalance.productId === currentMarket.productId;
       });
 
-      // Compute for position
+      if (!isEstimate) {
+        // For non-estimate, we use the existing isolated position
+        return {
+          positionAmount: removeDecimals(
+            existingIsolatedPosition?.baseBalance.amount,
+          ),
+          estimatedLiquidationPrice: existingIsolatedPosition
+            ? calcEstimatedLiquidationPrice({
+                longWeightMaintenance:
+                  crossBalanceWithProduct.longWeightMaintenance,
+                maintHealth: existingIsolatedPosition.healths.maintenance,
+                oraclePrice: crossBalanceWithProduct.oraclePrice,
+                shortWeightMaintenance:
+                  crossBalanceWithProduct.shortWeightMaintenance,
+                amount: existingIsolatedPosition.baseBalance.amount,
+              })
+            : undefined,
+        };
+      }
+
+      // We require deltas to be present for estimates
+      if (!amountDeltasWithDecimals) {
+        return {
+          positionAmount: undefined,
+          estimatedLiquidationPrice: undefined,
+        };
+      }
+
       const currentPositionAmount =
         existingIsolatedPosition?.baseBalance.amount ?? BigDecimals.ZERO;
-      const newPositionAmount = amountDeltasWithDecimals
-        ? currentPositionAmount.plus(amountDeltasWithDecimals.assetAmountDelta)
-        : currentPositionAmount;
-      const positionAmountWithDecimals = isEstimate
-        ? newPositionAmount
-        : currentPositionAmount;
-
-      // Compute for net margin
-      const currentNetMargin = existingIsolatedPosition
-        ? calcIsoPositionNetMargin(
-            existingIsolatedPosition.baseBalance,
-            existingIsolatedPosition.quoteBalance,
-          )
-        : BigDecimals.ZERO;
-      // Assume no unsettled USDC changes
-      const newNetMargin = currentNetMargin.plus(
-        amountDeltasWithDecimals?.isoNetMarginAmountDelta ?? BigDecimals.ZERO,
+      const newPositionAmount = currentPositionAmount.plus(
+        amountDeltasWithDecimals.assetAmountDelta,
       );
-      const netMargin = isEstimate ? newNetMargin : currentNetMargin;
+
+      const currentMaintHealth =
+        existingIsolatedPosition?.healths.maintenance ?? BigDecimals.ZERO;
+      // Maintenance health = weight * amount * oracle_price + v_quote + quote_margin
+      const maintWeight = getHealthWeights(
+        // Cannot switch sides for iso, so both current position & new position should be on the same side
+        // However, current position can be zero (ie. opening a new position) and new position can be zero (ie. closing a position), but they cannot be both zero
+        currentPositionAmount.isZero()
+          ? newPositionAmount
+          : currentPositionAmount,
+        crossBalanceWithProduct,
+      ).maintenance;
+      const maintHealthDelta = maintWeight
+        .multipliedBy(amountDeltasWithDecimals.assetAmountDelta)
+        .multipliedBy(crossBalanceWithProduct.oraclePrice)
+        .plus(amountDeltasWithDecimals.vQuoteDelta)
+        .plus(amountDeltasWithDecimals.isoNetMarginAmountDelta);
+      const newMaintHealth = currentMaintHealth.plus(maintHealthDelta);
 
       return {
-        positionAmount: removeDecimals(positionAmountWithDecimals),
+        positionAmount: removeDecimals(newPositionAmount),
         estimatedLiquidationPrice: calcEstimatedLiquidationPrice({
           longWeightMaintenance: crossBalanceWithProduct.longWeightMaintenance,
-          maintHealthOrNetMargin: netMargin,
+          maintHealth: newMaintHealth,
           oraclePrice: crossBalanceWithProduct.oraclePrice,
           shortWeightMaintenance:
             crossBalanceWithProduct.shortWeightMaintenance,
-          amount: positionAmountWithDecimals,
+          amount: newPositionAmount,
         }),
       };
     },
     [
-      currentMarket,
-      isolatedPositions,
       marginMode.mode,
+      isolatedPositions,
+      currentMarket,
       amountDeltasWithDecimals,
     ],
   );
@@ -278,15 +308,15 @@ export function usePerpTradingFormTradingAccountMetrics({
   // Derived metrics
   const derivedMetrics = useMemo((): TradeMetrics => {
     return {
-      fundsAvailableUsd: currentState?.fundsAvailableUsdBounded,
+      fundsAvailableUsd: currentState?.fundsAvailableBoundedUsd,
       // Cost is the decrease in funds available from the order
       costUsd: currentState
-        ? estimatedState?.fundsAvailableUsdBounded
-            .minus(currentState.fundsAvailableUsdBounded)
+        ? estimatedState?.fundsAvailableBoundedUsd
+            .minus(currentState.fundsAvailableBoundedUsd)
             .negated()
         : undefined,
     };
-  }, [currentState, estimatedState?.fundsAvailableUsdBounded]);
+  }, [currentState, estimatedState?.fundsAvailableBoundedUsd]);
 
   return { derivedMetrics, currentState, estimatedState };
 }

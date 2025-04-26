@@ -9,6 +9,7 @@ import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr/ArrowUpRight';
 import { BellSimple } from '@phosphor-icons/react/dist/ssr/BellSimple';
 import { BracketsCurly } from '@phosphor-icons/react/dist/ssr/BracketsCurly';
 import { CalendarBlank } from '@phosphor-icons/react/dist/ssr/CalendarBlank';
+import { CaretCircleRight } from '@phosphor-icons/react/dist/ssr/CaretCircleRight';
 import { CaretDown } from '@phosphor-icons/react/dist/ssr/CaretDown';
 import { CaretLeft } from '@phosphor-icons/react/dist/ssr/CaretLeft';
 import { CaretRight } from '@phosphor-icons/react/dist/ssr/CaretRight';
@@ -29,6 +30,7 @@ import { Coins } from '@phosphor-icons/react/dist/ssr/Coins';
 import { Copy } from '@phosphor-icons/react/dist/ssr/Copy';
 import { CreditCard } from '@phosphor-icons/react/dist/ssr/CreditCard';
 import { CurrencyCircleDollar } from '@phosphor-icons/react/dist/ssr/CurrencyCircleDollar';
+import { Database } from '@phosphor-icons/react/dist/ssr/Database';
 import { DiscordLogo } from '@phosphor-icons/react/dist/ssr/DiscordLogo';
 import { Dot } from '@phosphor-icons/react/dist/ssr/Dot';
 import { DotsThreeVertical } from '@phosphor-icons/react/dist/ssr/DotsThreeVertical';
@@ -61,8 +63,11 @@ import { Power } from '@phosphor-icons/react/dist/ssr/Power';
 import { Prohibit } from '@phosphor-icons/react/dist/ssr/Prohibit';
 import { Pulse } from '@phosphor-icons/react/dist/ssr/Pulse';
 import { PushPin } from '@phosphor-icons/react/dist/ssr/PushPin';
+import { Question } from '@phosphor-icons/react/dist/ssr/Question';
 import { ShareFat } from '@phosphor-icons/react/dist/ssr/ShareFat';
 import { ShuffleSimple } from '@phosphor-icons/react/dist/ssr/ShuffleSimple';
+import { SketchLogo } from '@phosphor-icons/react/dist/ssr/SketchLogo';
+import { Sparkle } from '@phosphor-icons/react/dist/ssr/Sparkle';
 import { Star } from '@phosphor-icons/react/dist/ssr/Star';
 import { TelegramLogo } from '@phosphor-icons/react/dist/ssr/TelegramLogo';
 import { Timer } from '@phosphor-icons/react/dist/ssr/Timer';
@@ -74,7 +79,6 @@ import { WarningCircle } from '@phosphor-icons/react/dist/ssr/WarningCircle';
 import { X } from '@phosphor-icons/react/dist/ssr/X';
 import { XCircle } from '@phosphor-icons/react/dist/ssr/XCircle';
 import { XLogo } from '@phosphor-icons/react/dist/ssr/XLogo';
-import { Question } from '@phosphor-icons/react/dist/ssr/Question';
 import { IconBaseProps, IconComponent } from './types';
 
 export const Icons = {
@@ -103,11 +107,12 @@ export const Icons = {
     <CaretUpDown weight="fill" {...props} />
   ),
   CaretUpFill: (props: IconBaseProps) => <CaretUp weight="fill" {...props} />,
-  ChartBar,
+  CaretCircleRight,
   CellSignalFull,
   CellSignalLow,
   CellSignalMedium,
   CellSignalSlash,
+  ChartBar,
   Check,
   CheckBold: (props: IconBaseProps) => <Check weight="bold" {...props} />,
   CheckCircle,
@@ -122,6 +127,7 @@ export const Icons = {
   Copy,
   CreditCard,
   CurrencyCircleDollar,
+  Database,
   DiscordLogo,
   Dot,
   DotsThreeVertical,
@@ -134,6 +140,7 @@ export const Icons = {
   Gauge,
   GearSix,
   Info,
+  Intersect,
   LightningFill: (props: IconBaseProps) => (
     <Lightning weight="fill" {...props} />
   ),
@@ -160,13 +167,15 @@ export const Icons = {
   Pulse,
   PushPin,
   Question,
+  SketchLogo,
   ShareFatFill: (props: IconBaseProps) => <ShareFat weight="fill" {...props} />,
   ShuffleSimple,
+  Sparkle,
+  SparkleFill: (props: IconBaseProps) => <Sparkle weight="fill" {...props} />,
   Star,
   StarFill: (props: IconBaseProps) => <Star weight="fill" {...props} />,
   TelegramLogo,
   Timer,
-  Intersect,
   Users,
   Vault,
   Wallet,

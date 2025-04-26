@@ -14,7 +14,6 @@ import {
   ValueWithChange,
 } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
 import { useBlitzRewardsOverviewCard } from 'client/pages/BlitzRewards/components/BlitzRewardsOverviewCard/useBlitzRewardsOverviewCard';
 import { BLITZ_SPECIFIC_IMAGES, IMAGES } from 'common/brandMetadata/images';
 import { BLITZ_SPECIFIC_LINKS } from 'common/brandMetadata/links/blitzLinks';
@@ -47,7 +46,7 @@ export function BlitzRewardsOverviewCard() {
   return (
     <Card className="flex flex-col gap-y-6 p-4">
       <div className="flex items-center gap-x-4 text-sm">
-        <Pill colorVariant="accent" borderRadiusVariant="base" sizeVariant="sm">
+        <Pill colorVariant="accent" borderRadiusVariant="sm" sizeVariant="sm">
           Epoch{' '}
           {formatNumber(currentEpoch?.epoch, {
             formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
@@ -67,17 +66,19 @@ export function BlitzRewardsOverviewCard() {
       </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Start & End"
           valueContent={
             <ValueWithChange
               currentValue={epochStartMonthDay}
               newValue={epochEndMonthDay}
-              sizeVariant="base"
+              sizeVariant="lg"
               valueClassName="text-text-primary"
             />
           }
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Total Blitz Points"
           value={totalEpochBlitzPoints}
           numberFormatSpecifier={
@@ -86,23 +87,17 @@ export function BlitzRewardsOverviewCard() {
           valueClassName="items-center"
           valueEndElement={
             <Image
-              className="bg-surface-2 h-4 w-auto rounded p-0.5"
+              className="bg-surface-2 h-4 w-auto rounded-sm p-0.5"
               src={IMAGES.brandIcon}
               alt=""
             />
           }
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Total Blast Gold"
-          valueContent={
-            <PrivateContent isPrivate={!totalEpochBlastGold}>
-              {formatNumber(totalEpochBlastGold, {
-                formatSpecifier:
-                  CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED,
-                defaultFallback: 'Gold',
-              })}
-            </PrivateContent>
-          }
+          value={totalEpochBlastGold}
+          defaultValue="Gold"
           valueClassName="items-center"
           valueEndElement={
             <Image
@@ -111,9 +106,13 @@ export function BlitzRewardsOverviewCard() {
               className="h-3 w-auto"
             />
           }
+          numberFormatSpecifier={
+            CustomNumberFormatSpecifier.NUMBER_LARGE_ABBREVIATED
+          }
+          isValuePrivate={!totalEpochBlastGold}
         />
         <ValueWithLabel.Vertical
-          sizeVariant="base"
+          sizeVariant="lg"
           label="Next Gold Distribution"
           valueContent={nextGoldDistributionMonthDay}
           numberFormatSpecifier={

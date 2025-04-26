@@ -1,8 +1,8 @@
 import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
-import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
+import { useAllMarkets24hFundingRates } from 'client/hooks/query/markets/useAllMarkets24hFundingRates';
 import { sortAndTrim } from 'client/pages/Markets/utils/sortAndTrim';
-import { getFundingRates } from 'client/utils/calcs/funding';
+import { getFundingRates } from 'client/utils/calcs/perp/funding';
 import { useMemo } from 'react';
 
 /**
@@ -11,7 +11,7 @@ import { useMemo } from 'react';
 export function useMarketsTopPredictedFunding() {
   const { data: allMarkets, isLoading: isLoadingAllMarkets } = useAllMarkets();
   const { data: marketsFundingRates, isLoading: isLoadingMarketsFundingRates } =
-    useAllMarkets24HrFundingRates();
+    useAllMarkets24hFundingRates();
   const { getIsHiddenMarket } = useVertexMetadataContext();
 
   const topPredictedFundingRates = useMemo(() => {
@@ -32,7 +32,7 @@ export function useMarketsTopPredictedFunding() {
         return {
           metadata: market.metadata,
           productId: productId,
-          annualizedFundingRate: getFundingRates(dailyFundingRate).annualized,
+          annualizedFundingRate: getFundingRates(dailyFundingRate)['1y'],
         };
       });
 

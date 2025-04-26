@@ -20,7 +20,7 @@ export function LpInfoPanel({
   currentYield,
 }: Props) {
   return (
-    <div className="bg-surface-1 flex flex-col gap-y-3.5 rounded px-3.5 py-3">
+    <div className="bg-surface-1 flex flex-col gap-y-3.5 rounded-sm px-3.5 py-3">
       <LpInfoPanelTokenPairHeader metadata={metadata} />
       <div className="flex flex-col gap-y-1">
         <ValueWithLabel.Horizontal

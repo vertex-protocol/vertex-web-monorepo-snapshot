@@ -1,11 +1,10 @@
 import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
-import { LpBalancesTable } from 'client/modules/pools/components/LpBalancesTable';
 import { PerpPositionsTable } from 'client/modules/tables/PerpPositionsTable';
 import { SpotBalancesTable } from 'client/modules/tables/SpotBalancesTable';
 import { ReactNode, useMemo } from 'react';
 
-type OverviewTabID = 'balances' | 'perp_positions' | 'pools';
+type OverviewTabID = 'balances' | 'perp_positions';
 
 interface OverviewTab {
   id: OverviewTabID;
@@ -15,7 +14,7 @@ interface OverviewTab {
 }
 
 export function useOverviewTabs() {
-  const { numPerpPositions, numLpPositions } = useSubaccountCountIndicators();
+  const { numPerpPositions } = useSubaccountCountIndicators();
   const overviewTabs = useMemo(
     (): OverviewTab[] => [
       {
@@ -29,14 +28,8 @@ export function useOverviewTabs() {
         label: 'Balances',
         content: <SpotBalancesTable hasBackground />,
       },
-      {
-        id: 'pools',
-        label: 'Pools',
-        associatedCount: numLpPositions,
-        content: <LpBalancesTable showZeroBalances={false} />,
-      },
     ],
-    [numLpPositions, numPerpPositions],
+    [numPerpPositions],
   );
 
   const { selectedTabId, setSelectedUntypedTabId, tabs } =

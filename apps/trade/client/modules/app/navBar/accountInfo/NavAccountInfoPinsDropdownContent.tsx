@@ -2,7 +2,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   Button,
-  COMMON_TRANSPARENCY_COLORS,
+  Divider,
   getStateOverlayClassNames,
   Icons,
   LinkButton,
@@ -11,53 +11,38 @@ import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel'
 import { ROUTES } from 'client/modules/app/consts/routes';
 import {
   NavAccountInfoPinItem,
-  UseNavAccountInfoPins,
   useNavAccountInfoPins,
 } from 'client/modules/app/navBar/accountInfo/useNavAccountInfoPins';
+import { NavAccountPinID } from 'client/modules/localstorage/userSettings/types/navAccountPins';
 import Link from 'next/link';
 
 export function NavAccountInfoPinsDropdownContent() {
-  const { pinSections, toggleIsPinned, maxNumPins } = useNavAccountInfoPins();
+  const { items, toggleIsPinned, maxNumPins } = useNavAccountInfoPins();
 
   return (
     <>
-      <div
-        className={joinClassNames(
-          'flex flex-col gap-y-2 divide-y px-3 py-2',
-          COMMON_TRANSPARENCY_COLORS.divide,
-        )}
-      >
+      <div className="flex flex-col gap-y-2 px-3 py-2">
         <DropdownMenu.Label className="text-text-primary flex flex-col text-base">
           Account
           <div className="text-text-tertiary text-sm">
             Pin up to {maxNumPins} elements
           </div>
         </DropdownMenu.Label>
-        {pinSections.map((section, index) => (
-          <DropdownMenu.Group
-            key={index}
-            className="flex flex-col gap-y-2 py-2"
-          >
-            {section.map(
-              ({ localStorageId, isPinned, label, value, valueClassName }) => (
-                <Item
-                  key={localStorageId}
-                  localStorageId={localStorageId}
-                  toggleIsPinned={toggleIsPinned}
-                  isPinned={isPinned}
-                  label={label}
-                  value={value}
-                  valueClassName={valueClassName}
-                />
-              ),
-            )}
-          </DropdownMenu.Group>
-        ))}
+        <Divider />
+        <DropdownMenu.Group className="flex flex-col gap-y-1">
+          {items.map((item) => (
+            <Item
+              key={item.localStorageId}
+              toggleIsPinned={toggleIsPinned}
+              {...item}
+            />
+          ))}
+        </DropdownMenu.Group>
       </div>
       <DropdownMenu.Group
         className={joinClassNames(
           'flex justify-end border-t p-2 pb-0',
-          COMMON_TRANSPARENCY_COLORS.border,
+          'border-overlay-divider border-t',
         )}
       >
         <DropdownMenu.Item asChild>
@@ -76,26 +61,26 @@ export function NavAccountInfoPinsDropdownContent() {
   );
 }
 
-type ItemProps = NavAccountInfoPinItem &
-  Pick<UseNavAccountInfoPins, 'toggleIsPinned'>;
+type ItemProps = NavAccountInfoPinItem & {
+  toggleIsPinned(localStorageId: NavAccountPinID): void;
+};
 
 function Item({
   localStorageId,
   isPinned,
-  label,
-  value,
-  valueClassName,
   toggleIsPinned,
+  sizeVariant,
+  ...valueWithLabelProps
 }: ItemProps) {
   const hoverStateClassName = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
   });
 
   return (
     <DropdownMenu.Item asChild>
       <Button
         className={joinClassNames(
-          'items-center gap-x-1 rounded p-0.5',
+          'flex items-center gap-x-1 rounded-sm p-0.5',
           hoverStateClassName,
         )}
         onClick={(e) => {
@@ -110,12 +95,10 @@ function Item({
           className={isPinned ? 'text-accent' : 'text-disabled'}
         />
         <ValueWithLabel.Horizontal
-          sizeVariant="sm"
-          label={label}
+          sizeVariant={sizeVariant ?? 'sm'}
           className="flex-1"
-          labelClassName="text-text-secondary"
-          valueContent={value}
-          valueClassName={valueClassName}
+          labelClassName="text-text-primary"
+          {...valueWithLabelProps}
         />
       </Button>
     </DropdownMenu.Item>

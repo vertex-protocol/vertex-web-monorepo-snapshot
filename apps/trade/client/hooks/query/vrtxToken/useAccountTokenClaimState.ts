@@ -1,9 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  ChainEnv,
-  IAirdrop__factory,
-  ILBA__factory,
-} from '@vertex-protocol/client';
+import { ChainEnv, VERTEX_ABIS } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
@@ -13,7 +9,7 @@ import {
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
-import { Address, zeroAddress } from 'viem';
+import { zeroAddress } from 'viem';
 
 export function accountTokenClaimStateQueryKey(
   chainEnv?: ChainEnv,
@@ -54,30 +50,28 @@ export function useAccountTokenClaimState() {
       throw new QueryDisabledError();
     }
 
-    const lbaAddress = vertexClient.context.contractAddresses
-      .vrtxLba as Address;
-    const airdropAddress = vertexClient.context.contractAddresses
-      .vrtxAirdrop as Address;
+    const lbaAddress = vertexClient.context.contractAddresses.vrtxLba;
+    const airdropAddress = vertexClient.context.contractAddresses.vrtxAirdrop;
 
     const multicallResult = await publicClient.multicall({
       allowFailure: false,
       contracts: [
         {
           address: airdropAddress,
-          abi: IAirdrop__factory.abi,
-          args: [addressForQuery as Address],
+          abi: VERTEX_ABIS['vrtxAirdrop'],
+          args: [addressForQuery],
           functionName: 'getClaimed',
         },
         {
           address: lbaAddress,
-          abi: ILBA__factory.abi,
-          args: [addressForQuery as Address],
+          abi: VERTEX_ABIS['vrtxLba'],
+          args: [addressForQuery],
           functionName: 'getClaimableRewards',
         },
         {
           address: lbaAddress,
-          abi: ILBA__factory.abi,
-          args: [addressForQuery as Address],
+          abi: VERTEX_ABIS['vrtxLba'],
+          args: [addressForQuery],
           functionName: 'getClaimedRewards',
         },
       ],

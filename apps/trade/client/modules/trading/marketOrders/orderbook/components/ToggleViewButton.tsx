@@ -29,7 +29,7 @@ export const ToggleViewButton = ({
   return (
     <Button
       className={joinClassNames(
-        'border-stroke bg-surface-card h-6 w-6 rounded border p-1.5',
+        'border-stroke bg-surface-card h-6 w-6 rounded-sm border',
         viewType === variant ? 'opacity-100' : 'opacity-30 hover:opacity-70',
       )}
       onClick={() => setViewType(variant)}

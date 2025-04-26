@@ -9,11 +9,11 @@ export const Navigation = () => {
 
   const navClass = joinClassNames(
     'flex items-center justify-between container-custom',
-    'rounded-lg border border-glass shadow-glass px-5 py-4 backdrop-blur-md',
+    'rounded-lg border border-glass shadow-glass py-4 backdrop-blur-md',
   );
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 p-4 md:top-5 md:py-0">
+    <header className="fixed top-0 right-0 left-0 z-50 p-4 md:top-5 md:py-0">
       <nav className={navClass}>
         <Link href={LINKS.hero} className="h-4 w-24 pb-0.5">
           <Logo />

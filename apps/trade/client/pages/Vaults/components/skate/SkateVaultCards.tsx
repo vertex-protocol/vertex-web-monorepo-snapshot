@@ -1,8 +1,8 @@
 'use client';
 
 import { ARB_CHAIN_ENVS, useEVMContext } from '@vertex-protocol/react-client';
-import { ChainSpecificContent } from 'client/modules/envSpecificContent/ChainSpecificContent';
-import { SKATE_VAULTS_BY_CHAIN_ENV } from 'client/modules/vaults/consts';
+import { ChainEnvSpecificContent } from 'client/modules/envSpecificContent/ChainEnvSpecificContent';
+import { SKATE_VAULTS_BY_CHAIN_ENV } from 'client/modules/skateVaults/consts';
 import { ElixirVaultsCard } from 'client/pages/Vaults/components/ElixirVaultsCard';
 import { SkateVaultCard } from 'client/pages/Vaults/components/skate/SkateVaultCard';
 
@@ -24,9 +24,9 @@ export function SkateVaultCards() {
           />
         ),
       )}
-      <ChainSpecificContent enabledChainEnvs={ARB_CHAIN_ENVS}>
+      <ChainEnvSpecificContent enabledChainEnvs={ARB_CHAIN_ENVS}>
         <ElixirVaultsCard className={VAULT_CARD_MIN_HEIGHT_CLASSNAME} />
-      </ChainSpecificContent>
+      </ChainEnvSpecificContent>
     </div>
   );
 }

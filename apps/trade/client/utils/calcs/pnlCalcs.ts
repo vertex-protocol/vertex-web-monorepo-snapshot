@@ -1,42 +1,7 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
-import {
-  calcIndexerLpBalanceValue,
-  IndexerSnapshotBalance,
-} from '@vertex-protocol/indexer-client';
+import { IndexerSnapshotBalance } from '@vertex-protocol/indexer-client';
 import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
-
-export function calcIndexerSummaryUnrealizedPnl(
-  indexerBalance: IndexerSnapshotBalance,
-  // Alternate oracle price, defaults to the oracle price of the tracked balance
-  oraclePrice: BigDecimal = indexerBalance.state.market.product.oraclePrice,
-) {
-  if (indexerBalance.productId === QUOTE_PRODUCT_ID) {
-    return BigDecimals.ZERO;
-  }
-
-  const unrealizedPnl = calcUnrealizedPnl(
-    indexerBalance.state.postBalance.amount,
-    oraclePrice,
-    indexerBalance.trackedVars.netEntryUnrealized,
-  );
-
-  return unrealizedPnl;
-}
-
-export function calcIndexerSummaryCumulativePnl(
-  indexerBalance: IndexerSnapshotBalance,
-) {
-  if (indexerBalance.productId === QUOTE_PRODUCT_ID) {
-    return BigDecimals.ZERO;
-  }
-  const cumulativePnl = calcUnrealizedPnl(
-    indexerBalance.state.postBalance.amount,
-    indexerBalance.state.market.product.oraclePrice,
-    indexerBalance.trackedVars.netEntryCumulative,
-  );
-
-  return cumulativePnl;
-}
+import { calcIndexerLpBalanceValue } from '@vertex-protocol/client';
 
 export function calcIndexerSummaryUnrealizedLpPnl(
   indexerBalance: IndexerSnapshotBalance,
@@ -62,6 +27,39 @@ export function calcIndexerSummaryCumulativeLpPnl(
     indexerBalance.state.market,
   );
   return lpBalanceValue.minus(indexerBalance.trackedVars.netEntryLpCumulative);
+}
+
+export function calcIndexerSummaryUnrealizedPnl(
+  indexerBalance: IndexerSnapshotBalance,
+  // Alternate oracle price, defaults to the oracle price of the tracked balance
+  oraclePrice: BigDecimal = indexerBalance.state.market.product.oraclePrice,
+) {
+  if (indexerBalance.productId === QUOTE_PRODUCT_ID) {
+    return BigDecimals.ZERO;
+  }
+
+  const unrealizedPnl = calcPnl(
+    indexerBalance.state.postBalance.amount,
+    oraclePrice,
+    indexerBalance.trackedVars.netEntryUnrealized,
+  );
+
+  return unrealizedPnl;
+}
+
+export function calcIndexerSummaryCumulativePnl(
+  indexerBalance: IndexerSnapshotBalance,
+) {
+  if (indexerBalance.productId === QUOTE_PRODUCT_ID) {
+    return BigDecimals.ZERO;
+  }
+  const cumulativePnl = calcPnl(
+    indexerBalance.state.postBalance.amount,
+    indexerBalance.state.market.product.oraclePrice,
+    indexerBalance.trackedVars.netEntryCumulative,
+  );
+
+  return cumulativePnl;
 }
 
 /**
@@ -93,10 +91,10 @@ export function calcPnlFracForNonZeroDenom(
   return undefined;
 }
 
-export function calcUnrealizedPnl(
+export function calcPnl(
   positionAmount: BigDecimal,
   oraclePrice: BigDecimal,
-  netEntryUnrealized: BigDecimal,
+  netEntry: BigDecimal,
 ) {
-  return positionAmount.multipliedBy(oraclePrice).minus(netEntryUnrealized);
+  return positionAmount.multipliedBy(oraclePrice).minus(netEntry);
 }

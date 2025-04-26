@@ -5,7 +5,7 @@ import {
   StatsChartDataItem,
 } from 'client/components/charts/StatsChart/types';
 import { getDefaultChartFillColor } from 'client/components/charts/utils/getDefaultChartFillColor';
-import { first } from 'lodash';
+import { getTooltipPayloadData } from 'client/utils/getTooltipPayloadData';
 import { Fragment, useMemo } from 'react';
 import {
   NameType,
@@ -36,7 +36,7 @@ export function StatsChartTooltip<TDataKey extends string>({
   );
 
   const originalDataPayload: StatsChartDataItem<TDataKey> | undefined =
-    first(payload)?.payload;
+    getTooltipPayloadData(payload);
 
   if (!active || !originalDataPayload) {
     return null;

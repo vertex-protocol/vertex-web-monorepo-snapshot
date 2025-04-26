@@ -31,7 +31,7 @@ export function TokenPairIcons({
         alt={second.alt}
         size={size}
         src={second.src}
-        className={joinClassNames('relative -left-2.5', iconClassName)}
+        className={joinClassNames('relative -left-1/5', iconClassName)}
       />
     </div>
   );
@@ -45,8 +45,7 @@ function TokenIcon({ className, alt, size, src, ...rest }: TokenIconProps) {
   return (
     <Image
       className={joinClassNames(
-        'bg-background rounded-full',
-        'shadow-elevation',
+        'shadow-elevation-card rounded-full',
         className,
       )}
       alt={alt}

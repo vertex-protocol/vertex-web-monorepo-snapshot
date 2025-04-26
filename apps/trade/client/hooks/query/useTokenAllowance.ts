@@ -1,13 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { ChainEnv, IERC20__factory } from '@vertex-protocol/client';
+import { ChainEnv, ERC20_ABI } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
   usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
-import { BigDecimals, toBigDecimal } from '@vertex-protocol/utils';
-import { Address, zeroAddress } from 'viem';
+import {
+  BigDecimals,
+  getValidatedAddress,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
+import { zeroAddress } from 'viem';
 
 interface Params {
   spenderAddress: string | undefined;
@@ -56,10 +60,13 @@ export function useTokenAllowance({ tokenAddress, spenderAddress }: Params) {
       }
 
       const allowance = await publicClient.readContract({
-        abi: IERC20__factory.abi,
-        address: tokenAddress as Address,
+        abi: ERC20_ABI,
+        address: getValidatedAddress(tokenAddress),
         functionName: 'allowance',
-        args: [accountAddress as Address, spenderAddress as Address],
+        args: [
+          getValidatedAddress(accountAddress),
+          getValidatedAddress(spenderAddress),
+        ],
       });
 
       return toBigDecimal(allowance);

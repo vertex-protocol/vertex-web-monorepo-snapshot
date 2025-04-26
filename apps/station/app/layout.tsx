@@ -14,9 +14,9 @@ export default function RootLayout({ children }: WithChildren) {
       className={joinClassNames(
         VERTEX_FONTS.default.className,
         VERTEX_FONTS.default.variable,
-        VERTEX_FONTS.title.variable,
         'antialiased',
       )}
+      data-theme="vertexDark"
     >
       <body className="flex h-svh w-screen flex-col">
         <ClientLayout>

@@ -1,5 +1,5 @@
 import { Icons } from '@vertex-protocol/web-ui';
-import { COLORS } from 'common/theme/colors';
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
 
 export const ACTION_TOAST_ICONS_BY_VARIANT = {
   success: Icons.CheckCircle,
@@ -8,9 +8,9 @@ export const ACTION_TOAST_ICONS_BY_VARIANT = {
 };
 
 export const ACTION_TOAST_ICON_FILL_BY_VARIANT = {
-  success: COLORS.positive.DEFAULT,
-  failure: COLORS.negative.DEFAULT,
-  pending: COLORS.accent.DEFAULT,
+  success: getTradeAppColorVar('positive'),
+  failure: getTradeAppColorVar('negative'),
+  pending: getTradeAppColorVar('accent'),
 };
 
 export const ACTION_TOAST_LEFT_SECTION_WIDTH = 'w-32';

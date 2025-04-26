@@ -1,4 +1,4 @@
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { QUOTE_PRODUCT_ID, VLP_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { KNOWN_PRODUCT_IDS } from '../knownProductIds';
 import {
   METH_MANTLE,
@@ -6,6 +6,7 @@ import {
   USDC_MANTLE,
   USDC_MANTLE_SEPOLIA,
   USDT_MANTLE_SEPOLIA,
+  VLP_MANTLE_SEPOLIA,
   WETH_MANTLE,
   WETH_MANTLE_SEPOLIA,
   WMNT_MANTLE,
@@ -13,6 +14,7 @@ import {
 } from '../mantle/tokens';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { SpotProductMetadata } from '../types';
+import { VLP_TOKEN_INFO } from '../vlpTokenInfo';
 
 /**
  * Mantle Sepolia
@@ -52,6 +54,12 @@ export const MANTLE_TESTNET_SPOT_METADATA_BY_PRODUCT_ID: Record<
     // wETH as quote, 3 on testnet
     quoteProductId: 3,
     marketCategories: new Set(['spot', 'chain']),
+  },
+  [VLP_PRODUCT_ID]: {
+    token: VLP_MANTLE_SEPOLIA,
+    marketName: VLP_TOKEN_INFO.symbol,
+    quoteProductId: QUOTE_PRODUCT_ID,
+    marketCategories: new Set(['spot']),
   },
 };
 

@@ -20,9 +20,9 @@ export function FavoriteButton({
       return 'text-disabled';
     }
     if (isFavorited) {
-      return 'text-accent';
+      return 'text-primary';
     }
-    return 'text-text-tertiary hover:text-accent';
+    return 'text-text-tertiary hover:text-primary';
   })();
 
   return (

@@ -1,5 +1,6 @@
 #!/bin/bash
 PACKAGES=(
+"viem"
 "@vertex-protocol/utils"
 "@vertex-protocol/contracts"
 "@vertex-protocol/engine-client"

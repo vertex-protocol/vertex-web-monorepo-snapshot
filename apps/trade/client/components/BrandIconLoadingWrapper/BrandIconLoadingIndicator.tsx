@@ -22,7 +22,7 @@ export function BrandIconLoadingIndicator({
       priority
       className={joinClassNames(
         'h-auto animate-ping',
-        grayscale && 'opacity-10 saturate-0',
+        grayscale && 'opacity-20 saturate-0',
         className,
       )}
     />

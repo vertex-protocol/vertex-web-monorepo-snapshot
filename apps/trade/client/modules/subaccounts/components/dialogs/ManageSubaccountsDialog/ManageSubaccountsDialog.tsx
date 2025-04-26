@@ -50,12 +50,14 @@ export function ManageSubaccountsDialog() {
       <BaseAppDialog.Body>
         <div className="grid grid-cols-2 gap-2 lg:gap-4">
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Sum of Accounts"
             tooltip={{ id: 'sumOfSubaccounts' }}
             value={cumulativePortfolioValueUsd}
             numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
           />
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Accounts"
             // Use # of app subaccounts as there might be other subaccounts created via API
             valueContent={appSubaccountNames.length}

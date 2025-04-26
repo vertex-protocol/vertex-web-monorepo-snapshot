@@ -1,6 +1,6 @@
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useFoundationToken } from 'client/modules/rewards/hooks/useFoundationToken';
-import { useClaimArbRewards } from 'client/pages/VertexRewards/components/cards/ArbRewardsSummaryCard/useClaimArbRewards';
+import { useClaimFoundationRewards } from 'client/pages/VertexRewards/hooks/useClaimFoundationRewards';
 import { useCompletedStateFoundationRewards } from 'client/pages/VertexRewards/hooks/useCompletedStateFoundationRewards';
 import { useMemo } from 'react';
 
@@ -16,7 +16,7 @@ export function useArbRewardsSummaryCard() {
     claim,
     isSuccess: isClaimSuccess,
     isLoading: isClaiming,
-  } = useClaimArbRewards();
+  } = useClaimFoundationRewards();
   const foundationToken = useFoundationToken();
   const isConnected = useIsConnected();
 
@@ -45,7 +45,7 @@ export function useArbRewardsSummaryCard() {
   return {
     ...mappedData,
     onClaimClick: claim,
-    arbToken: foundationToken,
+    foundationToken,
     isClaimSuccess,
     isClaiming,
     disableClaimButton:

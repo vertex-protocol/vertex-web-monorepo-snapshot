@@ -18,12 +18,13 @@ export function MarketsCardItemButton({
   href,
   onClick,
   className,
+  sizeVariant,
   valueWithLabelClassName,
   labelClassName,
   ...rest
 }: Props) {
   const hoverStateOverlayClassName = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
   });
 
   const buttonClassNames = joinClassNames(
@@ -38,7 +39,7 @@ export function MarketsCardItemButton({
       valueWithLabelClassName,
     ),
     labelClassName: joinClassNames('text-text-primary', labelClassName),
-    sizeVariant: 'xs' as SizeVariant,
+    sizeVariant: sizeVariant ?? ('xs' as SizeVariant),
     ...rest,
   };
 

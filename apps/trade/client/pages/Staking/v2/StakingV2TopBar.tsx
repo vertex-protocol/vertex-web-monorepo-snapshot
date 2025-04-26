@@ -54,6 +54,7 @@ export function StakingV2TopBar({
     >
       <div className="grid grid-cols-2 items-center gap-x-6 gap-y-4 lg:flex">
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           tooltip={{ id: 'stakingV2StakingApr' }}
           label="Staking APR"
           valueClassName="text-positive"
@@ -61,6 +62,7 @@ export function StakingV2TopBar({
           numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           tooltip={{ id: 'stakingV2TotalStaked' }}
           label="Total Staked"
           value={totalStaked}
@@ -70,11 +72,13 @@ export function StakingV2TopBar({
           valueEndElement={protocolTokenSymbol}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="% of Circ. Supply"
           value={liquidSupplyFraction}
           numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           tooltip={{ id: 'stakingV2FeesRedirected' }}
           label="7d Fees Redirected"
           value={usdcFeesRedirected}
@@ -151,6 +155,7 @@ function PriceItem({
 
   return (
     <ValueWithLabel.Vertical
+      sizeVariant="lg"
       label="Price / 24h Change"
       valueContent={content}
       className={className}

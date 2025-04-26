@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
-import { BigDecimal } from '@vertex-protocol/client';
+import { BigDecimal, toBigInt } from '@vertex-protocol/client';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import { useExecuteInValidContext } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { useFuulReferralsContext } from 'client/modules/referrals/fuul/FuulReferralsContext';
 import { addressOnChainFuulReferralRewardsQueryKey } from 'client/modules/referrals/fuul/hooks/query/useAddressOnChainFuulReferralRewards';
 import { useCallback } from 'react';
-import { Address, parseAbi } from 'viem';
+import { parseAbi } from 'viem';
 
 const REFETCH_QUERY_KEYS = [addressOnChainFuulReferralRewardsQueryKey()];
 
@@ -32,8 +32,8 @@ export function useExecuteClaimFuulReferralRewards() {
             [
               {
                 projectAddress,
-                currency: payoutToken.address as Address,
-                amount: BigInt(params.amount.toString()),
+                currency: payoutToken.address,
+                amount: toBigInt(params.amount.toString()),
                 tokenIds: [],
                 amounts: [],
               },

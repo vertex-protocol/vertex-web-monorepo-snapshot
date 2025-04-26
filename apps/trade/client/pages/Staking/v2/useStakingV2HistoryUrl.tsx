@@ -1,14 +1,21 @@
 import {
   useEVMContext,
-  usePrimaryChainVertexClient,
+  useVertexClientContext,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 
 export function useStakingV2HistoryUrl() {
   const {
-    primaryChain: { blockExplorers },
     connectionStatus: { address: userAddress },
   } = useEVMContext();
-  const vertexClient = usePrimaryChainVertexClient();
+  const {
+    protocolTokenMetadata: {
+      chainEnv,
+      chain: { blockExplorers },
+    },
+  } = useVertexMetadataContext();
+  const { vertexClientsByChainEnv } = useVertexClientContext();
+  const vertexClient = vertexClientsByChainEnv?.[chainEnv]?.client;
 
   if (!blockExplorers || !userAddress || !vertexClient) {
     return '';

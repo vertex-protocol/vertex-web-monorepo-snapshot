@@ -1,9 +1,9 @@
 'use client';
 
-import { FC, SVGProps } from 'react';
 import { mergeClassNames } from '@vertex-protocol/web-common';
 import { Tooltip } from 'client/components/Tooltip/Tooltip';
 import { PlatformChainsCell } from 'client/sections/ComparisonSection/data';
+import { FC, SVGProps } from 'react';
 
 interface Props extends PlatformChainsCell {}
 
@@ -37,7 +37,7 @@ interface ChainIconProps {
 
 function ChainIcon({ icon: Icon, className }: ChainIconProps) {
   const cellIconClassName = mergeClassNames(
-    'shadow-icon bg-dark h-5 w-5 rounded-full',
+    'shadow-icon bg-dark h-5 w-5 rounded-full p-0.5',
     className ?? '',
   );
 

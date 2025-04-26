@@ -1,35 +1,53 @@
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { WithClassnames } from '@vertex-protocol/web-common';
+import { CounterPill } from '@vertex-protocol/web-ui';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
+import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 import { useMemo } from 'react';
 
-export function PerpHeroMetricsItems({ className }: WithClassnames) {
+export function PerpHeroMetricsItems() {
   const { data: overview } = useSubaccountOverview();
+  const { numCrossPerpPositions, numIsoPerpPositions } =
+    useSubaccountCountIndicators();
 
-  const perpMetricItems = useMemo(
+  const crossHeaderContent = (
+    <>
+      <span>Cross Positions</span>
+      {!!numCrossPerpPositions && (
+        <CounterPill>{numCrossPerpPositions}</CounterPill>
+      )}
+    </>
+  );
+
+  const isolatedHeaderContent = (
+    <>
+      <span>Isolated Positions</span>
+      {!!numIsoPerpPositions && (
+        <CounterPill>{numIsoPerpPositions}</CounterPill>
+      )}
+    </>
+  );
+
+  const crossPositionItems = useMemo(
     () =>
       [
         {
           tooltip: {
-            id: 'perpOpenPositionsPnl',
+            id: 'perpCrossOpenPositionsPnl',
           },
-          label: 'PnL',
-          value: overview?.perp.totalUnrealizedPnlUsd,
-          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+          label: 'Unrealized PnL',
+          value: overview?.perp.cross.totalUnrealizedPnlUsd,
+          valueClassName: getSignDependentColorClassName(
+            overview?.perp.cross.totalUnrealizedPnlUsd,
+          ),
+          numberFormatSpecifier:
+            PresetNumberFormatSpecifier.SIGNED_CURRENCY_2DP,
         },
         {
           tooltip: {
-            id: 'perpOpenPositionsNotional',
-          },
-          label: 'Total Notional',
-          value: overview?.perp.totalNotionalValueUsd,
-          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-        },
-        {
-          tooltip: {
-            id: 'perpOpenPositionsMarginUsed',
+            id: 'perpCrossOpenPositionsMargin',
           },
           label: 'Margin Used',
           value: overview?.perp.cross.totalMarginUsedUsd,
@@ -37,29 +55,83 @@ export function PerpHeroMetricsItems({ className }: WithClassnames) {
         },
       ] satisfies ValueWithLabelProps[],
     [
-      overview?.perp.totalUnrealizedPnlUsd,
-      overview?.perp.totalNotionalValueUsd,
+      overview?.perp.cross.totalUnrealizedPnlUsd,
       overview?.perp.cross.totalMarginUsedUsd,
     ],
   );
 
+  const isolatedPositionItems = useMemo(
+    () =>
+      [
+        {
+          tooltip: {
+            id: 'perpIsoOpenPositionsPnl',
+          },
+          label: 'Unrealized PnL',
+          value: overview?.perp.iso.totalUnrealizedPnlUsd,
+          valueClassName: getSignDependentColorClassName(
+            overview?.perp.iso.totalUnrealizedPnlUsd,
+          ),
+          numberFormatSpecifier:
+            PresetNumberFormatSpecifier.SIGNED_CURRENCY_2DP,
+        },
+        {
+          tooltip: {
+            id: 'perpIsoOpenPositionsMargin',
+          },
+          label: 'Margin',
+          value: overview?.perp.iso.totalNetMarginUsd,
+          numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+        },
+      ] satisfies ValueWithLabelProps[],
+    [
+      overview?.perp.iso.totalUnrealizedPnlUsd,
+      overview?.perp.iso.totalNetMarginUsd,
+    ],
+  );
+
   return (
-    <PortfolioHeroMetricsPane.Items
-      header="Open Positions"
-      className={className}
-      childContainerClassNames="flex flex-col gap-y-0.5"
-    >
-      {perpMetricItems.map(
-        ({ tooltip, label, value, numberFormatSpecifier }, index) => (
-          <PortfolioHeroMetricsPane.ValueWithLabel
-            key={index}
-            label={label}
-            value={value}
-            tooltip={tooltip}
-            numberFormatSpecifier={numberFormatSpecifier}
-          />
-        ),
-      )}
-    </PortfolioHeroMetricsPane.Items>
+    <PortfolioHeroMetricsPane.ItemsGroupContainer>
+      <PortfolioHeroMetricsPane.ItemsGroup
+        header={crossHeaderContent}
+        headerClassName="justify-between"
+      >
+        {crossPositionItems.map(
+          (
+            { tooltip, label, value, valueClassName, numberFormatSpecifier },
+            index,
+          ) => (
+            <PortfolioHeroMetricsPane.ValueWithLabel
+              key={index}
+              label={label}
+              value={value}
+              valueClassName={valueClassName}
+              tooltip={tooltip}
+              numberFormatSpecifier={numberFormatSpecifier}
+            />
+          ),
+        )}
+      </PortfolioHeroMetricsPane.ItemsGroup>
+      <PortfolioHeroMetricsPane.ItemsGroup
+        header={isolatedHeaderContent}
+        headerClassName="justify-between"
+      >
+        {isolatedPositionItems.map(
+          (
+            { tooltip, label, value, valueClassName, numberFormatSpecifier },
+            index,
+          ) => (
+            <PortfolioHeroMetricsPane.ValueWithLabel
+              key={index}
+              label={label}
+              value={value}
+              valueClassName={valueClassName}
+              tooltip={tooltip}
+              numberFormatSpecifier={numberFormatSpecifier}
+            />
+          ),
+        )}
+      </PortfolioHeroMetricsPane.ItemsGroup>
+    </PortfolioHeroMetricsPane.ItemsGroupContainer>
   );
 }

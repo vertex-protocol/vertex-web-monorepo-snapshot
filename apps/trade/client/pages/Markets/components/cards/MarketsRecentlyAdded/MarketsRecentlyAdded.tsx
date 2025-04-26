@@ -7,6 +7,7 @@ import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTra
 import { MarketsCardContent } from 'client/pages/Markets/components/cards/MarketsCardContent';
 import { MarketsCardItemButton } from 'client/pages/Markets/components/cards/MarketsCardItemButton';
 import { useMarketsRecentlyAdded } from 'client/pages/Markets/components/cards/MarketsRecentlyAdded/useMarketsRecentlyAdded';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 import Image from 'next/image';
 
 export function MarketsRecentlyAdded() {
@@ -26,30 +27,28 @@ export function MarketsRecentlyAdded() {
           }) => {
             return (
               <MarketsCardItemButton
-                key={metadata?.symbol}
-                href={productTradingLinks?.[productId].link}
+                key={metadata?.marketName}
+                href={productTradingLinks?.[productId]?.link}
                 label={
                   metadata && (
                     <>
                       <Image
                         src={metadata.icon.asset}
-                        alt={metadata.symbol}
+                        alt={metadata.marketName}
                         className="size-4"
                       />
-                      {metadata.symbol}
+                      {metadata.marketName}
                     </>
                   )
                 }
                 value={marketPrice}
                 numberFormatSpecifier={priceFormatSpecifier}
-                valueClassName="flex gap-x-3"
+                valueClassName="gap-x-2"
                 valueEndElement={
                   <span
                     className={joinClassNames(
-                      'text-right',
-                      marketPriceChangeFrac.isNegative()
-                        ? 'text-negative'
-                        : 'text-positive',
+                      'text-2xs',
+                      getSignDependentColorClassName(marketPriceChangeFrac),
                     )}
                   >
                     {formatNumber(marketPriceChangeFrac, {

@@ -1,0 +1,214 @@
+@import 'tailwindcss';
+@import '@vertex-protocol/web-ui/styles/vertex/dark-theme.css';
+@import '@vertex-protocol/web-ui/styles/blitz/dark-theme.css';
+@source "../../../packages/ui/**/*.{js,ts,jsx,tsx}";
+
+@theme inline static {
+  /* Fonts */
+  --font-*: initial;
+  --font-default: var(--font-default);
+  --font-title: var(--font-title);
+
+  --color-*: initial; /* Reset all color variables */
+
+  /* Background Color */
+  --color-background: var(--color-background);
+
+  /* Surface Colors */
+  --color-surface-card: var(--color-surface-card);
+  --color-surface-1: var(--color-surface-1);
+  --color-surface-2: var(--color-surface-2);
+  --color-surface-3: var(--color-surface-3);
+
+  /* Border Colors */
+  --color-stroke: var(--color-stroke);
+
+  /* Text Colors */
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-tertiary: var(--color-text-tertiary);
+  --color-text-button-primary: var(--color-text-button-primary);
+
+  /* Misc Theme Colors */
+  --color-accent: var(--color-accent);
+  --color-accent-alt: var(--color-accent-alt);
+  --color-accent-info: var(--color-accent-info);
+  --color-accent-warning: var(--color-accent-warning);
+  --color-accent-blast: var(--color-accent-blast);
+  --color-disabled: var(--color-disabled);
+  --color-positive: var(--color-positive);
+  --color-positive-muted: var(--color-positive-muted);
+  --color-primary: var(--color-primary);
+  --color-negative: var(--color-negative);
+  --color-negative-muted: var(--color-negative-muted);
+  --color-warning: var(--color-warning);
+  --color-warning-muted: var(--color-warning-muted);
+
+  /* Overlay Colors */
+  --color-overlay-accent: var(--color-overlay-accent);
+  --color-overlay-accent-blast: var(--color-overlay-accent-blast);
+  --color-overlay-disabled: var(--color-overlay-disabled);
+  --color-overlay-divider: var(--color-overlay-divider);
+  --color-overlay-hover: var(--color-overlay-hover);
+
+  /* Gradient Stops */
+  --color-grad-slider-start: var(--color-grad-slider-start);
+  --color-grad-slider-mid: var(--color-grad-slider-mid);
+  --color-grad-slider-end: var(--color-grad-slider-end);
+  --color-grad-overlay-dialog-start: var(--color-grad-overlay-dialog-start);
+  --color-grad-overlay-dialog-end: var(--color-grad-overlay-dialog-end);
+  --color-risk-low: var(--color-risk-low);
+  --color-risk-medium: var(--color-risk-medium);
+  --color-risk-high: var(--color-risk-high);
+  --color-risk-extreme: var(--color-risk-extreme);
+
+  /* Shadows */
+  --shadow-elevation-card: var(--shadow-elevation-card);
+  --shadow-elevation-strong: var(--shadow-elevation-strong);
+  --shadow-elevation-dialog: var(--shadow-elevation-dialog);
+  --shadow-elevation-risk-bar: 0px 0px 42px 2px; /* Uses custom shadow color */
+
+  /* Spacing */
+  --spacing-mobile-bottom-sheet: --spacing(20);
+  --spacing-trade-sidebar: --spacing(80);
+  --spacing-market-orders: --spacing(65);
+  --spacing-navbar: --spacing(14);
+  --spacing-footer: --spacing(8);
+  --spacing-desktop-navbar-item: --spacing(10);
+  --spacing-trading-top-bar: --spacing(12);
+
+  /* Breakpoints */
+  --breakpoint-*: initial; /* Reset default values */
+  --breakpoint-sm: 56rem;
+  --breakpoint-lg: 75rem;
+
+  /* Font Sizes */
+  --text-*: initial; /* Reset default values */
+  --text-3xs: 0.625rem;
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.375rem;
+  --text-3xl: 1.625rem;
+  --text-4xl: 1.875rem;
+  --text-5xl: 2.5rem;
+
+  /* Animations */
+  --animate-toast-timer: 'horizontally-shrink linear forwards';
+
+  /* Keyframes */
+  @keyframes horizontally-shrink {
+    0% {
+      width: 100%;
+    }
+    100% {
+      width: 0%;
+    }
+  }
+
+  /* Keyframes */
+  @keyframes background-slide {
+    from {
+      background-position: 0% 0%;
+    }
+    to {
+      background-position: 200% 0%;
+    }
+  }
+}
+
+/* 
+* App specific custom theme variables 
+*/
+[data-theme='vertexDark'] {
+  /* Gradient Stops */
+  --color-risk-low: #00c287;
+  --color-risk-medium: #c7b653;
+  --color-risk-high: #e26d7e;
+  --color-risk-extreme: #cc113f;
+  --color-grad-slider-start: #1b1b22;
+  --color-grad-slider-mid: var(--color-primary);
+  --color-grad-slider-end: #1b1b22;
+  --color-grad-chart-stop: hsl(240 14% 10% / 0);
+}
+
+[data-theme='blitzDark'] {
+  --color-accent-blast: #fcfc03;
+
+  /* Gradient Stops */
+  --color-risk-low: #00d8b1;
+  --color-risk-medium: #f3c520;
+  --color-risk-high: #e26d7e;
+  --color-risk-extreme: #cc113f;
+  --color-grad-slider-start: #ff036d;
+  --color-grad-slider-mid: #b80165;
+  --color-grad-slider-end: #930161;
+  --color-grad-chart-stop: hsl(240 18% 3% / 0);
+
+  /* Overlay Colors */
+  --color-overlay-accent-blast: hsl(60 98% 50% / 0.1);
+}
+
+/*
+* Utility classes
+*/
+
+/* tracking-normal to override tighter letter-spacing applied to Blitz */
+@utility title-text {
+  @apply font-title font-medium tracking-normal;
+}
+
+@utility gradient-text {
+  @apply bg-clip-text text-transparent;
+}
+
+@utility gradient-animated-text {
+  @apply gradient-text;
+  animation: background-slide 2.5s infinite linear;
+  background-size: 200%;
+}
+
+@utility text-vertex-animated-gradient-highlight {
+  @apply gradient-animated-text;
+  background-image: linear-gradient(
+    277deg,
+    #fff 0%,
+    #cd92ec 14.3%,
+    #85c5e0 84.72%,
+    #fff 100%
+  );
+}
+
+@utility text-vertex-gradient-highlight {
+  @apply gradient-text;
+  background-image: linear-gradient(
+    277deg,
+    #fff 1.88%,
+    #cd92ec 36.3%,
+    #85c5e0 74.72%
+  );
+}
+
+@utility text-sonic-animated-gradient-highlight {
+  @apply gradient-animated-text;
+  background-image: linear-gradient(
+    277deg,
+    #fff 0%,
+    #ff711b 14.3%,
+    #85c5e0 84.72%,
+    #fff 100%
+  );
+}
+
+@utility text-sonic-gradient-highlight {
+  @apply gradient-text;
+  background-image: linear-gradient(
+    277deg,
+    #fff 1.88%,
+    #ff711b 36.3%,
+    #85c5e0 74.72%
+  );
+}

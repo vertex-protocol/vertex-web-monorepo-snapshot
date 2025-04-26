@@ -1,13 +1,15 @@
 // We can't use Image element from nextjs here. It won't generate images properly.
 /* eslint-disable @next/next/no-img-element */
-import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  getMarketPriceFormatSpecifier,
+  signDependentValue,
+} from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
 import { NextImageSrc } from '@vertex-protocol/web-common';
 import { SocialSharingMarketInfo } from 'client/modules/socialSharing/components/SocialSharingMarketInfo';
 import { SocialSharingMetric } from 'client/modules/socialSharing/components/SocialSharingMetric';
 import { SocialSharingPnlInfo } from 'client/modules/socialSharing/components/SocialSharingPnlInfo';
 import { SocialSharingTheme } from 'client/modules/socialSharing/hooks/socialSharingConfig';
-import { signDependentValue } from '@vertex-protocol/react-client';
 
 type Props = {
   isRealized: boolean;

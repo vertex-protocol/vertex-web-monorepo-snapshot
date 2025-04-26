@@ -1,6 +1,6 @@
 import {
-  PresetNumberFormatSpecifier,
   formatNumber,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { Divider } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
@@ -22,7 +22,7 @@ export function MantleRewardsSummaryCard() {
     onClaimClick,
     isClaimSuccess,
     isClaiming,
-    mantleToken,
+    foundationToken,
     isCompleted,
   } = useMantleRewardsSummaryCard();
 
@@ -44,24 +44,27 @@ export function MantleRewardsSummaryCard() {
     return (
       <>
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Total Earned"
           tooltip={{ id: 'rewardsFoundationTotalEarned' }}
           value={totalRealizedRewards}
-          valueEndElement={mantleToken.symbol}
+          valueEndElement={foundationToken.symbol}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Claimed"
           value={claimedRewards}
-          valueEndElement={mantleToken.symbol}
+          valueEndElement={foundationToken.symbol}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
         {!isCompleted && (
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Est. New"
             tooltip={{ id: 'rewardsFoundationEstNew' }}
             value={estimatedWeekRewards}
-            valueEndElement={mantleToken.symbol}
+            valueEndElement={foundationToken.symbol}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           />
         )}
@@ -70,11 +73,11 @@ export function MantleRewardsSummaryCard() {
   })();
 
   return (
-    <RewardsSummaryCard.Container className="to-surface-card from-surface-3 bg-gradient-to-r">
+    <RewardsSummaryCard.Container className="to-surface-card from-surface-3 bg-linear-to-r">
       <RewardsSummaryCard.Content
         header={
           <RewardsSummaryCard.IconHeader
-            iconSrc={mantleToken.icon.asset}
+            iconSrc={foundationToken.icon.asset}
             title="MNT Incentives"
             iconClassName="aspect-square w-7"
           />
@@ -82,10 +85,11 @@ export function MantleRewardsSummaryCard() {
         metricItems={metricItems}
         actionMetric={
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Available to Claim"
             tooltip={{ id: 'rewardsFoundationAvailableToClaim' }}
             value={unclaimedRealizedRewards}
-            valueEndElement={mantleToken.symbol}
+            valueEndElement={foundationToken.symbol}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           />
         }

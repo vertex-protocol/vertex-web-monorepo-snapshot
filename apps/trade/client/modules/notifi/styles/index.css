@@ -13,6 +13,7 @@
 @import url('./history.css');
 @import url('./target-state-banner.css');
 @import url('./error.css');
+@import url('./tooltip.css');
 
 :root {
   /* Color variables */
@@ -20,6 +21,7 @@
   --notifi-color-grey3: #80829d;
   --notifi-color-grey4: #2e2d32;
   --notifi-color-grey5: #434354;
+  --notifi-color-grey6: #272733;
   --notifi-color-blackish1: #32323b;
   --notifi-color-black: #000;
   --notifi-color-light: #f3f4f9;
@@ -35,18 +37,20 @@
   --notifi-color-cloud: #e8ebf5;
   --notifi-color-error: #d5828b;
   --notifi-color-dusk: #80829d;
+  --notifi-color-heather: #b6b8d5;
   --notifi-color-text-light: #868fa6;
   --notifi-color-rose: #c78186;
   --notifi-color-purple1: #7b63e9;
   --notifi-color-purple2: #a29ef5;
   --notifi-color-white: #fff;
-  --tenant-color-surface-1: theme('backgroundColor.surface.1');
-  --tenant-color-card: theme('backgroundColor.surface.card');
-  --tenant-color-primary: theme('backgroundColor.primary.DEFAULT');
-  --tenant-color-text-primary: theme('backgroundColor.text.primary');
-  --tenant-color-text-tertiary: theme('backgroundColor.text.tertiary');
-  --tenant-color-text-secondary: theme('backgroundColor.text.secondary');
-  --tenant-color-positive: theme('backgroundColor.positive.DEFAULT');
+  --tenant-color-surface-1: var(--color-surface-1);
+  --tenant-color-surface-3: var(--color-surface-3);
+  --tenant-color-card: var(--color-surface-card);
+  --tenant-color-primary: var(--color-primary);
+  --tenant-color-text-primary: var(--color-text-primary);
+  --tenant-color-text-tertiary: var(--color-text-tertiary);
+  --tenant-color-text-secondary: var(--color-text-secondary);
+  --tenant-color-positive: var(--color-positive);
 }
 
 .notifi-theme-dark {
@@ -101,12 +105,14 @@
   --notifi-target-state-banner-signup-cta-bg: var(--tenant-color-primary);
   --notifi-topic-options-item-selected-text: var(--tenant-color-text-primary);
   --notifi-topic-option-radio-inner-ring: var(--tenant-color-surface-1);
-  --notifi-topic-list-tooltip-bg: var(--tenant-color-card);
-  --notifi-topic-list-tooltip-content-border: var(--tenant-color-card);
-  --notifi-target-list-tooltip-bg: var(--tenant-color-card);
-  --notifi-target-list-item-tooltip-content-border: var(--tenant-color-card);
+  --notifi-topic-list-tooltip-bg: var(--tenant-color-surface-3);
+  --notifi-topic-list-tooltip-content-border: var(--tenant-color-surface-3);
+  --notifi-target-list-tooltip-bg: var(--tenant-color-surface-3);
+  --notifi-target-list-item-tooltip-content-border: var(
+    --tenant-color-surface-3
+  );
   --notifi-target-list-item-tooltip-content-text: var(
-    --tenant-color-text-primary
+    --tenant-color-text-secondary
   );
   --notifi-target-list-item-tooltip-icon-color-hover: var(
     ---tenant-color-text-primary
@@ -132,6 +138,8 @@
   --notifi-target-input-toggle-unavailable-text: var(
     --tenant-color-text-tertiary
   );
+  --notifi-target-list-item-warning-bg: var(--notifi-color-grey6);
+  --notifi-target-list-item-warning-text: var(--notifi-color-text-light);
 }
 
 .notifi-theme-light {
@@ -209,4 +217,6 @@
   --notifi-topic-stack-separator: var(--notifi-color-heather);
   --notifi-topic-stack-row-cta-text: var(--notifi-color-secondary-light);
   --notifi-target-input-toggle-unavailable-text: var(--notifi-color-grey3);
+  --notifi-target-list-item-warning-bg: var(--notifi-color-grey6);
+  --notifi-target-list-item-warning-text: var(--notifi-color-text-light);
 }

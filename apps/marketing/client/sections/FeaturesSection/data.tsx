@@ -2,7 +2,6 @@ import OneClickIcon from 'client/icons/features/OneClickIcon';
 import RewardsIcon from 'client/icons/features/RewardsIcon';
 import UnbeatableIcon from 'client/icons/features/UnbeatableIcon';
 import UnlikeIcon from 'client/icons/features/UnlikeIcon';
-import React from 'react';
 
 export const FEATURE_DATA = {
   highlights: [
@@ -29,7 +28,7 @@ export const FEATURE_DATA = {
     {
       icon: <UnbeatableIcon size={14} />,
       title: 'Unbeatable Fees',
-      description: 'Stop overpaying. 0% on maker orders and 0.02% for takers. ',
+      description: 'Stop overpaying. 0% on maker orders and 0.02% for takers.',
     },
     {
       icon: <UnlikeIcon size={16} />,

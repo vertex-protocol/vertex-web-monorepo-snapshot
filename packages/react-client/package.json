@@ -10,24 +10,22 @@
   },
   "private": true,
   "dependencies": {
-    "@abstract-foundation/agw-client": "^1.3.1",
-    "@abstract-foundation/agw-react": "1.4.4",
-    "@binance/w3w-wagmi-connector-v2": "^1.2.4",
-    "@privy-io/cross-app-connect": "^0.1.5",
-    "@rainbow-me/rainbowkit": "^2.2.3",
-    "@tanstack/react-query": "*",
     "@vertex-protocol/client": "*",
+    "d3-format": "*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "*",
     "bignumber.js": "*",
-    "connectkit": "^1.8.2",
-    "d3-format": "*",
     "ethers": "*",
+    "lodash": "*",
     "react": "*",
     "viem": "*",
-    "wagmi": "*",
-    "zksync-ethers": "^6.16.0"
+    "wagmi": "*"
   },
   "devDependencies": {
     "@types/d3-format": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
     "ts-config": "*",

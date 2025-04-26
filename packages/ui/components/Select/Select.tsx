@@ -6,6 +6,7 @@ import {
   SelectContentProps,
   SelectItem,
   SelectItemIndicator,
+  SelectPortal,
   SelectTrigger,
   SelectViewport,
 } from '@radix-ui/react-select';
@@ -22,7 +23,7 @@ import {
   DropdownUiTriggerProps,
 } from '../DropdownUi/DropdownUi';
 import { Icons } from '../Icons';
-import { ScrollShadowsContainer } from '../ScrollShadowsContainer';
+import { ScrollShadowsContainer } from '../ScrollShadowsContainer/ScrollShadowsContainer';
 
 export type SelectTriggerProps = Merge<
   DropdownUiTriggerProps,
@@ -93,7 +94,7 @@ function Options({
       <DropdownUi.Content
         header={header}
         className={joinClassNames(
-          'min-w-[var(--radix-select-trigger-width)] rounded',
+          'min-w-(--radix-select-trigger-width) rounded-sm',
           className,
         )}
       >
@@ -163,4 +164,5 @@ export const Select = {
   PillTrigger,
   Options,
   Option,
+  Portal: SelectPortal,
 };

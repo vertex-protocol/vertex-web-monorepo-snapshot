@@ -1,5 +1,7 @@
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
-import { useEVMContext } from '@vertex-protocol/react-client';
+import {
+  useEVMContext,
+  useVertexMetadataContext,
+} from '@vertex-protocol/react-client';
 import { UserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { AccountCenterSubaccountSwitcher } from 'client/modules/accountCenter/components/AccountCenterHeader/AccountCenterSubaccountSwitcher';
 import { ActionButtons } from 'client/modules/accountCenter/components/AccountCenterHeader/ActionButtons';
@@ -15,7 +17,7 @@ interface Props {
 
 export function AccountCenterHeader({ userStateError }: Props) {
   const { push } = useDialog();
-  const { primaryChainMetadata } = useVertexMetadataContext();
+  const { primaryChainEnvMetadata } = useVertexMetadataContext();
   const { connectionStatus, primaryChainEnv } = useEVMContext();
   const [isAddressPrivate, setIsAddressPrivate] =
     usePrivacySetting('isAddressPrivate');
@@ -26,10 +28,10 @@ export function AccountCenterHeader({ userStateError }: Props) {
         {/*User icon*/}
         <div className="relative">
           <AccountCenterWalletIcon userStateError={userStateError} size={30} />
-          <div className="absolute -bottom-1 -right-1">
+          <div className="absolute -right-1 -bottom-1">
             <Image
               alt={primaryChainEnv}
-              src={primaryChainMetadata.chainIcon}
+              src={primaryChainEnvMetadata.chainIcon}
               className="h-3.5 w-auto"
             />
           </div>

@@ -1,8 +1,7 @@
-import { useEnsAvatar, useEnsName } from 'wagmi';
 import { useEVMContext } from '@vertex-protocol/react-client';
 import { mainnet } from 'viem/chains';
-import { Address } from 'viem';
 import { normalize } from 'viem/ens';
+import { useEnsAvatar, useEnsName } from 'wagmi';
 
 export function useEnsProfile() {
   // only fetching ENS from mainnet as it's mainly used there and allows for easier testing
@@ -11,7 +10,7 @@ export function useEnsProfile() {
   } = useEVMContext();
 
   const { data: ensName } = useEnsName({
-    address: address as Address,
+    address,
     chainId: mainnet.id,
   });
 

@@ -34,7 +34,7 @@ export function EpochSelect({ epoch, setEpoch, epochOptions }: Props) {
       onOpenChange={onOpenChange}
     >
       <div className="flex flex-col gap-y-1">
-        <Label>Epoch</Label>
+        <Label sizeVariant="lg">Epoch</Label>
         <Select.Trigger
           // min-w is used to prevent layout shifts
           className="min-w-20"

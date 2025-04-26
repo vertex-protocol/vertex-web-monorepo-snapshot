@@ -1,7 +1,6 @@
 import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   webpack: (config) => {
     config.externals.push(
       'utf-8-validate',
@@ -11,9 +10,7 @@ const nextConfig: NextConfig = {
     );
     return config;
   },
-  devIndicators: {
-    appIsrStatus: false,
-  },
+  devIndicators: false,
   experimental: {
     optimizePackageImports: [
       '@vertex-protocol/react-client',

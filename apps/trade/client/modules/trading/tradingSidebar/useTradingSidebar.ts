@@ -80,7 +80,7 @@ export function useTradingSidebar() {
   const isWatchlistTabSelected = selectedWatchlistTabId === 'watchlist';
 
   const relevantMarkets = useMemo(() => {
-    return Object.values(allMarketsStaticData?.all ?? [])
+    return Object.values(allMarketsStaticData?.allMarkets ?? [])
       .filter(
         (market) =>
           !isWatchlistTabSelected || favoritedMarketIds.has(market.productId),

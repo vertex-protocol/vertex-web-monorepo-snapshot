@@ -1,14 +1,13 @@
 'use client';
 
 import { joinClassNames } from '@vertex-protocol/web-common';
-import React from 'react';
-import { motion } from 'framer-motion';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import { VRTX_PARTNERS } from 'client/sections/VrtxSection/data';
-import { ExternalLink } from 'client/components/Link/Link';
 import {
   VRTX_CONTAINER_VARIANTS,
   VRTX_ITEM_VARIANTS,
 } from 'client/sections/VrtxSection/motionVariants';
+import { motion } from 'framer-motion';
 
 export function VrtxPartners() {
   return (

@@ -1,7 +1,7 @@
 'use client';
 
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { ExternalLink } from 'client/components/Link/Link';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import { EcosystemPartner } from 'client/sections/EcosystemSection/data';
 import { motion } from 'framer-motion';
 
@@ -13,7 +13,7 @@ export function EcosystemCard({
   comingSoon: boolean;
 }) {
   const cardClasses = joinClassNames(
-    'bg-card border-new-website-overlay-8 md:text-body-gray group rounded-lg border text-white md:opacity-60',
+    'bg-card-gradient border-new-website-overlay-8 md:text-body-gray group rounded-lg border text-white md:opacity-60',
     !comingSoon && 'cursor-pointer',
   );
   const skeletonClasses = 'flex items-center gap-x-4 px-6 py-4';
@@ -51,7 +51,7 @@ export function EcosystemCard({
 function EcosystemCardSkeleton({ partner }: { partner: EcosystemPartner }) {
   return (
     <>
-      <div className="flex min-w-[120px] max-w-[120px] items-center justify-center md:min-w-[140px]">
+      <div className="flex max-w-30 min-w-30 items-center justify-center md:min-w-35">
         <partner.logo size={44} />
       </div>
       <p className="text-body-13 text-body-gray flex-1 md:text-white">

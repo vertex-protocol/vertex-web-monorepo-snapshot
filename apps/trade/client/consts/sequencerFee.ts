@@ -1,0 +1,1 @@
+export const SEQUENCER_FEE_AMOUNT_USDC = 1;

@@ -1,15 +1,16 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import {
+  AnnotatedSpotMarket,
   SpotProductMetadata,
   useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
+import { getMarketForProductId } from 'client/hooks/query/markets/allMarkets/getMarketForProductId';
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
-import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 export interface MoneyMarketsTableItem {
@@ -31,6 +32,7 @@ export interface MoneyMarketsTableItem {
   borrowAPR: BigDecimal | undefined;
   isNewMarket: boolean;
   isFavorited: boolean;
+  utilizationRatioFrac: BigDecimal | undefined;
 }
 
 export function useMoneyMarketsTable() {
@@ -49,10 +51,10 @@ export function useMoneyMarketsTable() {
 
     return balances
       .map((balance) => {
-        const market =
-          balance.productId === QUOTE_PRODUCT_ID
-            ? allMarketsData.primaryQuoteProduct
-            : allMarketsData.spotMarkets[balance.productId];
+        const market = getMarketForProductId<AnnotatedSpotMarket>(
+          balance.productId,
+          allMarketsData,
+        );
 
         if (!market) {
           return;
@@ -88,6 +90,7 @@ export function useMoneyMarketsTable() {
           borrowAPR: balance.borrowAPR,
           isNewMarket: getIsNewMarket(balance.productId),
           isFavorited: favoritedMarketIds.has(balance.productId),
+          utilizationRatioFrac: balance.utilizationRatioFrac,
         };
       })
       .filter(nonNullFilter);

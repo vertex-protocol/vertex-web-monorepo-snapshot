@@ -1,42 +1,45 @@
 import { ChainType, RouteRequest, SquidCallType } from '@0xsquid/squid-types';
-import {
-  IEndpoint__factory,
-  IERC20__factory,
-  subaccountToBytes32,
-} from '@vertex-protocol/client';
+import { ERC20_ABI, subaccountToHex } from '@vertex-protocol/client';
 import { addDecimals, toBigDecimal } from '@vertex-protocol/utils';
 import { BridgeRequestParams } from 'client/modules/collateral/bridge/types';
+import { Address, encodeFunctionData, parseAbi } from 'viem';
 
 interface Params extends BridgeRequestParams {
   subaccountAddress: string;
   subaccountName: string;
-  endpointAddress: string;
+  endpointAddress: Address;
 }
 
 export function getSquidRouteRequest(params: Params): RouteRequest {
-  const encodedApproveFnData =
-    IERC20__factory.createInterface().encodeFunctionData('approve', [
+  const encodedApproveFnData = encodeFunctionData({
+    abi: ERC20_ABI,
+    functionName: 'approve',
+    args: [
       params.endpointAddress,
-      '0', // Amount, this is replaced by `payload` below
-    ]);
-
-  const encodedDepositFnData =
-    IEndpoint__factory.createInterface().encodeFunctionData(
-      'depositCollateralWithReferral(bytes32,uint32,uint128,string)',
-      [
-        // Subaccount
-        subaccountToBytes32({
-          subaccountOwner: params.subaccountAddress,
-          subaccountName: params.subaccountName,
-        }),
-        // Product ID
-        params.destinationToken.vertexProduct.productId,
-        // Amount, this is replaced by `payload` below
-        '0',
-        // Referral code
-        params.referralCode ?? '-1', // -1 used to signify no referral code
-      ],
-    );
+      BigInt(0), // Amount, this is replaced by `payload` below
+    ],
+  });
+  const encodedDepositFnData = encodeFunctionData({
+    // Unfortunately, viem does not support function overloads, so the incorrect `depositCollateralWithReferral` function
+    // is used if we use `VERTEX_ABIS` directly. To solve this, we manually specify the function to be used
+    abi: parseAbi([
+      'function depositCollateralWithReferral(bytes32,uint32,uint128,string)',
+    ]),
+    functionName: 'depositCollateralWithReferral',
+    args: [
+      // Full subaccount identifier
+      subaccountToHex({
+        subaccountOwner: params.subaccountAddress,
+        subaccountName: params.subaccountName,
+      }),
+      // Product ID
+      params.destinationToken.vertexProduct.productId,
+      // Amount, this is replaced by `payload` below
+      BigInt(0),
+      // Referral code
+      params.referralCode ?? '-1', // -1 used to signify no referral code
+    ],
+  });
 
   const destinationTokenAddress = params.destinationToken.address;
   return {

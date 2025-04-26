@@ -5,14 +5,16 @@ import {
   CustomNumberFormatSpecifier,
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { Divider } from '@vertex-protocol/web-ui';
+import { Divider, IconButton, Icons } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { MarketProductInfoCell } from 'client/components/DataTable/cells/MarketProductInfoCell';
+import { TableCell } from 'client/components/DataTable/cells/TableCell';
 import { SeparatedRowDataTable } from 'client/components/DataTable/SeparatedRowDataTable';
 import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
+import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { FavoriteHeaderCell } from 'client/modules/tables/cells/FavoriteHeaderCell';
 import { FavoriteToggleCell } from 'client/modules/tables/cells/FavoriteToggleCell';
 import { PercentageCell } from 'client/modules/tables/cells/PercentageCell';
@@ -21,6 +23,7 @@ import {
   MoneyMarketsTableItem,
   useMoneyMarketsTable,
 } from 'client/modules/tables/hooks/useMoneyMarketsTable';
+import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
 import { MoneyMarketActionsCell } from 'client/pages/MoneyMarkets/components/MoneyMarketActionsCell';
 import { useMemo } from 'react';
@@ -34,6 +37,7 @@ export function MoneyMarketsTable() {
     disableFavoriteButton,
     isLoading,
   } = useMoneyMarketsTable();
+  const { show } = useDialog();
 
   const columns: ColumnDef<MoneyMarketsTableItem, any>[] = useMemo(() => {
     return [
@@ -82,6 +86,60 @@ export function MoneyMarketsTable() {
           cellContainerClassName: 'w-44',
         },
       }),
+      columnHelper.accessor('spotBalance', {
+        header: ({ header }) => (
+          <HeaderCell header={header}>Your Balance</HeaderCell>
+        ),
+        cell: (context) => {
+          const { amount, valueUsd } =
+            context.getValue<MoneyMarketsTableItem['spotBalance']>();
+          return (
+            <StackedAmountValueCell
+              size={amount}
+              valueUsd={valueUsd}
+              symbol={context.row.original.metadata.token.symbol}
+              sizeFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+            />
+          );
+        },
+        sortingFn: getKeyedBigDecimalSortFn('amount'),
+        meta: {
+          cellContainerClassName: 'w-36',
+        },
+      }),
+      columnHelper.display({
+        id: 'overview_actions',
+        header: () => null,
+        cell: ({ row }) => (
+          <TableCell>
+            <IconButton
+              className="pointer-events-auto"
+              size="xs"
+              icon={Icons.CaretCircleRight}
+              onClick={getTableButtonOnClickHandler(() =>
+                show({
+                  type: 'spot_money_market_details',
+                  params: {
+                    productId: row.original.productId,
+                    metadata: row.original.metadata,
+                  },
+                }),
+              )}
+            />
+          </TableCell>
+        ),
+        meta: {
+          cellContainerClassName: 'w-12',
+        },
+      }),
+      columnHelper.display({
+        id: 'border',
+        header: () => <Divider vertical />,
+        cell: () => <Divider vertical />,
+        meta: {
+          cellContainerClassName: 'flex p-4',
+        },
+      }),
       columnHelper.accessor('depositAPR', {
         header: ({ header }) => (
           <HeaderCell header={header} definitionTooltipId="depositAPR">
@@ -91,12 +149,23 @@ export function MoneyMarketsTable() {
         cell: (context) => {
           const depositAPR =
             context.getValue<MoneyMarketsTableItem['depositAPR']>();
-          return (
-            <PercentageCell
-              formatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
-              fraction={depositAPR}
-            />
-          );
+          return <PercentageCell fraction={depositAPR} />;
+        },
+        sortingFn: bigDecimalSortFn,
+        meta: {
+          cellContainerClassName: 'w-36',
+        },
+      }),
+      columnHelper.accessor('borrowAPR', {
+        header: ({ header }) => (
+          <HeaderCell header={header} definitionTooltipId="borrowAPR">
+            Borrow APR
+          </HeaderCell>
+        ),
+        cell: (context) => {
+          const borrowAPR =
+            context.getValue<MoneyMarketsTableItem['borrowAPR']>();
+          return <PercentageCell fraction={borrowAPR} />;
         },
         sortingFn: bigDecimalSortFn,
         meta: {
@@ -125,27 +194,6 @@ export function MoneyMarketsTable() {
           cellContainerClassName: 'w-48',
         },
       }),
-      columnHelper.accessor('borrowAPR', {
-        header: ({ header }) => (
-          <HeaderCell header={header} definitionTooltipId="borrowAPR">
-            Borrow APR
-          </HeaderCell>
-        ),
-        cell: (context) => {
-          const borrowAPR =
-            context.getValue<MoneyMarketsTableItem['borrowAPR']>();
-          return (
-            <PercentageCell
-              formatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}
-              fraction={borrowAPR}
-            />
-          );
-        },
-        sortingFn: bigDecimalSortFn,
-        meta: {
-          cellContainerClassName: 'w-36',
-        },
-      }),
       columnHelper.accessor('totalBorrowed', {
         header: ({ header }) => (
           <HeaderCell header={header}>Total Borrowed</HeaderCell>
@@ -168,34 +216,22 @@ export function MoneyMarketsTable() {
           cellContainerClassName: 'w-36',
         },
       }),
-      columnHelper.display({
-        id: 'border',
-        header: () => <Divider vertical />,
-        cell: () => <Divider vertical />,
-        meta: {
-          cellContainerClassName: 'px-4 py-3',
-        },
-      }),
-      columnHelper.accessor('spotBalance', {
+      columnHelper.accessor('utilizationRatioFrac', {
         header: ({ header }) => (
-          <HeaderCell header={header}>Your Balance</HeaderCell>
+          <HeaderCell
+            definitionTooltipId="moneyMarketsUtilizationRatio"
+            header={header}
+          >
+            Utilization Ratio
+          </HeaderCell>
         ),
         cell: (context) => {
-          const { amount, valueUsd } =
-            context.getValue<MoneyMarketsTableItem['spotBalance']>();
-          return (
-            <StackedAmountValueCell
-              size={amount}
-              valueUsd={valueUsd}
-              symbol={context.row.original.metadata.token.symbol}
-              sizeFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
-            />
-          );
+          return <PercentageCell fraction={context.getValue()} />;
         },
-        sortingFn: getKeyedBigDecimalSortFn('amount'),
         meta: {
           cellContainerClassName: 'w-36 grow',
         },
+        sortingFn: bigDecimalSortFn,
       }),
       columnHelper.display({
         id: 'actions',
@@ -213,7 +249,7 @@ export function MoneyMarketsTable() {
         },
       }),
     ];
-  }, [disableFavoriteButton, toggleIsFavoritedMarket]);
+  }, [disableFavoriteButton, show, toggleIsFavoritedMarket]);
 
   return (
     <SeparatedRowDataTable

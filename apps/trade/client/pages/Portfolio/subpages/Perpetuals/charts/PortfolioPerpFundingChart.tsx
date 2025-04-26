@@ -1,24 +1,28 @@
 import { ChartTooltip } from 'client/components/ChartTooltip';
+import { ChartDynamicGradientDefinitions } from 'client/modules/charts/components/ChartDynamicGradientDefinitions/ChartDynamicGradientDefinitions';
+import {
+  AREA_CHART_DEFAULTS,
+  CHART_GRID_DEFAULTS,
+  CHART_TOOLTIP_DEFAULTS,
+  CHART_XAXIS_DEFAULTS,
+  CHART_YAXIS_DEFAULTS,
+} from 'client/modules/charts/config';
+import { currencyAxisFormatter } from 'client/modules/charts/utils/axisFormatters';
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
 import {
   PortfolioChartTooltip,
   PortfolioChartTooltipBodyRenderFn,
 } from 'client/pages/Portfolio/charts/components/PortfolioChartTooltip';
-import { PortfolioDynamicGradientDefinitions } from 'client/pages/Portfolio/charts/components/PortfolioDynamicGradientDefinitions';
 import { SignedCurrencyChangeMetric } from 'client/pages/Portfolio/charts/components/SignedCurrencyChangeMetric';
 import {
-  AREA_CHART_DEFAULTS,
   PORTFOLIO_CHART_GRADIENT_URLS,
-  PORTFOLIO_CHART_GRID_DEFAULTS,
-  PORTFOLIO_CHART_TOOLTIP_DEFAULTS,
-  PORTFOLIO_CHART_XAXIS_DEFAULTS,
-  PORTFOLIO_CHART_YAXIS_DEFAULTS,
   PORTFOLIO_DYNAMIC_GRADIENT_CONFIGS,
 } from 'client/pages/Portfolio/charts/consts';
-import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
 import { usePortfolioChartXAxisFormatter } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartXAxisFormatter';
-import { ChartComponentProps } from 'client/pages/Portfolio/charts/types';
-import { currencyAxisFormatter } from 'client/pages/Portfolio/charts/utils/axisFormatters';
-import { COLORS } from 'common/theme/colors';
+import {
+  PortfolioChartComponentProps,
+  PortfolioChartDataItem,
+} from 'client/pages/Portfolio/charts/types';
 import {
   Area,
   AreaChart,
@@ -65,44 +69,41 @@ const renderTooltipContent: PortfolioChartTooltipBodyRenderFn = ({
 export function PortfolioPerpFundingChart({
   data,
   isPrivate,
-}: ChartComponentProps) {
+}: PortfolioChartComponentProps) {
   const xAxisFormatter = usePortfolioChartXAxisFormatter();
 
   return (
     <>
       {/* Gradient definitions component needs to be wrapped in a fragment here
         so we can pass in `data` to determine the gradient stop offset */}
-      <PortfolioDynamicGradientDefinitions
+      <ChartDynamicGradientDefinitions
         valueKey="cumulativePerpFundingUsd"
         gradientConfigs={PORTFOLIO_DYNAMIC_GRADIENT_CONFIGS.funding}
         data={data}
       />
       <ResponsiveContainer>
         <AreaChart data={data}>
-          <CartesianGrid {...PORTFOLIO_CHART_GRID_DEFAULTS} />
+          <CartesianGrid {...CHART_GRID_DEFAULTS} />
           <Tooltip
-            {...PORTFOLIO_CHART_TOOLTIP_DEFAULTS}
+            {...CHART_TOOLTIP_DEFAULTS}
             content={
               <PortfolioChartTooltip renderBody={renderTooltipContent} />
             }
           />
-          <XAxis
-            {...PORTFOLIO_CHART_XAXIS_DEFAULTS}
-            tickFormatter={xAxisFormatter}
-          />
+          <XAxis {...CHART_XAXIS_DEFAULTS} tickFormatter={xAxisFormatter} />
           <YAxis
-            {...PORTFOLIO_CHART_YAXIS_DEFAULTS}
+            {...CHART_YAXIS_DEFAULTS}
             tickFormatter={currencyAxisFormatter}
             hide={isPrivate}
           />
           <Area
             {...AREA_CHART_DEFAULTS}
             fill={PORTFOLIO_CHART_GRADIENT_URLS.funding}
-            stroke={COLORS.warning.DEFAULT}
+            stroke={getTradeAppColorVar('warning')}
             dataKey={cumulativeFundingDataKey}
             activeDot={{
-              stroke: COLORS.warning.DEFAULT,
-              fill: COLORS.surface.card,
+              stroke: getTradeAppColorVar('warning'),
+              fill: getTradeAppColorVar('surface-card'),
             }}
           />
         </AreaChart>

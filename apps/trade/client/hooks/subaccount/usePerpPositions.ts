@@ -1,6 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Subaccount } from '@vertex-protocol/client';
 import {
+  BalanceHealthContributions,
   calcPerpBalanceNotionalValue,
   calcPerpBalanceValue,
   isPerpBalance,
@@ -11,12 +12,9 @@ import {
   createQueryKey,
   PerpProductMetadata,
   QueryDisabledError,
+  REACT_QUERY_CONFIG,
 } from '@vertex-protocol/react-client';
-import {
-  addDecimals,
-  BigDecimal,
-  removeDecimals,
-} from '@vertex-protocol/utils';
+import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import { safeDiv } from '@vertex-protocol/web-common';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { AppSubaccount } from 'client/context/subaccount/types';
@@ -27,21 +25,20 @@ import { useSubaccountIsolatedPositions } from 'client/hooks/query/subaccount/is
 import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubaccountIndexerSnapshot';
 import { QueryState } from 'client/types/QueryState';
-import { calcCrossPositionMarginWithoutPnl } from 'client/utils/calcs/calcCrossPositionMarginWithoutPnl';
-import { calcIsoPositionLeverage } from 'client/utils/calcs/calcIsoPositionLeverage';
-import { calcIsoPositionNetMargin } from 'client/utils/calcs/calcIsoPositionNetMargin';
 import {
   calcPerpBalanceHealthWithoutPnl,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
-import { calcEstimatedLiquidationPriceFromBalance } from 'client/utils/calcs/liquidationPriceCalcs';
-import { calcIndexerUnrealizedPerpEntryCost } from 'client/utils/calcs/perpEntryCostCalcs';
+import { calcCrossPositionMarginWithoutPnl } from 'client/utils/calcs/perp/calcCrossPositionMarginWithoutPnl';
+import { calcIsoPositionLeverage } from 'client/utils/calcs/perp/calcIsoPositionLeverage';
+import { calcIsoPositionNetMargin } from 'client/utils/calcs/perp/calcIsoPositionNetMargin';
+import { calcEstimatedLiquidationPriceFromBalance } from 'client/utils/calcs/perp/liquidationPriceCalcs';
+import { calcIndexerUnrealizedPerpEntryCost } from 'client/utils/calcs/perp/perpEntryCostCalcs';
 import {
   calcIndexerSummaryUnrealizedPnl,
   calcPnlFrac,
 } from 'client/utils/calcs/pnlCalcs';
 import { getEstimatedExitPrice } from 'client/utils/getEstimatedExitPrice';
-import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 
 export interface PerpPositionItemIsoData {
   // Subaccount for the isolated position
@@ -98,6 +95,7 @@ function perpPositionsQueryKey(
 interface PerpPositionToProcess extends AnnotatedPerpBalanceWithProduct {
   iso?: {
     subaccount: Subaccount;
+    healths: BalanceHealthContributions;
     quoteBalance: AnnotatedSpotBalanceWithProduct;
   };
 }
@@ -145,6 +143,7 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
           iso: {
             quoteBalance: isoPosition.quoteBalance,
             subaccount: isoPosition.subaccount,
+            healths: isoPosition.healths,
           },
         };
       },
@@ -251,9 +250,8 @@ export function usePerpPositions(): QueryState<PerpPositionItem[]> {
         const estimatedLiquidationPrice =
           calcEstimatedLiquidationPriceFromBalance(
             position,
-            // Current available margin for iso position is just the net margin, otherwise use the maint. health for cross
-            iso
-              ? addDecimals(iso.netMargin)
+            position.iso
+              ? position.iso.healths.maintenance
               : subaccountSummary.health.maintenance.health,
           );
         const crossMarginUsedUsd = !isIso

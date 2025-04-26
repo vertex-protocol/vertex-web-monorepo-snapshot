@@ -61,7 +61,8 @@ export function useSubaccountCreationTime() {
         eventTypes: ['deposit_collateral', 'transfer_quote'],
       });
 
-      return first(events)?.timestamp ?? null;
+      // Return a number instead of `BigDecimal`, as `BigDecimal` is not a stable reference when used in `useMemo` dependencies, which can cause unnecessary re-computations.
+      return first(events)?.timestamp.toNumber() ?? null;
     },
     enabled: !disabled,
     refetchInterval: (data) => {

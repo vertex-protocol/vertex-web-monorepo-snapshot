@@ -6,7 +6,7 @@ import { SwiperProps } from 'swiper/react';
 // All general styling is managed withing the library's CSS files and we only add a background-color to the bullet by selecting this className
 // and applying the background-color to it
 export const COMMON_SWIPER_PAGINATION_BULLET_CLASSNAME =
-  '[&_span.swiper-pagination-bullet]:bg-text-primary';
+  '[&_span.swiper-pagination-bullet]:!bg-text-primary';
 
 export const COMMON_SWIPER_CLASSNAME = [
   'select-none w-full',

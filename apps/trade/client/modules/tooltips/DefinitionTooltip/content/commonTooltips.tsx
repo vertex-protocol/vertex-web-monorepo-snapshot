@@ -54,14 +54,6 @@ export const commonTooltips = {
     title: `Oracle Price`,
     content: `The price of the perpetual contract across other exchanges.`,
   },
-  noFundsAvailable: {
-    title: `No Funds Available`,
-    content: `You've run out of initial margin / funds available. You cannot initiate new positions or withdraw collateral. Deposit more collateral or close existing positions to trade.`,
-  },
-  extremeLiquidationRisk: {
-    title: `Liquidation Risk`,
-    content: `Your account's maintenance margin is above 90% and is at risk of liquidation. Please add collateral or reduce risk to avoid liquidation.`,
-  },
   accountLeverage: {
     title: `Account Leverage`,
     content: `The multiplier of how much margin you're using against the value of your assets.`,
@@ -90,7 +82,7 @@ export const commonTooltips = {
       </>
     ),
   },
-  fundsAvailable: {
+  fundsAvailableUsd: {
     title: (
       <>
         <p>Funds Available</p>
@@ -99,7 +91,7 @@ export const commonTooltips = {
     ),
     content: `The funds you have available to trade with. This is calculated using the sum of initial margin values for assets, borrows, pools, and cross-margin perpetual positions.`,
   },
-  fundsUntilLiquidation: {
+  fundsUntilLiquidationUsd: {
     title: (
       <>
         <p>Funds until Liquidation</p>

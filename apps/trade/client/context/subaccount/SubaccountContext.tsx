@@ -38,11 +38,6 @@ export interface SubaccountContextData {
   };
 
   setCurrentSubaccountName(name: string): void;
-
-  /**
-   * Disconnects the current wallet and cleans up state as needed.
-   */
-  disconnect(): void;
 }
 
 export const SubaccountContext = createContext<SubaccountContextData>(

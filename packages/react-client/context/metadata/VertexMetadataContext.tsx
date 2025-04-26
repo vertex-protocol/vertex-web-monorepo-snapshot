@@ -1,10 +1,10 @@
 'use client';
 
 import { ChainEnv } from '@vertex-protocol/client';
-import { useEVMContext } from '@vertex-protocol/react-client';
 import { WithChildren } from '@vertex-protocol/web-common';
 import { createContext, use, useCallback, useMemo } from 'react';
-import { ChainMetadata, getChainMetadata } from './chainMetadata';
+import { useEVMContext } from '../../context/evm';
+import { ChainEnvMetadata, getChainEnvMetadata } from './chainMetadata';
 import { HIDDEN_PRODUCT_IDS_BY_CHAIN_ENV } from './consts/hiddenProductIdsByChainEnv';
 import { NEW_PRODUCT_IDS_BY_CHAIN_ENV } from './consts/newProductIdsByChainEnv';
 import {
@@ -28,6 +28,11 @@ export interface VertexMetadataContextData {
    * The token used as the primary quote product (product ID of 0)
    */
   primaryQuoteToken: Token;
+  /**
+   * Primary chain metadata.
+   */
+  primaryChainEnvMetadata: ChainEnvMetadata;
+  getChainEnvMetadata: (chainEnv: ChainEnv) => ChainEnvMetadata;
 
   /**
    * We often want to hide certain markets for trading. Positions will still be shown but the market won't
@@ -48,13 +53,6 @@ export interface VertexMetadataContextData {
     chainEnv: ChainEnv,
     productId: number,
   ): SpotProductMetadata | undefined;
-
-  /**
-   * Primary chain metadata.
-   */
-  primaryChainMetadata: ChainMetadata;
-
-  getChainMetadata: (chainEnv: ChainEnv) => ChainMetadata;
 }
 
 const VertexMetadataContext = createContext<VertexMetadataContextData>(
@@ -104,8 +102,8 @@ export function VertexMetadataContextProvider({ children }: WithChildren) {
     [primaryChainEnv],
   );
 
-  const primaryChainMetadata = useMemo(
-    () => getChainMetadata(primaryChainEnv),
+  const primaryChainEnvMetadata = useMemo(
+    () => getChainEnvMetadata(primaryChainEnv),
     [primaryChainEnv],
   );
 
@@ -118,9 +116,9 @@ export function VertexMetadataContextProvider({ children }: WithChildren) {
       getIsNewMarket,
       getPerpMetadata,
       getSpotMetadata,
-      getChainMetadata,
+      getChainEnvMetadata,
       getSpotMetadataByChainEnv,
-      primaryChainMetadata,
+      primaryChainEnvMetadata,
     };
   }, [
     getIsHiddenMarket,
@@ -129,7 +127,7 @@ export function VertexMetadataContextProvider({ children }: WithChildren) {
     getSpotMetadata,
     getSpotMetadataByChainEnv,
     primaryChainEnv,
-    primaryChainMetadata,
+    primaryChainEnvMetadata,
   ]);
 
   return <VertexMetadataContext value={data}>{children}</VertexMetadataContext>;

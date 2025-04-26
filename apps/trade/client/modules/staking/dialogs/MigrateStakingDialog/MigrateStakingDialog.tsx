@@ -28,6 +28,7 @@ export function MigrateStakingDialog() {
         <DiscListCollapsibleInfoCard />
         <div className="flex items-center justify-between">
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="V1 Staking Balance"
             value={currentV1AmountStaked}
             valueEndElement={protocolTokenSymbol}
@@ -35,6 +36,7 @@ export function MigrateStakingDialog() {
           />
           <Icons.ArrowRight size={24} className="text-positive" />
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="V2 Staking Balance"
             value={estimatedV2Balance}
             className="items-end"

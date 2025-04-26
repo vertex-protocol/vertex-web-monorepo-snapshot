@@ -1,16 +1,12 @@
 import { PrimaryChain } from '@vertex-protocol/react-client';
-import {
-  LinkButton,
-  PrimaryButton,
-  SecondaryButton,
-} from '@vertex-protocol/web-ui';
+import { PrimaryButton, SecondaryButton } from '@vertex-protocol/web-ui';
 import {
   HANDLED_BUTTON_USER_STATE_ERRORS,
   useButtonUserStateErrorProps,
 } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { WarningPanel } from 'client/components/WarningPanel';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { VERTEX_SPECIFIC_LINKS } from 'common/brandMetadata/links/vertexLinks';
-import Link from 'next/link';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 
 interface Props {
   disableClaim: boolean;
@@ -19,6 +15,7 @@ interface Props {
 
 export function ClaimFuulEarnings({ disableClaim, rewardsChain }: Props) {
   const { show } = useDialog();
+  const { isFuulVolumeTrackingEnabled } = useEnabledFeatures();
 
   const userStateErrorButtonProps = useButtonUserStateErrorProps({
     handledErrors: HANDLED_BUTTON_USER_STATE_ERRORS.onlyIncorrectConnectedChain,
@@ -41,18 +38,12 @@ export function ClaimFuulEarnings({ disableClaim, rewardsChain }: Props) {
   return (
     <div className="flex flex-col gap-y-3">
       {ctaButton}
-      <div className="text-text-tertiary text-sm">
-        Referral commissions and rebates are only tracked across Arbitrum and
-        Mantle. Rewards can be claimed on Arbitrum.{' '}
-        <LinkButton
-          as={Link}
-          colorVariant="primary"
-          href={VERTEX_SPECIFIC_LINKS.fuulReferralsDocs}
-          external
-        >
-          Learn more
-        </LinkButton>
-      </div>
+      {!isFuulVolumeTrackingEnabled && (
+        <WarningPanel title="Unsupported Chain">
+          You can still confirm your referral, but volume traded on this chain
+          will not count towards rewards.
+        </WarningPanel>
+      )}
     </div>
   );
 }

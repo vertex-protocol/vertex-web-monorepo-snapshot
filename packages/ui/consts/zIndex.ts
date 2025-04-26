@@ -5,5 +5,5 @@ export const Z_INDEX = {
   navbar: 'z-40',
   dialogOverlay: 'z-50',
   // Should remain larger than `dialogOverlay`.
-  dialogContainer: 'z-[51]',
+  dialogContainer: 'z-51',
 } as const;

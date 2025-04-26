@@ -12,6 +12,7 @@ import {
   percentageValidator,
   safeParseForData,
 } from '@vertex-protocol/web-common';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { AppSubaccount } from 'client/context/subaccount/types';
 import { useExecuteSubaccountQuoteTransfer } from 'client/hooks/execute/useExecuteSubaccountQuoteTransfer';
@@ -22,10 +23,7 @@ import {
 } from 'client/hooks/ui/form/useOnFractionSelectedHandler';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { DepositErrorType } from 'client/modules/collateral/deposit/types';
-import {
-  PRIMARY_SUBACCOUNT_NAME,
-  SUBACCOUNT_QUOTE_TRANSFER_FEE,
-} from 'client/modules/subaccounts/consts';
+import { PRIMARY_SUBACCOUNT_NAME } from 'client/modules/subaccounts/consts';
 import {
   SubaccountQuoteTransferErrorType,
   SubaccountQuoteTransferFormValues,
@@ -184,7 +182,7 @@ export function useSubaccountQuoteTransferForm({
 
     const senderQuoteBalanceDelta = toBigDecimal(validAmount).negated();
     const recipientQuoteBalanceDelta = toBigDecimal(validAmount).minus(
-      SUBACCOUNT_QUOTE_TRANSFER_FEE,
+      SEQUENCER_FEE_AMOUNT_USDC,
     );
 
     const getEstimateStateTx = (amountDelta: BigDecimal): SubaccountTx => ({

@@ -10,10 +10,9 @@ import {
 } from 'client/hooks/subaccount/usePerpPositions';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
+import { getResolvedColorValue } from 'client/modules/theme/colorVars';
 import { TradingViewSymbolInfo } from 'client/modules/trading/chart/config/datafeedConfig';
 import { isChartSyncedToSymbolInfo } from 'client/modules/trading/chart/utils/isChartSyncedToSymbolInfo';
-import { COLORS } from 'common/theme/colors';
-import { FONTS } from 'common/theme/fonts';
 import {
   IChartingLibraryWidget,
   IChartWidgetApi,
@@ -58,7 +57,7 @@ export function useDrawChartEntryLines({ tvWidget, loadedSymbolInfo }: Params) {
     }
 
     const selectedProductId = loadedSymbolInfo?.productId;
-    const marketData = marketsStaticData?.all[selectedProductId];
+    const marketData = marketsStaticData?.allMarkets[selectedProductId];
 
     if (!tvWidget || !marketData || !selectedProductId || !perpPositionsData) {
       return;
@@ -155,7 +154,7 @@ export function useDrawChartEntryLines({ tvWidget, loadedSymbolInfo }: Params) {
     existingLinesByProductId.current.set(selectedProductId, newEntryLines);
   }, [
     loadedSymbolInfo,
-    marketsStaticData?.all,
+    marketsStaticData?.allMarkets,
     perpPositionsData,
     show,
     tvWidget,
@@ -169,12 +168,14 @@ function createOrUpdateEntryLine(
   onClosePositionClick: () => void,
   existingLine?: IPositionLineAdapter,
 ): IPositionLineAdapter {
+  // Unlike the font fns which accept CSS variables, we need to use the actual color values here.
+  // Otherwise the charting library will not render the colors correctly.
   const sideColor = position.amount.isPositive()
-    ? COLORS.positive.DEFAULT
-    : COLORS.negative.DEFAULT;
+    ? getResolvedColorValue('positive')
+    : getResolvedColorValue('negative');
   const sideTextColor = position.amount.isPositive()
-    ? COLORS.positive.muted
-    : COLORS.negative.muted;
+    ? getResolvedColorValue('positive-muted')
+    : getResolvedColorValue('negative-muted');
 
   const isIso = !!position.iso;
   // At this point, average entry price should never be undefined
@@ -190,13 +191,13 @@ function createOrUpdateEntryLine(
     .setBodyTextColor(sideTextColor)
     .setBodyBorderColor('')
     .setBodyBackgroundColor(sideColor)
-    .setBodyFont(`11px var(${FONTS.default.variable})`)
+    .setBodyFont(`11px var(--font-default)`)
     .setText(contentText)
     .setLineLength(isIso ? 64 : 48) // Distance from orderbox to right-most side of chart. Adjust if isolated to avoid overlap.
     .setLineStyle(0) // we use 0 (solid) for entry lines, 2 (dashed) for order lines
     .setLineColor(sideColor)
     .setQuantity(amountText)
-    .setQuantityFont(`11px var(${FONTS.default.variable})`)
+    .setQuantityFont(`11px var(--font-default)`)
     .setQuantityTextColor(sideTextColor)
     .setQuantityBackgroundColor(sideColor)
     .setQuantityBorderColor('')

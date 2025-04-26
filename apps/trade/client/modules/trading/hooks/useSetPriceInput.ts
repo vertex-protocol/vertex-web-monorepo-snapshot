@@ -14,7 +14,7 @@ export function useSetPriceInput() {
 
   return useCallback(
     (productId: number, price: BigDecimal) => {
-      const marketData = marketStaticData?.all?.[productId];
+      const marketData = marketStaticData?.allMarkets?.[productId];
 
       if (marketData?.type === ProductEngineType.PERP) {
         setPerpPriceInput(price);
@@ -23,6 +23,6 @@ export function useSetPriceInput() {
         setSpotPriceInput(price);
       }
     },
-    [marketStaticData?.all, setPerpPriceInput, setSpotPriceInput],
+    [marketStaticData?.allMarkets, setPerpPriceInput, setSpotPriceInput],
   );
 }

@@ -14,9 +14,9 @@ export interface SpotMarketInfo {
   currentPrice: BigDecimal | undefined;
   currentPriceValueUsd: BigDecimal | undefined;
   oraclePrice: BigDecimal;
-  priceChange24hr: BigDecimal | undefined;
-  priceChangeFrac24hr: BigDecimal | undefined;
-  quoteVolume24hr: BigDecimal | undefined;
+  priceChange24h: BigDecimal | undefined;
+  priceChangeFrac24h: BigDecimal | undefined;
+  quoteVolume24h: BigDecimal | undefined;
   latestPriceChange: BigDecimal | undefined;
   quoteSymbol: string | undefined;
 }
@@ -51,10 +51,10 @@ export function useSpotMarketInfoCards(): UseSpotMarketInfoCards {
       currentPrice: latestOrderFillPrice?.price,
       currentPriceValueUsd:
         latestOrderFillPrice?.price.multipliedBy(primaryQuotePriceUsd),
-      priceChange24hr: marketPriceChange,
-      priceChangeFrac24hr: marketStats?.pastDayPriceChangeFrac,
+      priceChange24h: marketPriceChange,
+      priceChangeFrac24h: marketStats?.pastDayPriceChangeFrac,
       oraclePrice: spotMarket.product.oraclePrice,
-      quoteVolume24hr: removeDecimals(marketStats?.pastDayVolumeInQuote),
+      quoteVolume24h: removeDecimals(marketStats?.pastDayVolumeInQuote),
       latestPriceChange: latestPriceChange ?? marketPriceChange,
       quoteSymbol: quoteMetadata?.symbol,
     };

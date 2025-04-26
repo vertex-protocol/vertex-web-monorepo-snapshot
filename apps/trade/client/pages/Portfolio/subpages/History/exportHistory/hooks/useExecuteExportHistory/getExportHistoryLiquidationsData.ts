@@ -1,10 +1,11 @@
+import { BigDecimals } from '@vertex-protocol/client';
 import { GetIndexerSubaccountLiquidationEventsParams } from '@vertex-protocol/indexer-client';
 import {
   EXPORT_HISTORY_QUERY_PAGE_SIZE,
   EXPORT_HISTORY_QUERY_DELAY_MILLIS,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
-import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
+import { updateProgressFrac } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
   ExportHistoryLiquidationItem,
   GetExportHistoryDataParams,
@@ -12,6 +13,7 @@ import {
 import { getHistoricalLiquidationsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
+import { last } from 'lodash';
 
 export async function getExportHistoryLiquidationsData(
   params: GetExportHistoryDataParams,
@@ -57,58 +59,51 @@ export async function getExportHistoryLiquidationsData(
         break queryLoop;
       }
 
-      const formattedTimestamp = formatExportHistoryTimestamp(
-        tableItem.timestampMillis,
-      );
-
       // Add LPs first
       tableItem.decomposedLps.forEach((decomposedLp) => {
         items.push({
-          time: formattedTimestamp,
+          time: new Date(tableItem.timestampMillis),
           submissionIndex: tableItem.submissionIndex,
           balanceType: 'lp',
           productName: decomposedLp.sharedMetadata.symbol,
-          amountLiquidated: decomposedLp.amountLpDecomposed.toString(),
-          assetAmountDelta: decomposedLp.underlyingBalanceDelta.toString(),
+          amountLiquidated: decomposedLp.amountLpDecomposed,
+          assetAmountDelta: decomposedLp.underlyingBalanceDelta,
         });
       });
 
       // Add spot
       if (tableItem.spot) {
         items.push({
-          time: formattedTimestamp,
+          time: new Date(tableItem.timestampMillis),
           submissionIndex: tableItem.submissionIndex,
           balanceType: 'spot',
           productName: tableItem.spot.sharedMetadata.symbol,
-          amountLiquidated: tableItem.spot.amountLiquidated.toString(),
-          assetAmountDelta: tableItem.spot.amountLiquidated
-            .negated()
-            .toString(),
+          amountLiquidated: tableItem.spot.amountLiquidated,
+          assetAmountDelta: tableItem.spot.amountLiquidated.negated(),
         });
       }
 
       // Add perp
       if (tableItem.perp) {
         items.push({
-          time: formattedTimestamp,
+          time: new Date(tableItem.timestampMillis),
           submissionIndex: tableItem.submissionIndex,
           balanceType: tableItem.perp.liquidatedBalanceType,
           productName: tableItem.perp.sharedMetadata.marketName,
-          amountLiquidated: tableItem.perp.amountLiquidated.toString(),
-          assetAmountDelta: tableItem.perp.amountLiquidated
-            .negated()
-            .toString(),
+          amountLiquidated: tableItem.perp.amountLiquidated,
+          assetAmountDelta: tableItem.perp.amountLiquidated.negated(),
         });
       }
 
       // Add primary quote transfer
       items.push({
-        time: formattedTimestamp,
+        time: new Date(tableItem.timestampMillis),
         submissionIndex: tableItem.submissionIndex,
         balanceType: 'spot',
-        productName: allMarketsStaticData.primaryQuote.metadata.token.symbol,
-        amountLiquidated: '0',
-        assetAmountDelta: tableItem.quoteBalanceDelta.toString(),
+        productName:
+          allMarketsStaticData.primaryQuoteProduct.metadata.token.symbol,
+        amountLiquidated: BigDecimals.ZERO,
+        assetAmountDelta: tableItem.quoteBalanceDelta,
       });
     }
 
@@ -118,6 +113,8 @@ export async function getExportHistoryLiquidationsData(
     if (!liquidationEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    updateProgressFrac(params, context, last(items)?.time);
 
     // Reduce chance of rate limiting.
     await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);

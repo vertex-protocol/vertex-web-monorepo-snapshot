@@ -5,7 +5,7 @@ import {
   safeDiv,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS, Icons } from '@vertex-protocol/web-ui';
+import { Icons } from '@vertex-protocol/web-ui';
 import { MarketOrderRow } from 'client/modules/trading/marketOrders/components/MarketOrderRow';
 import { MarketOrderRows } from 'client/modules/trading/marketOrders/components/MarketOrderRows';
 import { MarketOrdersHeaderRow } from 'client/modules/trading/marketOrders/components/MarketOrdersHeaderRow';
@@ -77,7 +77,7 @@ export function Orderbook({ className, productId }: Props) {
           <MarketOrderRow.Item className="relative" isSell={row.isAsk}>
             {hasOpenOrder && (
               <Icons.CaretRightFill
-                className="absolute -left-3 top-1/2 -translate-y-1/2"
+                className="absolute top-1/2 -left-3 -translate-y-1/2"
                 size={8}
               />
             )}
@@ -111,8 +111,7 @@ export function Orderbook({ className, productId }: Props) {
   return (
     <div
       className={joinClassNames(
-        'flex flex-col divide-y',
-        COMMON_TRANSPARENCY_COLORS.divide,
+        'divide-overlay-divider flex flex-col divide-y',
         className,
       )}
     >

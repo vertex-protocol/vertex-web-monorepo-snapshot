@@ -1,24 +1,24 @@
 import { usePrimaryQuotePriceUsd } from 'client/hooks/usePrimaryQuotePriceUsd';
+import { useAllEdgeSpotProducts } from 'client/pages/MainPage/components/TvlAndYieldTabContent/hooks/useAllEdgeSpotProducts';
 import { calcDecimalAdjustedUsdValue } from 'client/utils/calcDecimalAdjustedUsdValue';
-import { useMemo } from 'react';
-import { sumBy } from 'lodash';
-import { useAllEdgeSpotMarkets } from 'client/pages/MainPage/components/TvlAndYieldTabContent/hooks/useAllEdgeSpotMarkets';
 import { createPieChartDataForSpotProducts } from 'client/utils/createPieChartDataForSpotProducts';
+import { sumBy } from 'lodash';
+import { useMemo } from 'react';
 
 export function useEdgeBorrowsPieChartData() {
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const {
-    data: allEdgeSpotMarketsData,
-    isLoading: isLoadingAllEdgeSpotMarketsData,
-  } = useAllEdgeSpotMarkets();
+    data: allEdgeSpotProductsData,
+    isLoading: isLoadingAllEdgeSpotProductsData,
+  } = useAllEdgeSpotProducts();
 
   const mappedData = useMemo(() => {
-    if (!allEdgeSpotMarketsData) {
+    if (!allEdgeSpotProductsData) {
       return;
     }
 
     const edgeTotalBorrowsAtNowByProductUsd = createPieChartDataForSpotProducts(
-      allEdgeSpotMarketsData,
+      allEdgeSpotProductsData,
       (market) =>
         calcDecimalAdjustedUsdValue(
           market.product.totalBorrowed.times(market.product.oraclePrice),
@@ -35,10 +35,10 @@ export function useEdgeBorrowsPieChartData() {
       edgeTotalBorrowsAtNowUsd,
       edgeTotalBorrowsAtNowByProductUsd,
     };
-  }, [allEdgeSpotMarketsData, primaryQuotePriceUsd]);
+  }, [allEdgeSpotProductsData, primaryQuotePriceUsd]);
 
   return {
     data: mappedData,
-    isLoading: isLoadingAllEdgeSpotMarketsData,
+    isLoading: isLoadingAllEdgeSpotProductsData,
   };
 }

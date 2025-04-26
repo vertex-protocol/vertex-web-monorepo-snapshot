@@ -27,7 +27,7 @@ export function MarginInfoPill({ isoLeverage }: Props) {
     <Pill
       colorVariant="tertiary"
       sizeVariant="xs"
-      borderRadiusVariant="base"
+      borderRadiusVariant="sm"
       // Override default Pill background color because `bg-surface-1` blends in with the background of metrics cards in TpSl and Close position dialog.
       className="bg-surface-2 px-1 py-0.5"
     >

@@ -12,6 +12,7 @@ export const KNOWN_PRODUCT_IDS = {
   wethBlastSepolia: 3,
   wethMantle: 93,
   wethMantleSepolia: 3,
+  wavax: 51,
   wmnt: 109,
   wsei: 115,
 } as const;

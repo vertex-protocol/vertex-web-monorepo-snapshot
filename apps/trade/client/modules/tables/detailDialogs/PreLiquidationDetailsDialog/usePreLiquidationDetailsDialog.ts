@@ -1,7 +1,4 @@
-import {
-  ProductEngineType,
-  QUOTE_PRODUCT_ID,
-} from '@vertex-protocol/contracts';
+import { ProductEngineType } from '@vertex-protocol/contracts';
 import {
   calcIndexerLpBalanceValue,
   calcIndexerPerpBalanceValue,
@@ -16,7 +13,11 @@ import {
   toPrintableObject,
 } from '@vertex-protocol/utils';
 import { NextImageSrc } from '@vertex-protocol/web-common';
-import { PerpStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
+import { getStaticMarketDataForProductId } from 'client/hooks/markets/marketsStaticData/getStaticMarketDataForProductId';
+import {
+  PerpStaticMarketData,
+  SpotStaticMarketData,
+} from 'client/hooks/markets/marketsStaticData/types';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshotsAtTimes } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshotsAtTimes';
@@ -25,7 +26,7 @@ import { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailD
 import { calcIndexerSummaryUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
 import { getSharedProductMetadata } from 'client/utils/getSharedProductMetadata';
 import { millisecondsToSeconds } from 'date-fns';
-import { first, get } from 'lodash';
+import { first } from 'lodash';
 import { useMemo } from 'react';
 
 interface PreLiquidationBalance {
@@ -97,11 +98,13 @@ export function usePreLiquidationDetailsDialog({
     snapshot.balances.forEach((balance) => {
       const { productId, state, isolated, isolatedProductId } = balance;
 
-      const marketData =
-        productId === QUOTE_PRODUCT_ID
-          ? allMarketsStaticData.primaryQuote
-          : get(allMarketsStaticData.all, productId, undefined);
-      if (!marketData) return;
+      const marketData = getStaticMarketDataForProductId<SpotStaticMarketData>(
+        productId,
+        allMarketsStaticData,
+      );
+      if (!marketData) {
+        return;
+      }
 
       const marketMetadata = getSharedProductMetadata(marketData.metadata);
       const balanceAmount = removeDecimals(state.postBalance.amount);
@@ -135,7 +138,7 @@ export function usePreLiquidationDetailsDialog({
         );
 
         const isolatedPerpProduct = isolatedProductId
-          ? allMarketsStaticData.perp[isolatedProductId]
+          ? allMarketsStaticData.perpMarkets[isolatedProductId]
           : undefined;
 
         spotBalances.push({

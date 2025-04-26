@@ -47,8 +47,8 @@ export function TradersList({ traders, animationCycle }: Props) {
           <div key={`trader-${trader.name}-${index}`} className={boxClassName}>
             <div
               className={joinClassNames(
-                'flex flex-col gap-y-2 rounded px-2 pb-3 pt-4 md:py-4 md:pl-4 md:pr-8',
-                isMiddle ? 'bg-chain' : 'bg-dark',
+                'flex flex-col gap-y-2 rounded-sm px-2 pt-4 pb-3 md:py-4 md:pr-8 md:pl-4',
+                isMiddle ? 'bg-chain-gradient' : 'bg-dark',
               )}
             >
               <motion.div

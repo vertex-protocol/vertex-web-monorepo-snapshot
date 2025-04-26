@@ -1,6 +1,5 @@
 import { useSubaccountOpenEngineOrders } from 'client/hooks/query/subaccount/useSubaccountOpenEngineOrders';
 import { useSubaccountOpenTriggerOrders } from 'client/hooks/query/subaccount/useSubaccountOpenTriggerOrders';
-import { useLpBalances } from 'client/hooks/subaccount/useLpBalances';
 import { usePerpPositions } from 'client/hooks/subaccount/usePerpPositions';
 import { sum, sumBy } from 'lodash';
 import { useMemo } from 'react';
@@ -12,14 +11,12 @@ interface UseSubaccountCountIndicators {
   numOpenEngineOrders: number;
   numOpenTriggerOrders: number;
   numOpenOrders: number;
-  numLpPositions: number;
 }
 
 export type SubaccountCountIndicatorKey = keyof UseSubaccountCountIndicators;
 
 export function useSubaccountCountIndicators(): UseSubaccountCountIndicators {
   const { data: perpPositions } = usePerpPositions();
-  const { balances: lpBalances } = useLpBalances();
 
   const { numCrossPerpPositions, numIsoPerpPositions, numPerpPositions } =
     useMemo(() => {
@@ -44,12 +41,6 @@ export function useSubaccountCountIndicators(): UseSubaccountCountIndicators {
         numPerpPositions: numCross + numIso,
       };
     }, [perpPositions]);
-
-  const numLpPositions = useMemo(() => {
-    return (
-      lpBalances?.filter((balance) => !balance.lpAmount.isZero()).length ?? 0
-    );
-  }, [lpBalances]);
 
   const { data: openEngineOrders } = useSubaccountOpenEngineOrders();
   const { data: openTriggerOrders } = useSubaccountOpenTriggerOrders();
@@ -77,6 +68,5 @@ export function useSubaccountCountIndicators(): UseSubaccountCountIndicators {
     numOpenEngineOrders,
     numOpenTriggerOrders,
     numOpenOrders,
-    numLpPositions,
   };
 }

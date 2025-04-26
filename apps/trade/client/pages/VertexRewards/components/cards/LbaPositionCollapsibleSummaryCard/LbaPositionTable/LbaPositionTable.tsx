@@ -81,7 +81,7 @@ export function LbaPositionTable() {
         header: () => <Divider vertical />,
         cell: () => <Divider vertical />,
         meta: {
-          cellContainerClassName: 'px-2 py-3',
+          cellContainerClassName: 'flex px-2 py-3',
         },
       }),
       columnHelper.accessor('totalLpBalance', {

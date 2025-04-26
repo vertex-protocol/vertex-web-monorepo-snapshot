@@ -22,7 +22,7 @@ export function usePerpMarginModeDialog({ productId }: { productId: number }) {
     setSelectedMarginMode: setSavedMarginMode,
   } = useSelectedPerpMarginMode(productId);
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
-  const currentMarket = allMarketsStaticData?.perp[productId];
+  const currentMarket = allMarketsStaticData?.perpMarkets[productId];
 
   const maxLeverage = currentMarket?.maxLeverage ?? 1;
 

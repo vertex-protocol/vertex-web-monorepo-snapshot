@@ -1,16 +1,17 @@
 import { ChainEnv } from '@vertex-protocol/client';
 import { ReactNode, useCallback, useMemo, useState } from 'react';
-import { Chain } from 'viem';
+import { Chain, isAddress } from 'viem';
 import {
   Connector,
   useAccount,
   useConnect,
   useDisconnect,
   useSwitchChain,
+  useWalletClient,
 } from 'wagmi';
 import { getPrimaryChain } from '../../utils';
 import { EVMContext } from './EVMContext';
-import { useDidInitializeWalletConnection, useEthersSigner } from './hooks';
+import { useDidInitializeWalletConnection } from './hooks';
 import { ChainStatus, ConnectionStatus, EVMContextData } from './types';
 import { getIsConnectorEnabledForChainEnv } from './utils';
 
@@ -58,7 +59,7 @@ export function EVMContextProvider({
   const primaryChainId = primaryChain.id;
   // We don't specify a `chainId` here because we want to use the active chain of the connected wallet
   // This is useful in bridging workflows where the user would be on a different chain than the primary chain
-  const signer = useEthersSigner();
+  const { data: walletClient } = useWalletClient();
 
   const {
     switchChain: baseSwitchConnectedChain,
@@ -93,7 +94,9 @@ export function EVMContextProvider({
    * Derives the current connection state
    */
   const connectionStatus = useMemo((): ConnectionStatus => {
-    const exposedAddress = readOnlyAddressOverride
+    const useAddressOverride =
+      !!readOnlyAddressOverride && isAddress(readOnlyAddressOverride);
+    const exposedAddress = useAddressOverride
       ? readOnlyAddressOverride
       : connectedAddress;
 
@@ -102,7 +105,7 @@ export function EVMContextProvider({
         type: 'initializing',
         connector: activeConnector,
         address: undefined,
-        signer: undefined,
+        walletClient: undefined,
       };
     }
     if (connectedAccountStatus === 'connected' && exposedAddress) {
@@ -110,7 +113,7 @@ export function EVMContextProvider({
         type: 'connected',
         connector: activeConnector,
         address: exposedAddress,
-        signer,
+        walletClient,
       };
     }
     if (connectedAccountStatus === 'reconnecting') {
@@ -118,7 +121,7 @@ export function EVMContextProvider({
         type: 'reconnecting',
         connector: activeConnector,
         address: undefined,
-        signer: undefined,
+        walletClient: undefined,
       };
     }
     if (connectedAccountStatus === 'connecting') {
@@ -126,7 +129,7 @@ export function EVMContextProvider({
         type: 'connecting',
         connector: lastConnectRequestConnector,
         address: undefined,
-        signer: undefined,
+        walletClient: undefined,
       };
     }
 
@@ -134,7 +137,7 @@ export function EVMContextProvider({
       type: 'disconnected',
       connector: activeConnector,
       address: undefined,
-      signer: undefined,
+      walletClient: undefined,
     };
   }, [
     readOnlyAddressOverride,
@@ -142,7 +145,7 @@ export function EVMContextProvider({
     connectedAccountStatus,
     didInitializeWalletConnection,
     activeConnector,
-    signer,
+    walletClient,
     lastConnectRequestConnector,
   ]);
 

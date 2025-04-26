@@ -1,6 +1,6 @@
 import { useSizeClass } from 'client/hooks/ui/breakpoints';
 import { useEffect } from 'react';
-import { Toast, toast, useToasterStore } from 'react-hot-toast';
+import { toast, useToasterStore } from 'react-hot-toast';
 
 /**
  * Limit the number of visible notifications depending on screen size
@@ -12,9 +12,9 @@ export function useLimitVisibleNotifications() {
   // https://github.com/timolins/react-hot-toast/issues/31
   useEffect(() => {
     toasts
-      .filter((t: Toast['message']) => t.visible)
+      .filter((t) => t.visible)
       // Limit to 2 notifs for mobile users and 5 notifs for desktop/tablet users
       .slice(isMobile ? 2 : 5)
-      .forEach((t: Toast['message']) => toast.dismiss(t.id));
+      .forEach((t) => toast.dismiss(t.id));
   }, [isMobile, toasts]);
 }

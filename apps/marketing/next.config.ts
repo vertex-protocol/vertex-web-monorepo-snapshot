@@ -1,7 +1,6 @@
 import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   async rewrites() {
     return [
       {
@@ -14,6 +13,7 @@ const nextConfig: NextConfig = {
     config.externals.push('pino-pretty', 'encoding');
     return config;
   },
+  devIndicators: false,
   experimental: {
     optimizePackageImports: [
       '@vertex-protocol/react-client',

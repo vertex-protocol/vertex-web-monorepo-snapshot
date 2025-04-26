@@ -1,3 +1,4 @@
+import AbstractChain from 'client/icons/chains/AbstractChain';
 import ArbitrumChain from 'client/icons/chains/ArbitrumChain';
 import BaseChain from 'client/icons/chains/BaseChain';
 import BlastChain from 'client/icons/chains/BlastChain';
@@ -29,5 +30,9 @@ export const CHAIN_INFO_DATA = [
   {
     name: 'Sonic',
     icon: <SonicChain />,
+  },
+  {
+    name: 'Abstract',
+    icon: <AbstractChain />,
   },
 ];

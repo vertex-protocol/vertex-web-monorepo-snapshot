@@ -1,11 +1,11 @@
-import { joinClassNames, WithChildren } from '@vertex-protocol/web-common';
+import { WithChildren } from '@vertex-protocol/web-common';
+import { AppRootLayout } from 'app/AppRootLayout';
 import { ClientLayout } from 'components/ClientLayout';
 import { LINKS } from 'config/links';
 import { SEO_INFO } from 'config/seoInfo';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import backgroundImage from 'public/blitz/blitz-background.png';
-import { ibmMono, pixelify } from 'utils/fonts';
 
 import 'styles/globals.css';
 
@@ -21,36 +21,26 @@ const jsonLd = {
 
 export default function RootLayout({ children }: WithChildren) {
   return (
-    <html
-      lang="en"
-      className={joinClassNames(
-        'antialiased',
-        ibmMono.variable,
-        pixelify.variable,
-        pixelify.className,
-      )}
-    >
-      <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <ClientLayout>
-          <AppSeoInfo />
-          <main className="relative h-dvh w-screen overflow-hidden">
-            {/* Background image */}
-            <Image
-              src={backgroundImage}
-              className="object-cover brightness-50"
-              sizes="100vw"
-              alt=""
-              fill
-            />
-            {children}
-          </main>
-        </ClientLayout>
-      </body>
-    </html>
+    <AppRootLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ClientLayout>
+        <AppSeoInfo />
+        <main className="relative h-dvh w-screen overflow-hidden">
+          {/* Background image */}
+          <Image
+            src={backgroundImage}
+            className="object-cover brightness-50"
+            sizes="100vw"
+            alt=""
+            fill
+          />
+          {children}
+        </main>
+      </ClientLayout>
+    </AppRootLayout>
   );
 }
 

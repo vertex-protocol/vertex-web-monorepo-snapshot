@@ -2,13 +2,13 @@ import {
   getMarketPriceFormatSpecifier,
   useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
-import { useAllMarkets24hrSnapshots } from 'client/hooks/markets/useAllMarkets24hrSnapshots';
+import { useAllMarkets24hSnapshots } from 'client/hooks/markets/useAllMarkets24hSnapshots';
 import { useAllMarketsByChainEnv } from 'client/hooks/query/markets/allMarkets/useAllMarketsByChainEnv';
 import { calcChangeFrac } from 'client/utils/calcs/calcChangeFrac';
 
 export function useVrtxMarketMetrics() {
   const { protocolTokenMetadata } = useVertexMetadataContext();
-  const { data: allMarkets24hrSnapshots } = useAllMarkets24hrSnapshots();
+  const { data: allMarkets24hSnapshots } = useAllMarkets24hSnapshots();
   const { data: allMarketsByChainEnv } = useAllMarketsByChainEnv();
 
   const priceIncrement =
@@ -17,11 +17,11 @@ export function useVrtxMarketMetrics() {
     ].priceIncrement;
 
   const historicalOraclePrice =
-    allMarkets24hrSnapshots?.historical24hr?.oraclePrices[
+    allMarkets24hSnapshots?.historical24h?.oraclePrices[
       protocolTokenMetadata.productId
     ];
   const latestOraclePrice =
-    allMarkets24hrSnapshots?.latest?.oraclePrices[
+    allMarkets24hSnapshots?.latest?.oraclePrices[
       protocolTokenMetadata.productId
     ];
 

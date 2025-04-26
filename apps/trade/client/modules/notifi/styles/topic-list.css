@@ -30,62 +30,6 @@
   display: flex;
 }
 
-.notifi-topic-list-tooltip-icon {
-  color: var(--notifi-color-heather);
-}
-
-.notifi-topic-list-tooltip-icon:hover {
-  visibility: visible;
-  color: var(--notifi-topic-list-tooltip-icon-color-hover);
-}
-
-.notifi-topic-list-tooltip-icon:hover ~ .notifi-topic-list-tooltip-content {
-  visibility: visible;
-}
-
-.notifi-topic-list-tooltip-content {
-  position: absolute;
-  background-color: var(--notifi-topic-list-tooltip-bg);
-  padding: 1rem;
-  border-radius: 6px;
-  border: var(--notifi-topic-list-tooltip-content-border) 1px solid;
-  width: 19rem;
-  display: none;
-  z-index: 1;
-}
-
-.notifi-topic-list-tooltip-icon:hover
-  ~ .notifi-topic-list-tooltip-content.top-right,
-.notifi-topic-list-tooltip-content.top-right:hover {
-  top: 1.5rem;
-  right: -5rem;
-  display: block;
-}
-
-.notifi-topic-list-tooltip-icon:hover
-  ~ .notifi-topic-list-tooltip-content.top-left,
-.notifi-topic-list-tooltip-content.top-left:hover {
-  top: 1.5rem;
-  left: -5rem;
-  display: block;
-}
-
-.notifi-topic-list-tooltip-icon:hover
-  ~ .notifi-topic-list-tooltip-content.bottom-right,
-.notifi-topic-list-tooltip-content.bottom-right:hover {
-  bottom: 1.5rem;
-  right: -5rem;
-  display: block;
-}
-
-.notifi-topic-list-tooltip-icon:hover
-  ~ .notifi-topic-list-tooltip-content.bottom-left,
-.notifi-topic-list-tooltip-content.bottom-left:hover {
-  bottom: 1.5rem;
-  left: -5rem;
-  display: block;
-}
-
 .notifi-topic-row-user-inputs-row-container {
   display: flex;
   flex-direction: column;
@@ -129,7 +73,7 @@
 }
 
 .notifi-topic-options-item.button.selected {
-  border: solid 2px theme('backgroundColor.primary.DEFAULT');
+  border: solid 2px var(--color-primary);
   color: var(--notifi-topic-options-item-selected-text);
 }
 
@@ -155,9 +99,9 @@
 }
 
 .notifi-topic-options-item.radio.selected::before {
-  background-color: theme('backgroundColor.primary.DEFAULT');
+  background-color: var(--color-primary);
   box-shadow: inset 0 0 0px 2px var(--notifi-topic-option-radio-inner-ring) !important;
-  border: 2.5px solid theme('backgroundColor.primary.DEFAULT');
+  border: 2.5px solid var(--color-primary);
 }
 
 .notifi-topic-options-custom-input {
@@ -173,7 +117,7 @@
 }
 
 .notifi-topic-option-custom-input-container.selected {
-  border: 2px solid theme('backgroundColor.primary.DEFAULT');
+  border: 2px solid var(--color-primary);
   color: var(--notifi-topic-options-item-selected-text);
 }
 

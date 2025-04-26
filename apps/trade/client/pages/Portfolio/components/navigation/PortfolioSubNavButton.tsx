@@ -17,13 +17,12 @@ export function PortfolioSubNavButton({
 }: PortfolioSubNavProps) {
   const stateClassNames = (() => {
     if (selected) {
-      return 'border-accent text-text-primary';
+      return 'border-primary text-text-primary';
     }
 
     return [
       'text-text-tertiary border-transparent',
-      // This should be synced to COMMON_TRANSPARENCY_COLORS.border, but we can't use the const here because of the pseudoselector
-      'hover:text-text-secondary hover:border-overlay-divider/10',
+      'hover:text-text-secondary hover:border-overlay-divider',
     ];
   })();
 

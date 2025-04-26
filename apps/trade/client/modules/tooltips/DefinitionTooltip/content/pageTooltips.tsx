@@ -19,6 +19,14 @@ const portfolioOverviewTooltips = {
     title: `Account Value`,
     content: `The total $ value of an account, using the oracle price. Account value = assets + pools - borrows +/- unsettled ${primaryQuoteToken.symbol}.`,
   }),
+  overviewIsoUnrealizedPnl: {
+    title: `Unrealized PnL`,
+    content: `The sum of your open isolated positions' PnL based on the oracle price.`,
+  },
+  overviewIsoMargin: {
+    title: `Margin`,
+    content: `The amount of margin used for isolated positions`,
+  },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const portfolioBalancesTooltips = {
@@ -32,7 +40,7 @@ const portfolioBalancesTooltips = {
   },
   balancesNetBalance: ({ primaryQuoteToken }) => ({
     title: `Net Balance`,
-    content: `The sum of your balances. This does not include unsettled Perp PnL (${primaryQuoteToken.symbol}).`,
+    content: `The sum of your cross balances and margin in isolated positions. This does not include unsettled PnL (${primaryQuoteToken.symbol}) from cross perp positions.`,
   }),
   balancesTotalBorrowAPR: {
     title: `Total Borrow APR`,
@@ -52,7 +60,7 @@ const portfolioBalancesTooltips = {
   },
   balancesTotalDeposits: {
     title: `Total Deposits`,
-    content: `The total value of all deposits you have made to your account.`,
+    content: `The total value of all deposits you have made to your account. This amount includes isolated position margin.`,
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
@@ -61,36 +69,29 @@ const portfolioPerpsTooltips = {
     title: `Funding Chart`,
     content: `Due to how we track historical data, the funding chart is accurate only when there are user transactions during the selected period.`,
   },
-  perpOpenPositionsMarginUsed: {
-    title: `Margin Used`,
-    content: `The margin required to maintain the open positions.`,
+  perpCrossOpenPositionsMargin: {
+    title: `Margin`,
+    content: `The cross margin required to maintain the open positions.`,
   },
-  perpOpenPositionsNotional: {
-    title: `Open Positions - Total Notional`,
-    content: `The total notional size of perpetual contracts you have open.`,
+  perpIsoOpenPositionsMargin: {
+    title: `Margin`,
+    content: `The amount of margin in your open isolated positions.`,
   },
-  perpOpenPositionsPnl: {
+  perpCrossOpenPositionsPnl: {
     title: `Open Positions PnL`,
-    content: `The sum of your open perp positions PnL based on the oracle price.`,
+    content: `The sum of your open cross perp positions PnL based on the latest market price.`,
+  },
+  perpIsoOpenPositionsPnl: {
+    title: `Open Positions PnL`,
+    content: `The sum of your open isolated perp positions PnL based on the latest market price.`,
   },
   perpPnLOverTime: {
     title: `Perp PnL Over Time`,
-    content: `This displays your total perp pnl for the time selected. You can select a time-frame on the top right of the chart.`,
+    content: `This displays your total perp PnL for the time selected. You can select a time-frame on the top right of the chart.`,
   },
   perpTotalPerpPnl: {
     title: `Total Perp PnL`,
     content: `Your total profit or loss from trading perps. This includes all PnL from previously closed perp positions and your current open positions based on the oracle price.`,
-  },
-} as const satisfies Record<string, DefinitionTooltipConfig>;
-
-const portfolioPoolsTooltips = {
-  poolsAverageAPR: {
-    title: `Avg. APR`,
-    content: `The average APR across all your LP positions based on the combination of trading fees and deposit interest.`,
-  },
-  poolsTotalUnrealizedPnL: {
-    title: `Total Unrealized PnL`,
-    content: `This is the total sum of your LP PnL across all current positions. This includes trading fees and deposit interest earned.`,
   },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
@@ -432,6 +433,14 @@ const lpTooltips = {
     title: `Balance`,
     content: `Your underlying spot balance for the asset. The max you can contribute may be less than this amount due to slippage and margin requirements.`,
   },
+  lpAverageAPR: {
+    title: `Avg. APR`,
+    content: `The average APR across all your LP positions based on the combination of trading fees and deposit interest.`,
+  },
+  lpTotalPnL: {
+    title: `Total Pools PnL`,
+    content: `The total sum of your LP PnL across all current positions. This includes trading fees and deposit interest earned.`,
+  },
 } as const satisfies Record<string, DefinitionTooltipConfig>;
 
 const spotTradingTooltips = {
@@ -586,7 +595,6 @@ export const pageTooltips = {
   ...portfolioOverviewTooltips,
   ...portfolioPerpsTooltips,
   ...portfolioBalancesTooltips,
-  ...portfolioPoolsTooltips,
   ...portfolioMarginManagerTooltips,
   ...rewardsTooltips,
   ...referralsTooltips,

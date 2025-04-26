@@ -59,8 +59,8 @@ export function LargeScreenTradingLayout({
       >
         {/* Order placement */}
         <Card className="w-trade-sidebar">
-          {/* Set min-h to be slightly higher than (orderbook, chart, watchlist) section. */}
-          <OrderPlacement className="min-h-[652px]" />
+          {/* Set min-h to be equal to the (orderbook, chart, watchlist) sections. */}
+          <OrderPlacement className="min-h-[max(580px,65vh)]" />
         </Card>
         <div className="flex flex-1 flex-col gap-y-2.5 overflow-hidden">
           <div

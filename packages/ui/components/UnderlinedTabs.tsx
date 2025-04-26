@@ -16,7 +16,7 @@ function Button({
     !disabled && 'hover:text-text-primary',
   );
   const underlineClasses =
-    'after:absolute after:bottom-0.5 after:left-0 after:h-0.5 after:w-full after:rounded-t-sm after:bg-accent after:transition-transform after:transform-gpu';
+    'after:absolute after:bottom-0.5 after:left-0 after:h-0.5 after:w-full after:rounded-t-xs  after:bg-primary after:transition-transform after:transform-gpu';
 
   const buttonSizeClassNames =
     size === 'sm' ? 'text-xs py-2 px-2.5' : 'text-sm py-2.5 px-3';
@@ -41,7 +41,7 @@ function Container({ className, ...rest }: ComponentPropsWithRef<'div'>) {
     <div
       className={joinClassNames(
         'flex min-w-max',
-        'after:bg-stroke relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-sm',
+        'after:bg-stroke relative after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:rounded-xs',
         className,
       )}
       {...rest}

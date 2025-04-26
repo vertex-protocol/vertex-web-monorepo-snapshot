@@ -6,10 +6,10 @@ import {
   useEVMContext,
 } from '@vertex-protocol/react-client';
 import { BigDecimal, BigDecimals, TimeInSeconds } from '@vertex-protocol/utils';
-import { useAllProducts24hrHistoricalSnapshot } from 'client/hooks/markets/useAllProducts24hrHistoricalSnapshot';
+import { useAllProducts24hHistoricalSnapshot } from 'client/hooks/markets/useAllProducts24hHistoricalSnapshot';
 import { useSpotInterestRates } from 'client/hooks/markets/useSpotInterestRates';
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
-import { calcEstimatedLpApr } from 'client/utils/calcs/calcEstimatedLpApr';
+import { calcEstimatedLpApr } from 'client/utils/calcs/lp/calcEstimatedLpApr';
 import { get } from 'lodash';
 
 // Can assume LP yields is slow updating, so no need for a dependency on lastUpdateTime
@@ -24,7 +24,7 @@ export function useLpYields() {
   const { primaryChainEnv } = useEVMContext();
   const { data: latestMarkets } = useAllMarkets();
   const { data: spotInterestRates } = useSpotInterestRates();
-  const { data: historicalSnapshots } = useAllProducts24hrHistoricalSnapshot();
+  const { data: historicalSnapshots } = useAllProducts24hHistoricalSnapshot();
 
   const disabled = !latestMarkets || !historicalSnapshots || !spotInterestRates;
 

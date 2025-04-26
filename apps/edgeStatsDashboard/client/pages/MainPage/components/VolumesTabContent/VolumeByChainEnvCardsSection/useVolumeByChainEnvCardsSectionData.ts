@@ -22,7 +22,7 @@ export function useVolumeByChainEnvCardsSectionData() {
       const edgeMarketSnapshotAtNow =
         marketSnapshotsAtHistoricalTimesData?.now[chainEnv];
       const edgeMarketSnapshotAt24h =
-        marketSnapshotsAtHistoricalTimesData?.['24hr'][chainEnv];
+        marketSnapshotsAtHistoricalTimesData?.['24h'][chainEnv];
 
       const cumulativeVolumesAtNowInPrimaryQuote =
         getVolumesInPrimaryQuoteByProductId(

@@ -1,11 +1,9 @@
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
-import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { MarginMode } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 import { useCallback, useMemo } from 'react';
 
 export function useSelectedPerpMarginMode(productId: number | undefined) {
-  const { isIsoMarginEnabled } = useEnabledFeatures();
   const { savedUserSettings, setSavedUserSettings } = useSavedUserSettings();
   const { data: allMarketsData } = useAllMarkets();
   const leverageByProductId = savedUserSettings.trading.leverageByProductId;
@@ -55,14 +53,6 @@ export function useSelectedPerpMarginMode(productId: number | undefined) {
     : undefined;
 
   const selectedMarginMode = useMemo((): MarginMode => {
-    // For prod - default to cross-margin while isolated is in progress
-    if (!isIsoMarginEnabled) {
-      return {
-        mode: 'cross',
-        leverage: selectedCrossMarginLeverage,
-      };
-    }
-
     if (!savedMarginModeForProduct) {
       switch (marginModeSettings.default) {
         case 'isolated':
@@ -84,13 +74,7 @@ export function useSelectedPerpMarginMode(productId: number | undefined) {
       ...savedMarginModeForProduct,
       leverage: Math.min(maxLeverage, savedMarginModeForProduct.leverage),
     };
-  }, [
-    isIsoMarginEnabled,
-    marginModeSettings.default,
-    maxLeverage,
-    savedMarginModeForProduct,
-    selectedCrossMarginLeverage,
-  ]);
+  }, [marginModeSettings.default, maxLeverage, savedMarginModeForProduct]);
 
   const setSelectedMarginMode = useCallback(
     (newValue: MarginMode) => {

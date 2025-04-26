@@ -32,7 +32,7 @@ export function MarketsStaking() {
     >
       <ValueWithLabel.Vertical
         sizeVariant="sm"
-        sizeVariantOverrides={{ value: 'lg' }}
+        sizeVariantOverrides={{ value: 'xl' }}
         label="Staking Apr"
         value={stakingV2Apr}
         numberFormatSpecifier={PresetNumberFormatSpecifier.PERCENTAGE_2DP}

@@ -16,7 +16,7 @@ export function useTpSlPositionData({
   const { data: latestOrderFillPrice } = useLatestOrderFill({ productId });
 
   return useMemo(() => {
-    const staticMarketData = staticMarketsData?.perp[productId];
+    const staticMarketData = staticMarketsData?.perpMarkets[productId];
     const sizeIncrement = staticMarketData?.sizeIncrement;
     const priceIncrement = staticMarketData?.priceIncrement;
     const longWeightInitial = staticMarketData?.longWeightInitial;
@@ -53,6 +53,6 @@ export function useTpSlPositionData({
     latestOrderFillPrice?.price,
     positionsData,
     productId,
-    staticMarketsData?.perp,
+    staticMarketsData?.perpMarkets,
   ]);
 }

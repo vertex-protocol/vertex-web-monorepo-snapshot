@@ -1,9 +1,12 @@
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
+import {
+  useVertexMetadataContext,
+  VLP_TOKEN_INFO,
+} from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { LinkButton } from '@vertex-protocol/web-ui';
 import { TablePlaceholder } from 'client/components/DataTable/TablePlaceholder';
 import { ROUTES } from 'client/modules/app/consts/routes';
-import { TriggerOrderEnableOneClickTradingInfo } from 'client/modules/trading/components/TriggerOrderEnableOneClickTradingInfo';
+import { TriggerOrderPlaceholderContent } from 'client/modules/tables/TriggerOrderTablePlaceholderContent';
 import Link from 'next/link';
 
 export type EmptyPlaceholderTableType =
@@ -30,7 +33,8 @@ export type EmptyPlaceholderTableType =
   | 'deposits_and_borrows'
   | 'lba_positions'
   | 'trading_competition'
-  | 'no_search_results';
+  | 'no_search_results'
+  | 'vlp_history';
 
 export function EmptyTablePlaceholder({
   type,
@@ -78,12 +82,7 @@ export function EmptyTablePlaceholder({
       case 'open_limit_orders':
         return 'Your open limit orders will appear here.';
       case 'open_trigger_orders':
-        return (
-          <div className="flex flex-col items-start gap-y-3">
-            <p>Your open trigger orders will appear here.</p>
-            <TriggerOrderEnableOneClickTradingInfo />
-          </div>
-        );
+        return <TriggerOrderPlaceholderContent />;
       case 'pool_positions':
         return (
           <div className="flex flex-col items-start gap-y-1.5">
@@ -105,6 +104,8 @@ export function EmptyTablePlaceholder({
         return 'No rankings for this competition';
       case 'no_search_results':
         return 'No search results found. Please ensure that you have typed the search term correctly.';
+      case 'vlp_history':
+        return `Your ${VLP_TOKEN_INFO.symbol} events will appear here.`;
     }
   })();
 

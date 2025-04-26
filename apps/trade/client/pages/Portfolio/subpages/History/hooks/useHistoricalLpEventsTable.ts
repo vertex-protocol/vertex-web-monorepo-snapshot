@@ -75,7 +75,8 @@ export function useHistoricalLpEventsTable() {
     return getPageData(subaccountPaginatedEvents)
       .map((event) => {
         const marketProductId = event.baseSnapshot.market.productId;
-        const staticMarketData = allMarketsStaticData.all[marketProductId];
+        const staticMarketData =
+          allMarketsStaticData.allMarkets[marketProductId];
 
         if (!staticMarketData) {
           console.warn(
@@ -87,7 +88,8 @@ export function useHistoricalLpEventsTable() {
         return getHistoricalLpEventsTableItem({
           event,
           staticMarketData,
-          primaryQuoteToken: allMarketsStaticData.primaryQuote.metadata.token,
+          primaryQuoteToken:
+            allMarketsStaticData.primaryQuoteProduct.metadata.token,
           primaryQuotePriceUsd,
         });
       })

@@ -31,6 +31,7 @@ export function BlitzReferOpportunityCardContent() {
         socialShareText={`Trade on Blitz and earn points. Trade spot and perpetuals on a blazing-fast orderbook DEX.\nGet in here: ${referralLink}`}
       />
       <ValueWithLabel.Vertical
+        sizeVariant="lg"
         label="Users Referred"
         value={blitzPointsData?.blitz.usersReferred}
         numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}

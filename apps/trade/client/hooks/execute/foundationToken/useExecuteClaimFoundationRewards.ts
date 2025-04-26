@@ -21,9 +21,7 @@ const REFETCH_QUERY_KEYS: string[][] = [
 export function useExecuteClaimFoundationRewards() {
   const mutationFn = useExecuteInValidContext(
     useCallback(async (_: EmptyObject, context: ValidExecuteContext) => {
-      const txResponse =
-        await context.vertexClient.rewards.claimFoundationRewards();
-      return txResponse.hash;
+      return context.vertexClient.rewards.claimFoundationRewards();
     }, []),
   );
 

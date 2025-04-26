@@ -1,13 +1,15 @@
 import { TabIdentifiable } from 'client/hooks/ui/tabs/types';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
+import { PORTFOLIO_CHART_TIMESPAN_METADATA } from 'client/pages/Portfolio/charts/consts';
 import { ElementType } from 'react';
 
-export type ChartTimespan = '24hr' | '7d' | '1m' | 'all_time';
-
-export interface ChartComponentProps {
+export interface PortfolioChartComponentProps {
   data: PortfolioChartDataItem[];
   isPrivate: boolean;
 }
+
+export type PortfolioChartTimespan =
+  keyof typeof PORTFOLIO_CHART_TIMESPAN_METADATA;
 
 export interface PortfolioChartTab<TTabID extends string>
   extends TabIdentifiable<TTabID> {
@@ -15,7 +17,7 @@ export interface PortfolioChartTab<TTabID extends string>
   label: string;
   // If present, rendered as a tooltip alongside the tab button label
   labelDefinitionId?: DefinitionTooltipID;
-  ChartComponent: ElementType<ChartComponentProps>;
+  ChartComponent: ElementType<PortfolioChartComponentProps>;
 }
 
 export interface PortfolioChartDataItem {
@@ -31,8 +33,6 @@ export interface PortfolioChartDataItem {
   totalNetSpotValueUsd: number;
   totalDepositsValueUsd: number;
   totalAbsBorrowsValueUsd: number;
-  cumulativeLpPnlUsd: number;
-  cumulativeLpPnlFrac: number | undefined;
   totalLpValueUsd: number;
   // Deltas to the PREVIOUS item
   deltas: {
@@ -42,7 +42,5 @@ export interface PortfolioChartDataItem {
     cumulativeTotalPerpPnlFrac: number | undefined;
     cumulativePerpFundingUsd: number;
     cumulativePerpFundingFrac: number;
-    cumulativeLpPnlUsd: number;
-    cumulativeLpPnlFrac: number | undefined;
   };
 }

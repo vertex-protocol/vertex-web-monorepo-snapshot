@@ -76,7 +76,7 @@ export function useHistoricalSettlementsTable() {
           const { timestamp, snapshot, quoteDelta } = item;
 
           const productId = snapshot.market.productId;
-          const perpMarketData = marketsStaticData?.perp?.[productId];
+          const perpMarketData = marketsStaticData?.perpMarkets?.[productId];
 
           if (!perpMarketData) {
             console.warn(`ProductId ${productId} not found`);

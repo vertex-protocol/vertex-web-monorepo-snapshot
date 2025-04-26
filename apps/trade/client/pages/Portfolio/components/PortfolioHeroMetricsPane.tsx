@@ -2,13 +2,12 @@ import {
   WithChildren,
   WithClassnames,
   joinClassNames,
+  mergeClassNames,
 } from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
 import { PrivacyToggleButton } from 'client/components/PrivacyToggleIcon';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
-import { PRIVACY_BLUR_CLASSNAME } from 'client/modules/privacy/consts';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
@@ -64,42 +63,51 @@ function Header({
   );
 }
 
-interface ItemsProps extends WithClassnames<WithChildren> {
+interface ItemsGroupProps extends WithChildren {
   header?: ReactNode;
-  childContainerClassNames?: string;
+  headerClassName?: string;
 }
 
-function Items({
-  className,
-  children,
-  header,
-  childContainerClassNames,
-}: ItemsProps) {
+function ItemsGroup({ children, header, headerClassName }: ItemsGroupProps) {
   return (
-    <div className={joinClassNames('flex flex-col gap-y-2', className)}>
-      {!!header && (
-        <>
-          <div className="text-text-primary text-sm">{header}</div>
-          <Divider />
-        </>
+    <div className="flex flex-col gap-y-1">
+      {header && (
+        <div
+          className={mergeClassNames(
+            'flex items-center gap-x-2.5 pb-0.5',
+            'text-text-primary text-sm',
+            'border-overlay-divider border-b',
+            headerClassName,
+          )}
+        >
+          {header}
+        </div>
       )}
-      <div className={childContainerClassNames}>{children}</div>
+      {children}
     </div>
   );
 }
 
-function Item({ valueClassName, ...rest }: ValueWithLabelProps) {
+function ItemsGroupContainer({
+  className,
+  children,
+}: WithClassnames<WithChildren>) {
+  return (
+    <div className={mergeClassNames('flex flex-col gap-y-6', className)}>
+      {children}
+    </div>
+  );
+}
+
+function Item({ sizeVariant, ...rest }: ValueWithLabelProps) {
   const [areAccountValuesPrivate] = usePrivacySetting(
     'areAccountValuesPrivate',
   );
 
   return (
     <ValueWithLabel.Horizontal
-      sizeVariant="sm"
-      valueClassName={joinClassNames(
-        areAccountValuesPrivate && PRIVACY_BLUR_CLASSNAME,
-        valueClassName,
-      )}
+      sizeVariant={sizeVariant ?? 'sm'}
+      isValuePrivate={areAccountValuesPrivate}
       {...rest}
     />
   );
@@ -107,6 +115,7 @@ function Item({ valueClassName, ...rest }: ValueWithLabelProps) {
 
 export const PortfolioHeroMetricsPane = {
   Header,
-  Items,
+  ItemsGroup,
+  ItemsGroupContainer,
   ValueWithLabel: Item,
 };

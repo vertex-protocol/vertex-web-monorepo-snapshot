@@ -1,7 +1,9 @@
-import { BigDecimal } from '@vertex-protocol/client';
+import { BigDecimalish } from '@vertex-protocol/client';
 import { signDependentValue } from '@vertex-protocol/react-client';
 
-export function getSignDependentColorClassName(value: BigDecimal | undefined) {
+export function getSignDependentColorClassName(
+  value: BigDecimalish | undefined,
+) {
   return signDependentValue(value, {
     positive: 'text-positive',
     negative: 'text-negative',

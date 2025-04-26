@@ -1,12 +1,14 @@
 import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
 import { SpotProductMetadata } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
+import { nonNullFilter } from '@vertex-protocol/web-common';
+import { getStaticMarketDataForProductId } from 'client/hooks/markets/marketsStaticData/getStaticMarketDataForProductId';
+import { SpotStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 import { getHealthWeights } from 'client/utils/calcs/healthCalcs';
-import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
 
 export interface MarginManagerSpotBalanceTableItem {
@@ -33,7 +35,11 @@ export function useMarginManagerSpotBalancesTable() {
 
       return spotBalances
         .map((balance) => {
-          const marketStaticData = marketsStaticData?.spot[balance.productId];
+          const marketStaticData =
+            getStaticMarketDataForProductId<SpotStaticMarketData>(
+              balance.productId,
+              marketsStaticData,
+            );
 
           // return if no market static data or if it's quote product or balance amount is 0
           if (
@@ -72,7 +78,6 @@ export function useMarginManagerSpotBalancesTable() {
             },
           };
         })
-
         .filter(nonNullFilter);
     }, [marketsStaticData, primaryQuotePriceUsd, spotBalances]);
 

@@ -32,7 +32,7 @@ export function useMarginManagerPoolsTable(): QueryState<
     useAllMarketsStaticData();
   const { balances, isLoading: balancesLoading } = useLpBalances();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
-  const quoteMetadata = marketsStaticData?.primaryQuote;
+  const quoteMetadata = marketsStaticData?.primaryQuoteProduct;
 
   const mappedData = useMemo((): MarginManagerPoolsTableItem[] | undefined => {
     if (!quoteMetadata || !balances) {
@@ -41,7 +41,8 @@ export function useMarginManagerPoolsTable(): QueryState<
 
     return balances
       .map((lpBalance) => {
-        const marketStaticData = marketsStaticData?.all[lpBalance.productId];
+        const marketStaticData =
+          marketsStaticData?.allMarkets[lpBalance.productId];
 
         // return if no market static data or lp balance amount is zero
         if (!marketStaticData || lpBalance.lpAmount.isZero()) {
@@ -94,7 +95,12 @@ export function useMarginManagerPoolsTable(): QueryState<
         };
       })
       .filter(nonNullFilter);
-  }, [quoteMetadata, balances, marketsStaticData?.all, primaryQuotePriceUsd]);
+  }, [
+    quoteMetadata,
+    balances,
+    marketsStaticData?.allMarkets,
+    primaryQuotePriceUsd,
+  ]);
 
   return {
     data: mappedData,

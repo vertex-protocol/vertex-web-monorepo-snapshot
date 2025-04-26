@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { ITEM_VARIANTS } from 'client/sections/ToolsTradeSection/motionVariants';
 import { TradingFeature } from 'client/sections/ToolsTradeSection/types';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface Props {
   feature: TradingFeature;
@@ -59,12 +58,12 @@ export function TradingFeatureContent({ feature, setIsHovered }: Props) {
           </div>
 
           <motion.div
-            className="absolute bottom-0 bg-transparent p-4 md:left-10 md:top-0 md:w-1/2 md:pt-10 lg:pt-20"
+            className="absolute bottom-0 bg-transparent p-4 md:top-0 md:left-10 md:w-1/2 md:pt-10 lg:pt-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.3 }}
           >
-            <h3 className="text-header-4 md:text-header-3 text-header-linear font-radioGrotesk mb-4">
+            <h3 className="text-header-4 md:text-header-3 text-header-linear font-radio-grotesk mb-4">
               {feature.title}
             </h3>
             <p className="text-body-gray text-body-14 md:text-body-16 max-w-[26ch]">

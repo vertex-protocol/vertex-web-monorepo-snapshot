@@ -10,12 +10,12 @@ import { useLatestOrderFill } from 'client/hooks/markets/useLatestOrderFill';
 import { useLatestPriceChange } from 'client/hooks/markets/useLatestPriceChange';
 import { useMarket } from 'client/hooks/markets/useMarket';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
+import { useAllMarkets24hFundingRates } from 'client/hooks/query/markets/useAllMarkets24hFundingRates';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
 import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
 import { useNextFundingTime } from 'client/modules/trading/hooks/useNextFundingTime';
 import { usePerpOrderFormContext } from 'client/pages/PerpTrading/context/PerpOrderFormContext';
-import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
+import { FundingRates, getFundingRates } from 'client/utils/calcs/perp/funding';
 import { useMemo } from 'react';
 
 export interface PerpMarketInfo {
@@ -24,9 +24,9 @@ export interface PerpMarketInfo {
   indexPrice: BigDecimal | undefined;
   marketPrice: BigDecimal | undefined;
   marketPriceValueUsd: BigDecimal | undefined;
-  priceChange24hr: BigDecimal | undefined;
-  priceChangeFrac24hr: BigDecimal | undefined;
-  quoteVolume24hr: BigDecimal | undefined;
+  priceChange24h: BigDecimal | undefined;
+  priceChangeFrac24h: BigDecimal | undefined;
+  quoteVolume24h: BigDecimal | undefined;
   openInterestQuote: BigDecimal | undefined;
   fundingRates: FundingRates | undefined;
   metadata: PerpProductMetadata;
@@ -49,7 +49,7 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { millisToNextFunding } = useNextFundingTime();
   const { data: marketStatsData } = useAllMarketsStats();
-  const { data: fundingRatesData } = useAllMarkets24HrFundingRates();
+  const { data: fundingRatesData } = useAllMarkets24hFundingRates();
   const { data: latestPerpPricesData } = useLatestPerpPrices();
   const { data: latestOraclePricesData } = useLatestOraclePrices();
   const { data: latestOrderFillPrice } = useLatestOrderFill({ productId });
@@ -83,9 +83,9 @@ export function usePerpMarketInfoCards(): UsePerpMarketInfoCards {
         latestOrderFillPrice?.price.multipliedBy(primaryQuotePriceUsd),
       oraclePrice,
       indexPrice,
-      priceChange24hr: marketPriceChange,
-      priceChangeFrac24hr: marketStats?.pastDayPriceChangeFrac,
-      quoteVolume24hr: removeDecimals(marketStats?.pastDayVolumeInPrimaryQuote),
+      priceChange24h: marketPriceChange,
+      priceChangeFrac24h: marketStats?.pastDayPriceChangeFrac,
+      quoteVolume24h: removeDecimals(marketStats?.pastDayVolumeInPrimaryQuote),
       latestPriceChange: latestPriceChange ?? marketPriceChange,
     };
   }, [

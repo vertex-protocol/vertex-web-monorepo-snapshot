@@ -35,12 +35,19 @@ function Card({
   );
 }
 
-function LineItem({ ...itemProps }: ValueWithLabelProps) {
-  return <ValueWithLabel.Horizontal sizeVariant="xs" {...itemProps} />;
+function LineItem({ sizeVariant, ...itemProps }: ValueWithLabelProps) {
+  return (
+    <ValueWithLabel.Horizontal
+      sizeVariant={sizeVariant ?? 'xs'}
+      {...itemProps}
+    />
+  );
 }
 
-function MetricStackedItem(itemProps: ValueWithLabelProps) {
-  return <ValueWithLabel.Vertical {...itemProps} />;
+function MetricStackedItem({ sizeVariant, ...itemProps }: ValueWithLabelProps) {
+  return (
+    <ValueWithLabel.Vertical sizeVariant={sizeVariant ?? 'lg'} {...itemProps} />
+  );
 }
 
 export const ClaimAndStakeRadioGroup = {

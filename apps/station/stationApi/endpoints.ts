@@ -5,6 +5,8 @@ export const STATION_ENDPOINTS: Record<ChainEnv, string> = {
   abstractTestnet: 'https://station.abstract-test.vertexprotocol.com/v1',
   arbitrum: 'https://station.prod.vertexprotocol.com/v1',
   arbitrumTestnet: 'https://station.sepolia-test.vertexprotocol.com/v1',
+  avax: 'https://station.avax-prod.vertexprotocol.com/v1',
+  avaxTestnet: 'https://station.avax-test.vertexprotocol.com/v1',
   base: 'https://station.base-prod.vertexprotocol.com/v1',
   baseTestnet: 'https://station.base-test.vertexprotocol.com/v1',
   bera: 'https://station.bera-prod.vertexprotocol.com/v1',

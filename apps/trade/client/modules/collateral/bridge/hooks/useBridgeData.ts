@@ -1,15 +1,15 @@
 import { NATIVE_EVM_TOKEN_ADDRESS } from '@0xsquid/sdk/dist/constants';
 import { ChainType, Token as SquidToken } from '@0xsquid/squid-types';
 import { useEVMContext } from '@vertex-protocol/react-client';
+import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
-import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/useSquidSDK';
+import { useSquidSDKQuery } from 'client/modules/collateral/bridge/hooks/useSquidSDKQuery';
 import {
   BridgeChainSelectValue,
   BridgeTokenSelectValue,
   DestinationBridgeChainSelectValue,
   DestinationBridgeTokenSelectValue,
 } from 'client/modules/collateral/bridge/types';
-import { nonNullFilter } from '@vertex-protocol/web-common';
 import { groupBy, some } from 'lodash';
 import { useMemo } from 'react';
 
@@ -24,7 +24,7 @@ interface Data {
  * Returns all supported chains & bridges
  */
 export function useBridgeData() {
-  const squidSDK = useSquidSDK();
+  const squidSDK = useSquidSDKQuery();
   const { supportedChains, primaryChain } = useEVMContext();
   const { data: marketsStaticData } = useAllMarketsStaticData();
 
@@ -77,12 +77,7 @@ export function useBridgeData() {
 
       // Destination chain (i.e. where Vertex is deployed)
       if (baseChainData.chainId === primaryChain.id) {
-        const spotProducts = [
-          marketsStaticData.primaryQuote,
-          ...Object.values(marketsStaticData.spot),
-        ];
-
-        const destinationTokens = spotProducts
+        const destinationTokens = Object.values(marketsStaticData.spotProducts)
           .map((product): DestinationBridgeTokenSelectValue | undefined => {
             const squidToken = tokens.find(
               (token) =>

@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   BigDecimal,
-  IStaking__factory,
-  IStakingV2__factory,
   removeDecimals,
   sumBigDecimalBy,
   toBigDecimal,
+  VERTEX_ABIS,
 } from '@vertex-protocol/client';
 import {
   QueryDisabledError,
@@ -13,7 +12,6 @@ import {
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
 import { last } from 'lodash';
-import { Address } from 'viem';
 
 interface Data {
   apr: BigDecimal | undefined;
@@ -46,14 +44,14 @@ export function useStakingData() {
           allowFailure: false,
           contracts: [
             {
-              address: stakingV1Address as Address,
-              abi: IStaking__factory.abi,
+              address: stakingV1Address,
+              abi: VERTEX_ABIS['vrtxStaking'],
               functionName: 'getGlobalRewardsBreakdown',
               args: [],
             },
             {
-              address: stakingV2Address as Address,
-              abi: IStakingV2__factory.abi,
+              address: stakingV2Address,
+              abi: VERTEX_ABIS['vrtxStakingV2'],
               functionName: 'getGlobalYieldsBreakdown',
               args: [],
             },

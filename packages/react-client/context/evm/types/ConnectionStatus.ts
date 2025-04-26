@@ -1,4 +1,5 @@
-import { JsonRpcSigner } from 'ethers';
+import { WalletClientWithAccount } from '@vertex-protocol/client';
+import { Address } from 'viem';
 import { Connector } from 'wagmi';
 
 /**
@@ -8,12 +9,12 @@ export type ConnectionStatus =
   | {
       type: 'initializing' | 'disconnected' | 'reconnecting' | 'connecting';
       address: undefined;
-      signer: undefined;
+      walletClient: undefined;
       connector: Connector | undefined;
     }
   | {
       type: 'connected';
-      address: string;
-      signer: JsonRpcSigner | undefined;
+      address: Address;
+      walletClient: WalletClientWithAccount | undefined;
       connector: Connector;
     };

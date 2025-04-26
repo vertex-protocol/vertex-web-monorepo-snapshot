@@ -4,7 +4,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS, Value } from '@vertex-protocol/web-ui';
+import { Value } from '@vertex-protocol/web-ui';
 import { useCountdownDuration } from 'client/hooks/ui/useCountdownDuration';
 import { TradingCompetitionStatusBadge } from 'client/modules/tradingCompetition/components/TradingCompetitionStatusBadge';
 import { useTradingCompetitionContext } from 'client/pages/TradingCompetition/context/TradingCompetitionContext';
@@ -63,12 +63,11 @@ function DurationSegment({ unit, value, className }: DurationSegmentProps) {
     <div
       className={joinClassNames(
         'flex flex-col items-center gap-y-1 p-1 lg:px-3',
-        'rounded-sm border',
-        COMMON_TRANSPARENCY_COLORS.border,
+        'border-overlay-divider rounded-xs border',
         className,
       )}
     >
-      <Value sizeVariant="lg" className="title-text">
+      <Value sizeVariant="xl" className="title-text">
         {formatNumber(value, {
           formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
         })}

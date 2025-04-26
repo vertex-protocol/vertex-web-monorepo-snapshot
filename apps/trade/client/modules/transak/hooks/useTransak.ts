@@ -72,6 +72,22 @@ export function useTransak() {
           defaultCryptoCurrency: 'sei',
           walletAddress: connectionStatus.address,
         };
+      case 'avax':
+        return {
+          apiKey: SENSITIVE_DATA.transakApiKey.prod,
+          environment: Transak.ENVIRONMENTS.PRODUCTION,
+          defaultNetwork: 'avaxcchain',
+          defaultCryptoCurrency: 'usdc',
+          walletAddress: connectionStatus.address,
+        };
+      case 'avaxTestnet':
+        return {
+          apiKey: SENSITIVE_DATA.transakApiKey.staging,
+          environment: Transak.ENVIRONMENTS.STAGING,
+          defaultNetwork: 'avaxcchain',
+          defaultCryptoCurrency: 'usdc',
+          walletAddress: connectionStatus.address,
+        };
       default:
         return undefined;
     }

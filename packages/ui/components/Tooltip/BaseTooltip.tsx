@@ -2,10 +2,9 @@ import { Slottable } from '@radix-ui/react-slot';
 import { mergeClassNames, WithChildren } from '@vertex-protocol/web-common';
 import { ReactNode } from 'react';
 import { usePopperTooltip } from 'react-popper-tooltip';
-import styles from './BaseTooltip.module.css';
-import { TooltipPortal } from './TooltipPortal';
-import { ConditionalAsChild } from '../ConditionalAsChild';
 import { Z_INDEX } from '../../consts';
+import { ConditionalAsChild } from '../ConditionalAsChild';
+import { TooltipPortal } from './TooltipPortal';
 
 export interface BaseTooltipProps extends WithChildren {
   tooltipContent: ReactNode;
@@ -61,10 +60,9 @@ export function BaseTooltip({
         <div
           {...getTooltipProps({
             className: mergeClassNames(
-              'text-text-tertiary shadow-elevation rounded',
+              'text-text-tertiary shadow-elevation-strong rounded-sm tooltip-container',
               // `z-index` should be >= to the dialog's so it's visible when used in a dialog.
               Z_INDEX.dialogContainer,
-              styles['tooltip-container'],
               tooltipContainerClassName,
             ),
           })}
@@ -73,7 +71,7 @@ export function BaseTooltip({
           {tooltipContent}
           <div
             {...getArrowProps()}
-            className={hideArrow ? 'hidden' : styles['tooltip-arrow']}
+            className={hideArrow ? 'hidden' : 'tooltip-arrow'}
           />
         </div>
       </TooltipPortal>

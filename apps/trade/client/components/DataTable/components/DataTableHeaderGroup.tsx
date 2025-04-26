@@ -1,6 +1,5 @@
 import { flexRender, HeaderGroup, RowData } from '@tanstack/react-table';
 import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 
 export function DataTableHeaderGroup<TData extends RowData>({
   headerGroup,
@@ -11,8 +10,8 @@ export function DataTableHeaderGroup<TData extends RowData>({
   return (
     <div
       className={mergeClassNames(
-        'flex h-11 items-stretch border-b',
-        COMMON_TRANSPARENCY_COLORS.border,
+        'flex h-11 items-stretch',
+        'border-overlay-divider border-b',
         className,
       )}
       key={headerGroup.id}

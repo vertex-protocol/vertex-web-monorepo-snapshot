@@ -1,3 +1,4 @@
+import { BigDecimal } from '@vertex-protocol/client';
 import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { HistoricalLiquidatedBalanceType } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLiquidationsTable';
 import { CsvDataItem } from 'client/utils/downloadCsv';
@@ -9,7 +10,14 @@ export type HistoryExportType =
   | 'realized_pnl'
   | 'trades'
   | 'lp'
-  | 'liquidations';
+  | 'vlp'
+  | 'liquidations'
+  | 'funding'
+  | 'interest';
+
+export interface ExportHistoryDialogParams {
+  initialExportType?: HistoryExportType;
+}
 
 export interface GetExportHistoryDataParams {
   startTimeMillis: number;
@@ -18,10 +26,10 @@ export interface GetExportHistoryDataParams {
 }
 
 export interface ExportHistoryCollateralItem extends CsvDataItem {
-  time: string;
+  time: Date;
   // Symbol
   asset: string;
-  balanceChange: string;
+  balanceChange: BigDecimal;
   // Defined for subaccount transfers
   fromSubaccountName?: string;
   fromSubaccountUsername?: string;
@@ -30,47 +38,67 @@ export interface ExportHistoryCollateralItem extends CsvDataItem {
 }
 
 export interface ExportHistoryTradeItem extends CsvDataItem {
-  time: string;
+  time: Date;
   marketName: string;
   orderType: string;
   marginModeType: MarginModeType;
-  avgPrice: string;
-  amount: string;
-  total: string;
-  fee: string;
+  avgPrice: BigDecimal;
+  amount: BigDecimal;
+  total: BigDecimal;
+  fee: BigDecimal;
 }
 
 export interface ExportHistoryRealizedPnlItem extends CsvDataItem {
-  time: string;
+  time: Date;
   marketName: string;
   marginModeType: MarginModeType;
   // Position amount before the realized pnl event
-  preEventBalanceAmount: string;
-  entryPrice: string;
-  exitPrice: string;
-  filledAmountAbs: string;
+  preEventBalanceAmount: BigDecimal;
+  entryPrice: BigDecimal;
+  exitPrice: BigDecimal;
+  filledAmountAbs: BigDecimal;
   // In terms of primary quote
-  pnl: string;
+  pnl: BigDecimal;
 }
 
 export interface ExportHistoryLpItem extends CsvDataItem {
-  time: string;
+  time: Date;
   // For the wBTC-USDC pool, this would be wBTC
   baseAsset: string;
-  lpAmountDelta: string;
-  primaryQuoteAmountDelta: string;
-  baseAssetAmountDelta: string;
+  lpAmountDelta: BigDecimal;
+  primaryQuoteAmountDelta: BigDecimal;
+  baseAssetAmountDelta: BigDecimal;
+}
+
+export interface ExportHistoryVlpItem extends CsvDataItem {
+  time: Date;
+  vlpAmountDelta: BigDecimal;
+  primaryQuoteAmountDelta: BigDecimal;
 }
 
 export interface ExportHistoryLiquidationItem extends CsvDataItem {
-  time: string;
+  time: Date;
   // For spot & LPs, this is the symbol. For perps, this is the market name
   productName: string;
   balanceType: HistoricalLiquidatedBalanceType;
   // Used as an "ID" to group liquidations
   submissionIndex: string;
   // For LPs, this is the number of LP tokens liquidated
-  amountLiquidated: string;
+  amountLiquidated: BigDecimal;
   // Net change in the asset amount
-  assetAmountDelta: string;
+  assetAmountDelta: BigDecimal;
+}
+
+export interface ExportHistoryFundingItem extends CsvDataItem {
+  time: Date;
+  marketName: string;
+  annualRateFrac: BigDecimal;
+  fundingPaymentAmount: BigDecimal;
+}
+
+export interface ExportHistoryInterestItem extends CsvDataItem {
+  time: Date;
+  asset: string;
+  annualRateFrac: BigDecimal;
+  interestPaymentAmount: BigDecimal;
 }

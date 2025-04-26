@@ -83,7 +83,7 @@ interface SliderTrackProps {
 function SliderTrack({ props, children }: WithChildren<SliderTrackProps>) {
   return (
     <div
-      className="from-grad-slider-start/60 via-grad-slider-mid/80 to-grad-slider-end/60 h-2.5 rounded-sm bg-gradient-to-r"
+      className="from-grad-slider-start/60 via-grad-slider-mid/80 to-grad-slider-end/60 h-2.5 rounded-xs bg-linear-to-r"
       {...props}
     >
       {children}
@@ -92,7 +92,7 @@ function SliderTrack({ props, children }: WithChildren<SliderTrackProps>) {
 }
 
 function SliderMark({ props }: { props: Omit<IMarkProps, 'key'> }) {
-  return <div {...props} className="bg-surface-card h-1.5 w-px rounded" />;
+  return <div {...props} className="bg-surface-card h-1.5 w-px rounded-sm" />;
 }
 
 interface SliderThumbProps {
@@ -112,7 +112,7 @@ function SliderThumb({
     <div
       {...props}
       className={joinClassNames(
-        'bg-surface-card border-accent rounded border',
+        'bg-surface-card border-primary rounded-sm border',
         'px-2 py-1 lg:px-1.5 lg:py-0.5',
         'text-text-primary text-xs',
         disabled && 'text-text-tertiary',

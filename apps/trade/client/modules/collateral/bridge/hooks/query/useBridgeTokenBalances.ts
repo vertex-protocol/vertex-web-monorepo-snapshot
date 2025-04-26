@@ -6,7 +6,7 @@ import {
   useEVMContext,
 } from '@vertex-protocol/react-client';
 import { toBigDecimal } from '@vertex-protocol/utils';
-import { useSquidSDK } from 'client/modules/collateral/bridge/hooks/useSquidSDK';
+import { useSquidSDKQuery } from 'client/modules/collateral/bridge/hooks/useSquidSDKQuery';
 
 export function bridgeTokenBalancesQueryKey(
   address?: string,
@@ -19,7 +19,7 @@ export function bridgeTokenBalancesQueryKey(
  * Returns bridge token balances for a given chain
  */
 export function useBridgeTokenBalances(chainId?: number) {
-  const squidSDK = useSquidSDK();
+  const squidSDK = useSquidSDKQuery();
   const {
     connectionStatus: { address },
   } = useEVMContext();

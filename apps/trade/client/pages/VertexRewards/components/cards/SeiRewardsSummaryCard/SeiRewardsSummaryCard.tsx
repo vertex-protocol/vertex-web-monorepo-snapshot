@@ -1,8 +1,7 @@
 import {
-  PresetNumberFormatSpecifier,
   formatNumber,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
-import { joinClassNames } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
 import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
@@ -23,7 +22,7 @@ export function SeiRewardsSummaryCard() {
     onClaimClick,
     isClaimSuccess,
     isClaiming,
-    seiToken,
+    foundationToken,
     isCompleted,
   } = useSeiRewardsSummaryCard();
 
@@ -47,24 +46,27 @@ export function SeiRewardsSummaryCard() {
     return (
       <>
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Total Earned"
           tooltip={{ id: 'rewardsFoundationTotalEarned' }}
           value={totalRealizedRewards}
-          valueEndElement={seiToken.symbol}
+          valueEndElement={foundationToken.symbol}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Claimed"
           value={claimedRewards}
-          valueEndElement={seiToken.symbol}
+          valueEndElement={foundationToken.symbol}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
         {!isCompleted && (
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Est. New"
             tooltip={{ id: 'rewardsFoundationEstNew' }}
             value={estimatedWeekRewards}
-            valueEndElement={seiToken.symbol}
+            valueEndElement={foundationToken.symbol}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           />
         )}
@@ -73,16 +75,11 @@ export function SeiRewardsSummaryCard() {
   })();
 
   return (
-    <RewardsSummaryCard.Container
-      className={joinClassNames(
-        'to-surface-card from-surface-3 bg-gradient-to-r',
-        'ring-stroke',
-      )}
-    >
+    <RewardsSummaryCard.Container className="to-surface-card from-surface-3 bg-linear-to-r">
       <RewardsSummaryCard.Content
         header={
           <RewardsSummaryCard.IconHeader
-            iconSrc={seiToken.icon.asset}
+            iconSrc={foundationToken.icon.asset}
             title="SEI Incentives"
             iconClassName="aspect-square w-7"
           />
@@ -90,10 +87,11 @@ export function SeiRewardsSummaryCard() {
         metricItems={metricItems}
         actionMetric={
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Available to Claim"
             tooltip={{ id: 'rewardsFoundationAvailableToClaim' }}
             value={unclaimedRealizedRewards}
-            valueEndElement={seiToken.symbol}
+            valueEndElement={foundationToken.symbol}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           />
         }

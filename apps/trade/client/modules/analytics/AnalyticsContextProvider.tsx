@@ -1,5 +1,4 @@
 import spindl from '@spindl-xyz/attribution';
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { WithChildren } from '@vertex-protocol/web-common';
 import { useSizeClass } from 'client/hooks/ui/breakpoints';
 import {
@@ -31,14 +30,14 @@ if (typeof window !== 'undefined') {
 
 export function AnalyticsContextProvider({ children }: WithChildren) {
   const { value: sizeClass } = useSizeClass();
-  const {
-    primaryChainMetadata: { isTestnet },
-  } = useVertexMetadataContext();
   const { areCookiesAccepted } = useCookiePreference();
-  const { buildId } = clientEnv.base;
+  const {
+    base: { buildId },
+    isTestnetDataEnv,
+  } = clientEnv;
 
   // Supported on all mainnet and when cookies are enabled
-  const disabled = isTestnet || !areCookiesAccepted;
+  const disabled = isTestnetDataEnv || !areCookiesAccepted;
 
   const baseEventProperties = useMemo((): AnalyticsBaseEventProperties => {
     return {

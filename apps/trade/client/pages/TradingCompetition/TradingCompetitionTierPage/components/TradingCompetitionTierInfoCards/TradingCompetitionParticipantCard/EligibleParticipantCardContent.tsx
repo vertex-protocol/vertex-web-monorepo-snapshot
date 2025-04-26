@@ -1,14 +1,14 @@
 import { IndexerLeaderboardParticipant } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
   formatNumber,
   PresetNumberFormatSpecifier,
+  signDependentValue,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { TradingCompetitionCard } from 'client/pages/TradingCompetition/components/TradingCompetitionInfoCards/TradingCompetitionCard';
-import { signDependentValue } from '@vertex-protocol/react-client';
 
 interface Props {
   participant: IndexerLeaderboardParticipant;
@@ -26,13 +26,15 @@ export function EligibleParticipantCardContent({ participant }: Props) {
     <>
       <TradingCompetitionCard.Body className="gap-4 sm:gap-6">
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Your Rank"
-          valueClassName="bg-surface-3 rounded px-2 w-max"
+          valueClassName="bg-surface-3 rounded-sm px-2 w-max"
           valueContent={`#${formatNumber(roiRank, {
             formatSpecifier: PresetNumberFormatSpecifier.NUMBER_INT,
           })}`}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="% ROI"
           value={percentRoi}
           numberFormatSpecifier={
@@ -45,6 +47,7 @@ export function EligibleParticipantCardContent({ participant }: Props) {
           })}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="PnL"
           value={pnlUsd}
           numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
@@ -55,6 +58,7 @@ export function EligibleParticipantCardContent({ participant }: Props) {
           })}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Volume"
           value={volume}
           numberFormatSpecifier={

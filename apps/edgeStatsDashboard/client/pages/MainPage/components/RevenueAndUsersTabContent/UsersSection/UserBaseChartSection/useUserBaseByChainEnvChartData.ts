@@ -1,7 +1,9 @@
+import {
+  ChainEnvWithEdge,
+  useEdgeMarketSnapshots,
+} from '@vertex-protocol/react-client';
 import { ChainEnvBreakdownStatsChartDataItem } from 'client/components/charts/ChainEnvBreakdownStatsChart/types';
-import { ChainEnvWithEdge } from 'client/hooks/types';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
-import { useEdgeMarketSnapshots } from 'client/hooks/useEdgeMarketSnapshots';
 import { processIndexerMarketSnapshots } from 'client/utils/processIndexerMarketSnapshots';
 import { useMemo } from 'react';
 

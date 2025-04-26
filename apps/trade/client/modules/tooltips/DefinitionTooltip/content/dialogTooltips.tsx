@@ -1,4 +1,6 @@
+import { VLP_TOKEN_INFO } from '@vertex-protocol/react-client';
 import { DiscList } from '@vertex-protocol/web-ui';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { DefinitionTooltipConfig } from 'client/modules/tooltips/DefinitionTooltip/types';
 import { PerpMarginModeCrossInfo } from 'client/modules/trading/components/PerpMarginModeCrossInfo';
 import { PerpMarginModeIsolatedInfo } from 'client/modules/trading/components/PerpMarginModeIsolatedInfo';
@@ -29,7 +31,7 @@ const settingsTooltips = {
 const singleSignatureTooltips = {
   octRememberMe: {
     title: 'Remember Me',
-    content: `When enabled, you will not be required to approve 1-Click Trading again unless you clear your browser cache or manually disconnect your wallet. Your 1-Click Trading key will be saved to your browser's storage and will not persist across devices. Do not enable this feature on shared or public devices.`,
+    content: `When enabled, you will not be required to approve 1-Click Trading again unless you clear your browser cache. Your 1-Click Trading key will be saved to your browser's storage and will not persist across devices. Do not enable this feature on shared or public devices.`,
   },
   octRemainingActivations: {
     title: `Weekly activations remaining`,
@@ -153,6 +155,13 @@ const fastWithdrawTooltips = {
   },
 };
 
+const vlpTooltips = {
+  vlpRedeemFee: ({ primaryQuoteToken: { symbol: primaryQuoteSymbol } }) => ({
+    title: 'Fee',
+    content: `The fee for burning ${VLP_TOKEN_INFO.symbol} is composed of a base sequencer gas fee of ${SEQUENCER_FEE_AMOUNT_USDC} ${primaryQuoteSymbol} and an additional fee that is redirected back to the pool.`,
+  }),
+} as const satisfies Record<string, DefinitionTooltipConfig>;
+
 export const dialogTooltips = {
   ...singleSignatureTooltips,
   ...depositTooltips,
@@ -162,4 +171,5 @@ export const dialogTooltips = {
   ...bridgeTooltips,
   ...settingsTooltips,
   ...fastWithdrawTooltips,
+  ...vlpTooltips,
 } as const satisfies Record<string, DefinitionTooltipConfig>;

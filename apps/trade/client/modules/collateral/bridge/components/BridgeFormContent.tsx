@@ -91,7 +91,7 @@ export function BridgeFormContent() {
         </ActionSummary.Container>
         {/* Centering the helper text here which looks better with the "powered by" footer */}
         {buttonState === 'idle' && (
-          <ButtonHelperInfo.Content className="text-center">
+          <ButtonHelperInfo.Content>
             You may need to approve the asset before depositing.
           </ButtonHelperInfo.Content>
         )}

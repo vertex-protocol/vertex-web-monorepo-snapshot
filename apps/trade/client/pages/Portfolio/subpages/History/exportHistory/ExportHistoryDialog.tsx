@@ -4,8 +4,11 @@ import { ExportHistoryDateRangeSelector } from 'client/pages/Portfolio/subpages/
 import { ExportHistorySubmitButton } from 'client/pages/Portfolio/subpages/History/exportHistory/components/ExportHistorySubmitButton';
 import { ExportHistoryTypeSelect } from 'client/pages/Portfolio/subpages/History/exportHistory/components/ExportHistoryTypeSelect';
 import { useExportHistoryDialog } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExportHistoryDialog';
+import { ExportHistoryDialogParams } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 
-export function ExportHistoryDialog() {
+export function ExportHistoryDialog({
+  initialExportType,
+}: ExportHistoryDialogParams) {
   const { hide } = useDialog();
   const {
     buttonState,
@@ -20,7 +23,8 @@ export function ExportHistoryDialog() {
     setSelectedExportType,
     setStartDate,
     startDate,
-  } = useExportHistoryDialog();
+    progressFrac,
+  } = useExportHistoryDialog({ initialExportType });
 
   return (
     <BaseAppDialog.Container onClose={hide}>
@@ -50,7 +54,11 @@ export function ExportHistoryDialog() {
             />
           </div>
         </div>
-        <ExportHistorySubmitButton state={buttonState} onClick={onSubmit} />
+        <ExportHistorySubmitButton
+          state={buttonState}
+          progressFrac={progressFrac}
+          onClick={onSubmit}
+        />
       </BaseAppDialog.Body>
     </BaseAppDialog.Container>
   );

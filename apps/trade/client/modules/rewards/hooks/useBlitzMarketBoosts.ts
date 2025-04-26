@@ -21,7 +21,8 @@ export function useBlitzMarketBoosts() {
 
     return Object.entries(MARKET_BOOST_MULTIPLIERS_BY_PRODUCT_ID)
       .map(([productId, pointsMultiplier]) => {
-        const staticMarketData = allMarketsStaticData?.all[Number(productId)];
+        const staticMarketData =
+          allMarketsStaticData?.allMarkets[Number(productId)];
 
         if (!staticMarketData) {
           return;

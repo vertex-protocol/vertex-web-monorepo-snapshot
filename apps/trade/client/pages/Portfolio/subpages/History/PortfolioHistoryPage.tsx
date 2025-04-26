@@ -1,9 +1,9 @@
 'use client';
 
 import {
+  Root as TabsRoot,
   TabsContent,
   TabsList,
-  Root as TabsRoot,
   TabsTrigger,
 } from '@radix-ui/react-tabs';
 import {
@@ -22,6 +22,7 @@ export function PortfolioHistoryPage() {
   const { show } = useDialog();
   const {
     tabs,
+    selectedTab: { exportType: initialExportType },
     selectedTabId,
     setSelectedUntypedTabId,
     setSelectedTabId,
@@ -57,7 +58,14 @@ export function PortfolioHistoryPage() {
               <div className="ml-auto flex gap-x-1 pl-2">
                 <SecondaryButton
                   size="xs"
-                  onClick={() => show({ type: 'export_history', params: {} })}
+                  onClick={() =>
+                    show({
+                      type: 'export_history',
+                      params: {
+                        initialExportType,
+                      },
+                    })
+                  }
                 >
                   Export
                 </SecondaryButton>

@@ -3,9 +3,6 @@ import {
   calcLpBalanceValue,
   calcPerpBalanceNotionalValue,
   calcSpotBalanceValue,
-  calcSubaccountLeverage,
-  calcSubaccountMarginUsageFractions,
-  calcTotalPortfolioValues,
   ProductEngineType,
   SubaccountSummaryResponse,
 } from '@vertex-protocol/contracts';
@@ -23,15 +20,20 @@ import { safeDiv } from '@vertex-protocol/web-common';
 import { SpotInterestRate } from 'client/hooks/markets/useSpotInterestRates';
 import { AllLatestMarketPricesData } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { SubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/types';
-import { calcCrossPositionMarginWithoutPnl } from 'client/utils/calcs/calcCrossPositionMarginWithoutPnl';
-import { calcIsoPositionNetMargin } from 'client/utils/calcs/calcIsoPositionNetMargin';
-import { calcIndexerUnrealizedPerpEntryCost } from 'client/utils/calcs/perpEntryCostCalcs';
+import { calcCrossPositionMarginWithoutPnl } from 'client/utils/calcs/perp/calcCrossPositionMarginWithoutPnl';
+import { calcIsoPositionNetMargin } from 'client/utils/calcs/perp/calcIsoPositionNetMargin';
+import { calcIndexerUnrealizedPerpEntryCost } from 'client/utils/calcs/perp/perpEntryCostCalcs';
 import {
   calcIndexerSummaryCumulativePnl,
   calcIndexerSummaryUnrealizedLpPnl,
   calcIndexerSummaryUnrealizedPnl,
   calcPnlFrac,
 } from 'client/utils/calcs/pnlCalcs';
+import {
+  calcSubaccountLeverage,
+  calcSubaccountMarginUsageFractions,
+  calcTotalPortfolioValues,
+} from 'client/utils/calcs/subaccount/subaccountInfoCalcs';
 import { getEstimatedExitPrice } from 'client/utils/getEstimatedExitPrice';
 import { mapValues } from 'lodash';
 
@@ -317,6 +319,9 @@ export function getSubaccountOverview({
     perpIsoMetrics.totalCumulativePnlUsd,
   );
 
+  const spotNetCrossBalanceUsd =
+    decimalAdjustedTotalPortfolioValues.spot.multipliedBy(primaryQuotePriceUsd);
+
   // Total portfolio value = total cross value + sum of isolated net margins
   const portfolioValueUsd = decimalAdjustedTotalPortfolioValues.netTotal
     .multipliedBy(primaryQuotePriceUsd)
@@ -327,16 +332,19 @@ export function getSubaccountOverview({
     marginUsageFractionBounded: marginUsageFractions.initial,
     liquidationRiskFractionBounded: marginUsageFractions.maintenance,
     portfolioValueUsd,
-    fundsAvailableBounded: BigDecimal.max(
+    fundsAvailableBoundedUsd: BigDecimal.max(
       0,
       decimalAdjustedInitialHealth.multipliedBy(primaryQuotePriceUsd),
     ),
-    fundsUntilLiquidationBounded: BigDecimal.max(
+    fundsUntilLiquidationBoundedUsd: BigDecimal.max(
       0,
       decimalAdjustedMaintHealth.multipliedBy(primaryQuotePriceUsd),
     ),
     spot: {
-      netBalance: decimalAdjustedTotalPortfolioValues.spot,
+      netCrossBalanceUsd: spotNetCrossBalanceUsd,
+      netTotalBalanceUsd: spotNetCrossBalanceUsd.plus(
+        perpIsoMetrics.totalNetMarginUsd,
+      ),
       totalBorrowsValueUsd:
         removeDecimals(totalBorrowsValue).multipliedBy(primaryQuotePriceUsd),
       totalDepositsValueUsd:

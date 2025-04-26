@@ -1,37 +1,36 @@
 import { BigDecimal } from '@vertex-protocol/client';
 import {
+  ARB_CHAIN_ENVS,
+  BLAST_CHAIN_ENVS,
   CustomNumberFormatSpecifier,
   formatNumber,
   PresetNumberFormatSpecifier,
+  signDependentValue,
 } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Icons, Pill } from '@vertex-protocol/web-ui';
 import { ROUTES } from 'client/modules/app/consts/routes';
+import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
 import { OverviewInfoBlitzRewardsCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoBlitzRewardsCardButton';
 import { OverviewInfoCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoCardButton';
 import { OverviewInfoVrtxCardButton } from 'client/pages/Portfolio/subpages/Overview/components/OverviewInfoCardButtons/OverviewInfoVrtxCardButton';
-import { signDependentValue } from '@vertex-protocol/react-client';
-import { useIsEnabledForChainEnvs } from 'client/modules/envSpecificContent/hooks/useIsEnabledForChainEnvs';
-import {
-  ARB_CHAIN_ENVS,
-  BLAST_CHAIN_ENVS,
-} from '@vertex-protocol/react-client';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 
-export interface Props {
+interface Props {
   totalEstimatedPerpPnlUsd: BigDecimal | undefined;
   totalEstimatedPerpPnlFrac: BigDecimal | undefined;
-  netBalance: BigDecimal | undefined;
-  averageSpotAPRFraction: BigDecimal | undefined;
-  lpTotalValueUsd: BigDecimal | undefined;
-  lpAverageYieldFraction: BigDecimal | undefined;
+  averageDepositAPRFraction: BigDecimal | undefined;
+  averageBorrowAPRFraction: BigDecimal | undefined;
+  totalDepositsValueUsd: BigDecimal | undefined;
+  totalBorrowsValueUsd: BigDecimal | undefined;
 }
 
 export function OverviewInfoCardButtons({
-  averageSpotAPRFraction,
-  lpAverageYieldFraction,
-  lpTotalValueUsd,
-  netBalance,
+  averageDepositAPRFraction,
+  averageBorrowAPRFraction,
+  totalDepositsValueUsd,
+  totalBorrowsValueUsd,
   totalEstimatedPerpPnlFrac,
   totalEstimatedPerpPnlUsd,
 }: Props) {
@@ -50,15 +49,33 @@ export function OverviewInfoCardButtons({
     >
       <OverviewInfoCardButton
         href={ROUTES.portfolio.balances}
-        title="Net Balance"
-        value={formatNumber(netBalance, {
+        title="Total Deposits"
+        value={formatNumber(totalDepositsValueUsd, {
           formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         })}
         pill={
           <Pill colorVariant="tertiary" sizeVariant="xs">
             APR:
             <span className="text-text-primary">
-              {formatNumber(averageSpotAPRFraction, {
+              {formatNumber(averageDepositAPRFraction, {
+                formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
+              })}
+            </span>
+          </Pill>
+        }
+        isPrivate={areAccountValuesPrivate}
+      />
+      <OverviewInfoCardButton
+        href={ROUTES.portfolio.balances}
+        title="Total Borrows"
+        value={formatNumber(totalBorrowsValueUsd, {
+          formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
+        })}
+        pill={
+          <Pill colorVariant="tertiary" sizeVariant="xs">
+            APR:
+            <span className="text-text-primary">
+              {formatNumber(averageBorrowAPRFraction, {
                 formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
               })}
             </span>
@@ -68,16 +85,14 @@ export function OverviewInfoCardButtons({
       />
       <OverviewInfoCardButton
         href={ROUTES.portfolio.positions}
-        title="Perps PnL"
+        title="Total Open Perps PnL"
         titleDefinitionId="overviewPerpPnL"
         value={formatNumber(totalEstimatedPerpPnlUsd, {
           formatSpecifier: CustomNumberFormatSpecifier.SIGNED_CURRENCY_2DP,
         })}
-        valueClassName={signDependentValue(totalEstimatedPerpPnlUsd, {
-          positive: 'text-positive',
-          negative: 'text-negative',
-          zero: 'text-text-primary',
-        })}
+        valueClassName={getSignDependentColorClassName(
+          totalEstimatedPerpPnlUsd,
+        )}
         pill={
           <Pill
             colorVariant={signDependentValue(totalEstimatedPerpPnlFrac, {
@@ -95,24 +110,6 @@ export function OverviewInfoCardButtons({
             {formatNumber(totalEstimatedPerpPnlFrac?.abs(), {
               formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
             })}
-          </Pill>
-        }
-        isPrivate={areAccountValuesPrivate}
-      />
-      <OverviewInfoCardButton
-        href={ROUTES.portfolio.pools}
-        title="Pools"
-        value={formatNumber(lpTotalValueUsd, {
-          formatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
-        })}
-        pill={
-          <Pill colorVariant="tertiary" sizeVariant="xs">
-            APR:
-            <span className="text-text-primary">
-              {formatNumber(lpAverageYieldFraction, {
-                formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-              })}
-            </span>
           </Pill>
         }
         isPrivate={areAccountValuesPrivate}

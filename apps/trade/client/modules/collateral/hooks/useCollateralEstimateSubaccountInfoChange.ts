@@ -86,10 +86,10 @@ export function useCollateralEstimateSubaccountInfoChange({
         return {
           accountValueUsd: balanceValueUsd,
           // Everything below assumes that the subaccount is depositing - other operations (ex. withdrawal) aren't valid anyway
-          fundsAvailableUsdBounded: balanceValueUsd.multipliedBy(
+          fundsAvailableBoundedUsd: balanceValueUsd.multipliedBy(
             weights.initial,
           ),
-          fundsUntilLiquidationUsdBounded: balanceValueUsd.multipliedBy(
+          fundsUntilLiquidationBoundedUsd: balanceValueUsd.multipliedBy(
             weights.maintenance,
           ),
           leverage: BigDecimals.ZERO,

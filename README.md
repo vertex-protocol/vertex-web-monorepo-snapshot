@@ -51,3 +51,8 @@ then saving the file.
 - Ensure the local SDK has the correct contract addresses and endpoints, see `createClientContext`
 - Switch your `.env.local` to point to a local deployment: `NEXT_PUBLIC_DATA_ENV=local`
 - Update token addresses in `tokens.ts` for the local environment. All addresses **must** be lowercase
+
+**[Trade App] Bundle Analyzer **
+
+- To run the bundle analyzer, run `yarn analyze` in the trade app directory. This will generate reports you can view
+  at `.next/analyze/client.html` and `.next/analyze/server.html`.

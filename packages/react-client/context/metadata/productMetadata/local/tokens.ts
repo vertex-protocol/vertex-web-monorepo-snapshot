@@ -3,7 +3,7 @@ import { hardhat } from 'viem/chains';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { TOKEN_ICONS } from '../tokenIcons';
 import { Token } from '../types';
-import { VRTX_TOKEN_INFO } from '../vertexTokenInfo';
+import { VRTX_TOKEN_INFO } from '../vrtxTokenInfo';
 
 const hardhatChainId = hardhat.id;
 

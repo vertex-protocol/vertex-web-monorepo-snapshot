@@ -41,6 +41,7 @@ export function StakingV1UnstakeCard({
       >
         {isUnstakedClaimable && (
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Unstaked Claimable"
             value={accountUnstakedClaimable}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
@@ -50,12 +51,14 @@ export function StakingV1UnstakeCard({
         {isUnstakedLocked && (
           <>
             <ValueWithLabel.Vertical
+              sizeVariant="lg"
               label="Unstaked Unlocking"
               value={accountUnstakedLocked}
               numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
               valueEndElement={protocolTokenSymbol}
             />
             <ValueWithLabel.Vertical
+              sizeVariant="lg"
               label="Unlock Date"
               valueContent={formatTimestamp(unstakedUnlockTimeMillis, {
                 formatSpecifier: TimeFormatSpecifier.MMM_D_HH_12H_O,

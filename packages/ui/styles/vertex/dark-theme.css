@@ -1,0 +1,57 @@
+/* To apply this theme, add the following to the <html> tag: data-theme="vertexDark" */
+/* Then apply these variables to any custom Tailwind config variables located inside `@theme` */
+
+/* Vertex Dark Theme */
+[data-theme='vertexDark'] {
+  /* Background Color */
+  --color-background: #0a0a0d;
+
+  /* Surface Colors */
+  --color-surface-card: #16161d;
+  --color-surface-1: #1f1f29;
+  --color-surface-2: #272734;
+  --color-surface-3: #2b2b36;
+
+  /* Border Colors */
+  --color-stroke: #1b1b22;
+
+  /* Text Colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #d4d4d8;
+  --color-text-tertiary: #9a9aa2;
+  --color-text-button-primary: #ffffff;
+
+  /* Misc Theme Colors */
+  --color-accent: #a39efb;
+  --color-accent-alt: #a9f89d;
+  --color-accent-warning: #eaec96;
+  --color-accent-info: #8af8ff;
+  --color-disabled: #424247;
+  --color-primary: #8062f1;
+  --color-positive: #3df57b;
+  --color-positive-muted: #1a2c26;
+  --color-negative: #ea435c;
+  --color-negative-muted: #281a21;
+  --color-warning: #d1a816;
+  --color-warning-muted: #232015;
+
+  /* Overlay Colors */
+  --color-overlay-divider: hsl(0 0% 100% / 0.1);
+  --color-overlay-accent: hsl(243 92% 80% / 0.2);
+  --color-overlay-hover: hsl(0 0% 100% / 0.05);
+  --color-overlay-disabled: hsl(240 16% 6% / 0.5);
+
+  /* Gradient Stops */
+  --color-grad-overlay-dialog-start: hsl(240 11 19% / 0.8);
+  --color-grad-overlay-dialog-end: hsl(240 14 18% / 0.8);
+
+  /* Box Shadows */
+  --shadow-elevation-card: 0px 2px 4px 0px hsl(0 0% 0% / 0.02);
+  --shadow-elevation-strong: 0px 8px 36px 8px hsl(240 13% 5% / 0.8);
+  --shadow-elevation-dialog: 0px 50px 80px 0px hsl(0 0% 0% / 0.05),
+    0px 36px 36px -18px hsl(0 0% 0% / 0.07);
+
+  /* Fonts */
+  --font-default: var(--font-inter);
+  --font-title: var(--font-inter);
+}

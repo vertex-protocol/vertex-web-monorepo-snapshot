@@ -10,9 +10,20 @@ export interface AllMarketsForChainEnv {
    */
   primaryQuoteProduct: AnnotatedSpotMarket;
   /**
+   * This is also a market for typing purposes only, but only the product is relevant because VLP does not have a spot market
+   */
+  vlpProduct: AnnotatedSpotMarket | undefined;
+  /**
    * Registered markets from product id -> data
    */
   allMarkets: Record<number, AnnotatedMarket>;
+  /**
+   * This includes all spot markets as well as primary quote / VLP
+   */
+  spotProducts: Record<number, AnnotatedSpotMarket>;
+  /**
+   * This excludes primary quote & VLP because they do not have markets
+   */
   spotMarkets: Record<number, AnnotatedSpotMarket>;
   perpMarkets: Record<number, AnnotatedPerpMarket>;
   allMarketsProductIds: number[];

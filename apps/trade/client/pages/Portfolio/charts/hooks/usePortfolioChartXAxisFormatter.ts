@@ -1,8 +1,9 @@
-import { getTimespanAxisFormatter } from 'client/pages/Portfolio/charts/utils/getTimespanAxisFormatter';
+import { getPortfolioChartTimespanAxisFormatter } from 'client/pages/Portfolio/charts/utils/getPortfolioChartTimespanAxisFormatter';
 import { portfolioChartTimespanAtom } from 'client/store/portfolioStore';
 import { useAtom } from 'jotai';
 
 export function usePortfolioChartXAxisFormatter() {
   const [timespan] = useAtom(portfolioChartTimespanAtom);
-  return getTimespanAxisFormatter(timespan);
+
+  return getPortfolioChartTimespanAxisFormatter(timespan);
 }

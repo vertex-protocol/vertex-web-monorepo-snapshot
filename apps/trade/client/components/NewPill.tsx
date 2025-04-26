@@ -1,5 +1,9 @@
-import { GradientPill } from '@vertex-protocol/web-ui';
+import { GradientPill, Icons } from '@vertex-protocol/web-ui';
 
 export function NewPill() {
-  return <GradientPill className="leading-3">NEW</GradientPill>;
+  return (
+    <GradientPill colorVariant="alt" icon={Icons.SparkleFill}>
+      NEW
+    </GradientPill>
+  );
 }

@@ -14,7 +14,8 @@ export function useExecuteCancelOrdersWithNotification() {
     async (params: CancelOrdersWithNotificationParams) => {
       const serverExecutionResult = mutateAsync(params);
       params.orders.forEach((order) => {
-        const marketStaticData = allMarketsStaticData?.all?.[order.productId];
+        const marketStaticData =
+          allMarketsStaticData?.allMarkets?.[order.productId];
 
         if (!marketStaticData) {
           return;
@@ -45,7 +46,7 @@ export function useExecuteCancelOrdersWithNotification() {
 
       return serverExecutionResult;
     },
-    [allMarketsStaticData?.all, dispatchNotification, mutateAsync],
+    [allMarketsStaticData?.allMarkets, dispatchNotification, mutateAsync],
   );
 
   return {

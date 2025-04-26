@@ -23,7 +23,7 @@ export function CookieNoticeBanner() {
     <div
       className={joinClassNames(
         'flex flex-col gap-x-8 gap-y-4 px-6 py-3 lg:w-8/12 lg:flex-row',
-        'bg-gray-light absolute bottom-0 z-10 rounded-2xl lg:bottom-3 lg:right-12',
+        'bg-gray-light absolute bottom-0 z-10 rounded-2xl lg:right-12 lg:bottom-3',
       )}
     >
       <div className="flex flex-col gap-y-2">
@@ -59,7 +59,7 @@ interface ActionButtonsProps {
 
 function ActionButtons({ acceptCookies, declineCookies }: ActionButtonsProps) {
   const buttonClassNames =
-    'py-3 px-6 text-nowrap hover:border-black border-gray border rounded';
+    'py-3 px-6 text-nowrap hover:border-black border-gray border rounded-sm';
 
   return (
     <div className="flex items-center gap-x-2 text-sm">

@@ -1,13 +1,13 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { BrandLoadingWrapper } from 'client/components/BrandIconLoadingWrapper/BrandLoadingWrapper';
-import { FundingChartHeader } from 'client/modules/trading/chart/funding/FundingChartHeader';
-import { FundingChartTooltip } from 'client/modules/trading/chart/funding/FundingChartTooltip';
-import { useFundingChart } from 'client/modules/trading/chart/funding/useFundingChart';
 import {
   percentageAxisFormatter,
   timeAxisFormatter,
-} from 'client/pages/Portfolio/charts/utils/axisFormatters';
-import { COLORS } from 'common/theme/colors';
+} from 'client/modules/charts/utils/axisFormatters';
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
+import { FundingChartHeader } from 'client/modules/trading/chart/funding/FundingChartHeader';
+import { FundingChartTooltip } from 'client/modules/trading/chart/funding/FundingChartTooltip';
+import { useFundingChart } from 'client/modules/trading/chart/funding/useFundingChart';
 import {
   CartesianGrid,
   Line,
@@ -23,7 +23,7 @@ const COMMON_AXES_CONFIG = {
   tick: { fontSize: 10 },
   axisLine: false,
   tickLine: false,
-  stroke: COLORS.text.tertiary,
+  stroke: getTradeAppColorVar('text-tertiary'),
 };
 
 interface Props extends WithClassnames {
@@ -33,10 +33,8 @@ interface Props extends WithClassnames {
 export function FundingChart({ productId, className }: Props) {
   const {
     mappedFundingRates,
-    isLoadingMarketSnapshots,
+    isLoadingEdgeMarketSnapshotsData,
     predictedFundingRate,
-    setTimespan,
-    timespan,
   } = useFundingChart({
     productId,
   });
@@ -44,13 +42,11 @@ export function FundingChart({ productId, className }: Props) {
   return (
     <div className={joinClassNames('flex flex-col', className)}>
       <FundingChartHeader
-        timespan={timespan}
-        setTimespan={setTimespan}
         predictedFundingRate={predictedFundingRate}
         className="self-center lg:self-end"
       />
       <BrandLoadingWrapper
-        isLoading={isLoadingMarketSnapshots}
+        isLoading={isLoadingEdgeMarketSnapshotsData}
         indicatorContainerClassName="flex-1"
         grayscale
       >
@@ -60,7 +56,7 @@ export function FundingChart({ productId, className }: Props) {
         >
           <LineChart data={mappedFundingRates}>
             <CartesianGrid
-              stroke={COLORS.stroke.DEFAULT}
+              stroke={getTradeAppColorVar('stroke')}
               strokeDasharray="3 3"
             />
             <XAxis
@@ -88,9 +84,9 @@ export function FundingChart({ productId, className }: Props) {
                 return [-chartMax, chartMax];
               }}
             />
-            <ReferenceLine y={0} stroke={COLORS.disabled.DEFAULT} />
+            <ReferenceLine y={0} stroke={getTradeAppColorVar('disabled')} />
             <Line
-              stroke={COLORS.text.primary}
+              stroke={getTradeAppColorVar('text-primary')}
               dataKey="fundingRate"
               type="natural"
               dot={false}
@@ -98,7 +94,7 @@ export function FundingChart({ productId, className }: Props) {
             <Tooltip
               content={<FundingChartTooltip />}
               cursor={{
-                stroke: COLORS.disabled.DEFAULT,
+                stroke: getTradeAppColorVar('disabled'),
                 strokeDasharray: '5 5',
               }}
             />

@@ -11,7 +11,7 @@ export function RadioGroupIndicator({
         'flex items-center justify-center',
         'h-5 w-5 rounded-full border',
         active
-          ? 'bg-accent border-transparent'
+          ? 'bg-primary border-transparent'
           : 'bg-surface-1 border-disabled',
         className,
       )}

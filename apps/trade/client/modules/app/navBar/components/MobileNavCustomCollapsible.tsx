@@ -28,7 +28,7 @@ function Collapsible({
       <NavigationMenu.Trigger asChild className="w-full">
         {triggerContent}
       </NavigationMenu.Trigger>
-      <NavigationMenu.Content className="pl-6 pt-2">
+      <NavigationMenu.Content className="pt-2 pl-6">
         {collapsibleContent}
       </NavigationMenu.Content>
     </NavigationMenu.Item>
@@ -42,7 +42,9 @@ function CollapsibleLinksContainer({
   return (
     <div
       className={joinClassNames(
-        'border-stroke flex flex-col border-l px-2',
+        // Bottom padding here is to avoid over-crowding the bottom of the collapsible
+        // with the next link in the list
+        'border-stroke flex flex-col border-l px-2 pb-2',
         className,
       )}
     >

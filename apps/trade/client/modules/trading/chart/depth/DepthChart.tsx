@@ -1,9 +1,9 @@
 import { mapValues } from '@vertex-protocol/client';
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { BrandLoadingWrapper } from 'client/components/BrandIconLoadingWrapper/BrandLoadingWrapper';
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
 import { DepthChartTooltip } from 'client/modules/trading/chart/depth/DepthChartTooltip';
 import { useDepthChart } from 'client/modules/trading/chart/depth/useDepthChart';
-import { COLORS } from 'common/theme/colors';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 
 const GRADIENT_IDS = {
@@ -40,11 +40,17 @@ export function DepthChart({ productId, className }: Props) {
           {/* Gradient Definitions */}
           <defs>
             <linearGradient id={GRADIENT_IDS.bids} y1={0} y2={1} x1={1} x2={0}>
-              <stop stopColor={COLORS.positive.DEFAULT} stopOpacity={0.5} />
+              <stop
+                stopColor={getTradeAppColorVar('positive')}
+                stopOpacity={0.5}
+              />
               <stop offset="100%" stopOpacity={0.2} />
             </linearGradient>
             <linearGradient id={GRADIENT_IDS.asks} y1={0} y2={1} x1={0} x2={1}>
-              <stop stopColor={COLORS.negative.DEFAULT} stopOpacity={0.5} />
+              <stop
+                stopColor={getTradeAppColorVar('negative')}
+                stopOpacity={0.5}
+              />
               <stop offset="100%" stopOpacity={0.2} />
             </linearGradient>
           </defs>
@@ -52,8 +58,10 @@ export function DepthChart({ productId, className }: Props) {
           {/* Asks chart */}
           <Area
             type="stepAfter"
-            stroke={COLORS.negative.DEFAULT}
-            activeDot={{ stroke: COLORS.negative.DEFAULT }}
+            stroke={getTradeAppColorVar('negative')}
+            activeDot={{
+              stroke: getTradeAppColorVar('negative'),
+            }}
             fill={GRADIENT_URLS.asks}
             dataKey="cumulativeAskSize"
             isAnimationActive={false}
@@ -61,8 +69,10 @@ export function DepthChart({ productId, className }: Props) {
           {/* Bids chart */}
           <Area
             type="stepBefore"
-            stroke={COLORS.positive.DEFAULT}
-            activeDot={{ stroke: COLORS.positive.DEFAULT }}
+            stroke={getTradeAppColorVar('positive')}
+            activeDot={{
+              stroke: getTradeAppColorVar('positive'),
+            }}
             fill={GRADIENT_URLS.bids}
             dataKey="cumulativeBidSize"
             isAnimationActive={false}
@@ -76,7 +86,7 @@ export function DepthChart({ productId, className }: Props) {
               />
             }
             cursor={{
-              stroke: COLORS.disabled.DEFAULT,
+              stroke: getTradeAppColorVar('disabled'),
               strokeDasharray: '5 5',
             }}
           />

@@ -14,14 +14,14 @@ import {
   useFundingRateMarketsTable,
 } from 'client/pages/Markets/hooks/useFundingRateMarketsTable';
 import { FundingRateCell } from 'client/pages/Markets/tables/components/FundingRateCell';
-import { FundingRatePeriodSelect } from 'client/pages/Markets/tables/components/FundingRatePeriodSelect';
+import { FundingRatePeriodSelect } from 'client/modules/trading/components/FundingRatePeriodSelect';
 import { favoriteSortFn } from 'client/pages/Markets/utils/sortingFns';
-import { FundingRateTimespan } from 'client/utils/calcs/funding';
+import { FundingRatePeriod } from 'client/modules/localstorage/userState/types/userFundingRatePeriodTypes';
 import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<FundingRateTableItem>();
 // Always sort funding rates by hourly rate as order is equivalent regardless of display rate (e.g. daily/yearly)
-const FUNDING_PERIOD_SORT_KEY: FundingRateTimespan = 'hourly';
+const FUNDING_PERIOD_SORT_KEY: FundingRatePeriod = '1h';
 
 export function FundingRateMarketsTable({ query }: { query: string }) {
   const {
@@ -177,8 +177,8 @@ export function FundingRateMarketsTable({ query }: { query: string }) {
   return (
     <>
       <div className="text-stroke-tertiary flex items-center justify-between gap-x-4 pl-3 text-xs">
-        <div className="flex items-center gap-x-1.5">
-          <span>Show</span>
+        <div className="flex items-center gap-x-1">
+          <span>Standardize rates to</span>
           <FundingRatePeriodSelect />
         </div>
         <FundingRateCountdown />

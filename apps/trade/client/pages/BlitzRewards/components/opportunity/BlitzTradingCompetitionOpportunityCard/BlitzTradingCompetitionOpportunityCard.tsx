@@ -5,7 +5,7 @@ import { BlitzTradingCompetitionOpportunityTbaCardContent } from 'client/pages/B
 
 export function BlitzTradingCompetitionOpportunityCard() {
   const cardContentClassNames = joinClassNames(
-    'bg-surface-1 rounded',
+    'bg-surface-1 rounded-sm',
     'flex flex-col-reverse gap-6 sm:flex-row sm:justify-between',
     'p-4',
   );

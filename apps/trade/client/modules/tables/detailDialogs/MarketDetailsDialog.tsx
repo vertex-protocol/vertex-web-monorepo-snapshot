@@ -15,7 +15,7 @@ export function MarketDetailsDialog({ productId }: MarketDetailsDialogParams) {
   const { hide } = useDialog();
   const { data: allMarkets } = useAllMarketsStaticData();
 
-  const marketData = allMarkets?.all[productId];
+  const marketData = allMarkets?.allMarkets[productId];
 
   if (!marketData) {
     return null;

@@ -5,7 +5,7 @@ import { MARGIN_USAGE_WARNING_TOAST_ID } from 'client/modules/notifications/hand
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { roundToDecimalPlaces } from 'client/utils/rounding';
 import { useEffect, useRef } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 export function useSubaccountRiskEventEmitter() {
   const { data: portfolioOverview } = useSubaccountOverview();

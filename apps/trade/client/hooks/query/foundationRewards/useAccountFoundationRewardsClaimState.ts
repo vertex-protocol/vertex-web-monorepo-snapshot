@@ -6,7 +6,11 @@ import {
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  getValidatedAddress,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
 import { NOT_CONNECTED_ALT_QUERY_ADDRESS } from 'client/hooks/query/consts/notConnectedAltQueryAddress';
 
 export function accountFoundationRewardsClaimStateQueryKey(
@@ -45,8 +49,8 @@ export function useAccountFoundationRewardsClaimState() {
     }
 
     const claimedAmountsResponse =
-      await vertexClient.context.contracts.foundationRewardsAirdrop.getClaimed(
-        addressForQuery,
+      await vertexClient.context.contracts.foundationRewardsAirdrop.read.getClaimed(
+        [getValidatedAddress(addressForQuery)],
       );
 
     const foundationClaimProofsResponse =

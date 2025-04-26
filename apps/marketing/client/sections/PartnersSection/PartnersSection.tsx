@@ -2,7 +2,7 @@
 
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Container } from 'client/components/Container/Container';
-import { ExternalLink } from 'client/components/Link/Link';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import { BlurRevealText } from 'client/components/RevealText/BlurRevealText';
 import { TextItem } from 'client/components/RevealText/types';
 import { PARTNERS } from 'client/sections/PartnersSection/data';
@@ -19,7 +19,7 @@ const blurRevealTexts: TextItem[] = [
   {
     element: 'h2',
     text: 'Partners',
-    className: 'text-header-2 md:text-header-1 font-radioGrotesk mb-4',
+    className: 'text-header-2 md:text-header-1 font-radio-grotesk mb-4',
   },
   {
     element: 'p',

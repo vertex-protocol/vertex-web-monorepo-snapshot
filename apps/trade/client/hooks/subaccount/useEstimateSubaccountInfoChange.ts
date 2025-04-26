@@ -1,14 +1,14 @@
-import {
-  calcSubaccountLeverage,
-  calcSubaccountMarginUsageFractions,
-} from '@vertex-protocol/contracts';
 import { SubaccountTx } from '@vertex-protocol/engine-client';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
+import { AnnotatedSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/annotateSubaccountSummary';
 import { useSubaccountEstimatedSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountEstimatedSummary';
 import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
-import { AnnotatedSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/annotateSubaccountSummary';
 import { useDebounceFalsy } from 'client/hooks/util/useDebounceFalsy';
+import {
+  calcSubaccountLeverage,
+  calcSubaccountMarginUsageFractions,
+} from 'client/utils/calcs/subaccount/subaccountInfoCalcs';
 import { useMemo } from 'react';
 import { EmptyObject } from 'type-fest';
 
@@ -30,9 +30,9 @@ export interface EstimatedBaseSubaccountInfo {
   //Max of 1
   liquidationRiskBounded: BigDecimal;
   // Min of 0
-  fundsUntilLiquidationUsdBounded: BigDecimal;
+  fundsUntilLiquidationBoundedUsd: BigDecimal;
   // Min of 0
-  fundsAvailableUsdBounded: BigDecimal;
+  fundsAvailableBoundedUsd: BigDecimal;
   leverage: BigDecimal;
 }
 
@@ -121,10 +121,10 @@ function calcSubaccountInfo<TAdditionalInfo>(
     accountValueUsd: removeDecimals(
       subaccountSummary.health.unweighted.health,
     ).multipliedBy(primaryQuotePriceUsd),
-    fundsAvailableUsdBounded: removeDecimals(
+    fundsAvailableBoundedUsd: removeDecimals(
       BigDecimal.max(0, subaccountSummary.health.initial.health),
     ).multipliedBy(primaryQuotePriceUsd),
-    fundsUntilLiquidationUsdBounded: removeDecimals(
+    fundsUntilLiquidationBoundedUsd: removeDecimals(
       BigDecimal.max(0, subaccountSummary.health.maintenance.health),
     ).multipliedBy(primaryQuotePriceUsd),
     leverage: calcSubaccountLeverage(subaccountSummary),

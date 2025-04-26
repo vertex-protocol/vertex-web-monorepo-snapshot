@@ -1,15 +1,14 @@
 import { ChainEnv, VertexClient } from '@vertex-protocol/client';
-import { Provider, Wallet } from 'ethers';
+import { Account } from 'viem';
 import { PrimaryChain } from '../../types';
 
 export interface VertexClientWithMetadata {
   primaryChain: PrimaryChain;
   chainEnv: ChainEnv;
   client: VertexClient;
-  provider: Provider;
 }
 
 export interface VertexClientSetLinkedSignerParams {
-  signer: Wallet | null;
+  signerAccount: Account | null;
   chainEnv: ChainEnv;
 }

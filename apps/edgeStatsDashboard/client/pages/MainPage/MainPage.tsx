@@ -1,22 +1,22 @@
-import Image from 'next/image';
-import {
-  Button,
-  getStateOverlayClassNames,
-  LinkButton,
-} from '@vertex-protocol/web-ui';
-import { DashboardTabs } from 'client/pages/MainPage/components/DashboardTabs';
-import edgeWithVertexLogo from 'client/assets/edge-with-vertex-logo.svg';
-import Link from 'next/link';
-import { LINKS } from 'client/config/links';
 import {
   joinClassNames,
   NextImageSrc,
   WithClassnames,
 } from '@vertex-protocol/web-common';
+import {
+  Button,
+  getStateOverlayClassNames,
+  LinkButton,
+} from '@vertex-protocol/web-ui';
+import edgeWithVertexLogo from 'client/assets/edge-with-vertex-logo.svg';
 import { FadingDivider } from 'client/components/FadingDivider';
+import { LINKS } from 'client/config/links';
+import { DashboardTabs } from 'client/pages/MainPage/components/DashboardTabs';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import vertexMonochromeIcon from 'client/assets/vertex-monochrome-icon.svg';
 import blitzMonochromeIcon from 'client/assets/blitz-monochrome-icon.svg';
+import vertexMonochromeIcon from 'client/assets/vertex-monochrome-icon.svg';
 
 export function MainPage() {
   return (
@@ -103,7 +103,7 @@ function ExternalLinkActionButton({
   });
 
   const buttonClassNames = joinClassNames(
-    'border border-stroke rounded-lg shadow-elevation',
+    'border border-stroke rounded-lg shadow-elevation-card',
     'bg-surface-1 py-2 px-5',
     'text-sm text-text-primary',
     buttonStateOverlayClassNames,

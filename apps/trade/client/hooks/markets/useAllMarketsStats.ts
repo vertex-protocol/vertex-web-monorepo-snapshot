@@ -1,12 +1,12 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import {
   createQueryKey,
   QueryDisabledError,
 } from '@vertex-protocol/react-client';
 import { BigDecimal, BigDecimals } from '@vertex-protocol/utils';
-import { useAllMarkets24hrSnapshots } from 'client/hooks/markets/useAllMarkets24hrSnapshots';
-import { useAllProducts24hrHistoricalSnapshot } from 'client/hooks/markets/useAllProducts24hrHistoricalSnapshot';
+import { useAllMarkets24hSnapshots } from 'client/hooks/markets/useAllMarkets24hSnapshots';
+import { useAllProducts24hHistoricalSnapshot } from 'client/hooks/markets/useAllProducts24hHistoricalSnapshot';
+import { getMarketForProductId } from 'client/hooks/query/markets/allMarkets/getMarketForProductId';
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { useAllMarketsLatestPrices } from 'client/hooks/query/markets/useAllMarketsLatestPrices';
 import { calcChangeFrac } from 'client/utils/calcs/calcChangeFrac';
@@ -40,22 +40,15 @@ interface MarketStats {
   openInterestQuote: BigDecimal;
 }
 
-interface Params {
-  /**
-   * When `true`, will fetch data only for the current chain.
-   */
-  disableEdge?: boolean;
-}
-
-export function useAllMarketsStats({ disableEdge }: Params = {}) {
+export function useAllMarketsStats() {
   const { data: latestMarketsData, dataUpdatedAt: latestMarketsUpdatedAt } =
     useAllMarkets();
   const { data: marketSnapshots, dataUpdatedAt: marketSnapshotsUpdatedAt } =
-    useAllMarkets24hrSnapshots({ disableEdge });
+    useAllMarkets24hSnapshots();
   const { data: latestMarketPrices, dataUpdatedAt: latestPricesUpdatedAt } =
     useAllMarketsLatestPrices();
   const { data: productSnapshots, dataUpdatedAt: productSnapshotsUpdatedAt } =
-    useAllProducts24hrHistoricalSnapshot();
+    useAllProducts24hHistoricalSnapshot();
 
   const disabled = !latestMarketsData || !productSnapshots || !marketSnapshots;
 
@@ -65,8 +58,8 @@ export function useAllMarketsStats({ disableEdge }: Params = {}) {
     }
 
     const latestMarketSnapshotsByProductId = marketSnapshots?.latest;
-    const historical24hrMarketSnapshotsByProductId =
-      marketSnapshots?.historical24hr;
+    const historical24hMarketSnapshotsByProductId =
+      marketSnapshots?.historical24h;
 
     let totalCumulativeVolumeInPrimaryQuote = BigDecimals.ZERO;
 
@@ -77,13 +70,12 @@ export function useAllMarketsStats({ disableEdge }: Params = {}) {
       const quoteProductId = market.metadata.quoteProductId;
 
       const quoteOraclePrice =
-        quoteProductId === QUOTE_PRODUCT_ID
-          ? BigDecimals.ONE
-          : latestMarketsData.allMarkets[quoteProductId].product.oraclePrice;
+        getMarketForProductId(quoteProductId, latestMarketsData)?.product
+          .oraclePrice ?? BigDecimals.ONE;
 
       // Volumes are in terms of the quote currency for the market, not in terms of the primary quote
       const earliestDailyCumulativeVolume = get(
-        historical24hrMarketSnapshotsByProductId?.cumulativeVolumes,
+        historical24hMarketSnapshotsByProductId?.cumulativeVolumes,
         productId,
         BigDecimals.ZERO,
       );
@@ -103,7 +95,7 @@ export function useAllMarketsStats({ disableEdge }: Params = {}) {
 
       // Trades
       const earliestDailyCumulativeNumTrades = get(
-        historical24hrMarketSnapshotsByProductId?.cumulativeTrades,
+        historical24hMarketSnapshotsByProductId?.cumulativeTrades,
         productId,
         BigDecimals.ZERO,
       );

@@ -2,6 +2,7 @@ import { abstract, abstractTestnet } from 'wagmi/chains';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { TOKEN_ICONS } from '../tokenIcons';
 import { Token } from '../types';
+import { VLP_TOKEN_INFO } from '../vlpTokenInfo';
 
 /**
  * Abstract
@@ -25,4 +26,12 @@ export const USDC_ABSTRACT_TESTNET: Token = {
   tokenDecimals: 6,
   symbol: PRIMARY_QUOTE_SYMBOLS.usdce,
   icon: TOKEN_ICONS.usdc,
+};
+
+export const VLP_ABSTRACT_TESTNET: Token = {
+  address: '0x220F2aa85a6eB5C72999482eeAE030a9357a0B95',
+  chainId: abstractTestnet.id,
+  tokenDecimals: 18,
+  symbol: VLP_TOKEN_INFO.symbol,
+  icon: TOKEN_ICONS.vlp,
 };

@@ -28,7 +28,9 @@ export function AppDialogs() {
       {currentDialog?.type === 'edit_order_via_chart' && (
         <EditOrderViaChartDialog {...currentDialog.params} />
       )}
-      {currentDialog?.type === 'export_history' && <ExportHistoryDialog />}
+      {currentDialog?.type === 'export_history' && (
+        <ExportHistoryDialog {...currentDialog.params} />
+      )}
       <AccountDialogs />
       <PerpDialogs />
       <LpDialogs />

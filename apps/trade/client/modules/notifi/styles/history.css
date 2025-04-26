@@ -178,11 +178,11 @@
 }
 
 .notifi-history-detail-message > p > a {
-  color: theme('backgroundColor.primary.DEFAULT');
+  color: var(--color-primary);
   text-decoration: none;
 }
 
 .notifi-history-detail-message > a {
-  color: theme('backgroundColor.primary.DEFAULT');
+  color: var(--color-primary);
   text-decoration: underline;
 }

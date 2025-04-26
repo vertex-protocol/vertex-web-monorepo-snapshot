@@ -1,5 +1,5 @@
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { AnnotatedMarket } from '@vertex-protocol/react-client';
+import { getMarketForProductId } from 'client/hooks/query/markets/allMarkets/getMarketForProductId';
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { useMemo } from 'react';
 
@@ -17,17 +17,7 @@ export function useMarket<TMarket extends AnnotatedMarket = AnnotatedMarket>({
       return;
     }
 
-    if (productId === QUOTE_PRODUCT_ID) {
-      return data.primaryQuoteProduct as TMarket;
-    }
-    const spotMarket = data.spotMarkets[productId];
-    if (spotMarket) {
-      return spotMarket as TMarket;
-    }
-    const perpMarket = data.perpMarkets[productId];
-    if (perpMarket) {
-      return perpMarket as TMarket;
-    }
+    return getMarketForProductId<TMarket>(productId, data);
   }, [data, productId]);
 
   return {

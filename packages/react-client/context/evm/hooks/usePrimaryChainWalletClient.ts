@@ -5,7 +5,10 @@ export function usePrimaryChainWalletClient(
   params?: UseWalletClientParameters,
 ) {
   const primaryChainId = usePrimaryChainId();
-  const { data } = useWalletClient({ chainId: primaryChainId, ...params });
+  const { data } = useWalletClient({
+    chainId: primaryChainId,
+    ...params,
+  });
 
   return data;
 }

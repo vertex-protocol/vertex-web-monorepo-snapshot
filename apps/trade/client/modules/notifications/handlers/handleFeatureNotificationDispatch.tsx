@@ -1,40 +1,23 @@
+import { KNOWN_PRODUCT_IDS } from '@vertex-protocol/react-client';
 import { FeatureNotificationDisclosureKey } from 'client/modules/localstorage/userState/types/userDisclosureTypes';
-import { PendingDelistFeatureNotification } from 'client/modules/notifications/components/newFeature/features/PendingDelistFeatureNotification';
-import { PerpMarketFeatureNotification } from 'client/modules/notifications/components/newFeature/features/PerpMarketFeatureNotification';
-import { Toast, toast } from 'react-hot-toast';
+import { SpotMarketFeatureNotification } from 'client/modules/notifications/components/newFeature/features/SpotMarketFeatureNotification';
+import { toast } from 'react-hot-toast';
 
 export async function handleFeatureNotificationDispatch(
   feature: FeatureNotificationDisclosureKey,
 ) {
   switch (feature) {
-    case 'feb_13_delisting':
+    case 'ws_feb_21':
       return toast.custom(
-        (t: Toast['message']) => (
-          <PendingDelistFeatureNotification
+        (t) => (
+          <SpotMarketFeatureNotification
             visible={t.visible}
             onDismiss={() => {
               toast.dismiss(t.id);
             }}
             ttl={Infinity}
             disclosureKey={feature}
-          />
-        ),
-        {
-          duration: Infinity,
-          id: feature,
-        },
-      );
-    case 'bera_perp_feb_13':
-      return toast.custom(
-        (t: Toast['message']) => (
-          <PerpMarketFeatureNotification
-            visible={t.visible}
-            onDismiss={() => {
-              toast.dismiss(t.id);
-            }}
-            ttl={Infinity}
-            disclosureKey={feature}
-            productId={152}
+            productId={KNOWN_PRODUCT_IDS.wS}
           />
         ),
         {
@@ -45,7 +28,7 @@ export async function handleFeatureNotificationDispatch(
     // Example new mkt notification
     // case 'trump_perp_jan_19_2025':
     //   return toast.custom(
-    //     (t: Toast['message']) => (
+    //     (t) => (
     //       <PerpMarketFeatureNotification
     //         visible={t.visible}
     //         onDismiss={() => {

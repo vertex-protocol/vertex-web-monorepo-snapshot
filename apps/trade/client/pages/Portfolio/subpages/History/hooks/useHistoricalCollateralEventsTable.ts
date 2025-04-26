@@ -3,7 +3,6 @@ import {
   subaccountFromHex,
   VertexTransferQuoteTx,
 } from '@vertex-protocol/client';
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import {
   GetIndexerSubaccountCollateralEventsResponse,
   IndexerCollateralEvent,
@@ -18,6 +17,7 @@ import {
 import { nonNullFilter } from '@vertex-protocol/web-common';
 import { useDataTablePagination } from 'client/components/DataTable/hooks/useDataTablePagination';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { getStaticMarketDataForProductId } from 'client/hooks/markets/marketsStaticData/getStaticMarketDataForProductId';
 import {
   AllMarketsStaticDataForChainEnv,
   SpotStaticMarketData,
@@ -128,9 +128,10 @@ export function useHistoricalCollateralEventsTable({
         .map((event) => {
           const productId = event.snapshot.market.productId;
           const staticSpotMarketData =
-            productId === QUOTE_PRODUCT_ID
-              ? allMarketsStaticData.primaryQuote
-              : allMarketsStaticData.spot[productId];
+            getStaticMarketDataForProductId<SpotStaticMarketData>(
+              productId,
+              allMarketsStaticData,
+            );
 
           if (!staticSpotMarketData) {
             console.warn(
@@ -270,7 +271,7 @@ function getNormalizedSubaccountInfo({
   if (isIsoSubaccountHex(subaccount)) {
     const productId = getIsoSubaccountProductId(subaccount);
     const marketName =
-      allMarketsStaticData?.perp[productId]?.metadata.marketName;
+      allMarketsStaticData?.perpMarkets[productId]?.metadata.marketName;
 
     return {
       name: subaccountName,

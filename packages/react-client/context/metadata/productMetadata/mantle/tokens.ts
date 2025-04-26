@@ -1,7 +1,8 @@
+import { mantle, mantleSepoliaTestnet } from 'viem/chains';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { TOKEN_ICONS } from '../tokenIcons';
 import { Token } from '../types';
-import { mantle, mantleSepoliaTestnet } from 'viem/chains';
+import { VLP_TOKEN_INFO } from '../vlpTokenInfo';
 
 const mantleSepoliaChainId = mantleSepoliaTestnet.id;
 const mantleChainId = mantle.id;
@@ -48,6 +49,14 @@ export const METH_MANTLE_SEPOLIA: Token = {
   tokenDecimals: 18,
   symbol: 'mETH',
   icon: TOKEN_ICONS.meth,
+};
+
+export const VLP_MANTLE_SEPOLIA: Token = {
+  address: '0x7c7344C1D9FF7d5e397143Ec64D8e15c50EF005f',
+  chainId: mantleSepoliaChainId,
+  tokenDecimals: 18,
+  symbol: VLP_TOKEN_INFO.symbol,
+  icon: TOKEN_ICONS.vlp,
 };
 
 /**

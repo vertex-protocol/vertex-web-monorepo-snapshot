@@ -12,4 +12,5 @@ export * from './primaryQuoteTokenByChainEnv';
 export * from './protocolTokenMetadataByChainEnv';
 export * from './tokenIcons';
 export * from './types';
-export * from './vertexTokenInfo';
+export * from './vrtxTokenInfo';
+export * from './vlpTokenInfo';

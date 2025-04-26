@@ -1,7 +1,7 @@
 import { DEFAULT_TOAST_TTL } from 'client/components/Toast/consts';
 import { OrderFillNotification } from 'client/modules/notifications/components/orders/OrderFillNotification/OrderFillNotification';
 import { OrderFillNotificationData } from 'client/modules/notifications/types';
-import { Toast, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 export function handleOrderFillNotificationDispatch(
   data: OrderFillNotificationData,
@@ -10,7 +10,7 @@ export function handleOrderFillNotificationDispatch(
   const toastId = `order-${data.digest}`;
 
   toast.custom(
-    (t: Toast['message']) => {
+    (t) => {
       return (
         <OrderFillNotification
           visible={t.visible}

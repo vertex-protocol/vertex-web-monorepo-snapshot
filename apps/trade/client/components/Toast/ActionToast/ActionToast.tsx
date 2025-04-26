@@ -1,5 +1,4 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 import {
   ACTION_TOAST_ICON_FILL_BY_VARIANT,
   ACTION_TOAST_ICONS_BY_VARIANT,
@@ -51,11 +50,7 @@ function SectionedHeader({
   return (
     <Toast.Header
       onDismiss={onDismiss}
-      className={joinClassNames(
-        'divide-x',
-        COMMON_TRANSPARENCY_COLORS.divide,
-        className,
-      )}
+      className={joinClassNames('divide-overlay-divider divide-x', className)}
     >
       <div className={ACTION_TOAST_LEFT_SECTION_WIDTH}>{leftLabel}</div>
       <div className="flex items-center gap-x-2 px-2.5">
@@ -108,8 +103,7 @@ function SectionedBody({
   return (
     <Toast.Body
       className={joinClassNames(
-        'flex divide-x',
-        COMMON_TRANSPARENCY_COLORS.divide,
+        'divide-overlay-divider flex divide-x',
         className,
       )}
     >

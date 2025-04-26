@@ -1,9 +1,10 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { DropdownUi, DropdownUiItemProps } from '@vertex-protocol/web-ui';
 import { StatusIndicator } from 'client/components/StatusIndicator';
+import { ReactNode } from 'react';
 
 type Props = DropdownUiItemProps & {
-  label: string;
+  label: ReactNode;
   sublabel?: string;
 };
 

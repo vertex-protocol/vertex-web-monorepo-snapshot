@@ -1,7 +1,6 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import {
   ButtonAsHTMLButtonProps,
-  COMMON_TRANSPARENCY_COLORS,
   formatTimestamp,
   Icons,
   SecondaryButton,
@@ -81,7 +80,7 @@ export function DateInput({
       onChange={onChange}
       minDate={minDate}
       maxDate={maxDate}
-      calendarClassName="shadow-elevation"
+      calendarClassName="shadow-elevation-card"
       popperPlacement="bottom-end"
       customInput={
         <DateInputTrigger
@@ -102,8 +101,7 @@ export function DateInput({
         <div
           className={joinClassNames(
             'flex items-center px-4 pb-2 text-sm',
-            'border-b',
-            COMMON_TRANSPARENCY_COLORS.border,
+            'border-overlay-divider border-b',
           )}
         >
           <span className="mr-auto">

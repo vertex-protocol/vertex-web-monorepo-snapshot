@@ -1,75 +1,64 @@
-import {
-  formatNumber,
-  PresetNumberFormatSpecifier,
-} from '@vertex-protocol/react-client';
+import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { WithClassnames } from '@vertex-protocol/web-common';
-import { Divider, LinkButton } from '@vertex-protocol/web-ui';
-import { UserRiskWarningIcon } from 'client/components/Icons/UserRiskWarningIcon';
+import { CounterPill, TextButton } from '@vertex-protocol/web-ui';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
-import { useUserRiskWarningState } from 'client/hooks/subaccount/useUserRiskWarningState';
+import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { ROUTES } from 'client/modules/app/consts/routes';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
 import { OverviewLiquidationRiskBar } from 'client/pages/Portfolio/subpages/Overview/components/OverviewHeroSection/OverviewLiquidationRiskBar';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-interface Props extends WithClassnames {
-  fundsAvailable: BigDecimal | undefined;
+interface Props {
+  isolatedTotalNetMarginUsd: BigDecimal | undefined;
   liquidationRiskFraction: BigDecimal | undefined;
-  fundsUntilLiquidation: BigDecimal | undefined;
-  marginUsageFraction: BigDecimal | undefined;
-  accountLeverage: BigDecimal | undefined;
+  fundsAvailableBoundedUsd: BigDecimal | undefined;
+  isolatedUnrealizedPnlUsd: BigDecimal | undefined;
 }
 
 export function OverviewHeroMetricsItems({
-  fundsAvailable,
   liquidationRiskFraction,
-  fundsUntilLiquidation,
-  marginUsageFraction,
-  accountLeverage,
-  className,
+  isolatedTotalNetMarginUsd,
+  fundsAvailableBoundedUsd,
+  isolatedUnrealizedPnlUsd,
 }: Props) {
-  const userRiskWarningState = useUserRiskWarningState();
+  const { numIsoPerpPositions } = useSubaccountCountIndicators();
 
-  const lineItemContainerClassNames = 'flex flex-col gap-y-0.5';
+  const crossHeaderContent = (
+    <>
+      Cross Account
+      <TextButton
+        className="text-xs"
+        colorVariant="accent"
+        as={Link}
+        href={ROUTES.portfolio.marginManager}
+      >
+        View Details
+      </TextButton>
+    </>
+  );
 
-  const healthInfoItems = useMemo(
+  const isolatedHeaderContent = (
+    <>
+      <span>Isolated Positions</span>
+      {!!numIsoPerpPositions && (
+        <CounterPill>{numIsoPerpPositions}</CounterPill>
+      )}
+    </>
+  );
+
+  const crossAccountItems = useMemo(
     () =>
       [
         {
           tooltip: {
             id: 'marginUsage',
           },
-          label: 'Margin Usage',
-          value: marginUsageFraction,
-          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-        },
-        {
-          tooltip: {
-            id: 'fundsAvailable',
-          },
           label: 'Funds Available',
-          value: fundsAvailable,
+          value: fundsAvailableBoundedUsd,
           numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        {
-          tooltip: {
-            id: 'accountLeverage',
-          },
-          label: 'Account Leverage',
-          valueClassName: 'gap-x-0',
-          valueContent: `${formatNumber(accountLeverage, {
-            formatSpecifier: PresetNumberFormatSpecifier.NUMBER_1DP,
-          })}x`,
-        },
-      ] satisfies ValueWithLabelProps[],
-    [fundsAvailable, marginUsageFraction, accountLeverage],
-  );
-
-  const riskInfoItems = useMemo(
-    () =>
-      [
         {
           label: 'Liquidation Risk',
           valueContent: (
@@ -77,63 +66,62 @@ export function OverviewHeroMetricsItems({
               liquidationRiskFraction={liquidationRiskFraction}
             />
           ),
-          valueClassName: 'items-center',
+        },
+      ] satisfies ValueWithLabelProps[],
+    [liquidationRiskFraction, fundsAvailableBoundedUsd],
+  );
+
+  const isolatedItems = useMemo(
+    () =>
+      [
+        {
+          tooltip: {
+            id: 'overviewIsoUnrealizedPnl',
+          },
+          label: 'Unrealized PnL',
+          value: isolatedUnrealizedPnlUsd,
+          valueClassName: getSignDependentColorClassName(
+            isolatedUnrealizedPnlUsd,
+          ),
+          numberFormatSpecifier:
+            PresetNumberFormatSpecifier.SIGNED_CURRENCY_2DP,
         },
         {
           tooltip: {
-            id: 'fundsUntilLiquidation',
+            id: 'overviewIsoMargin',
           },
-          label: 'Funds until Liq.',
-          value: fundsUntilLiquidation,
+          label: 'Margin',
+          value: isolatedTotalNetMarginUsd,
           numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
       ] satisfies ValueWithLabelProps[],
-    [liquidationRiskFraction, fundsUntilLiquidation],
-  );
-
-  const headerContent = (
-    <div className="flex items-end justify-between">
-      <div className="flex items-center gap-x-2">
-        Details
-        <UserRiskWarningIcon
-          userRiskWarningState={userRiskWarningState}
-          size="md"
-        />
-      </div>
-      <LinkButton
-        as={Link}
-        href={ROUTES.portfolio.marginManager}
-        colorVariant="accent"
-        className="text-xs no-underline"
-      >
-        View More
-      </LinkButton>
-    </div>
+    [isolatedTotalNetMarginUsd, isolatedUnrealizedPnlUsd],
   );
 
   return (
-    <PortfolioHeroMetricsPane.Items
-      header={headerContent}
-      className={className}
-      childContainerClassNames="flex flex-col gap-y-2"
-    >
-      <div className={lineItemContainerClassNames}>
-        {healthInfoItems.map((props, index) => (
+    <PortfolioHeroMetricsPane.ItemsGroupContainer>
+      <PortfolioHeroMetricsPane.ItemsGroup
+        header={crossHeaderContent}
+        headerClassName="items-end justify-between"
+      >
+        {crossAccountItems.map((props, index) => (
           <PortfolioHeroMetricsPane.ValueWithLabel
             key={`health_info_${index}`}
             {...props}
           />
         ))}
-      </div>
-      <Divider />
-      <div className={lineItemContainerClassNames}>
-        {riskInfoItems.map((props, index) => (
+      </PortfolioHeroMetricsPane.ItemsGroup>
+      <PortfolioHeroMetricsPane.ItemsGroup
+        header={isolatedHeaderContent}
+        headerClassName="justify-between"
+      >
+        {isolatedItems.map((props, index) => (
           <PortfolioHeroMetricsPane.ValueWithLabel
             key={`risk_info_${index}`}
             {...props}
           />
         ))}
-      </div>
-    </PortfolioHeroMetricsPane.Items>
+      </PortfolioHeroMetricsPane.ItemsGroup>
+    </PortfolioHeroMetricsPane.ItemsGroupContainer>
   );
 }

@@ -1,13 +1,15 @@
-import { Wallet } from 'ethers';
+import { AccountWithPrivateKey } from '@vertex-protocol/client';
 
 export interface SubaccountSignOncePreference {
   type: 'sign_once';
-  authorizedWallet?: Wallet;
+  linkedSigner: AccountWithPrivateKey | undefined;
   rememberMe: boolean;
 }
 
 export interface SubaccountSignAlwaysPreference {
   type: 'sign_always';
+  linkedSigner?: never;
+  rememberMe?: never;
 }
 
 export type SubaccountSigningPreference =

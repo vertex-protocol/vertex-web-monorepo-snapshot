@@ -1,8 +1,8 @@
+import { ChainEnvWithEdge } from '@vertex-protocol/react-client';
 import {
   StatsChartConfigByDataKey,
   StatsChartDataItem,
 } from 'client/components/charts/StatsChart/types';
-import { ChainEnvWithEdge } from 'client/hooks/types';
 
 type ChainEnvBreakdownStatsChartDataKey = ChainEnvWithEdge | 'edgeCumulative';
 

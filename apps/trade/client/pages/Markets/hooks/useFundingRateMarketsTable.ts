@@ -11,14 +11,14 @@ import {
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
 import { useFavoritedMarkets } from 'client/hooks/markets/useFavoritedMarkets';
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
-import { useAllMarkets24HrFundingRates } from 'client/hooks/query/markets/useAllMarkets24hrFundingRates';
+import { useAllMarkets24hFundingRates } from 'client/hooks/query/markets/useAllMarkets24hFundingRates';
 import { useAllProductsHistoricalSnapshots } from 'client/hooks/query/markets/useAllProductsHistoricalSnapshots';
 import { useLatestPerpPrices } from 'client/hooks/query/markets/useLatestPerpPrices';
 import { useTextSearch } from 'client/hooks/ui/useTextSearch';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
-import { FundingRates, getFundingRates } from 'client/utils/calcs/funding';
 import { safeDiv } from '@vertex-protocol/web-common';
 import { useMemo } from 'react';
+import { FundingRates, getFundingRates } from 'client/utils/calcs/perp/funding';
 
 export interface FundingRateTableItem {
   isFavorited: boolean;
@@ -49,7 +49,7 @@ export function useFundingRateMarketsTable({ query }: { query: string }) {
   const { data: allMarketData, isLoading: isAllMarketDataLoading } =
     useAllMarkets();
   const { data: latestPerpPricesData } = useLatestPerpPrices();
-  const { data: marketsFundingRateData } = useAllMarkets24HrFundingRates();
+  const { data: marketsFundingRateData } = useAllMarkets24hFundingRates();
   const { data: productSnapshotsData } = useAllProductsHistoricalSnapshots([
     0,
     FundingPeriod.ONE_DAY,

@@ -32,9 +32,9 @@ export function AvatarTypeButton({
 
   const borderColorByState = (() => {
     if (disabled) return 'border-stroke';
-    if (isSelected) return 'border-accent';
+    if (isSelected) return 'border-primary';
 
-    return 'border-stroke hover:border-accent';
+    return 'border-stroke hover:border-primary';
   })();
 
   const textColorByState = (() => {
@@ -47,7 +47,7 @@ export function AvatarTypeButton({
   const cardClasses = joinClassNames(
     'flex flex-col items-center',
     'gap-y-1.5 px-2 py-4',
-    'border rounded',
+    'border rounded-sm',
     bgColorByState,
     borderColorByState,
     textColorByState,

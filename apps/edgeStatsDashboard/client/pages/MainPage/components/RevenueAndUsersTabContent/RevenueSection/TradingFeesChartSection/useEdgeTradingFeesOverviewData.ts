@@ -21,7 +21,7 @@ export function useEdgeTradingFeesOverviewData() {
       marketSnapshotsAtHistoricalTimesData.now.edge;
 
     const edgeMarketSnapshotAt24h =
-      marketSnapshotsAtHistoricalTimesData['24hr'].edge;
+      marketSnapshotsAtHistoricalTimesData['24h'].edge;
 
     const totalTradingFeesAtNowByProductId = getTotalTradingFeesByProductId(
       edgeMarketSnapshotAtNow,

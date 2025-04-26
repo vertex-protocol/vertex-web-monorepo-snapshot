@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { IERC20__factory } from '@vertex-protocol/client';
-import { toPrintableObject } from '@vertex-protocol/utils';
+import { ERC20_ABI } from '@vertex-protocol/client';
+import { getValidatedAddress, toPrintableObject } from '@vertex-protocol/utils';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
   useExecuteInValidContext,
@@ -9,7 +9,6 @@ import {
 import { useRefetchQueriesOnContractTransaction } from 'client/hooks/execute/util/useRefetchQueries';
 import { tokenAllowanceQueryKey } from 'client/hooks/query/useTokenAllowance';
 import { useCallback, useRef } from 'react';
-import { Address } from 'viem';
 
 interface Params {
   /**
@@ -47,10 +46,10 @@ export function useExecuteApproveAllowance() {
       ];
 
       return context.walletClient.writeContract({
-        abi: IERC20__factory.abi,
+        abi: ERC20_ABI,
         functionName: 'approve',
-        address: params.tokenAddress as Address,
-        args: [params.spenderAddress as Address, params.amount],
+        address: getValidatedAddress(params.tokenAddress),
+        args: [getValidatedAddress(params.spenderAddress), params.amount],
       });
     }, []),
   );

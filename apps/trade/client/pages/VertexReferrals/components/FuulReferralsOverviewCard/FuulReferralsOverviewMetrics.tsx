@@ -15,11 +15,13 @@ export function FuulReferralsOverviewMetrics() {
   return (
     <div className="flex gap-x-10">
       <ValueWithLabel.Vertical
+        sizeVariant="lg"
         label="Sign Ups"
         value={referralRewardsData?.numReferredUsers}
         numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
       />
       <ValueWithLabel.Vertical
+        sizeVariant="lg"
         label="Total Taker Volume"
         value={referralRewardsData?.referredVolumeUsdc}
         numberFormatSpecifier={

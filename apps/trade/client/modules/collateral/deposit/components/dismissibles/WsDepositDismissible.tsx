@@ -28,6 +28,7 @@ export function WsDepositDismissible({
             as={Link}
             href={VERTEX_SPECIFIC_LINKS.wrapSonic}
             external
+            withExternalIcon
           >
             Swap S to wS
           </LinkButton>

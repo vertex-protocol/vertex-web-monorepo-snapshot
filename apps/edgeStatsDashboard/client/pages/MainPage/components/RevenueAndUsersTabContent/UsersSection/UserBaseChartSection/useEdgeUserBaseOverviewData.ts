@@ -20,7 +20,7 @@ export function useEdgeUserBaseOverviewData() {
     const edgeMarketSnapshotAtNow =
       marketSnapshotsAtHistoricalTimesData.now.edge;
     const edgeMarketSnapshotAt24h =
-      marketSnapshotsAtHistoricalTimesData['24hr'].edge;
+      marketSnapshotsAtHistoricalTimesData['24h'].edge;
 
     const edgeNewUsers24h = edgeMarketSnapshotAt24h
       ? edgeMarketSnapshotAtNow?.cumulativeUsers?.minus(

@@ -20,7 +20,7 @@ export function StackedTableCell({
       {...rest}
     >
       <div className="text-text-primary">{top}</div>
-      <div className="text-text-tertiary text-2xs">{bottom}</div>
+      <div className="text-text-tertiary">{bottom}</div>
     </TableCell>
   );
 }

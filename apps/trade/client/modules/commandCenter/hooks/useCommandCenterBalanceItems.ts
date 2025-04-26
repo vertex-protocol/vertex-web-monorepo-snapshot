@@ -1,14 +1,14 @@
+import {
+  MarketCategory,
+  signDependentValue,
+  SpotProductMetadata,
+} from '@vertex-protocol/react-client';
 import { BigDecimal, removeDecimals } from '@vertex-protocol/utils';
 import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
 import { useSpotBalances } from 'client/hooks/subaccount/useSpotBalances';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { CollateralDialogType } from 'client/modules/app/dialogs/types';
-import { signDependentValue } from '@vertex-protocol/react-client';
-import {
-  SpotProductMetadata,
-  MarketCategory,
-} from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 export interface BalanceTableItem {
@@ -41,11 +41,12 @@ export const useCommandCenterBalanceItems = ({ marketCategory }: Params) => {
     const isWithdrawOrBorrowDisabled = !isConnected;
 
     return spotBalances
-      .filter(
-        (balance) =>
-          marketCategory == null ||
-          balance.metadata.marketCategories.has(marketCategory),
-      )
+      .filter((balance) => {
+        return (
+          marketCategory === undefined ||
+          balance.metadata.marketCategories.has(marketCategory)
+        );
+      })
       .flatMap((balance) => {
         const walletAmount = removeDecimals(
           depositableTokenBalances?.[balance.productId],

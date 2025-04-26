@@ -1,14 +1,14 @@
 import { BigDecimal } from '@vertex-protocol/client';
+import { signDependentValue } from '@vertex-protocol/react-client';
 import { NextImageSrc, joinClassNames } from '@vertex-protocol/web-common';
 import {
-  IconComponent,
-  formatTimestamp,
-  TimeFormatSpecifier,
   IconButton,
+  IconComponent,
   LinkButton,
+  TimeFormatSpecifier,
+  formatTimestamp,
 } from '@vertex-protocol/web-ui';
 import { useProductTradingLinks } from 'client/hooks/ui/navigation/useProductTradingLinks';
-import { signDependentValue } from '@vertex-protocol/react-client';
 import { get } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';

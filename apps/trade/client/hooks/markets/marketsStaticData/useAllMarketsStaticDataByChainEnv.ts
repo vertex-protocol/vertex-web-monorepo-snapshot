@@ -4,10 +4,12 @@ import {
   ProductEngineType,
   QUOTE_PRODUCT_ID,
 } from '@vertex-protocol/contracts';
-import { QueryDisabledError } from '@vertex-protocol/react-client';
+import {
+  AnnotatedSpotMarket,
+  QueryDisabledError,
+} from '@vertex-protocol/react-client';
 import {
   AllMarketsStaticDataForChainEnv,
-  PerpStaticMarketData,
   SpotStaticMarketData,
 } from 'client/hooks/markets/marketsStaticData/types';
 import { AllMarketsForChainEnv } from 'client/hooks/query/markets/allMarkets/types';
@@ -58,51 +60,35 @@ export function useAllMarketsStaticDataByChainEnv() {
 }
 
 function getAllMarketsStaticDataForChainEnv(
-  data: AllMarketsForChainEnv,
+  allMarketsData: AllMarketsForChainEnv,
 ): AllMarketsStaticDataForChainEnv {
-  const quoteProduct = data.primaryQuoteProduct;
-  const staticMarketDataByProductId: AllMarketsStaticDataForChainEnv = {
-    primaryQuote: {
-      type: ProductEngineType.SPOT,
-      metadata: quoteProduct.metadata,
-      minSize: quoteProduct.minSize,
-      priceIncrement: quoteProduct.priceIncrement,
-      sizeIncrement: quoteProduct.sizeIncrement,
-      productId: quoteProduct.productId,
-      longWeightInitial: quoteProduct.product.longWeightInitial,
-      shortWeightInitial: quoteProduct.product.shortWeightInitial,
-      longWeightMaintenance: quoteProduct.product.longWeightMaintenance,
-      shortWeightMaintenance: quoteProduct.product.shortWeightMaintenance,
-    },
-    all: {},
-    spot: {},
-    perp: {},
+  const quoteProduct = allMarketsData.primaryQuoteProduct;
+  const vlpProduct = allMarketsData.vlpProduct;
+
+  const data: AllMarketsStaticDataForChainEnv = {
+    primaryQuoteProduct: getSpotStaticMarketData(quoteProduct),
+    vlpProduct: vlpProduct ? getSpotStaticMarketData(vlpProduct) : undefined,
+    allMarkets: {},
+    spotProducts: {},
+    spotMarkets: {},
+    perpMarkets: {},
     quotes: {},
-    allMarketsProductIds: data.allMarketsProductIds,
-    spotMarketsProductIds: data.spotMarketsProductIds,
-    perpMarketsProductIds: data.perpMarketsProductIds,
+    allMarketsProductIds: allMarketsData.allMarketsProductIds,
+    spotMarketsProductIds: allMarketsData.spotMarketsProductIds,
+    perpMarketsProductIds: allMarketsData.perpMarketsProductIds,
   };
 
-  Object.values(data.spotMarkets).forEach((spotMarket) => {
-    const staticData: SpotStaticMarketData = {
-      type: ProductEngineType.SPOT,
-      metadata: spotMarket.metadata,
-      minSize: spotMarket.minSize,
-      priceIncrement: spotMarket.priceIncrement,
-      sizeIncrement: spotMarket.sizeIncrement,
-      productId: spotMarket.productId,
-      longWeightInitial: spotMarket.product.longWeightInitial,
-      shortWeightInitial: spotMarket.product.shortWeightInitial,
-      longWeightMaintenance: spotMarket.product.longWeightMaintenance,
-      shortWeightMaintenance: spotMarket.product.shortWeightMaintenance,
-    };
+  /*
+  Process all spot / perp markets
+   */
 
-    staticMarketDataByProductId.all[spotMarket.productId] = staticData;
-    staticMarketDataByProductId.spot[spotMarket.productId] = staticData;
+  Object.values(allMarketsData.spotMarkets).forEach((spotMarket) => {
+    data.spotMarkets[spotMarket.productId] =
+      getSpotStaticMarketData(spotMarket);
   });
 
-  Object.values(data.perpMarkets).forEach((perpMarket) => {
-    const staticData: PerpStaticMarketData = {
+  Object.values(allMarketsData.perpMarkets).forEach((perpMarket) => {
+    data.perpMarkets[perpMarket.productId] = {
       type: ProductEngineType.PERP,
       metadata: perpMarket.metadata,
       minSize: perpMarket.minSize,
@@ -115,25 +101,38 @@ function getAllMarketsStaticDataForChainEnv(
       longWeightMaintenance: perpMarket.product.longWeightMaintenance,
       shortWeightMaintenance: perpMarket.product.shortWeightMaintenance,
     };
-
-    staticMarketDataByProductId.all[perpMarket.productId] = staticData;
-    staticMarketDataByProductId.perp[perpMarket.productId] = staticData;
   });
 
-  Object.values(staticMarketDataByProductId.all).forEach((market) => {
+  /*
+  Update all markets & all spot products
+   */
+  data.allMarkets = {
+    ...data.spotMarkets,
+    ...data.perpMarkets,
+  };
+  data.spotProducts = {
+    ...data.spotMarkets,
+    [QUOTE_PRODUCT_ID]: data.primaryQuoteProduct,
+    ...(data.vlpProduct
+      ? { [data.vlpProduct.productId]: data.vlpProduct }
+      : {}),
+  };
+
+  /*
+  Construct the quotes for each market
+   */
+  Object.values(data.allMarkets).forEach((market) => {
     const quoteProductIdForMarket = market.metadata.quoteProductId;
 
     const { symbol, isPrimaryQuote } = (() => {
       if (quoteProductIdForMarket === QUOTE_PRODUCT_ID) {
         return {
-          symbol:
-            staticMarketDataByProductId.primaryQuote.metadata.token.symbol,
+          symbol: data.primaryQuoteProduct.metadata.token.symbol,
           isPrimaryQuote: true,
         };
       }
 
-      const quoteStaticData =
-        staticMarketDataByProductId.all[quoteProductIdForMarket];
+      const quoteStaticData = data.allMarkets[quoteProductIdForMarket];
 
       if (!quoteStaticData) {
         throw new Error(
@@ -148,12 +147,29 @@ function getAllMarketsStaticDataForChainEnv(
       };
     })();
 
-    staticMarketDataByProductId.quotes[market.productId] = {
+    data.quotes[market.productId] = {
       productId: quoteProductIdForMarket,
       symbol,
       isPrimaryQuote,
     };
   });
 
-  return staticMarketDataByProductId;
+  return data;
+}
+
+function getSpotStaticMarketData(
+  spotMarket: AnnotatedSpotMarket,
+): SpotStaticMarketData {
+  return {
+    type: ProductEngineType.SPOT,
+    metadata: spotMarket.metadata,
+    minSize: spotMarket.minSize,
+    priceIncrement: spotMarket.priceIncrement,
+    sizeIncrement: spotMarket.sizeIncrement,
+    productId: spotMarket.productId,
+    longWeightInitial: spotMarket.product.longWeightInitial,
+    shortWeightInitial: spotMarket.product.shortWeightInitial,
+    longWeightMaintenance: spotMarket.product.longWeightMaintenance,
+    shortWeightMaintenance: spotMarket.product.shortWeightMaintenance,
+  };
 }

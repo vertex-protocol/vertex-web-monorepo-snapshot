@@ -102,7 +102,7 @@ export function useSignatureModeEnable1CTDialogContent({
     });
 
     // In this case, we actually care about the returned data, so await the result
-    const [linkedSignerWallet, executeError] = await asyncResult(
+    const [linkedSigner, executeError] = await asyncResult(
       mutationResultPromise,
     );
 
@@ -111,10 +111,10 @@ export function useSignatureModeEnable1CTDialogContent({
       return;
     }
 
-    if (linkedSignerWallet) {
+    if (linkedSigner) {
       signingPreference.update({
         type: 'sign_once',
-        authorizedWallet: linkedSignerWallet,
+        linkedSigner,
         rememberMe,
       });
     }

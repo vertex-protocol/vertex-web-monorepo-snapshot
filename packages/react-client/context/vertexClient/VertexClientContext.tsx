@@ -6,6 +6,7 @@ import {
   VertexClientSetLinkedSignerParams,
   VertexClientWithMetadata,
 } from './types';
+import { getWalletClientForLinkedSignerAccount } from './utils';
 
 interface Props {
   children: ReactNode;
@@ -32,19 +33,31 @@ export function VertexClientContextProvider({ children }: Props) {
   const {
     primaryChainEnv,
     supportedChainEnvs,
-    connectionStatus: { signer },
-    chainStatus: { connectedChain },
+    connectionStatus: { walletClient },
   } = useEVMContext();
 
   const { vertexClientsByChainEnv } = useVertexClientsQuery({
-    signer,
-    signerChainId: connectedChain?.id,
+    walletClient,
     supportedChainEnvs,
   });
 
   const setLinkedSigner = useCallback(
-    ({ signer, chainEnv }: VertexClientSetLinkedSignerParams) => {
-      vertexClientsByChainEnv?.[chainEnv]?.client.setLinkedSigner(signer);
+    ({ signerAccount, chainEnv }: VertexClientSetLinkedSignerParams) => {
+      const vertexClientWithMetadata = vertexClientsByChainEnv?.[chainEnv];
+      if (!vertexClientWithMetadata) {
+        console.warn(
+          `[VertexClientContextProvider] Could not find Vertex Client for ${chainEnv}. Skipping setting linked signer.`,
+        );
+        return;
+      }
+      vertexClientWithMetadata.client.setLinkedSigner(
+        signerAccount
+          ? getWalletClientForLinkedSignerAccount(
+              signerAccount,
+              vertexClientWithMetadata.primaryChain,
+            )
+          : null,
+      );
     },
     [vertexClientsByChainEnv],
   );

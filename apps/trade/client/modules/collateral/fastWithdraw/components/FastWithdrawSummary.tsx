@@ -1,8 +1,10 @@
 import { BigDecimal } from '@vertex-protocol/client';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  CustomNumberFormatSpecifier,
+  SpotProductMetadata,
+} from '@vertex-protocol/react-client';
 import { imageToIconComponent } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
-import { SpotProductMetadata } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 interface Props {
@@ -33,7 +35,7 @@ export function FastWithdrawSummary({
           sizeVariant="sm"
           labelClassName="text-text-primary"
           sizeVariantOverrides={{
-            label: 'lg',
+            label: 'xl',
           }}
           labelStartIcon={AssetIcon}
           label={metadata.token.symbol}

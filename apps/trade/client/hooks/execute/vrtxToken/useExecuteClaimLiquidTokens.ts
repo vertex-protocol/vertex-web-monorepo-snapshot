@@ -24,9 +24,7 @@ export function useExecuteClaimLiquidTokens() {
     useCallback(
       async (params: ClaimLiquidTokensParams, context: ValidExecuteContext) => {
         console.log('Claiming Liquid Tokens', params);
-        const txResponse =
-          await context.vertexClient.rewards.claimLiquidTokens(params);
-        return txResponse.hash;
+        return context.vertexClient.rewards.claimLiquidTokens(params);
       },
       [],
     ),

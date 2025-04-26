@@ -2,9 +2,8 @@ import { useVertexClientContext } from '@vertex-protocol/react-client';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
 import { useSavedSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSavedSubaccountSigningPreference';
-import { Wallet } from 'ethers';
 import { useEffect, useRef } from 'react';
-import { zeroAddress } from 'viem';
+import { Account, zeroAddress } from 'viem';
 
 /**
  * Synchronization of state for linked signers:
@@ -26,20 +25,20 @@ export function useLinkedSignerSync() {
       return;
     }
 
-    let linkedSigner: Wallet | null = null;
+    let linkedSignerAccount: Account | null = null;
     if (
       localSigningPreference?.type === 'sign_once' &&
-      localSigningPreference?.authorizedWallet
+      localSigningPreference?.linkedSigner
     ) {
-      linkedSigner = localSigningPreference.authorizedWallet;
+      linkedSignerAccount = localSigningPreference.linkedSigner.account;
     }
 
     console.debug(
       `[useLinkedSignerSync] Updating linked signer on Vertex Client for ${chainEnv}`,
-      linkedSigner?.address ?? null,
+      linkedSignerAccount?.address ?? null,
     );
     setLinkedSigner({
-      signer: linkedSigner,
+      signerAccount: linkedSignerAccount,
       chainEnv,
     });
   }, [didLoadVertexClients, localSigningPreference, chainEnv, setLinkedSigner]);

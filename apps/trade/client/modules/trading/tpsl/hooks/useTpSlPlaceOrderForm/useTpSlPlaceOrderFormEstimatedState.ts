@@ -7,7 +7,7 @@ import {
 import { removeDecimals } from '@vertex-protocol/utils';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { TpSlPlaceOrderFormPositionChanges } from 'client/modules/trading/tpsl/hooks/useTpSlPlaceOrderForm/types';
-import { calcUnrealizedPnl } from 'client/utils/calcs/pnlCalcs';
+import { calcPnl } from 'client/utils/calcs/pnlCalcs';
 import { useMemo } from 'react';
 
 interface UseTpSlPlaceOrderFormEstimatedState {
@@ -56,7 +56,7 @@ export function useTpSlPlaceOrderFormEstimatedState({
       return;
     }
 
-    return calcUnrealizedPnl(
+    return calcPnl(
       positionAmount,
       validTriggerPrice,
       positionNetEntry,

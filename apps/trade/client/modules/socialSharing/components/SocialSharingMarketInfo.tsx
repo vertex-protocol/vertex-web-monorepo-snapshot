@@ -29,7 +29,7 @@ export function SocialSharingMarketInfo({
       </div>
       <div
         className={joinClassNames(
-          'rounded-sm px-1.5 py-px text-[7px] uppercase',
+          'rounded-xs px-1.5 py-px text-[7px] uppercase',
           signDependentValue(amount, {
             positive: 'text-positive bg-positive-muted',
             negative: 'text-negative bg-negative-muted',

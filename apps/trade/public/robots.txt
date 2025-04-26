@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://app.vertexprotocol.com
+
+# Sitemaps
+Sitemap: https://app.vertexprotocol.com/sitemap.xml

@@ -24,7 +24,7 @@ import {
   calcLpBalanceHealth,
   InitialMaintMetrics,
 } from 'client/utils/calcs/healthCalcs';
-import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
+import { REACT_QUERY_CONFIG } from '@vertex-protocol/react-client';
 
 type LpUnderlyingProduct =
   | {

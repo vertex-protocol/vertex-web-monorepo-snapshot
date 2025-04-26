@@ -1,10 +1,4 @@
-import { joinClassNames } from '@vertex-protocol/web-common';
-import {
-  Button,
-  COMMON_TRANSPARENCY_COLORS,
-  CompactInput,
-  Icons,
-} from '@vertex-protocol/web-ui';
+import { Button, CompactInput, Icons } from '@vertex-protocol/web-ui';
 import { UseOrderSlippageFormForType } from 'client/modules/settings/components/OrderSlippageForm/useOrderSlippageForm/useOrderSlippageFormForType';
 import { useOrderSlippageValueErrorTooltipContent } from 'client/modules/settings/components/OrderSlippageForm/useOrderSlippageForm/useOrderSlippageValueErrorTooltipContent';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
@@ -47,10 +41,7 @@ export function SlippageFormForType({ formForType }: Props) {
               decoration="none"
             >
               <Icons.ExclamationMark
-                className={joinClassNames(
-                  'text-accent rounded-full',
-                  COMMON_TRANSPARENCY_COLORS.bgAccent,
-                )}
+                className="text-accent bg-overlay-accent rounded-full"
                 size={14}
               />
             </DefinitionTooltip>

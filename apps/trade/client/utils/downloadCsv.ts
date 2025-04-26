@@ -1,3 +1,4 @@
+import { BigDecimal } from '@vertex-protocol/client';
 import { stringify } from 'csv-stringify/sync';
 
 function downloadBlob(content: string, filename: string, contentType: string) {
@@ -14,7 +15,10 @@ function downloadBlob(content: string, filename: string, contentType: string) {
 }
 
 export type CsvFileName = `${string}.csv`;
-export type CsvDataItem = Record<string, string | undefined>;
+export type CsvDataItem = Record<
+  string,
+  string | Date | BigDecimal | undefined
+>;
 
 /**
  * Downloads an array of objects as a .csv file.
@@ -45,6 +49,16 @@ export function downloadCsv<TData extends CsvDataItem>(
   const csvString = stringify(data, {
     columns: headingNames,
     header: true,
+    cast: {
+      date: (value: Date) => value.toISOString(),
+      object: (value: any) => {
+        if (value instanceof BigDecimal) {
+          // specify base 10 so that exponential notation isn't used
+          return value.toString(10);
+        }
+        throw new Error('Unsupported value type');
+      },
+    },
   });
   downloadBlob(csvString, filename, contentType);
 }

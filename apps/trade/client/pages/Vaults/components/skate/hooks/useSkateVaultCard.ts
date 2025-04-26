@@ -1,9 +1,9 @@
 import { removeDecimals } from '@vertex-protocol/client';
 import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { useSkateOllies } from 'client/modules/vaults/hooks/query/useSkateOllies';
-import { useSkateVaultApyFraction } from 'client/modules/vaults/hooks/query/useSkateVaultApyFraction';
-import { useSkateVaultState } from 'client/modules/vaults/hooks/query/useSkateVaultState';
+import { useSkateOllies } from 'client/modules/skateVaults/hooks/query/useSkateOllies';
+import { useSkateVaultApyFraction } from 'client/modules/skateVaults/hooks/query/useSkateVaultApyFraction';
+import { useSkateVaultState } from 'client/modules/skateVaults/hooks/query/useSkateVaultState';
 import { useMemo } from 'react';
 import { Address } from 'viem';
 

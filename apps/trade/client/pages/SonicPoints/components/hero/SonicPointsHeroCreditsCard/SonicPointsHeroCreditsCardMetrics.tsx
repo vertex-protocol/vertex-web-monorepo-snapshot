@@ -26,11 +26,13 @@ export function SonicPointsHeroCreditsCardMetrics() {
   return (
     <div className="grid grid-cols-2">
       <ValueWithLabel.Vertical
+        sizeVariant="lg"
         label="Total Credits Earned"
         value={accountTotalPointsEarned}
         numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}
       />
       <ValueWithLabel.Vertical
+        sizeVariant="lg"
         label="Rank"
         value={accountRank}
         numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_INT}

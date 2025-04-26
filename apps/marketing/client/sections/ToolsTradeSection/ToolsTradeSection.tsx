@@ -40,7 +40,7 @@ export function ToolsTradeSection() {
               element: 'h2',
               text: 'Tools of the Trade',
               className:
-                'text-header-2 md:text-header-1 font-radioGrotesk mt-4',
+                'text-header-2 md:text-header-1 font-radio-grotesk mt-4',
             },
           ]}
         />

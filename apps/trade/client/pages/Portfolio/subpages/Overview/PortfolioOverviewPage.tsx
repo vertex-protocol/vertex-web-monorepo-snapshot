@@ -16,20 +16,19 @@ export function PortfolioOverviewPage() {
         <OverviewWelcomeHeader />
         <OverviewHeroSection
           portfolioValueUsd={overview?.portfolioValueUsd}
-          accountLeverage={overview?.accountLeverage}
+          fundsAvailableBoundedUsd={overview?.fundsAvailableBoundedUsd}
+          isolatedTotalNetMarginUsd={overview?.perp.iso.totalNetMarginUsd}
+          isolatedUnrealizedPnlUsd={overview?.perp.iso.totalUnrealizedPnlUsd}
           liquidationRiskFractionBounded={
             overview?.liquidationRiskFractionBounded
           }
-          marginUsageFractionBounded={overview?.marginUsageFractionBounded}
-          fundsAvailableBounded={overview?.fundsAvailableBounded}
-          fundsUntilLiquidationBounded={overview?.fundsUntilLiquidationBounded}
         />
       </div>
       <OverviewInfoCardButtons
-        averageSpotAPRFraction={overview?.spot.averageAPRFraction}
-        lpAverageYieldFraction={overview?.lp.averageYieldFraction}
-        lpTotalValueUsd={overview?.lp.totalValueUsd}
-        netBalance={overview?.spot.netBalance}
+        averageDepositAPRFraction={overview?.spot.averageDepositAPRFraction}
+        averageBorrowAPRFraction={overview?.spot.averageBorrowAPRFraction}
+        totalDepositsValueUsd={overview?.spot.totalDepositsValueUsd}
+        totalBorrowsValueUsd={overview?.spot.totalBorrowsValueUsd}
         totalEstimatedPerpPnlUsd={overview?.perp.totalUnrealizedPnlUsd}
         totalEstimatedPerpPnlFrac={overview?.perp.totalUnrealizedPnlFrac}
       />

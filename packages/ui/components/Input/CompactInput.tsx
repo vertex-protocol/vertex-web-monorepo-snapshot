@@ -41,7 +41,7 @@ export function CompactInput({
       <Input.Container
         className={mergeClassNames(
           'flex items-center gap-x-1.5 transition-colors',
-          'bg-surface-2 h-10 overflow-hidden rounded px-2',
+          'bg-surface-2 h-10 overflow-hidden rounded-sm px-2',
           disabled && disabledStateOverlayClassNames,
           inputContainerClassName,
         )}

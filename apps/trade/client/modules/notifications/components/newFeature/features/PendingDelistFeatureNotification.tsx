@@ -63,7 +63,7 @@ export function PendingDelistFeatureNotification({
       </p>
       <div className="flex flex-wrap gap-x-2 gap-y-3">
         {Array.from(PENDING_DELIST_PERP_PRODUCT_IDS).map((productId) => {
-          const marketStaticData = allMarketsStaticData.all[productId];
+          const marketStaticData = allMarketsStaticData.allMarkets[productId];
 
           if (!marketStaticData) {
             return null;

@@ -14,7 +14,7 @@ export function useProductTradingLinks() {
     }
 
     return mapValues(
-      staticMarketData.all,
+      staticMarketData.allMarkets,
       ({ type: productType, metadata }) => {
         const marketName = metadata.marketName;
 

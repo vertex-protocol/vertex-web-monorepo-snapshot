@@ -2,7 +2,7 @@ import { useVertexMetadataContext } from '../context';
 
 export function useIsChainEnvType() {
   const {
-    primaryChainMetadata: { chainEnvType },
+    primaryChainEnvMetadata: { chainEnvType },
   } = useVertexMetadataContext();
 
   const isArb = chainEnvType === 'arbitrum';
@@ -11,6 +11,7 @@ export function useIsChainEnvType() {
   const isMantle = chainEnvType === 'mantle';
   const isSei = chainEnvType === 'sei';
   const isSonic = chainEnvType === 'sonic';
+  const isAvax = chainEnvType === 'avax';
 
   return {
     isArb,
@@ -19,5 +20,6 @@ export function useIsChainEnvType() {
     isMantle,
     isSei,
     isSonic,
+    isAvax,
   };
 }

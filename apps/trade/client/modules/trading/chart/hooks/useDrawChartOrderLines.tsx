@@ -19,6 +19,7 @@ import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DialogParams } from 'client/modules/app/dialogs/types';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { DispatchNotificationParams } from 'client/modules/notifications/types';
+import { getResolvedColorValue } from 'client/modules/theme/colorVars';
 import { TradingViewSymbolInfo } from 'client/modules/trading/chart/config/datafeedConfig';
 import { isChartSyncedToSymbolInfo } from 'client/modules/trading/chart/utils/isChartSyncedToSymbolInfo';
 import { useEnableTradingOrderLines } from 'client/modules/trading/hooks/useEnableTradingOrderLines';
@@ -29,8 +30,6 @@ import {
   getIsIsoEngineOrder,
   getIsIsoTriggerOrder,
 } from 'client/modules/trading/utils/isoOrderChecks';
-import { COLORS } from 'common/theme/colors';
-import { FONTS } from 'common/theme/fonts';
 import { debounce, random } from 'lodash';
 import {
   IChartingLibraryWidget,
@@ -169,7 +168,7 @@ export function useDrawChartOrderLines({ tvWidget, loadedSymbolInfo }: Params) {
     if (
       !tvWidget ||
       !selectedProductId ||
-      !marketsStaticData?.all[selectedProductId]
+      !marketsStaticData?.allMarkets[selectedProductId]
     ) {
       return;
     }
@@ -206,7 +205,7 @@ export function useDrawChartOrderLines({ tvWidget, loadedSymbolInfo }: Params) {
         const line = createOrderLine(
           activeChart,
           relevantOrder,
-          marketsStaticData.all[selectedProductId],
+          marketsStaticData?.allMarkets[selectedProductId],
         );
 
         // Order line positions are spaced out randomly to minimize chances of overlap.
@@ -246,7 +245,7 @@ export function useDrawChartOrderLines({ tvWidget, loadedSymbolInfo }: Params) {
   }, [
     cancelOrdersWithNotification,
     modifyOrderAsync,
-    marketsStaticData?.all,
+    marketsStaticData?.allMarkets,
     relevantOrders,
     disableTradingOrderLineActions,
     loadedSymbolInfo,
@@ -279,13 +278,14 @@ function createOrderLine(
     isIso ? 'isolated' : 'cross',
   );
 
+  // Unlike the font fns which accept CSS variables, we need to use the actual color values here.
+  // Otherwise the charting library will not render the colors correctly.
   const sideColor = amount.gt(0)
-    ? COLORS.positive.DEFAULT
-    : COLORS.negative.DEFAULT;
-
+    ? getResolvedColorValue('positive')
+    : getResolvedColorValue('negative');
   const sideTextColor = amount.gt(0)
-    ? COLORS.positive.muted
-    : COLORS.negative.muted;
+    ? getResolvedColorValue('positive-muted')
+    : getResolvedColorValue('negative-muted');
 
   return (
     activeChart
@@ -297,10 +297,10 @@ function createOrderLine(
       .setBodyBorderColor('')
       .setLineStyle(2) // we use 0 (solid) for entry lines, 2 (dashed) for order lines
       .setLineColor(sideColor)
-      .setBodyFont(`11px var(${FONTS.default.variable})`)
+      .setBodyFont(`11px var(--font-default)`)
       .setText(contentText)
       .setQuantity(amountText)
-      .setQuantityFont(`11px var(${FONTS.default.variable})`)
+      .setQuantityFont(`11px var(--font-default)`)
       .setQuantityTextColor(sideTextColor)
       .setQuantityBackgroundColor(sideColor)
       .setQuantityBorderColor('')

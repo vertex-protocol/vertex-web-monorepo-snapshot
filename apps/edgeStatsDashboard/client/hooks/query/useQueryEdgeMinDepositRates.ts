@@ -4,8 +4,8 @@ import {
   createQueryKey,
   QueryDisabledError,
   useVertexClientContext,
+  getRecordKeyedByChainEnvWithEdge,
 } from '@vertex-protocol/react-client';
-import { getRecordKeyedByChainEnvWithEdge } from 'client/hooks/utils';
 import { mapValues } from 'lodash';
 
 export function useQueryEdgeMinDepositRates() {

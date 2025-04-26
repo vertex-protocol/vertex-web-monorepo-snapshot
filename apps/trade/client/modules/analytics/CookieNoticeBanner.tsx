@@ -1,11 +1,13 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { LinkButton, SecondaryButton } from '@vertex-protocol/web-ui';
 import { useCookiePreference } from 'client/modules/analytics/useCookiePreference';
+import { getIsIframe } from 'client/utils/getIsIframe';
 import { LINKS } from 'common/brandMetadata/links/links';
 import { clientEnv } from 'common/environment/clientEnv';
 import Link from 'next/link';
 
 export function CookieNoticeBanner() {
+  const isIframe = getIsIframe();
   const {
     areCookiesAccepted,
     didLoadPersistedValue,
@@ -13,7 +15,9 @@ export function CookieNoticeBanner() {
     declineCookies,
   } = useCookiePreference();
 
-  const showCookieNotice = areCookiesAccepted === null && didLoadPersistedValue;
+  // Do not display the cookie notice banner in an iframe, as cookies are not supported in this context.
+  const showCookieNotice =
+    !isIframe && areCookiesAccepted === null && didLoadPersistedValue;
 
   if (!showCookieNotice) {
     return null;

@@ -20,7 +20,7 @@ export function Divider({ className, vertical }: DividerProps) {
   return (
     <div
       className={mergeClassNames(
-        'bg-overlay-divider/10',
+        'bg-overlay-divider',
         vertical ? 'w-px min-w-[1px]' : 'w-full',
         heightClassNames,
         className,

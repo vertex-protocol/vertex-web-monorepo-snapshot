@@ -13,4 +13,5 @@ export interface GetExportHistoryDataContext
   allMarketsStaticData: AllMarketsStaticDataForChainEnv;
   primaryQuotePriceUsd: BigDecimal;
   getSubaccountProfile: (subaccountName: string) => SubaccountProfile;
+  setProgressFrac: (frac: number) => void;
 }

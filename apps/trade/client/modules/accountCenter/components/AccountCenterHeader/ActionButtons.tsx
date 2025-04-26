@@ -1,5 +1,5 @@
+import { useEVMContext } from '@vertex-protocol/react-client';
 import { IconButton, Icons } from '@vertex-protocol/web-ui';
-import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 
@@ -9,7 +9,7 @@ interface Props {
 
 export function ActionButtons({ onShowSettingsClick }: Props) {
   const { show, hide } = useDialog();
-  const { disconnect } = useSubaccountContext();
+  const { disconnect } = useEVMContext();
   const { isNotifiEnabled } = useEnabledFeatures();
 
   const onShowNotifiSettingsClick = () => {

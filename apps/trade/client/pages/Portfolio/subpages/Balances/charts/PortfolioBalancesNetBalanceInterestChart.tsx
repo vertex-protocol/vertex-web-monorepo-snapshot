@@ -3,27 +3,29 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { ChartTooltip } from 'client/components/ChartTooltip';
+import { ChartDynamicGradientDefinitions } from 'client/modules/charts/components/ChartDynamicGradientDefinitions/ChartDynamicGradientDefinitions';
+import {
+  AREA_CHART_DEFAULTS,
+  CHART_GRID_DEFAULTS,
+  CHART_TOOLTIP_DEFAULTS,
+  CHART_XAXIS_DEFAULTS,
+  CHART_YAXIS_DEFAULTS,
+} from 'client/modules/charts/config';
+import { currencyAxisFormatter } from 'client/modules/charts/utils/axisFormatters';
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
 import {
   PortfolioChartTooltip,
   PortfolioChartTooltipBodyRenderFn,
 } from 'client/pages/Portfolio/charts/components/PortfolioChartTooltip';
-import { PortfolioDynamicGradientDefinitions } from 'client/pages/Portfolio/charts/components/PortfolioDynamicGradientDefinitions';
 import {
-  AREA_CHART_DEFAULTS,
   PORTFOLIO_CHART_GRADIENT_URLS,
-  PORTFOLIO_CHART_GRID_DEFAULTS,
-  PORTFOLIO_CHART_TOOLTIP_DEFAULTS,
-  PORTFOLIO_CHART_XAXIS_DEFAULTS,
-  PORTFOLIO_CHART_YAXIS_DEFAULTS,
   PORTFOLIO_DYNAMIC_GRADIENT_CONFIGS,
 } from 'client/pages/Portfolio/charts/consts';
 import { usePortfolioChartXAxisFormatter } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartXAxisFormatter';
 import {
-  ChartComponentProps,
+  PortfolioChartComponentProps,
   PortfolioChartDataItem,
 } from 'client/pages/Portfolio/charts/types';
-import { currencyAxisFormatter } from 'client/pages/Portfolio/charts/utils/axisFormatters';
-import { COLORS } from 'common/theme/colors';
 import { range } from 'lodash';
 import {
   Area,
@@ -70,14 +72,14 @@ const renderTooltipContent: PortfolioChartTooltipBodyRenderFn = ({
 export function PortfolioBalancesNetBalanceInterestChart({
   data,
   isPrivate,
-}: ChartComponentProps) {
+}: PortfolioChartComponentProps) {
   const xAxisFormatter = usePortfolioChartXAxisFormatter();
 
   return (
     <>
       {/* Gradient definitions component needs to be wrapped in a fragment here
         so we can pass in `data` to determine the gradient stop offset */}
-      <PortfolioDynamicGradientDefinitions
+      <ChartDynamicGradientDefinitions
         valueKey="cumulativeNetSpotInterestUsd"
         gradientConfigs={PORTFOLIO_DYNAMIC_GRADIENT_CONFIGS.interest}
         data={data}
@@ -85,7 +87,7 @@ export function PortfolioBalancesNetBalanceInterestChart({
       <ResponsiveContainer>
         <ComposedChart data={data}>
           <CartesianGrid
-            {...PORTFOLIO_CHART_GRID_DEFAULTS}
+            {...CHART_GRID_DEFAULTS}
             // Customized for right y-axis width so grid doesn't overflow into axis
             // Subtracting y-axis width from the chart width on both sides
             verticalCoordinatesGenerator={(props) =>
@@ -97,17 +99,14 @@ export function PortfolioBalancesNetBalanceInterestChart({
             }
           />
           <Tooltip
-            {...PORTFOLIO_CHART_TOOLTIP_DEFAULTS}
+            {...CHART_TOOLTIP_DEFAULTS}
             content={
               <PortfolioChartTooltip renderBody={renderTooltipContent} />
             }
           />
-          <XAxis
-            {...PORTFOLIO_CHART_XAXIS_DEFAULTS}
-            tickFormatter={xAxisFormatter}
-          />
+          <XAxis {...CHART_XAXIS_DEFAULTS} tickFormatter={xAxisFormatter} />
           <YAxis
-            {...PORTFOLIO_CHART_YAXIS_DEFAULTS}
+            {...CHART_YAXIS_DEFAULTS}
             tickFormatter={currencyAxisFormatter}
             yAxisId="net_balance"
             hide={isPrivate}
@@ -115,16 +114,16 @@ export function PortfolioBalancesNetBalanceInterestChart({
           <Area
             {...AREA_CHART_DEFAULTS}
             fill={PORTFOLIO_CHART_GRADIENT_URLS.netBalance}
-            stroke={COLORS.accent.DEFAULT}
+            stroke={getTradeAppColorVar('accent')}
             dataKey={netBalanceDataKey}
             activeDot={{
-              stroke: COLORS.accent.DEFAULT,
-              fill: COLORS.surface.card,
+              stroke: getTradeAppColorVar('accent'),
+              fill: getTradeAppColorVar('surface-card'),
             }}
             yAxisId="net_balance"
           />
           <YAxis
-            {...PORTFOLIO_CHART_YAXIS_DEFAULTS}
+            {...CHART_YAXIS_DEFAULTS}
             tickFormatter={currencyAxisFormatter}
             orientation="right"
             yAxisId="interest"
@@ -132,11 +131,11 @@ export function PortfolioBalancesNetBalanceInterestChart({
           <Area
             {...AREA_CHART_DEFAULTS}
             fill={PORTFOLIO_CHART_GRADIENT_URLS.interest}
-            stroke={COLORS.positive.DEFAULT}
+            stroke={getTradeAppColorVar('positive')}
             dataKey={interestDataKey}
             activeDot={{
-              stroke: COLORS.positive.DEFAULT,
-              fill: COLORS.surface.card,
+              stroke: getTradeAppColorVar('positive'),
+              fill: getTradeAppColorVar('surface-card'),
             }}
             yAxisId="interest"
           />

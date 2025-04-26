@@ -6,7 +6,7 @@ import {
 
 function Container({ children, className }: WithChildren<WithClassnames>) {
   return (
-    <div className={joinClassNames('flex flex-col gap-y-2.5', className)}>
+    <div className={joinClassNames('flex flex-col gap-y-2', className)}>
       {children}
     </div>
   );
@@ -14,7 +14,9 @@ function Container({ children, className }: WithChildren<WithClassnames>) {
 
 function Content({ children, className }: WithClassnames<WithChildren>) {
   return (
-    <div className={joinClassNames('text-text-secondary text-xs', className)}>
+    <div
+      className={joinClassNames('text-accent text-center text-xs', className)}
+    >
       {children}
     </div>
   );

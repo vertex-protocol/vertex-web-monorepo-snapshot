@@ -1,5 +1,4 @@
 import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { EDGE_COLORS } from '@vertex-protocol/web-ui';
 import { largeNumberAbbreviatedAxisFormatter } from 'client/components/charts/axisFormatters';
 import { StatsChart } from 'client/components/charts/StatsChart/StatsChart';
 import { LabelWithEdgeLogo } from 'client/components/LabelWithEdgeLogo';
@@ -8,6 +7,7 @@ import { StatsValueWithLabel } from 'client/components/StatsValueWithLabel';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
 import { useEdgeActiveUsersChartData } from 'client/pages/MainPage/components/common/ActiveUsersChartSection/useEdgeActiveUsersChartData';
 import { useEdgeActiveUsersOverviewData } from 'client/pages/MainPage/components/common/ActiveUsersChartSection/useEdgeActiveUsersOverviewData';
+import { getEdgeStatsColorVar } from 'client/theme/colorVars';
 
 interface Props {
   showTotalTradersMetric: boolean;
@@ -49,7 +49,7 @@ export function ActiveUsersChartSection({ showTotalTradersMetric }: Props) {
         data={edgeActiveUsersChartData?.activeUsers}
         configByDataKey={{
           activeUsers: {
-            color: EDGE_COLORS['chart-fill'].DEFAULT,
+            color: getEdgeStatsColorVar('chart-fill'),
             dataKey: 'activeUsers',
             label: <LabelWithEdgeLogo label="Total" />,
             chartType: 'line',

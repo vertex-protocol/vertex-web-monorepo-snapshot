@@ -1,0 +1,69 @@
+/* These base styles are from https://github.com/mohsinulhaq/react-popper-tooltip/blob/master/src/styles.css */
+.tooltip-container {
+  --tooltip-bg: var(--color-surface-3);
+  background-color: var(--tooltip-bg);
+}
+
+.tooltip-container[data-popper-interactive='false'] {
+  pointer-events: none;
+}
+
+.tooltip-arrow {
+  pointer-events: none;
+  height: 1rem;
+  width: 1rem;
+  position: absolute;
+}
+
+.tooltip-arrow::after {
+  height: 0;
+  width: 0;
+  display: block;
+  content: '';
+  border-style: solid;
+}
+
+.tooltip-arrow::before {
+  height: 0;
+  width: 0;
+  display: block;
+  content: '';
+  border-style: solid;
+  margin: auto;
+}
+
+.tooltip-container[data-popper-placement*='bottom'] .tooltip-arrow {
+  top: -0.325rem;
+}
+
+.tooltip-container[data-popper-placement*='bottom'] .tooltip-arrow::after {
+  border-color: transparent transparent var(--tooltip-bg) transparent;
+  border-width: 0 0.5rem 0.4rem 0.5rem;
+}
+
+.tooltip-container[data-popper-placement*='top'] .tooltip-arrow {
+  bottom: -1rem;
+}
+
+.tooltip-container[data-popper-placement*='top'] .tooltip-arrow::after {
+  border-color: var(--tooltip-bg) transparent transparent transparent;
+  border-width: 0.4rem 0.5rem 0 0.5rem;
+}
+
+.tooltip-container[data-popper-placement*='right'] .tooltip-arrow {
+  left: -0.25rem;
+}
+
+.tooltip-container[data-popper-placement*='right'] .tooltip-arrow::after {
+  border-color: transparent var(--tooltip-bg) transparent transparent;
+  border-width: 0.5rem 0.4rem 0.5rem 0;
+}
+
+.tooltip-container[data-popper-placement*='left'] .tooltip-arrow {
+  right: -0.875rem;
+}
+
+.tooltip-container[data-popper-placement*='left'] .tooltip-arrow::after {
+  border-color: transparent transparent transparent var(--tooltip-bg);
+  border-width: 0.5rem 0 0.5rem 0.4rem;
+}

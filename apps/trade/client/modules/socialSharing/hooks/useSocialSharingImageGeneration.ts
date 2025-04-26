@@ -91,11 +91,11 @@ export function useSocialSharingImageGeneration() {
       return;
     }
 
-    let cancelled = false;
+    let isCancelled = false;
 
     generatePreviewImage()
       .then((blob) => {
-        if (!cancelled) {
+        if (!isCancelled) {
           setPreviewImage({
             blob,
             url: URL.createObjectURL(blob),
@@ -107,7 +107,7 @@ export function useSocialSharingImageGeneration() {
       });
 
     return () => {
-      cancelled = true;
+      isCancelled = true;
     };
   }, [imagesHaveLoaded, generatePreviewImage]);
 

@@ -17,7 +17,7 @@
     "@vertex-protocol/react-client": "*",
     "@vertex-protocol/web-common": "*",
     "@vertex-protocol/web-ui": "*",
-    "d3-interpolate": "^3.0.1",
+    "d3-interpolate": "3.0.1",
     "date-fns": "*",
     "jotai": "*",
     "lodash": "*",
@@ -29,11 +29,11 @@
     "sharp": "*"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "*",
     "@tanstack/react-query-devtools": "*",
     "@types/lodash": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
-    "autoprefixer": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
     "postcss": "*",

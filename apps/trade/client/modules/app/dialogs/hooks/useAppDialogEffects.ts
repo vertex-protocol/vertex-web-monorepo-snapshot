@@ -1,19 +1,19 @@
 import { useEVMContext } from '@vertex-protocol/react-client';
-import { useSyncedRef } from 'client/hooks/util/useSyncedRef';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { DialogType } from 'client/modules/app/dialogs/types';
+import { useSavedUserState } from 'client/modules/localstorage/userState/useSavedUserState';
 import { useEffect } from 'react';
 
 /**
  * Manages app-wide flows for automatically showing / hiding dialogs
  */
 export function useAppDialogEffects() {
-  const { currentDialog, hide } = useDialog();
+  const { currentDialog, show, hide } = useDialog();
   const {
     connectionStatus: { type: connectionStatusType },
   } = useEVMContext();
-  // We don't want to retrigger the useEffects on every change of `currentDialog`
-  const currentDialogRef = useSyncedRef(currentDialog);
+  const isConnected = connectionStatusType === 'connected';
+  const isDisconnected = connectionStatusType === 'disconnected';
 
   /**
    * Dismiss all dialogs when the user disconnects. We do this in an effect instead of a disconnect handler because
@@ -22,19 +22,34 @@ export function useAppDialogEffects() {
    * The only caveat is that we don't want to hide the location restriction / connect dialogs
    */
   useEffect(() => {
-    const currentDialogType = currentDialogRef.current?.type;
+    const currentDialogType = currentDialog?.type;
     const ignoredDialogTypes: DialogType[] = [
       'location_restricted',
       'connect',
+      'connect_custom_wallet',
       'utm_campaign_connect',
     ];
 
     if (
-      connectionStatusType === 'disconnected' &&
+      isDisconnected &&
       !!currentDialogType &&
       !ignoredDialogTypes.includes(currentDialogType)
     ) {
       hide();
     }
-  }, [connectionStatusType, currentDialogRef, hide]);
+  }, [currentDialog?.type, hide, isDisconnected]);
+
+  /**
+   * If the user hasn't completed onboarding, show the terms of use dialog
+   */
+  const { savedUserState } = useSavedUserState();
+  const hasCompletedOnboarding = savedUserState.onboardingComplete;
+  useEffect(() => {
+    if (isConnected && !hasCompletedOnboarding && !currentDialog) {
+      show({
+        type: 'terms_of_use',
+        params: {},
+      });
+    }
+  }, [currentDialog, hasCompletedOnboarding, isConnected, show]);
 }

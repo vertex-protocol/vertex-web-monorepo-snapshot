@@ -9,11 +9,11 @@ import { sortBy } from 'lodash';
 import { ReactNode, useMemo } from 'react';
 import {
   Cell,
+  Legend,
   Pie,
   PieChart,
-  ResponsiveContainer,
   Tooltip as ReChartsTooltip,
-  Legend,
+  ResponsiveContainer,
 } from 'recharts';
 
 interface Props extends WithClassnames {

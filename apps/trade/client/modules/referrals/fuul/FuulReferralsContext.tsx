@@ -63,7 +63,7 @@ const FuulReferralsContext = createContext<FuulReferralsContextData>(
 Fuul.init({ apiKey: SENSITIVE_DATA.fuulApiKey });
 
 export function FuulReferralsProvider({ children }: WithChildren) {
-  const { isFuulEnabled } = useEnabledFeatures();
+  const { isFuulPageEnabled } = useEnabledFeatures();
   const { mutate: mutateSendPageView } = useMutation({
     mutationFn: ({ route }: { route: string }) => Fuul.sendPageview(route),
   });
@@ -74,12 +74,12 @@ export function FuulReferralsProvider({ children }: WithChildren) {
 
   // Send page view on route change
   useEffect(() => {
-    if (!isFuulEnabled) {
+    if (!isFuulPageEnabled) {
       return;
     }
 
     mutateSendPageView({ route: pathname });
-  }, [pathname, isFuulEnabled, mutateSendPageView]);
+  }, [pathname, isFuulPageEnabled, mutateSendPageView]);
 
   const value = useMemo(
     (): FuulReferralsContextData =>

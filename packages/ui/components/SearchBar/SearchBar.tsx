@@ -20,13 +20,13 @@ interface Props extends WithRef<WithClassnames, HTMLInputElement> {
 
 // Persistent bottom border
 const BOTTOM_BORDER_CLASSNAME =
-  'before:h-px before:absolute before:bottom-0 before:left-0 before:right-0 before:bg-overlay-divider/10';
+  'before:h-px before:absolute before:bottom-0 before:left-0 before:right-0 before:bg-overlay-divider';
 
 // Colored border that animates in on focus of the text input
 const ANIMATED_BOTTOM_BORDER_CLASSNAME = joinClassNames(
   'after:h-px after:absolute after:inset-0 after:top-auto',
   'after:transform-gpu after:origin-left after:duration-300',
-  'after:bg-accent focus-within:after:scale-x-100 after:scale-x-0',
+  'after:bg-primary focus-within:after:scale-x-100 after:scale-x-0',
 );
 
 export function SearchBar({

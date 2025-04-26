@@ -90,7 +90,7 @@ export function useHistoricalPnlAccountingTable() {
             isolated,
             reduceOnlyBaseFilledAmount,
           }): HistoricalPnlAccountingTableItem | undefined => {
-            const marketData = staticMarketsData.all[productId];
+            const marketData = staticMarketsData.allMarkets[productId];
             const quoteData = staticMarketsData.quotes[productId];
 
             if (!marketData || !quoteData) {

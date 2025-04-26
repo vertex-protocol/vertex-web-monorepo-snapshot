@@ -1,1 +1,0 @@
-export const WALLET_BUTTON_ICON_SIZE_CLASSNAME = 'size-5';

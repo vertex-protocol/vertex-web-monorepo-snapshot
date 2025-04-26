@@ -34,7 +34,7 @@ export function usePlaceOrderMutationFn() {
   return useCallback(
     async (params: ExecutePlaceOrderParams, context: ValidExecuteContext) => {
       // Round amount & price
-      const increments = marketDataByProductId?.all[params.productId];
+      const increments = marketDataByProductId?.allMarkets[params.productId];
       const roundedAmount = toMutationAmountInput(
         params.amount,
         // Undefined size increment will skip rounding
@@ -172,7 +172,7 @@ export function usePlaceOrderMutationFn() {
       console.log('Placing engine order', toPrintableObject(engineOrderParams));
       return context.vertexClient.market.placeOrder(engineOrderParams);
     },
-    [getRecvTime, marketDataByProductId?.all, orderbookAddresses],
+    [getRecvTime, marketDataByProductId?.allMarkets, orderbookAddresses],
   );
 }
 

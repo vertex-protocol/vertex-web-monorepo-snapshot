@@ -1,7 +1,9 @@
 import { IndexerMarketSnapshot, TimeInSeconds } from '@vertex-protocol/client';
-import { ChainEnvWithEdge } from 'client/hooks/types';
-import { useEdgeMarketSnapshots } from 'client/hooks/useEdgeMarketSnapshots';
-import { getRecordKeyedByChainEnvWithEdge } from 'client/hooks/utils';
+import {
+  ChainEnvWithEdge,
+  getRecordKeyedByChainEnvWithEdge,
+  useEdgeMarketSnapshots,
+} from '@vertex-protocol/react-client';
 import { first, get } from 'lodash';
 import { useMemo } from 'react';
 
@@ -12,7 +14,7 @@ type SnapshotByChainEnv = Record<
 
 interface EdgeMarketSnapshotsAtHistoricalTimesData {
   now: SnapshotByChainEnv;
-  ['24hr']: SnapshotByChainEnv;
+  ['24h']: SnapshotByChainEnv;
   ['7d']: SnapshotByChainEnv;
   ['30d']: SnapshotByChainEnv;
 }
@@ -57,7 +59,7 @@ export function useEdgeMarketSnapshotsAtHistoricalTimes() {
     const edgeMarketSnapshotsAtHistoricalTimesData: EdgeMarketSnapshotsAtHistoricalTimesData =
       {
         now: getRecordKeyedByChainEnvWithEdge(undefined),
-        ['24hr']: getRecordKeyedByChainEnvWithEdge(undefined),
+        ['24h']: getRecordKeyedByChainEnvWithEdge(undefined),
         ['7d']: getRecordKeyedByChainEnvWithEdge(undefined),
         ['30d']: getRecordKeyedByChainEnvWithEdge(undefined),
       };
@@ -70,8 +72,8 @@ export function useEdgeMarketSnapshotsAtHistoricalTimes() {
         edgeMarketSnapshotsData[chainEnvWithEdge],
       );
 
-      // Second snapshot might not exist if markets have not been up at that time (ex. 24hr, 7d...). This is relevant for the new chain launches.
-      edgeMarketSnapshotsAtHistoricalTimesData['24hr'][chainEnvWithEdge] = get(
+      // Second snapshot might not exist if markets have not been up at that time (ex. 24h, 7d...). This is relevant for the new chain launches.
+      edgeMarketSnapshotsAtHistoricalTimesData['24h'][chainEnvWithEdge] = get(
         edgeMarketSnapshotsData[chainEnvWithEdge],
         1,
         undefined,

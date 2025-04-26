@@ -1,4 +1,5 @@
 import { IconComponent } from '@vertex-protocol/web-ui';
+import AbstractChain from 'client/icons/chains/AbstractChain';
 import ArbitrumChain from 'client/icons/chains/ArbitrumChain';
 import AvalancheChain from 'client/icons/chains/AvalancheChain';
 import BaseChain from 'client/icons/chains/BaseChain';
@@ -115,6 +116,7 @@ export const PLATFORM_COMPARISON_COLUMNS: PlatformComparisonColumn[] = [
         { icon: BaseChain, tooltip: 'Base' },
         { icon: BlastChain, tooltip: 'Blast' },
         { icon: SonicChain, tooltip: 'Sonic' },
+        { icon: AbstractChain, tooltip: 'Abstract' },
       ],
     },
     collaterals: {

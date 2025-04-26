@@ -40,16 +40,21 @@ export interface StaticMarketQuoteData {
 }
 
 export interface AllMarketsStaticDataForChainEnv {
+  primaryQuoteProduct: SpotStaticMarketData;
+  vlpProduct: SpotStaticMarketData | undefined;
   /**
-   * Primary quote is extracted for special treatment
+   * Product ID -> data
    */
-  primaryQuote: SpotStaticMarketData;
+  allMarkets: Record<number, StaticMarketData>;
   /**
-   * Keyed by product ID
+   * This includes all spot markets as well as primary quote / VLP
    */
-  all: Record<number, StaticMarketData>;
-  spot: Record<number, SpotStaticMarketData>;
-  perp: Record<number, PerpStaticMarketData>;
+  spotProducts: Record<number, SpotStaticMarketData>;
+  /**
+   * This excludes primary quote & VLP because they do not have markets
+   */
+  spotMarkets: Record<number, SpotStaticMarketData>;
+  perpMarkets: Record<number, PerpStaticMarketData>;
   /**
    * Product ID -> quote metadata for the market
    */

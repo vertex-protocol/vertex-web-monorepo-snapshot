@@ -4,7 +4,7 @@ import {
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { Card, COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
+import { Card } from '@vertex-protocol/web-ui';
 
 function Container({ children, className }: WithChildren<WithClassnames>) {
   return (
@@ -38,9 +38,7 @@ function Footer({ children }: WithChildren) {
   return (
     <div
       className={joinClassNames(
-        'border-stroke border-t',
-        COMMON_TRANSPARENCY_COLORS.bgOverlayHover,
-        'backdrop-blur-md',
+        'border-stroke bg-overlay-hover border-t backdrop-blur-md',
         'text-text-tertiary flex justify-between px-6 py-3 text-xs sm:text-sm',
       )}
     >

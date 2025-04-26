@@ -63,7 +63,7 @@ export function useMaxMintLpAmount(params?: Params) {
       if (disabled) {
         throw new QueryDisabledError();
       }
-      return vertexClient.market.getMaxMintLp(queryParams);
+      return vertexClient.market.getMaxMintLpAmount(queryParams);
     },
     enabled: !disabled,
     refetchInterval: 30000,

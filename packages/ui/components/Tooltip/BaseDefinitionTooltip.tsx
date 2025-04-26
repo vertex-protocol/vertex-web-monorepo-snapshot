@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
-import { Tooltip, TooltipProps } from './Tooltip';
 import { mergeClassNames } from '@vertex-protocol/web-common';
+import { ReactNode } from 'react';
 import { IconBaseProps, Icons } from '../Icons';
+import { Tooltip, TooltipProps } from './Tooltip';
 
 export type BaseDefinitionTooltipDecoration =
   | 'underline'
@@ -61,7 +61,7 @@ export function BaseDefinitionTooltip({
   const tooltipContent = (
     <div className="flex max-w-[270px] flex-col gap-y-1.5 overflow-hidden p-2 pt-2.5 text-left">
       {title && <div className="text-text-primary text-sm">{title}</div>}
-      <div className="text-text-secondary flex flex-col gap-y-2 whitespace-pre-wrap text-xs">
+      <div className="text-text-secondary flex flex-col gap-y-2 text-xs whitespace-pre-wrap">
         {content}
       </div>
     </div>

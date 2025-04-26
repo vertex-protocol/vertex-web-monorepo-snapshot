@@ -1,12 +1,12 @@
 import { AcceptFuulReferralNotification } from 'client/modules/notifications/components/AcceptFuulReferralNotification';
 import { AcceptFuulReferralNotificationData } from 'client/modules/notifications/types';
-import toast, { Toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 export async function handleAcceptFuulReferralNotificationDispatch(
   data: AcceptFuulReferralNotificationData,
 ) {
   return toast.custom(
-    (t: Toast['message']) => (
+    (t) => (
       <AcceptFuulReferralNotification
         visible={t.visible}
         onDismiss={() => {

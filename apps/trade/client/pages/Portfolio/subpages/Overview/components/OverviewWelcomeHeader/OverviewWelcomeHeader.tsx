@@ -8,9 +8,7 @@ export function OverviewWelcomeHeader() {
   return (
     <div className="flex flex-col gap-y-5 sm:flex-row sm:items-end sm:justify-between">
       <PortfolioHeader>Welcome</PortfolioHeader>
-      {isConnected && (
-        <OverviewCollateralButtons className="w-full sm:w-[375px]" />
-      )}
+      {isConnected && <OverviewCollateralButtons />}
     </div>
   );
 }

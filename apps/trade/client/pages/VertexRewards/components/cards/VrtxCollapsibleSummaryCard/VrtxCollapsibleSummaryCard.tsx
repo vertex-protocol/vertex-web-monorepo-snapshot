@@ -1,15 +1,11 @@
 'use client';
 
-import { VRTX_TOKEN_INFO } from '@vertex-protocol/react-client';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
+  VRTX_TOKEN_INFO,
 } from '@vertex-protocol/react-client';
-import {
-  COMMON_TRANSPARENCY_COLORS,
-  Divider,
-  PrimaryButton,
-} from '@vertex-protocol/web-ui';
+import { Divider, PrimaryButton } from '@vertex-protocol/web-ui';
 import { HANDLED_BUTTON_USER_STATE_ERRORS } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
 import { ValidUserStatePrimaryButton } from 'client/components/ValidUserStatePrimaryButton/ValidUserStatePrimaryButton';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
@@ -46,6 +42,7 @@ export function VrtxCollapsibleSummaryCard() {
         {/*Total earned from on-chain data is accurate only on the protocol token chain*/}
         {isOnProtocolTokenChainEnv && (
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Total Earned"
             value={totalRewardsEarned}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
@@ -54,6 +51,7 @@ export function VrtxCollapsibleSummaryCard() {
           />
         )}
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Est. New"
           value={estimatedNewRewards}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
@@ -77,6 +75,7 @@ export function VrtxCollapsibleSummaryCard() {
 
   const actionMetric = isOnProtocolTokenChainEnv ? (
     <ValueWithLabel.Vertical
+      sizeVariant="lg"
       label={`Available to Claim (${epochLabel})`}
       value={unclaimedLastEpochRewards}
       numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
@@ -86,7 +85,7 @@ export function VrtxCollapsibleSummaryCard() {
   ) : null;
 
   const action = isOnProtocolTokenChainEnv ? (
-    <RewardsSummaryCard.ActionWithHelperText helperText="Rewards are claimable a few days after each epoch ends. Claim rewards for past epochs in the Summary.">
+    <RewardsSummaryCard.ActionWithHelperText helperText="Rewards are claimable a few days after each epoch ends. Claim rewards for past epochs in the summary.">
       <ValidUserStatePrimaryButton
         onClick={() => {
           if (!lastCompletedEpoch || !unclaimedLastEpochRewards) {
@@ -120,8 +119,8 @@ export function VrtxCollapsibleSummaryCard() {
 
   return (
     <RewardsSummaryCard.Container
-      className="to-surface-card from-overlay-accent/20 border-accent bg-gradient-to-r"
-      collapsibleTriggerClassName={COMMON_TRANSPARENCY_COLORS.bgAccent}
+      className="to-surface-card from-overlay-accent border-accent bg-linear-to-r"
+      collapsibleTriggerClassName="bg-overlay-accent"
       collapsibleContent={collapsibleContent}
     >
       <RewardsSummaryCard.Content

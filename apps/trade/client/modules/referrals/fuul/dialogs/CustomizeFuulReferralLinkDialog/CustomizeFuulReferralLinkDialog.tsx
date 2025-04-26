@@ -31,9 +31,9 @@ export function CustomizeFuulReferralLinkDialog() {
         <Form onSubmit={onSubmit}>
           <div className="flex flex-col gap-y-3">
             {existingCustomReferralCode && (
-              <div className="bg-surface-1 rounded p-2 text-xs">
-                If you change your custom link, the previous custom one won’t
-                work.
+              <div className="bg-surface-1 rounded-sm p-2 text-xs">
+                If you change your custom link, the previous custom one
+                won&apos;t work.
               </div>
             )}
             <CompactInput

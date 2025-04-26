@@ -1,6 +1,6 @@
+import { useEdgeMarketSnapshots } from '@vertex-protocol/react-client';
 import { StatsChartDataItem } from 'client/components/charts/StatsChart/types';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
-import { useEdgeMarketSnapshots } from 'client/hooks/useEdgeMarketSnapshots';
 import { useMemo } from 'react';
 
 export function useEdgeActiveUsersChartData() {

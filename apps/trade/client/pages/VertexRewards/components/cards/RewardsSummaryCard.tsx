@@ -4,11 +4,11 @@ import {
   CollapsibleTrigger,
 } from '@radix-ui/react-collapsible';
 import {
+  joinClassNames,
+  mergeClassNames,
   NextImageSrc,
   WithChildren,
   WithClassnames,
-  joinClassNames,
-  mergeClassNames,
 } from '@vertex-protocol/web-common';
 import {
   Button,
@@ -46,7 +46,7 @@ function Container({
           <CollapsibleContent
             className={joinClassNames(
               'bg-background flex flex-col',
-              'gap-y-5 rounded p-4 empty:hidden lg:px-5',
+              'gap-y-5 rounded-sm p-4 empty:hidden lg:px-5',
             )}
           >
             {collapsibleContent}

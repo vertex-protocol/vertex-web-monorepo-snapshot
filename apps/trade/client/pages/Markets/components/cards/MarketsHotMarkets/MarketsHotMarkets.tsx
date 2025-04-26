@@ -20,7 +20,7 @@ export function MarketsHotMarkets() {
           return (
             <MarketsCardItemButton
               key={metadata.marketName}
-              href={productTradingLinks?.[productId].link}
+              href={productTradingLinks?.[productId]?.link}
               label={
                 <>
                   <Image

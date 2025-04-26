@@ -11,7 +11,7 @@ import {
   useVertexClientContext,
 } from '@vertex-protocol/react-client';
 import { last } from 'lodash';
-import { blast } from 'wagmi/chains';
+import { berachain, blast } from 'wagmi/chains';
 
 export function useEdgeMetrics() {
   const { primaryChainVertexClient } = useVertexClientContext();
@@ -38,6 +38,7 @@ export function useEdgeMetrics() {
 
       let totalBlitzVolume = BigDecimals.ZERO;
       let totalVertexVolume = BigDecimals.ZERO;
+      let totalBroTradeVolume = BigDecimals.ZERO;
 
       Object.entries(edgeSnapshots).forEach(([chainId, snapshots]) => {
         const latestSnapshot = last(snapshots);
@@ -46,6 +47,8 @@ export function useEdgeMetrics() {
 
         if (chainId === blast.id.toString()) {
           totalBlitzVolume = totalCumulativeVolume;
+        } else if (chainId === berachain.id.toString()) {
+          totalBroTradeVolume = totalCumulativeVolume;
         } else {
           totalVertexVolume = totalVertexVolume.plus(totalCumulativeVolume);
         }
@@ -54,6 +57,7 @@ export function useEdgeMetrics() {
       return {
         totalBlitzVolume,
         totalVertexVolume,
+        totalBroTradeVolume,
       };
     },
     enabled: !disabled,

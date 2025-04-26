@@ -2,11 +2,12 @@ import { removeDecimals } from '@vertex-protocol/utils';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshots } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshots';
 import { calcChangeFrac } from 'client/utils/calcs/calcChangeFrac';
+import { calcPnlFracForNonZeroDenom } from 'client/utils/calcs/pnlCalcs';
 import {
   getSubaccountMetricsFromIndexerSnapshot,
   IndexerSubaccountMetrics,
-} from 'client/utils/calcs/getSubaccountMetricsFromIndexerSnapshot';
-import { calcPnlFracForNonZeroDenom } from 'client/utils/calcs/pnlCalcs';
+} from 'client/utils/calcs/subaccount/getSubaccountMetricsFromIndexerSnapshot';
+
 import { isFinite } from 'lodash';
 import { useMemo } from 'react';
 

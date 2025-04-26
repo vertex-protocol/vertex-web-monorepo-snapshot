@@ -8,6 +8,7 @@ import { PerpPositionDetailsDialog } from 'client/modules/tables/detailDialogs/P
 import { PreLiquidationDetailsDialog } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/PreLiquidationDetailsDialog';
 import { RealizedPnlDetailsDialog } from 'client/modules/tables/detailDialogs/RealizedPnlDetailsDialog';
 import { SpotBalanceDetailsDialog } from 'client/modules/tables/detailDialogs/SpotBalanceDetailsDialog';
+import { SpotMoneyMarketDetailsDialog } from 'client/modules/tables/detailDialogs/SpotMoneyMarketDetailsDialog/SpotMoneyMarketDetailsDialog';
 
 /**
  * Typically shown on tablet/mobile when clicking on a table row
@@ -22,6 +23,9 @@ export function DetailDialogs() {
       )}
       {currentDialog?.type === 'spot_balance_details' && (
         <SpotBalanceDetailsDialog {...currentDialog.params} />
+      )}
+      {currentDialog?.type === 'spot_money_market_details' && (
+        <SpotMoneyMarketDetailsDialog {...currentDialog.params} />
       )}
       {currentDialog?.type === 'open_engine_order_details' && (
         <OpenEngineOrderDetailsDialog {...currentDialog.params} />

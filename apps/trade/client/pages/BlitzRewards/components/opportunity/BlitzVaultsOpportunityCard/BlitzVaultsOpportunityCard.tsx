@@ -1,5 +1,5 @@
 import { Icons } from '@vertex-protocol/web-ui';
-import { SKATE_VAULTS_BY_CHAIN_ENV } from 'client/modules/vaults/consts';
+import { SKATE_VAULTS_BY_CHAIN_ENV } from 'client/modules/skateVaults/consts';
 import { BlitzOpportunityCard } from 'client/pages/BlitzRewards/components/opportunity/BlitzOpportunityCard';
 import { BlitzVaultsOpportunityCardContent } from 'client/pages/BlitzRewards/components/opportunity/BlitzVaultsOpportunityCard/BlitzVaultsOpportunityCardContent';
 import { first } from 'lodash';

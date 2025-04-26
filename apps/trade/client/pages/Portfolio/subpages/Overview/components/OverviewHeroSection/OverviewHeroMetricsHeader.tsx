@@ -9,13 +9,13 @@ import { useSubaccountTimespanMetrics } from 'client/hooks/subaccount/useSubacco
 import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
 import { usePrivacySetting } from 'client/modules/privacy/hooks/usePrivacySetting';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { PORTFOLIO_CHART_TIMESPAN_METADATA } from 'client/pages/Portfolio/charts/consts';
-import { ChartTimespan } from 'client/pages/Portfolio/charts/types';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
 import { signDependentValue } from '@vertex-protocol/react-client';
+import { PortfolioChartTimespan } from 'client/pages/Portfolio/charts/types';
+import { PORTFOLIO_CHART_TIMESPAN_METADATA } from 'client/pages/Portfolio/charts/consts';
 
 interface OverviewHeroHeaderProps {
-  timespan: ChartTimespan;
+  timespan: PortfolioChartTimespan;
   portfolioValueUsd: BigDecimal | undefined;
 }
 
@@ -50,7 +50,7 @@ export function OverviewHeroMetricsHeader({
 interface OverviewAccountPnlProps {
   cumulativeAccountPnl: BigDecimal | undefined;
   cumulativeAccountPnlFrac: BigDecimal | undefined;
-  timespan: ChartTimespan;
+  timespan: PortfolioChartTimespan;
 }
 
 function AccountPnl({
@@ -61,6 +61,8 @@ function AccountPnl({
   const [areAccountValuesPrivate] = usePrivacySetting(
     'areAccountValuesPrivate',
   );
+  const pnlTimespanLabel = `${PORTFOLIO_CHART_TIMESPAN_METADATA[timespan].longLabel} PnL`;
+
   return (
     <div className="text-2xs flex flex-wrap items-center gap-x-2 sm:text-xs">
       <PrivateContent
@@ -96,7 +98,7 @@ function AccountPnl({
         definitionId="overviewAccountPnL"
         contentWrapperClassName="text-text-tertiary"
       >
-        {PORTFOLIO_CHART_TIMESPAN_METADATA[timespan].longLabel}
+        {pnlTimespanLabel}
       </DefinitionTooltip>
     </div>
   );

@@ -1,8 +1,8 @@
 'use client';
 
-import { Tooltip } from 'client/components/Tooltip/Tooltip';
-import { ExternalLink } from 'client/components/Link/Link';
 import { ComparisonChainsCell } from 'client/components/ComparisonCell/ComparisonChainsCell';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
+import { Tooltip } from 'client/components/Tooltip/Tooltip';
 import CheckIcon from 'client/icons/CheckIcon';
 import CloseIcon from 'client/icons/CloseIcon';
 import {

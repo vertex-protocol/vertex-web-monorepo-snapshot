@@ -38,7 +38,7 @@ function EarnHeader({ title, description }: HeaderProps) {
   return (
     <div className="flex flex-col gap-y-1 lg:gap-y-2">
       <div className="flex items-center gap-x-2">
-        <div className="bg-surface-1 rounded p-1 lg:p-1.5">
+        <div className="bg-surface-1 rounded-sm p-1 lg:p-1.5">
           <Image
             src={IMAGES.brandMonochromeIcon}
             className="h-3 w-auto lg:h-4"

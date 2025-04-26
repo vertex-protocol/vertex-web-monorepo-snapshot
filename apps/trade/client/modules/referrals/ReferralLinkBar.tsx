@@ -62,7 +62,7 @@ export function ReferralLinkBar({
   return (
     <div
       className={joinClassNames(
-        'bg-surface-2 text-text-tertiary flex h-11 items-center rounded px-3',
+        'bg-surface-2 text-text-tertiary flex h-11 items-center rounded-sm px-3',
         className,
       )}
     >

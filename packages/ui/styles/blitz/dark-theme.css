@@ -1,0 +1,57 @@
+/* To apply this theme, add the following attribute: data-theme="blitzDark" */
+/* Then apply these variables to any custom Tailwind config variables located inside `@theme` */
+
+/* Blitz Dark Theme */
+[data-theme='blitzDark'] {
+  /* Background Color */
+  --color-background: #07070a;
+
+  /* Surface Colors */
+  --color-surface-card: #07070a;
+  --color-surface-1: #101014;
+  --color-surface-2: #1a1c23;
+  --color-surface-3: #1f2129;
+
+  /* Border Colors */
+  --color-stroke: #1f2129;
+
+  /* Text Colors */
+  --color-text-primary: #fcfdff;
+  --color-text-secondary: #c0c2cd;
+  --color-text-tertiary: #9699ac;
+  --color-text-button-primary: #ffffff;
+
+  /* Misc Theme Colors */
+  --color-accent: #ff036d;
+  --color-accent-alt: #a9f89d;
+  --color-accent-warning: #eaec96;
+  --color-accent-info: #8af8ff;
+  --color-disabled: #3f414a;
+  --color-primary: #db036a;
+  --color-positive: #00d8b1;
+  --color-positive-muted: #0c2122;
+  --color-negative: #fa1953;
+  --color-negative-muted: #250e19;
+  --color-warning: #d1a816;
+  --color-warning-muted: #241f13;
+
+  /* Overlay Colors */
+  --color-overlay-divider: hsl(220 100% 99% / 0.1);
+  --color-overlay-accent: hsl(335 100% 51% / 0.2);
+  --color-overlay-hover: hsl(220 100% 99% / 0.05);
+  --color-overlay-disabled: hsl(240 18% 3% / 0.5);
+
+  /* Gradient Stops */
+  --color-grad-overlay-dialog-start: hsl(249 23 11% / 0.8);
+  --color-grad-overlay-dialog-end: hsl(240 12 5% / 0.8);
+
+  /* Box Shadows */
+  --shadow-elevation-card: 0px 2px 4px 0px hsl(0 0% 0% / 0.02);
+  --shadow-elevation-strong: 0px 8px 36px 8px hsl(240 18% 3% / 0.8);
+  --shadow-elevation-dialog: 0px 50px 80px 0px hsl(0 0% 0% / 0.05),
+    0px 36px 36px -18px hsl(0 0% 0% / 0.07);
+
+  /* Fonts */
+  --font-default: var(--font-jetbrains);
+  --font-title: var(--font-tickerbit);
+}

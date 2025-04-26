@@ -1,0 +1,134 @@
+@import 'tailwindcss';
+
+@config "../tailwind.config.ts";
+
+@utility motion-button-gradient {
+  &:hover {
+    &::before {
+      @apply left-0 opacity-50;
+    }
+  }
+  &::before {
+    @apply absolute inset-0 -left-5 z-1 bg-repeat opacity-0 grayscale transition-all duration-300;
+    content: '';
+    background-image: url('../public/img/glow-effect.png');
+    background-size: 50%;
+    background-position: -10% 0;
+    animation: glowing-gray 7s linear infinite;
+  }
+  @apply relative overflow-clip text-white transition-all duration-300;
+}
+
+@utility motion-button-bg {
+  &::before {
+    @apply absolute inset-0 bg-repeat opacity-0 grayscale;
+    content: '';
+    background-image: url('../public/img/glow-effect.png');
+    background-size: 100%;
+    background-position: -10% 0;
+    animation: glowing-gray 7s linear infinite;
+  }
+  @apply relative overflow-clip;
+}
+
+@utility launch-button-gradient {
+  &:hover {
+    &::before {
+      @apply left-0 opacity-50;
+    }
+  }
+  &::before {
+    @apply absolute inset-0 -left-5 z-1 bg-repeat opacity-10 transition-all duration-300;
+    content: '';
+    animation: glowing 7s linear infinite;
+    background-image: url('../public/img/glow-effect.png');
+    background-size: 100%;
+    background-position: -10% 0;
+    filter: brightness(1) contrast(1);
+  }
+  @apply relative overflow-clip text-white transition-all duration-300;
+}
+
+@utility launch-button-bg {
+  &::before {
+    @apply absolute inset-0 bg-repeat brightness-200 contrast-150 md:p-1 md:opacity-50;
+    content: '';
+    background-image: url('../public/img/glow-effect.png');
+    background-size: 200%;
+    background-position: -10% 0;
+    animation: glowing 7s linear infinite;
+  }
+  @apply relative overflow-clip;
+}
+
+@utility container-custom {
+  @apply max-w-container mx-auto px-4 sm:px-8;
+}
+
+@utility text-linear-header {
+  @apply bg-header-linear bg-clip-text text-transparent;
+}
+
+@utility text-gradient {
+  @apply bg-text-gradient bg-clip-text text-transparent;
+}
+
+@utility button-shadow {
+  box-shadow: '0px -2px 7px 0px rgba(114, 116, 120, 0.25), 0px 2px 5px 0px rgba(0, 0, 0, 0.90)';
+}
+
+@keyframes glowing {
+  0% {
+    filter: blur(0) brightness(1.5) contrast(1);
+    background-position: 40% 45%;
+    background-size: 100%;
+  }
+  25% {
+    filter: blur(10px) brightness(1.5) contrast(1);
+    background-position: 30% 80%;
+    background-size: 130%;
+  }
+  50% {
+    filter: blur(20px) brightness(1.5) contrast(1);
+    background-position: 45% 65%;
+    background-size: 150%;
+  }
+  75% {
+    filter: blur(10px) brightness(1.5) contrast(1);
+    background-position: 60% 30%;
+    background-size: 125%;
+  }
+  100% {
+    filter: blur(0) brightness(1.5) contrast(1);
+    background-position: 40% 45%;
+    background-size: 100%;
+  }
+}
+
+@keyframes glowing-gray {
+  0% {
+    filter: blur(5px), brightness(1), grayscale(100%);
+    background-position: 20% 25%;
+    background-size: 120%;
+  }
+  25% {
+    filter: blur(10px), brightness(1), grayscale(100%);
+    background-position: 30% 60%;
+    background-size: 130%;
+  }
+  50% {
+    filter: blur(20px), brightness(1), grayscale(100%);
+    background-position: 25% 50%;
+    background-size: 140%;
+  }
+  75% {
+    filter: blur(10px), brightness(1), grayscale(100%);
+    background-position: 40% 30%;
+    background-size: 135%;
+  }
+  100% {
+    filter: blur(5px), brightness(1), grayscale(100%);
+    background-position: 20% 25%;
+    background-size: 120%;
+  }
+}

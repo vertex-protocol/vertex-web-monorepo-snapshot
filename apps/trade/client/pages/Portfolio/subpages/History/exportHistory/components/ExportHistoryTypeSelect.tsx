@@ -4,48 +4,69 @@ import {
   UpDownChevronIcon,
   useSelect,
 } from '@vertex-protocol/web-ui';
+import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { HistoryExportType } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
+import { useMemo } from 'react';
 
 interface Props {
   selectedValue: HistoryExportType;
   onSelectedValueChange: (table: HistoryExportType) => void;
 }
 
-const OPTIONS: SelectOption<HistoryExportType>[] = [
-  {
-    value: 'trades',
-    label: 'Trades',
-  },
-  {
-    value: 'realized_pnl',
-    label: 'Realized PnL',
-  },
-  {
-    value: 'deposits',
-    label: 'Deposits',
-  },
-  {
-    value: 'withdrawals',
-    label: 'Withdrawals',
-  },
-  {
-    value: 'transfers',
-    label: 'Transfers',
-  },
-  {
-    value: 'lp',
-    label: 'Pools',
-  },
-  {
-    value: 'liquidations',
-    label: 'Liquidations',
-  },
-];
-
 export function ExportHistoryTypeSelect({
   selectedValue,
   onSelectedValueChange,
 }: Props) {
+  const { isVlpEnabled } = useEnabledFeatures();
+  const options = useMemo<SelectOption<HistoryExportType>[]>(
+    () => [
+      {
+        value: 'trades',
+        label: 'Trades',
+      },
+      {
+        value: 'realized_pnl',
+        label: 'Realized PnL',
+      },
+      {
+        value: 'deposits',
+        label: 'Deposits',
+      },
+      {
+        value: 'withdrawals',
+        label: 'Withdrawals',
+      },
+      {
+        value: 'transfers',
+        label: 'Transfers',
+      },
+      {
+        value: 'lp',
+        label: 'Pools',
+      },
+      ...(isVlpEnabled
+        ? [
+            {
+              value: 'vlp' as HistoryExportType,
+              label: 'VLP',
+            },
+          ]
+        : []),
+      {
+        value: 'liquidations',
+        label: 'Liquidations',
+      },
+      {
+        value: 'funding',
+        label: 'Funding',
+      },
+      {
+        value: 'interest',
+        label: 'Interest',
+      },
+    ],
+    [isVlpEnabled],
+  );
   const {
     open,
     onOpenChange,
@@ -56,7 +77,7 @@ export function ExportHistoryTypeSelect({
   } = useSelect({
     onSelectedValueChange,
     selectedValue,
-    options: OPTIONS,
+    options,
   });
 
   return (
@@ -72,7 +93,11 @@ export function ExportHistoryTypeSelect({
       >
         {selectedOption?.label ?? 'Select'}
       </Select.Trigger>
-      <Select.Options className="min-w-36" align="end">
+      <Select.Options
+        align="end"
+        className="min-w-36"
+        viewportClassName="max-h-72"
+      >
         {selectOptions.map((option) => (
           <Select.Option value={option.value} key={option.value}>
             {option.label}

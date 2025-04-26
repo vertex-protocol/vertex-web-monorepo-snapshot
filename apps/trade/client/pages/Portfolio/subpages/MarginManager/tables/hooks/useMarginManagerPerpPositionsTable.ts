@@ -39,7 +39,8 @@ export function useMarginManagerPerpPositionsTable() {
 
       return perpBalances
         .map((position): MarginManagerPerpPositionsTableItem | undefined => {
-          const perpMarketData = marketsStaticData.perp[position.productId];
+          const perpMarketData =
+            marketsStaticData.perpMarkets[position.productId];
 
           // return if iso (margin manager only displays cross positions)
           if (position.iso) {

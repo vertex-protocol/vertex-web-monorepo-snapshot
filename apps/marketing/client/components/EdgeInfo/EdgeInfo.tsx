@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink } from 'client/components/Link/Link';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import EdgeIcon from 'client/icons/EdgeIcon';
 import { LINKS } from 'config/links';
 

@@ -22,7 +22,7 @@ export type DropdownUiTriggerProps = Pick<
 };
 
 function Trigger({
-  borderRadiusVariant = 'base',
+  borderRadiusVariant = 'sm',
   stateClassNameOverrides,
   disabled,
   className,
@@ -40,8 +40,8 @@ function Trigger({
   });
 
   const roundedClassName = {
-    base: 'rounded',
     sm: 'rounded-sm',
+    xs: 'rounded-xs',
     md: 'rounded-md',
     lg: 'rounded-lg',
     full: 'rounded-full',
@@ -51,7 +51,7 @@ function Trigger({
     <Button
       className={mergeClassNames(
         'flex items-center justify-between gap-x-2',
-        'rounded px-2 py-1 text-xs',
+        'px-2 py-1 text-xs',
         !disabled && hoverStateOverlayClassNames,
         roundedClassName,
         className,
@@ -90,6 +90,7 @@ function Content({ className, children, header, ...rest }: ContentProps) {
       className={mergeClassNames(
         'flex flex-col gap-y-1',
         'bg-surface-2 p-1',
+        'shadow-elevation-strong',
         Z_INDEX.popover,
         className,
       )}
@@ -107,7 +108,7 @@ export type DropdownUiItemProps = Exclude<ButtonProps, 'value'> & {
 
 function Item({ className, disabled, active, ...rest }: DropdownUiItemProps) {
   const hoverStateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
     stateClassNameOverrides: joinClassNames(
       // Apply hover state overlay when item is highlighted via keyboard nav. ie. DropdownMenu/Select
       'data-[highlighted]:before:bg-overlay-hover',
@@ -122,7 +123,7 @@ function Item({ className, disabled, active, ...rest }: DropdownUiItemProps) {
     <Button
       className={mergeClassNames(
         'flex items-center justify-stretch gap-x-2',
-        'select-none rounded px-2 py-1.5',
+        'rounded-sm px-2 py-1.5 select-none',
         'text-text-secondary text-xs',
         // Apply active color via inherent `state` attribute.
         // This is relevant in `Select` & `DropdownMenu` components.

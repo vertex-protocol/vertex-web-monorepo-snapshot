@@ -23,8 +23,9 @@ export function Label({
   const textSizeClassNames = {
     xs: 'text-xs',
     sm: 'text-sm',
-    base: 'text-sm',
-    lg: 'text-base',
+    base: 'text-xs',
+    lg: 'text-sm',
+    xl: 'text-base',
   }[sizeVariant];
 
   return (

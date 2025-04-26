@@ -8,15 +8,15 @@ import {
   SubaccountTx,
 } from '@vertex-protocol/client';
 import { getMarketPriceFormatSpecifier } from '@vertex-protocol/react-client';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useLatestOraclePrices } from 'client/hooks/query/markets/useLatestOraclePrices';
 import { useSubaccountIsolatedPositions } from 'client/hooks/query/subaccount/isolatedPositions/useSubaccountIsolatedPositions';
 import { useCollateralEstimateSubaccountInfoChange } from 'client/modules/collateral/hooks/useCollateralEstimateSubaccountInfoChange';
-import { SUBACCOUNT_QUOTE_TRANSFER_FEE } from 'client/modules/subaccounts/consts';
-import { calcIsoPositionLeverage } from 'client/utils/calcs/calcIsoPositionLeverage';
-import { calcIsoPositionNetMargin } from 'client/utils/calcs/calcIsoPositionNetMargin';
-import { calcEstimatedLiquidationPriceFromBalance } from 'client/utils/calcs/liquidationPriceCalcs';
+import { calcIsoPositionLeverage } from 'client/utils/calcs/perp/calcIsoPositionLeverage';
+import { calcIsoPositionNetMargin } from 'client/utils/calcs/perp/calcIsoPositionNetMargin';
+import { calcEstimatedLiquidationPriceFromBalance } from 'client/utils/calcs/perp/liquidationPriceCalcs';
 import { useMemo } from 'react';
 
 interface IsolatedAdjustMarginSummary {
@@ -63,7 +63,7 @@ export function useIsolatedAdjustMarginSummary({
 
     const amountDelta = isAddMargin
       ? validAmountWithDecimals.negated()
-      : addDecimals(validAmount.minus(SUBACCOUNT_QUOTE_TRANSFER_FEE));
+      : addDecimals(validAmount.minus(SEQUENCER_FEE_AMOUNT_USDC));
 
     return [
       {
@@ -111,7 +111,7 @@ export function useIsolatedAdjustMarginSummary({
 
     const isoLiquidationPrice = calcEstimatedLiquidationPriceFromBalance(
       currentIsoPosition.baseBalance,
-      isoNetMargin,
+      currentIsoPosition.healths.maintenance,
     );
 
     return {
@@ -129,7 +129,7 @@ export function useIsolatedAdjustMarginSummary({
       isoPositionLeverage,
       isoLiquidationPrice,
       crossAccountQuoteBalance: currentCollateralSummary?.vertexBalance,
-      fundsAvailable: currentCollateralSummary?.fundsAvailableUsdBounded,
+      fundsAvailable: currentCollateralSummary?.fundsAvailableBoundedUsd,
       crossMarginUsageFrac: currentCollateralSummary?.marginUsageBounded,
     };
   }, [
@@ -147,41 +147,49 @@ export function useIsolatedAdjustMarginSummary({
       return undefined;
     }
 
-    const validAmountWithFee = validAmount.minus(SUBACCOUNT_QUOTE_TRANSFER_FEE);
+    const validAmountWithFee = validAmount.minus(SEQUENCER_FEE_AMOUNT_USDC);
     const validAmountWithDecimals = addDecimals(validAmount);
     const validAmountWithDecimalsWithFee = addDecimals(validAmountWithFee);
 
-    const estimatedIsoNetMargin = isAddMargin
-      ? isoNetMargin?.plus(validAmountWithDecimalsWithFee)
-      : isoNetMargin?.minus(validAmountWithDecimals);
+    const isoNetMarginDeltaWithDecimals = isAddMargin
+      ? validAmountWithDecimalsWithFee
+      : validAmountWithDecimals.negated();
+    const estimatedIsoNetMarginWithDecimals = isoNetMargin?.plus(
+      isoNetMarginDeltaWithDecimals,
+    );
 
     const estimatedIsoLiquidationPrice = (() => {
-      if (!currentIsoPosition || !estimatedIsoNetMargin) {
+      if (!currentIsoPosition) {
         return undefined;
       }
 
       return calcEstimatedLiquidationPriceFromBalance(
         currentIsoPosition.baseBalance,
-        estimatedIsoNetMargin,
+        currentIsoPosition.healths.maintenance.plus(
+          isoNetMarginDeltaWithDecimals,
+        ),
       );
     })();
 
     const estimatedIsoLeverage = (() => {
-      if (!estimatedIsoNetMargin || !isoNotionalValue) {
+      if (!estimatedIsoNetMarginWithDecimals || !isoNotionalValue) {
         return;
       }
 
-      return calcIsoPositionLeverage(estimatedIsoNetMargin, isoNotionalValue);
+      return calcIsoPositionLeverage(
+        estimatedIsoNetMarginWithDecimals,
+        isoNotionalValue,
+      );
     })();
 
     return {
-      isoNetMarginUsd: removeDecimals(estimatedIsoNetMargin)?.multipliedBy(
-        primaryQuotePriceUsd,
-      ),
+      isoNetMarginUsd: removeDecimals(
+        estimatedIsoNetMarginWithDecimals,
+      )?.multipliedBy(primaryQuotePriceUsd),
       isoPositionLeverage: estimatedIsoLeverage,
       isoLiquidationPrice: estimatedIsoLiquidationPrice,
       crossAccountQuoteBalance: estimatedCollateralSummary?.vertexBalance,
-      fundsAvailable: estimatedCollateralSummary?.fundsAvailableUsdBounded,
+      fundsAvailable: estimatedCollateralSummary?.fundsAvailableBoundedUsd,
       crossMarginUsageFrac: estimatedCollateralSummary?.marginUsageBounded,
     };
   }, [
@@ -208,7 +216,7 @@ export function useIsolatedAdjustMarginSummary({
 
   const marketPriceFormatSpecifier = getMarketPriceFormatSpecifier(
     currentProductId
-      ? allMarketsStaticData?.perp[currentProductId]?.priceIncrement
+      ? allMarketsStaticData?.perpMarkets[currentProductId]?.priceIncrement
       : undefined,
   );
 

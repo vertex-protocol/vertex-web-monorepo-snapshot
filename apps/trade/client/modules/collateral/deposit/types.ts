@@ -29,4 +29,5 @@ export type DepositInfoCardType =
   | 'blast_native_yield'
   | 'wrap_wmnt'
   | 'wrap_wsei'
-  | 'wrap_ws';
+  | 'wrap_ws'
+  | 'wrap_wavax';

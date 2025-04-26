@@ -1,5 +1,5 @@
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
 import { PORTFOLIO_CHART_GRADIENT_IDS } from 'client/pages/Portfolio/charts/consts';
-import { COLORS } from 'common/theme/colors';
 
 export function PortfolioChartGradientDefinitions() {
   return (
@@ -12,8 +12,11 @@ export function PortfolioChartGradientDefinitions() {
           x2="0"
           y2="1"
         >
-          <stop offset="0" stopColor={COLORS.accent.DEFAULT} />
-          <stop offset="100%" stopOpacity={0} />
+          <stop offset="0" stopColor={getTradeAppColorVar('accent')} />
+          <stop
+            offset="100%"
+            stopColor={getTradeAppColorVar('grad-chart-stop')}
+          />
         </linearGradient>
         <linearGradient
           id={PORTFOLIO_CHART_GRADIENT_IDS.deposits}
@@ -22,18 +25,11 @@ export function PortfolioChartGradientDefinitions() {
           x2="0"
           y2="1"
         >
-          <stop offset="0" stopColor={COLORS.positive.DEFAULT} />
-          <stop offset="100%" stopOpacity={0} />
-        </linearGradient>
-        <linearGradient
-          id={PORTFOLIO_CHART_GRADIENT_IDS.lpPosition}
-          x1="0"
-          y1="0"
-          x2="0"
-          y2="1"
-        >
-          <stop offset="0" stopColor={COLORS.accent.DEFAULT} />
-          <stop offset="100%" stopOpacity={0} />
+          <stop offset="0" stopColor={getTradeAppColorVar('positive')} />
+          <stop
+            offset="100%"
+            stopColor={getTradeAppColorVar('grad-chart-stop')}
+          />
         </linearGradient>
         <linearGradient
           id={PORTFOLIO_CHART_GRADIENT_IDS.netBalance}
@@ -44,10 +40,13 @@ export function PortfolioChartGradientDefinitions() {
         >
           <stop
             offset="20%"
-            stopColor={COLORS.accent.DEFAULT}
+            stopColor={getTradeAppColorVar('accent')}
             stopOpacity={0.5}
           />
-          <stop offset="100%" stopOpacity={0} />
+          <stop
+            offset="100%"
+            stopColor={getTradeAppColorVar('grad-chart-stop')}
+          />
         </linearGradient>
         <linearGradient
           id={PORTFOLIO_CHART_GRADIENT_IDS.borrows}
@@ -58,10 +57,13 @@ export function PortfolioChartGradientDefinitions() {
         >
           <stop
             offset="20%"
-            stopColor={COLORS.accent.DEFAULT}
+            stopColor={getTradeAppColorVar('accent')}
             stopOpacity={0.5}
           />
-          <stop offset="100%" stopOpacity={0} />
+          <stop
+            offset="100%"
+            stopColor={getTradeAppColorVar('grad-chart-stop')}
+          />
         </linearGradient>
       </defs>
     </svg>

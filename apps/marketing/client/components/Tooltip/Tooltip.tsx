@@ -38,7 +38,7 @@ export function Tooltip({
           className={joinClassNames(
             'bg-primary z-50 overflow-hidden rounded-md px-3 py-1.5',
             'text-primary-foreground animate-in fade-in-0 text-xs',
-            'bg-tooltip border-new-website-overlay-8 text-body-12 select-none rounded border px-3 py-1 text-white shadow-md',
+            'bg-tooltip border-new-website-overlay-8 text-body-12 rounded-sm border px-3 py-1 text-white shadow-md select-none',
           )}
           sideOffset={4}
         >

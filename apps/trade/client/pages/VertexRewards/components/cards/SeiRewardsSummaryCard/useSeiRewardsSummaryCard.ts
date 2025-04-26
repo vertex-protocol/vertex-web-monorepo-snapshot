@@ -1,6 +1,6 @@
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useFoundationToken } from 'client/modules/rewards/hooks/useFoundationToken';
-import { useClaimSeiRewards } from 'client/pages/VertexRewards/components/cards/SeiRewardsSummaryCard/useClaimSeiRewards';
+import { useClaimFoundationRewards } from 'client/pages/VertexRewards/hooks/useClaimFoundationRewards';
 import { useFoundationRewards } from 'client/pages/VertexRewards/hooks/useFoundationRewards';
 import { useMemo } from 'react';
 
@@ -10,8 +10,8 @@ export function useSeiRewardsSummaryCard() {
     claim,
     isSuccess: isClaimSuccess,
     isLoading: isClaiming,
-  } = useClaimSeiRewards();
-  const seiToken = useFoundationToken();
+  } = useClaimFoundationRewards();
+  const foundationToken = useFoundationToken();
   const isConnected = useIsConnected();
 
   const mappedData = useMemo(() => {
@@ -33,7 +33,7 @@ export function useSeiRewardsSummaryCard() {
   return {
     ...mappedData,
     onClaimClick: claim,
-    seiToken,
+    foundationToken,
     isClaimSuccess,
     isClaiming,
     disableClaimButton:

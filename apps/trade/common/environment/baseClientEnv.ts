@@ -1,5 +1,5 @@
-import { BrandName } from '@vertex-protocol/web-ui';
 import envBrandName from 'common/environment/envBrandName';
+import { BrandName } from 'common/environment/types';
 
 export type DataEnv =
   | 'local'

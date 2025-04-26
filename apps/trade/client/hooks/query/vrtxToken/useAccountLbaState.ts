@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ILBA__factory } from '@vertex-protocol/client';
+import { VERTEX_ABIS } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
@@ -8,8 +8,12 @@ import {
   usePrimaryChainPublicClient,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
-import { Address, zeroAddress } from 'viem';
+import {
+  BigDecimal,
+  getValidatedAddress,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
+import { zeroAddress } from 'viem';
 
 export function accountLbaStateQueryKey(address?: string) {
   return createQueryKey('accountLbaState', address);
@@ -44,9 +48,9 @@ export function useAccountLbaState() {
 
     const lbaAddress = vertexClient.context.contractAddresses.vrtxLba;
     const commonMulticallArgs = {
-      address: lbaAddress as Address,
-      abi: ILBA__factory.abi,
-      args: [addressForQuery as Address],
+      address: lbaAddress,
+      abi: VERTEX_ABIS['vrtxLba'],
+      args: [getValidatedAddress(addressForQuery)],
     } as const;
 
     const multicallResult = await publicClient.multicall({

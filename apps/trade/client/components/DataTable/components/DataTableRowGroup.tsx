@@ -1,6 +1,5 @@
 import { flexRender, Row, RowData } from '@tanstack/react-table';
 import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS } from '@vertex-protocol/web-ui';
 
 interface Props<TData extends RowData> {
   row: Row<TData>;
@@ -19,9 +18,8 @@ export function DataTableRowGroup<TData extends RowData>({
       key={row.id}
       className={mergeClassNames(
         onClick && 'hover:bg-surface-1 cursor-pointer',
-        'bg-surface-card border-t duration-75 first:border-t-0',
-        COMMON_TRANSPARENCY_COLORS.border,
-        'flex items-stretch',
+        'bg-surface-card flex items-stretch duration-75',
+        'border-overlay-divider border-t first:border-t-0',
         // Static height as a default
         !fitHeight && 'h-16',
         // Fits cell content with default padding

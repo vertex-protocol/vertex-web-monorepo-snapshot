@@ -2,6 +2,7 @@ import { useUserStateError } from 'client/hooks/subaccount/useUserStateError';
 import { AccountCenterCollateralHistory } from 'client/modules/accountCenter/components/AccountCenterCollateralHistory';
 import { AccountCenterHeader } from 'client/modules/accountCenter/components/AccountCenterHeader/AccountCenterHeader';
 import { AccountCenterPortfolioCard } from 'client/modules/accountCenter/components/AccountCenterPortfolioCard';
+import { AccountCenterRewardsBanner } from 'client/modules/accountCenter/components/AccountCenterRewardsBanner/AccountCenterRewardsBanner';
 import { AccountCenterUserCTA } from 'client/modules/accountCenter/components/AccountCenterUserCTA';
 import { BaseAppDialog } from 'client/modules/app/dialogs/BaseAppDialog';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
@@ -19,10 +20,11 @@ export function AccountCenterDialog() {
       {/*Specific px/py required to override padding specifiers in BaseAppDialog.Body*/}
       {/*Fixed height to prevent layout changes when more history items appear*/}
       <BaseAppDialog.Body className="h-[700px] px-4 py-4">
-        <div className="flex flex-col gap-y-5">
+        <div className="flex flex-col gap-y-4">
           <AccountCenterHeader userStateError={userStateError} />
           <AccountCenterUserCTA />
           <AccountCenterPortfolioCard />
+          <AccountCenterRewardsBanner onCloseDialog={hide} />
           <AccountCenterCollateralHistory />
         </div>
       </BaseAppDialog.Body>

@@ -65,7 +65,8 @@ export const useCommandCenterPositionsItems = ({ marketCategory }: Params) => {
         return isMatchingCategory && isNonZeroBalance;
       })
       .map((position): PositionsTableItem => {
-        const staticMarketData = staticMarketsData?.perp[position.productId];
+        const staticMarketData =
+          staticMarketsData?.perpMarkets[position.productId];
 
         const action = (() => {
           // If close is disabled we push to the market page instead.
@@ -111,7 +112,7 @@ export const useCommandCenterPositionsItems = ({ marketCategory }: Params) => {
       });
   }, [
     perpBalances,
-    staticMarketsData?.perp,
+    staticMarketsData?.perpMarkets,
     marketCategory,
     isCloseDisabled,
     show,

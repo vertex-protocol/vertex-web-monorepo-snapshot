@@ -72,7 +72,7 @@ export function useWithdrawLiquidityForm({
   const { data: staticMarketData } = useAllMarketsStaticData();
   const { dispatchNotification } = useNotificationManagerContext();
 
-  const quoteMetadata = staticMarketData?.primaryQuote;
+  const quoteMetadata = staticMarketData?.primaryQuoteProduct;
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
   // Mutation to burn LP tokens

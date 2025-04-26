@@ -17,7 +17,7 @@ export function ComparisonSection() {
               element: 'h2',
               text: 'Set the Standard',
               className:
-                'text-header-2 md:text-header-1 font-radioGrotesk mb-4',
+                'text-header-2 md:text-header-1 font-radio-grotesk mb-4',
             },
             {
               element: 'p',

@@ -24,7 +24,7 @@ export function PrimaryButton({
   ...rest
 }: PrimaryButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
     disabled: rest.disabled,
     isLoading: rest.isLoading,
   });
@@ -39,7 +39,7 @@ export function PrimaryButton({
   return (
     <Button
       className={mergeClassNames(
-        'text-text-primary rounded border',
+        'text-text-button-primary rounded-sm border',
         stateOverlayClassNames,
         STANDARD_BUTTON_TEXT_SIZE_CLASSNAME[size],
         STANDARD_BUTTON_HORIZONTAL_PADDING_CLASSNAME[size],

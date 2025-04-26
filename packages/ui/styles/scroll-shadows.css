@@ -1,0 +1,54 @@
+/* The following `scroll-shadow-*` utilities use `mask-image` to apply scroll shadows. */
+/* If you want to customize the size of the scroll shadow, add the css var */
+/* `--scroll-shadow-size` to either the scroll container or an ancestor. */
+.scroll-shadow-t {
+  mask-image: linear-gradient(
+    to top,
+    black calc(100% - var(--scroll-shadow-size, 30px)),
+    transparent 100%
+  );
+}
+
+.scroll-shadow-b {
+  mask-image: linear-gradient(
+    to bottom,
+    black calc(100% - var(--scroll-shadow-size, 30px)),
+    transparent 100%
+  );
+}
+
+.scroll-shadow-y {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black var(--scroll-shadow-size, 30px),
+    black calc(100% - var(--scroll-shadow-size, 30px)),
+    transparent
+  );
+}
+
+.scroll-shadow-l {
+  mask-image: linear-gradient(
+    to left,
+    black calc(100% - var(--scroll-shadow-size, 30px)),
+    transparent 100%
+  );
+}
+
+.scroll-shadow-r {
+  mask-image: linear-gradient(
+    to right,
+    black calc(100% - var(--scroll-shadow-size, 30px)),
+    transparent 100%
+  );
+}
+
+.scroll-shadow-x {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--scroll-shadow-size, 30px),
+    black calc(100% - var(--scroll-shadow-size, 30px)),
+    transparent
+  );
+}

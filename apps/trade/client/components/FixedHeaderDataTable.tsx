@@ -118,7 +118,7 @@ export function FixedHeaderDataTable<TData>({
   const rows = table.getRowModel().rows;
 
   const hoverStateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
   });
 
   const tableHeader = (

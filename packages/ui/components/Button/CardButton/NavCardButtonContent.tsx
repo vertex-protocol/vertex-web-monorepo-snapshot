@@ -1,15 +1,13 @@
-import { mergeClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { ReactNode } from 'react';
-import { IconComponent } from '../../Icons';
+import { mergeClassNames } from '@vertex-protocol/web-common';
+import { NavCardBaseProps } from './types';
 
-interface Props extends WithClassnames {
-  title: ReactNode;
-  description?: ReactNode;
-  icon?: IconComponent;
-  iconClassName?: string;
-  titleClassName?: string;
+type Props = Pick<
+  NavCardBaseProps,
+  'className' | 'description' | 'title' | 'icon' | 'iconClassName'
+> & {
   descriptionClassName?: string;
-}
+  titleClassName?: string;
+};
 
 export function NavCardButtonContent({
   icon: Icon,
@@ -36,7 +34,7 @@ export function NavCardButtonContent({
       {description && (
         <div
           className={mergeClassNames(
-            'text-text-tertiary text-2xs whitespace-normal leading-snug',
+            'text-text-tertiary text-2xs leading-snug whitespace-normal',
             descriptionClassName,
           )}
         >

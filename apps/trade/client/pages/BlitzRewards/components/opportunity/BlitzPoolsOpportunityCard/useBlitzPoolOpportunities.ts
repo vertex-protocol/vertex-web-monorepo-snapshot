@@ -21,7 +21,7 @@ export function useBlitzPoolOpportunities() {
     }
 
     return POOLS_PRODUCT_IDS.map((productId) => {
-      const staticMarketData = allMarketsStaticData?.all[productId];
+      const staticMarketData = allMarketsStaticData?.allMarkets[productId];
 
       if (!staticMarketData) {
         return;
@@ -31,7 +31,7 @@ export function useBlitzPoolOpportunities() {
         productId: staticMarketData.productId,
         metadata: {
           base: getSharedProductMetadata(staticMarketData.metadata),
-          quote: allMarketsStaticData.primaryQuote.metadata.token,
+          quote: allMarketsStaticData.primaryQuoteProduct.metadata.token,
         },
         yieldFraction: lpYieldsData?.[staticMarketData.productId],
         marketName: staticMarketData.metadata.marketName,

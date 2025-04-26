@@ -1,14 +1,14 @@
-import { EDGE_COLORS } from '@vertex-protocol/web-ui';
 import { percentagePreciseAxisFormatter } from 'client/components/charts/axisFormatters';
 import { StatsChart } from 'client/components/charts/StatsChart/StatsChart';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
 import { ProductsSelect } from 'client/pages/MainPage/components/common/ProductsSelect/ProductsSelect';
 import { useProductsSelect } from 'client/pages/MainPage/components/common/ProductsSelect/useProductsSelect';
 import { useHistoricalProductDepositAprChartData } from 'client/pages/MainPage/components/TvlAndYieldTabContent/BorrowDepositAprChartsSection/useHistoricalProductDepositAprChartData';
-import { useAllEdgeSpotMarkets } from 'client/pages/MainPage/components/TvlAndYieldTabContent/hooks/useAllEdgeSpotMarkets';
+import { useAllEdgeSpotProducts } from 'client/pages/MainPage/components/TvlAndYieldTabContent/hooks/useAllEdgeSpotProducts';
+import { getEdgeStatsColorVar } from 'client/theme/colorVars';
 
 export function HistoricalProductDepositAprChart() {
-  const { data: allEdgeSpotMarketsData } = useAllEdgeSpotMarkets();
+  const { data: allEdgeSpotProductsData } = useAllEdgeSpotProducts();
   const {
     selectOptions,
     selectedOption,
@@ -16,7 +16,7 @@ export function HistoricalProductDepositAprChart() {
     onValueChange: onSelectValueChange,
     value: selectValue,
     onOpenChange: onSelectOpenChange,
-  } = useProductsSelect({ markets: allEdgeSpotMarketsData });
+  } = useProductsSelect({ markets: allEdgeSpotProductsData });
 
   const { data, isLoading } = useHistoricalProductDepositAprChartData({
     selectedProduct: selectedOption?.value,
@@ -40,7 +40,7 @@ export function HistoricalProductDepositAprChart() {
       }
       configByDataKey={{
         depositAprFraction: {
-          color: EDGE_COLORS['chart-fill'].DEFAULT,
+          color: getEdgeStatsColorVar('chart-fill'),
           dataKey: 'depositAprFraction',
           label: 'Deposit APR',
           chartType: 'line',

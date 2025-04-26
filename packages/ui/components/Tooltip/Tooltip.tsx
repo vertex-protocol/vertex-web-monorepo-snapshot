@@ -1,6 +1,6 @@
 import { WithChildren } from '@vertex-protocol/web-common';
-import { BaseTooltip, BaseTooltipProps } from './BaseTooltip';
 import { Config, usePopperTooltip } from 'react-popper-tooltip';
+import { BaseTooltip, BaseTooltipProps } from './BaseTooltip';
 
 const DEFAULT_TOOLTIP_OPTIONS: Partial<Config> = {
   placement: 'auto',

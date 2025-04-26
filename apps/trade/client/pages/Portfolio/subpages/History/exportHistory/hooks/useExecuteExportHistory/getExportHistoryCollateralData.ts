@@ -1,12 +1,13 @@
 import { GetIndexerSubaccountCollateralEventsParams } from '@vertex-protocol/client';
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { CollateralEventType } from '@vertex-protocol/indexer-client/dist/types/collateralEventType';
+import { getStaticMarketDataForProductId } from 'client/hooks/markets/marketsStaticData/getStaticMarketDataForProductId';
+import { SpotStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 import {
   EXPORT_HISTORY_QUERY_DELAY_MILLIS,
   EXPORT_HISTORY_QUERY_PAGE_SIZE,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
-import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
+import { updateProgressFrac } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
   ExportHistoryCollateralItem,
   GetExportHistoryDataParams,
@@ -14,6 +15,7 @@ import {
 import { getHistoricalCollateralEventsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalCollateralEventsTable';
 import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
+import { last } from 'lodash';
 
 export async function getExportHistoryCollateralData(
   params: GetExportHistoryDataParams,
@@ -38,7 +40,7 @@ export async function getExportHistoryCollateralData(
       case 'transfers':
         return ['transfer_quote'];
       default:
-        throw Error(
+        throw new Error(
           `Invalid history export type for getting collateral data ${params.type}`,
         );
     }
@@ -62,9 +64,10 @@ export async function getExportHistoryCollateralData(
     for (const event of collateralEventsResponse.events) {
       const productId = event.snapshot.market.productId;
       const staticSpotMarketData =
-        productId === QUOTE_PRODUCT_ID
-          ? allMarketsStaticData.primaryQuote
-          : allMarketsStaticData.spot[productId];
+        getStaticMarketDataForProductId<SpotStaticMarketData>(
+          productId,
+          allMarketsStaticData,
+        );
 
       if (!staticSpotMarketData) {
         continue;
@@ -87,9 +90,9 @@ export async function getExportHistoryCollateralData(
       }
 
       items.push({
-        time: formatExportHistoryTimestamp(tableItem.timestampMillis),
+        time: new Date(tableItem.timestampMillis),
         asset: staticSpotMarketData.metadata.token.symbol,
-        balanceChange: tableItem.amount.toString(),
+        balanceChange: tableItem.amount,
         ...tableItem.transferEventData,
       });
     }
@@ -100,6 +103,8 @@ export async function getExportHistoryCollateralData(
     if (!collateralEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    updateProgressFrac(params, context, last(items)?.time);
 
     // Reduce chance of rate limiting.
     await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);

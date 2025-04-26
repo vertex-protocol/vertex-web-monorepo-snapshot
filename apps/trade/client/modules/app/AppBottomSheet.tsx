@@ -19,7 +19,7 @@ export function AppBottomSheet({ className }: WithClassnames) {
         className,
       )}
     >
-      <div className="bg-background/50 rounded p-1 backdrop-blur-sm">
+      <div className="bg-background/50 rounded-sm p-1 backdrop-blur-xs">
         <PrimaryButton className="w-full" {...buttonUserStateErrorProps} />
       </div>
     </div>

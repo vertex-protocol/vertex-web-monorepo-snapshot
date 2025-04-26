@@ -2,7 +2,7 @@
 
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Container } from 'client/components/Container/Container';
-import { ExternalLink } from 'client/components/Link/Link';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import { useVertexCookiePreference } from 'client/hooks/useVertexCookiePreference';
 import { LINKS } from 'config/links';
 
@@ -25,7 +25,7 @@ export function CookieNoticeBanner() {
       <Container className="max-w-7xl">
         <div
           className={joinClassNames(
-            'border-glass bg-dark-10 shadow-glass rounded border backdrop-blur-md',
+            'border-glass bg-dark-10 shadow-glass rounded-sm border backdrop-blur-md',
             'flex flex-col gap-x-8 gap-y-4 p-5',
           )}
         >

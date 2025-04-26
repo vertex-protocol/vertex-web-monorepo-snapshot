@@ -1,13 +1,17 @@
 import { WalletWidget } from '@passkeys/react';
-import { KNOWN_CONNECTOR_IDS, PresetNumberFormatSpecifier, useEVMContext, } from '@vertex-protocol/react-client';
-import { Card, SecondaryButton } from '@vertex-protocol/web-ui';
+import {
+  KNOWN_CONNECTOR_IDS,
+  PresetNumberFormatSpecifier,
+  useEVMContext,
+} from '@vertex-protocol/react-client';
+import { Card, CardButton } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { useSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/useSubaccountOverview';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { DepositOptionsDropdown } from 'client/modules/collateral/deposit/components/DepositOptionsDropdown/DepositOptionsDropdown';
+import { DepositEntrypointButton } from 'client/modules/collateral/deposit/components/DepositEntrypointButton/DepositEntrypointButton';
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
 import { IMAGES } from 'common/brandMetadata/images';
-import { COLORS } from 'common/theme/colors';
 import Image from 'next/image';
 
 /**
@@ -39,10 +43,11 @@ export function AccountCenterPortfolioCard() {
           label="Account Value"
           value={subaccountOverview?.portfolioValueUsd}
           numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
-          sizeVariant="lg"
+          sizeVariant="xl"
         />
         {connector?.id === KNOWN_CONNECTOR_IDS.passKeys && (
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Passkey Wallet"
             valueContent={
               <WalletWidget
@@ -50,10 +55,10 @@ export function AccountCenterPortfolioCard() {
                 size="medium"
                 theme={{
                   colors: {
-                    accentColor: COLORS.primary.DEFAULT,
+                    accentColor: getTradeAppColorVar('primary'),
                     collapsed: {
-                      accentColor: COLORS.primary.DEFAULT,
-                      backgroundColor: COLORS.surface.card,
+                      accentColor: getTradeAppColorVar('primary'),
+                      backgroundColor: getTradeAppColorVar('surface-card'),
                     },
                   },
                 }}
@@ -63,8 +68,8 @@ export function AccountCenterPortfolioCard() {
         )}
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <DepositOptionsDropdown triggerClassName="col-span-2" />
-        <SecondaryButton
+        <DepositEntrypointButton triggerClassName="col-span-2" />
+        <CardButton
           onClick={() => {
             push({
               type: 'withdraw',
@@ -74,8 +79,8 @@ export function AccountCenterPortfolioCard() {
           disabled={!isConnected}
         >
           Withdraw
-        </SecondaryButton>
-        <SecondaryButton
+        </CardButton>
+        <CardButton
           onClick={() => {
             push({
               type: 'subaccount_quote_transfer',
@@ -85,7 +90,7 @@ export function AccountCenterPortfolioCard() {
           disabled={!isConnected}
         >
           Transfer
-        </SecondaryButton>
+        </CardButton>
       </div>
     </Card>
   );

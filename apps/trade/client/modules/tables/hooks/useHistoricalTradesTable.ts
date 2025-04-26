@@ -88,7 +88,8 @@ export function useHistoricalTradesTable({
 
     return pageData
       .map((event): HistoricalTradesTableItem | undefined => {
-        const staticMarketData = allMarketsStaticData.all[event.productId];
+        const staticMarketData =
+          allMarketsStaticData.allMarkets[event.productId];
         const staticQuoteData = allMarketsStaticData.quotes[event.productId];
 
         if (!staticMarketData || !staticQuoteData) {

@@ -6,8 +6,8 @@ import {
   PrimaryButton,
 } from '@vertex-protocol/web-ui';
 import { ButtonStateContent } from 'client/components/ButtonStateContent';
-import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 import { useButtonUserStateErrorProps } from 'client/components/ValidUserStatePrimaryButton/useButtonUserStateErrorProps';
+import { BaseActionButtonState } from 'client/types/BaseActionButtonState';
 
 interface OrderSubmitButtonProps extends WithClassnames {
   state: BaseActionButtonState;
@@ -26,7 +26,7 @@ export function OrderSubmitButton({
   const userStateErrorButtonProps = useButtonUserStateErrorProps();
 
   const sharedButtonClassNames = joinClassNames(
-    'py-1.5 rounded font-medium text-sm',
+    'py-1.5 rounded-sm font-medium text-sm',
     className,
   );
 
@@ -58,7 +58,7 @@ export function OrderSubmitButton({
   const isLoading = state === 'loading';
 
   const stateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
     disabled,
     isLoading,
   });

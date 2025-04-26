@@ -28,7 +28,7 @@ export function useEdgeVolumePieChartsSectionData() {
     const edgeMarketSnapshotAtNow =
       marketSnapshotsAtHistoricalTimesData.now.edge;
     const edgeMarketSnapshotAt24h =
-      marketSnapshotsAtHistoricalTimesData['24hr'].edge;
+      marketSnapshotsAtHistoricalTimesData['24h'].edge;
     const edgeMarketSnapshotAt7d =
       marketSnapshotsAtHistoricalTimesData['7d'].edge;
     const edgeMarketSnapshotAt30d =

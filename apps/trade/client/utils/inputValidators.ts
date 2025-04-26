@@ -1,5 +1,11 @@
+import { isPrivateKey } from '@vertex-protocol/react-client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import { isAddress } from 'viem';
 import { z } from 'zod';
+
+export const addressValidator = z.string().refine(isAddress);
+
+export const privateKeyValidator = z.string().refine(isPrivateKey);
 
 export const finiteBigDecimalValidator = z
   .string()

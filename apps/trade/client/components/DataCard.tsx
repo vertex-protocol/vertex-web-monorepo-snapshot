@@ -19,8 +19,10 @@ function Items({ children }: WithChildren) {
   return <div className="flex flex-col gap-y-2">{children}</div>;
 }
 
-function Item(props: HorizontalValueWithLabelProps) {
-  return <ValueWithLabel.Horizontal sizeVariant="xs" {...props} />;
+function Item({ sizeVariant, ...rest }: HorizontalValueWithLabelProps) {
+  return (
+    <ValueWithLabel.Horizontal sizeVariant={sizeVariant ?? 'xs'} {...rest} />
+  );
 }
 
 export const DataCard = { Container, Items, Item };

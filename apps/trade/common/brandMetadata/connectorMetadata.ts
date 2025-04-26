@@ -1,10 +1,11 @@
-import { WagmiConnectorOptions } from '@vertex-protocol/react-client';
-import { BrandName } from '@vertex-protocol/web-ui';
+import { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 import { clientEnv } from 'common/environment/clientEnv';
+import { BrandName } from 'common/environment/types';
+import { CoinbaseWalletParameters } from 'wagmi/connectors';
 
 interface ConnectorOptionsMetadata {
-  walletConnect: WagmiConnectorOptions['walletConnect']['metadata'];
-  coinbase: WagmiConnectorOptions['coinbase'];
+  walletConnect: EthereumProviderOptions['metadata'];
+  coinbase: CoinbaseWalletParameters<'4'>;
 }
 
 const CONNECTOR_OPTIONS_METADATA_BY_BRAND_NAME: Record<

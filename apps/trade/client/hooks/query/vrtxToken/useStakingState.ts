@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { IStaking__factory } from '@vertex-protocol/client';
+import { VERTEX_ABIS } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
 } from '@vertex-protocol/react-client';
 import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
 import { useProtocolTokenQueryClients } from 'client/hooks/query/useProtocolTokenQueryClients';
-import { Address } from 'viem';
 
 export function stakingStateQueryKey() {
   return createQueryKey('stakingState');
@@ -41,8 +40,8 @@ export function useStakingState() {
 
     const stakingAddress = vertexClient.context.contractAddresses.vrtxStaking;
     const commonMulticallArgs = {
-      address: stakingAddress as Address,
-      abi: IStaking__factory.abi,
+      address: stakingAddress,
+      abi: VERTEX_ABIS['vrtxStaking'],
     } as const;
 
     const multicallResult = await publicClient.multicall({

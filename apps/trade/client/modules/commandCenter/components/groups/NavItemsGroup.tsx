@@ -3,7 +3,6 @@ import { ActionName } from 'client/modules/commandCenter/components/cells/Action
 import { Group } from 'client/modules/commandCenter/components/groups/Group';
 import { BaseRow } from 'client/modules/commandCenter/components/tables/BaseTable/BaseRow';
 import { NavItem } from 'client/modules/commandCenter/hooks/useCommandCenterNavItems';
-import React from 'react';
 
 interface Props {
   items: NavItem[];

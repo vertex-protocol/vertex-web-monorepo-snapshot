@@ -1,9 +1,9 @@
-import { EDGE_COLORS } from '@vertex-protocol/web-ui';
 import { largeCurrencyNumberAbbreviatedAxisFormatter } from 'client/components/charts/axisFormatters';
 import { StatsChart } from 'client/components/charts/StatsChart/StatsChart';
 import { StatsSection } from 'client/components/StatsSection';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
 import { useEdgeNetTradingFeesChartSectionData } from 'client/pages/MainPage/components/RevenueAndUsersTabContent/RevenueSection/EdgeNetTradingFeesChartSection/useEdgeNetTradingFeesChartSectionData';
+import { getEdgeStatsColorVar } from 'client/theme/colorVars';
 
 export function EdgeNetTradingFeesChartSection() {
   const { xAxisTickFormatter, granularityLabel } = useChartTimeframe();
@@ -31,7 +31,7 @@ export function EdgeNetTradingFeesChartSection() {
             stackId: null,
           },
           netTradingFeesUsd: {
-            color: EDGE_COLORS['chart-fill'].DEFAULT,
+            color: getEdgeStatsColorVar('chart-fill'),
             dataKey: 'netTradingFeesUsd',
             label: `Netted Fees`,
             chartType: 'line',

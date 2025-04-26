@@ -25,7 +25,7 @@ function CheckboxCheck({
   const stateOverlayClassNames = getStateOverlayClassNames({
     disabled,
     active: checked === true,
-    borderRadiusVariant: 'sm',
+    borderRadiusVariant: 'xs',
   });
 
   const sizeClassNames = {
@@ -42,10 +42,10 @@ function CheckboxCheck({
     <RadixCheckbox.Root
       {...rest}
       className={joinClassNames(
-        'flex items-center justify-center rounded-sm border transition-colors',
+        'flex items-center justify-center rounded-xs border transition-colors',
         'disabled:border-disabled disabled:cursor-not-allowed',
         checked
-          ? 'bg-overlay-accent/80 border-overlay-accent/80'
+          ? 'bg-accent/80 border-accent/80'
           : 'hover:border-text-primary border-text-tertiary',
         stateOverlayClassNames,
         sizeClassNames,

@@ -1,6 +1,6 @@
-import { Root as TabsRoot, TabsContent, TabsList } from '@radix-ui/react-tabs';
+import { TabsContent, TabsList, Root as TabsRoot } from '@radix-ui/react-tabs';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS, Divider } from '@vertex-protocol/web-ui';
+import { Divider } from '@vertex-protocol/web-ui';
 import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { useTabs } from 'client/hooks/ui/tabs/useTabs';
 import { TradingTabFilterSelect } from 'client/modules/trading/components/TradingTableTabs/TradingTabFilterSelect';
@@ -18,11 +18,7 @@ export function LargeScreenTradingTableTabs({
 
   return (
     <TabsRoot
-      className={joinClassNames(
-        'divide-y',
-        COMMON_TRANSPARENCY_COLORS.divide,
-        className,
-      )}
+      className={className}
       value={selectedTabId}
       onValueChange={setSelectedTabId}
     >
@@ -30,6 +26,7 @@ export function LargeScreenTradingTableTabs({
         className={joinClassNames(
           'no-scrollbar flex overflow-x-auto',
           'items-center justify-between gap-x-8 py-1.5 pr-4',
+          'border-overlay-divider border-b',
         )}
       >
         <div className="flex items-center">

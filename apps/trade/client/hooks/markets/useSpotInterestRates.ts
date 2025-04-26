@@ -1,3 +1,4 @@
+import { VLP_PRODUCT_ID } from '@vertex-protocol/client';
 import {
   calcBorrowRateForTimeRange,
   calcRealizedDepositRateForTimeRange,
@@ -28,10 +29,12 @@ export function useSpotInterestRates() {
     }
 
     const rates: Record<number, SpotInterestRate> = {};
-    [
-      allMarkets.primaryQuoteProduct,
-      ...Object.values(allMarkets.spotMarkets),
-    ].forEach(({ product }) => {
+    Object.values(allMarkets.spotProducts).forEach(({ product }) => {
+      // VLP product does not have a deposit/borrow rate
+      if (product.productId === VLP_PRODUCT_ID) {
+        return;
+      }
+
       const minDepositRate =
         minDepositRatesData?.minDepositRates?.[product.productId];
 

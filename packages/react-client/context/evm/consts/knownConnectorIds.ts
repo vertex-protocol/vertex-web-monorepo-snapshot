@@ -9,6 +9,9 @@ export const KNOWN_CONNECTOR_IDS = {
   binanceWallet: 'BinanceW3WSDK',
   binanceApp: 'wallet.binance.com',
   abstractGw: 'xyz.abs.privy',
+  // App managed wallet connectors
+  customWallet: 'customWallet',
+  xrp: 'xrp',
 } as const;
 
 export type KnownConnectorID =

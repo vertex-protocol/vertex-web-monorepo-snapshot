@@ -9,7 +9,7 @@ export function NavPopoverContentContainer({
   return (
     <Card
       className={mergeClassNames(
-        'from-surface-2 to-surface-1 shadow-elevation-nav-dropdown bg-gradient-to-b p-2',
+        'from-surface-2 to-surface-1 shadow-elevation-strong bg-linear-to-b p-2',
         className,
       )}
       {...rest}

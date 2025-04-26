@@ -1,13 +1,15 @@
+import { AccountWithPrivateKey } from '@vertex-protocol/client';
 import { useEVMContext } from '@vertex-protocol/react-client';
+import { getValidatedHex } from '@vertex-protocol/utils';
 import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 import {
   SavedSubaccountSigningPreference,
   SubaccountSigningPreference,
 } from 'client/modules/singleSignatureSessions/types';
 import { getSubaccountKey } from 'client/modules/subaccounts/utils/getSubaccountKey';
-import { Wallet } from 'ethers';
 import { omit } from 'lodash';
 import { useCallback, useMemo } from 'react';
+import { privateKeyToAccount } from 'viem/accounts';
 
 interface UseSubaccountSigningPreference {
   didLoadPersistedValue: boolean;
@@ -16,8 +18,6 @@ interface UseSubaccountSigningPreference {
   saveSigningPreference: (
     newPreference: SavedSubaccountSigningPreference,
   ) => void;
-  // Delete any saved private keys, used on disconnect
-  clearPrivateKeyIfSaved: () => void;
   // Completely delete any saved settings
   clearSigningPreference: () => void;
 }
@@ -55,10 +55,16 @@ export function useSavedSubaccountSigningPreference(
       };
     }
     if (savedPreferenceForSubaccount?.type === 'sign_once') {
-      let wallet: Wallet | undefined;
+      let linkedSigner: AccountWithPrivateKey | undefined;
       if (savedPreferenceForSubaccount.privateKey) {
         try {
-          wallet = new Wallet(savedPreferenceForSubaccount.privateKey);
+          const privateKey = getValidatedHex(
+            savedPreferenceForSubaccount.privateKey,
+          );
+          linkedSigner = {
+            privateKey,
+            account: privateKeyToAccount(privateKey),
+          };
         } catch (err) {
           console.error('Error loading saved signing wallet', err);
         }
@@ -66,7 +72,7 @@ export function useSavedSubaccountSigningPreference(
 
       return {
         type: 'sign_once',
-        authorizedWallet: wallet,
+        linkedSigner,
         rememberMe: savedPreferenceForSubaccount.rememberMe,
       };
     }
@@ -89,28 +95,6 @@ export function useSavedSubaccountSigningPreference(
     [setSavedUserSettings, subaccountKey],
   );
 
-  const clearPrivateKeyIfSaved = useCallback(() => {
-    if (!subaccountKey) {
-      return;
-    }
-
-    setSavedUserSettings((prev) => {
-      const preferencesForSubaccount =
-        prev.signingPreferenceBySubaccountKey[subaccountKey];
-
-      if (preferencesForSubaccount?.type !== 'sign_once') {
-        return prev;
-      }
-
-      prev.signingPreferenceBySubaccountKey[subaccountKey] = {
-        ...preferencesForSubaccount,
-        privateKey: undefined,
-      };
-
-      return prev;
-    });
-  }, [setSavedUserSettings, subaccountKey]);
-
   const clearSigningPreference = useCallback(() => {
     if (!subaccountKey) {
       return;
@@ -130,6 +114,5 @@ export function useSavedSubaccountSigningPreference(
     signingPreference: signingPreference,
     saveSigningPreference,
     clearSigningPreference,
-    clearPrivateKeyIfSaved,
   };
 }

@@ -82,7 +82,7 @@ function FlowsValueContent({
         <Pill
           className="font-normal"
           colorVariant="positive"
-          borderRadiusVariant="base"
+          borderRadiusVariant="sm"
           sizeVariant="xs"
         >
           Deposited
@@ -96,7 +96,7 @@ function FlowsValueContent({
         <Pill
           className="font-normal"
           colorVariant="negative"
-          borderRadiusVariant="base"
+          borderRadiusVariant="sm"
           sizeVariant="xs"
         >
           Withdrawn

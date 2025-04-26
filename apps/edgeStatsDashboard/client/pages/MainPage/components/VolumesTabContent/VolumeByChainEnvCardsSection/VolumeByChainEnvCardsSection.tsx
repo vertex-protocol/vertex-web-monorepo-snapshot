@@ -1,8 +1,8 @@
 import { BigDecimal, ChainEnv } from '@vertex-protocol/client';
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import {
   CustomNumberFormatSpecifier,
   formatNumber,
+  useVertexMetadataContext,
 } from '@vertex-protocol/react-client';
 import { Card, Value } from '@vertex-protocol/web-ui';
 import { useVolumeByChainEnvCardsSectionData } from 'client/pages/MainPage/components/VolumesTabContent/VolumeByChainEnvCardsSection/useVolumeByChainEnvCardsSectionData';
@@ -35,9 +35,9 @@ function ChainEnvVolumesCard({
   totalVolume24hUsd: BigDecimal | undefined;
   totalVolumeAllTimeUsd: BigDecimal | undefined;
 }) {
-  const { getChainMetadata } = useVertexMetadataContext();
+  const { getChainEnvMetadata } = useVertexMetadataContext();
 
-  const { name, chainIcon } = getChainMetadata(chainEnv);
+  const { name, chainIcon } = getChainEnvMetadata(chainEnv);
 
   const formattedTotalVolume24hUsd = formatNumber(totalVolume24hUsd, {
     formatSpecifier: CustomNumberFormatSpecifier.CURRENCY_LARGE_ABBREVIATED,
@@ -55,7 +55,7 @@ function ChainEnvVolumesCard({
         </div>
         <div className="text-text-secondary font-medium">24h / Total Vol</div>
       </div>
-      <Value className="font-semibold" sizeVariant="lg">
+      <Value className="font-semibold" sizeVariant="xl">
         {formattedTotalVolume24hUsd}
         <span className="text-stroke"> / </span>
         {formattedTotalVolumeAllTimeUsd}

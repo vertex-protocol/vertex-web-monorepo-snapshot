@@ -1,6 +1,7 @@
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { formatTimestamp, TimeFormatSpecifier } from '@vertex-protocol/web-ui';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
+import { getStaticMarketDataForProductId } from 'client/hooks/markets/marketsStaticData/getStaticMarketDataForProductId';
+import { SpotStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountPaginatedCollateralEvents } from 'client/hooks/query/subaccount/useSubaccountPaginatedCollateralEvents';
@@ -38,8 +39,8 @@ export function useAccountCenterCollateralHistory() {
         'withdraw_collateral',
         'transfer_quote',
       ],
-      // Show max 5 events, users can see full history by clicking on the link
-      pageSize: 5,
+      // Show max 4 events, users can see full history by clicking on the link
+      pageSize: 4,
     });
 
   const eventsToProcess = useMemo(
@@ -69,9 +70,10 @@ export function useAccountCenterCollateralHistory() {
     eventsToProcess?.forEach((event) => {
       const productId = event.snapshot.market.productId;
       const staticSpotMarketData =
-        productId === QUOTE_PRODUCT_ID
-          ? allMarketsStaticData?.primaryQuote
-          : allMarketsStaticData?.spot[productId];
+        getStaticMarketDataForProductId<SpotStaticMarketData>(
+          productId,
+          allMarketsStaticData,
+        );
 
       if (!staticSpotMarketData) {
         return;

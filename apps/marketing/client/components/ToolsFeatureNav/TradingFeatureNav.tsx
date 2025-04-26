@@ -81,7 +81,7 @@ export function TradingFeatureNav({
   }, [isHovered, nextFeature]);
 
   const baseClass = joinClassNames(
-    'scrollbar-hide overflow-x-auto overflow-y-hidden relative',
+    'no-scrollbar overflow-x-auto overflow-y-hidden relative',
     'mb-6 mt-8 flex gap-x-4 border-b border-new-website-overlay-8 p-2',
   );
 

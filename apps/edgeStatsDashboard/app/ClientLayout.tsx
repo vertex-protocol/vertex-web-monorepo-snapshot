@@ -9,18 +9,26 @@ import {
 import {
   EVMContextProvider,
   getPrimaryChain,
+  REACT_QUERY_CONFIG,
   useWagmiConfig,
   VertexClientContextProvider,
   VertexMetadataContextProvider,
 } from '@vertex-protocol/react-client';
 import { WithChildren } from '@vertex-protocol/web-common';
+import { LocationRestrictedDialog } from 'client/components/LocationRestrictedDialog';
 import { DataEnv } from 'client/types';
 import { Provider as JotaiProvider } from 'jotai';
 import { noop } from 'lodash';
 import { Chain } from 'viem/chains';
 import { WagmiProvider } from 'wagmi';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: REACT_QUERY_CONFIG.defaultQueryStaleTime,
+    },
+  },
+});
 
 const { supportedChains, supportedChainEnvs } = (() => {
   const dataEnv = (process.env.NEXT_PUBLIC_DATA_ENV ?? 'testnet') as DataEnv;
@@ -37,7 +45,7 @@ const { supportedChains, supportedChainEnvs } = (() => {
 })();
 
 export function ClientLayout({ children }: WithChildren) {
-  const wagmiConfig = useWagmiConfig({ supportedChains });
+  const wagmiConfig = useWagmiConfig({ supportedChains, supportedChainEnvs });
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -50,7 +58,10 @@ export function ClientLayout({ children }: WithChildren) {
         >
           <VertexClientContextProvider>
             <VertexMetadataContextProvider>
-              <JotaiProvider>{children}</JotaiProvider>
+              <JotaiProvider>
+                {children}
+                <LocationRestrictedDialog />
+              </JotaiProvider>
             </VertexMetadataContextProvider>
           </VertexClientContextProvider>
         </EVMContextProvider>

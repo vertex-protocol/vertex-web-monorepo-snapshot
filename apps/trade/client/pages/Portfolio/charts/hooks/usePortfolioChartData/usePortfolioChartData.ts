@@ -7,35 +7,33 @@ import { useSubaccountContext } from 'client/context/subaccount/SubaccountContex
 import { AppSubaccount } from 'client/context/subaccount/types';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
 import { useSubaccountIndexerSnapshots } from 'client/hooks/query/subaccount/useSubaccountIndexerSnapshots';
-import { useChartQueryTimes } from 'client/pages/Portfolio/charts/hooks/useChartQueryTimes';
-import { calcDecimalAdjustedDeltas } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartData/calcDecimalAdjustedDeltas';
 import { calcDecimalAdjustedUsdValue } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartData/calcDecimalAdjustedUsdValue';
 import {
-  ChartTimespan,
   PortfolioChartDataItem,
+  PortfolioChartTimespan,
 } from 'client/pages/Portfolio/charts/types';
 import { QueryState } from 'client/types/QueryState';
-import { getSubaccountMetricsFromIndexerSnapshot } from 'client/utils/calcs/getSubaccountMetricsFromIndexerSnapshot';
-import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
+import { calcDecimalAdjustedDeltasUsd } from 'client/utils/calcs/calcDecimalAdjustedDeltasUsd';
+import { REACT_QUERY_CONFIG } from '@vertex-protocol/react-client';
 import { secondsToMilliseconds } from 'date-fns';
+import { usePortfolioChartQueryTimes } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartData/usePortfolioChartQueryTimes';
+import { getSubaccountMetricsFromIndexerSnapshot } from 'client/utils/calcs/subaccount/getSubaccountMetricsFromIndexerSnapshot';
 
 function portfolioChartDataQueryKey(
   subaccount: AppSubaccount,
-  timespan?: ChartTimespan,
+  timespan?: PortfolioChartTimespan,
 ) {
   return createQueryKey('portfolioChartData', subaccount, timespan);
 }
 
 export function usePortfolioChartData(
-  timespan: ChartTimespan,
+  timespan: PortfolioChartTimespan,
 ): QueryState<PortfolioChartDataItem[]> {
   const { currentSubaccount } = useSubaccountContext();
-  const queryTimes = useChartQueryTimes(timespan);
+  const queryTimes = usePortfolioChartQueryTimes(timespan);
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
   const { data: indexerSummaries, ...rest } = useSubaccountIndexerSnapshots({
     secondsBeforeNow: queryTimes?.secondsBeforeNow,
-    // Longer refetch as we need quite a lot of data
-    refetchInterval: 30000,
   });
 
   const disabled = !indexerSummaries;
@@ -56,9 +54,7 @@ export function usePortfolioChartData(
             cumulativeTotalPerpPnlUsd: 0,
             cumulativePerpFundingUsd: 0,
             cumulativePerpFundingFrac: 0,
-            cumulativeLpPnlUsd: 0,
             totalLpValueUsd: 0,
-            cumulativeLpPnlFrac: undefined,
             cumulativeAccountPnlFrac: undefined,
             cumulativeTotalPerpPnlFrac: undefined,
           };
@@ -72,7 +68,7 @@ export function usePortfolioChartData(
         const {
           deltaUsd: cumulativeAccountPnlDeltaUsd,
           deltaFraction: cumulativeAccountPnlDeltaFrac,
-        } = calcDecimalAdjustedDeltas(
+        } = calcDecimalAdjustedDeltasUsd(
           metrics.cumulativeAccountPnl,
           prevMetrics.cumulativeAccountPnl,
           primaryQuotePriceUsd,
@@ -82,7 +78,7 @@ export function usePortfolioChartData(
         const {
           deltaUsd: cumulativeTotalPerpPnlDeltaUsd,
           deltaFraction: cumulativeTotalPerpPnlDeltaFrac,
-        } = calcDecimalAdjustedDeltas(
+        } = calcDecimalAdjustedDeltasUsd(
           metrics.cumulativeTotalPerpPnl,
           prevMetrics.cumulativeTotalPerpPnl,
           primaryQuotePriceUsd,
@@ -91,19 +87,9 @@ export function usePortfolioChartData(
         const {
           deltaUsd: cumulativePerpFundingDeltaUsd,
           deltaFraction: cumulativePerpFundingDeltaFrac,
-        } = calcDecimalAdjustedDeltas(
+        } = calcDecimalAdjustedDeltasUsd(
           metrics.cumulativePerpFunding,
           prevMetrics.cumulativePerpFunding,
-          primaryQuotePriceUsd,
-        );
-
-        // LP Deltas
-        const {
-          deltaUsd: cumulativeLpPnlDeltaUsd,
-          deltaFraction: cumulativeLpPnlDeltaFrac,
-        } = calcDecimalAdjustedDeltas(
-          metrics.cumulativeTotalLpPnl,
-          prevMetrics.cumulativeTotalLpPnl,
           primaryQuotePriceUsd,
         );
 
@@ -114,8 +100,6 @@ export function usePortfolioChartData(
           cumulativeTotalPerpPnlFrac: cumulativeTotalPerpPnlDeltaFrac,
           cumulativePerpFundingUsd: cumulativePerpFundingDeltaUsd,
           cumulativePerpFundingFrac: cumulativePerpFundingDeltaFrac,
-          cumulativeLpPnlUsd: cumulativeLpPnlDeltaUsd,
-          cumulativeLpPnlFrac: cumulativeLpPnlDeltaFrac,
         };
       })();
 
@@ -162,11 +146,6 @@ export function usePortfolioChartData(
         primaryQuotePriceUsd,
       );
 
-      const cumulativeLpPnlUsd = calcDecimalAdjustedUsdValue(
-        metrics.cumulativeTotalLpPnl,
-        primaryQuotePriceUsd,
-      );
-
       const totalLpValueUsd = calcDecimalAdjustedUsdValue(
         metrics.totalLpValue,
         primaryQuotePriceUsd,
@@ -187,8 +166,6 @@ export function usePortfolioChartData(
         totalNetSpotValueUsd,
         totalDepositsValueUsd,
         totalAbsBorrowsValueUsd: Math.abs(totalBorrowsValueUsd),
-        cumulativeLpPnlUsd,
-        cumulativeLpPnlFrac: metrics.cumulativeTotalLpPnlFrac?.toNumber(),
         totalLpValueUsd,
         deltas,
       };

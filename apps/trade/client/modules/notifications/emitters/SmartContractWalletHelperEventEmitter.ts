@@ -5,7 +5,7 @@ import { SMART_CONTRACT_WALLET_HELPER_TOAST_ID } from 'client/modules/notificati
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import { useIsSingleSignatureSession } from 'client/modules/singleSignatureSessions/hooks/useIsSingleSignatureSession';
 import { useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 export function SmartContractWalletHelperEventEmitter() {
   const { dispatchNotification } = useNotificationManagerContext();

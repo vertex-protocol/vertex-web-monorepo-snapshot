@@ -1,6 +1,6 @@
 import {
-  PresetNumberFormatSpecifier,
   formatNumber,
+  PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { Divider } from '@vertex-protocol/web-ui';
@@ -24,7 +24,7 @@ export function ArbRewardsSummaryCard() {
     onClaimClick,
     isClaimSuccess,
     isClaiming,
-    arbToken,
+    foundationToken,
     roundDurationInWeeks,
     isCompleted,
   } = useArbRewardsSummaryCard();
@@ -51,24 +51,27 @@ export function ArbRewardsSummaryCard() {
     return (
       <>
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Total Earned"
           tooltip={{ id: 'rewardsFoundationTotalEarned' }}
           value={totalRealizedRewards}
-          valueEndElement={arbToken.symbol}
+          valueEndElement={foundationToken.symbol}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Claimed"
           value={claimedRewards}
-          valueEndElement={arbToken.symbol}
+          valueEndElement={foundationToken.symbol}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         />
         {!isCompleted && (
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Est. New"
             tooltip={{ id: 'rewardsFoundationEstNew' }}
             value={estimatedWeekRewards}
-            valueEndElement={arbToken.symbol}
+            valueEndElement={foundationToken.symbol}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           />
         )}
@@ -79,26 +82,27 @@ export function ArbRewardsSummaryCard() {
   return (
     <RewardsSummaryCard.Container
       className={joinClassNames(
-        'to-surface-card bg-gradient-to-r from-[#3A80D2]/30',
+        'to-surface-card bg-linear-to-r from-[#3A80D2]/30',
         'border-[#3A80D2]',
       )}
     >
       <RewardsSummaryCard.Content
         header={
           <RewardsSummaryCard.IconHeader
-            iconSrc={arbToken.icon.asset}
-            title={`${arbToken.symbol} Incentives`}
+            iconSrc={foundationToken.icon.asset}
+            title={`${foundationToken.symbol} Incentives`}
             iconClassName="aspect-square w-7"
           />
         }
         metricItems={metricItems}
         actionMetric={
           <ValueWithLabel.Vertical
+            sizeVariant="lg"
             label="Available to Claim"
             tooltip={{ id: 'rewardsFoundationAvailableToClaim' }}
             value={unclaimedRealizedRewards}
             numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
-            valueEndElement={arbToken.symbol}
+            valueEndElement={foundationToken.symbol}
           />
         }
         action={

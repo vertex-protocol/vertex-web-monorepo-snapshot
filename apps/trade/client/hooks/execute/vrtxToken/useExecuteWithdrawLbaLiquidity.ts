@@ -23,9 +23,7 @@ export function useExecuteWithdrawLbaLiquidity() {
     useCallback(
       async (params: VrtxTokenAmountParams, context: ValidExecuteContext) => {
         console.log('Withdrawing LBA Liquidity', params);
-        const txResponse =
-          await context.vertexClient.rewards.withdrawLbaLiquidity(params);
-        return txResponse.hash;
+        return context.vertexClient.rewards.withdrawLbaLiquidity(params);
       },
       [],
     ),

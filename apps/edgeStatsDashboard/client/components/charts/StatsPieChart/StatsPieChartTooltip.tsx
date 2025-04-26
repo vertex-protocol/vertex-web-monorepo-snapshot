@@ -4,7 +4,7 @@ import {
 } from '@vertex-protocol/react-client';
 import { ChartTooltip } from 'client/components/charts/ChartTooltip';
 import { StatsPieChartDataItem } from 'client/components/charts/StatsPieChart/types';
-import { first } from 'lodash';
+import { getTooltipPayloadData } from 'client/utils/getTooltipPayloadData';
 import {
   NameType,
   Payload,
@@ -24,7 +24,7 @@ export function StatsPieChartTooltip({
 }: Props) {
   const originalDataPayload:
     | (StatsPieChartDataItem & { fill: string })
-    | undefined = first(payload)?.payload;
+    | undefined = getTooltipPayloadData(payload);
 
   if (!active || !originalDataPayload) {
     return null;

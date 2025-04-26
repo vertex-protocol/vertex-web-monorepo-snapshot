@@ -4,7 +4,6 @@
  * @type {import('next').NextConfig}
  **/
 module.exports = {
-  reactStrictMode: true,
   webpack: (config) => {
     config.externals.push(
       'utf-8-validate',

@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import './base.css';
+@import '@vertex-protocol/web-ui/styles/ui-kit-styles.css';
 
 @layer base {
   /*Remove default outline that occurs on focus of different elements*/
@@ -10,33 +9,7 @@
   img,
   ul,
   a {
-    @apply outline-none focus:outline-none active:outline-none;
-  }
-
-  /* Fixes current issues with `/next/image` component
-        see 'https://github.com/tailwindlabs/tailwindcss/discussions/9748' */
-  img,
-  video {
-    @apply max-w-none;
-    @apply h-max;
-  }
-
-  ::-webkit-scrollbar {
-    @apply h-1 w-1 rounded-2xl bg-transparent;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    @apply bg-stroke rounded-2xl;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-surface-2;
+    @apply outline-hidden focus:outline-hidden active:outline-hidden;
   }
 
   input {
@@ -54,12 +27,21 @@
   input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
   }
-}
 
-@layer components {
-}
+  ::-webkit-scrollbar {
+    @apply bg-surface-card h-1 w-1;
+  }
 
-@layer utilities {
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-2 rounded-full;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-3;
+  }
+
   @keyframes background-slide {
     from {
       background-position: 0% 0%;
@@ -67,62 +49,5 @@
     to {
       background-position: 200% 0%;
     }
-  }
-
-  .title-text {
-    /*tracking-normal to override tighter letter-spacing applied to Blitz*/
-    @apply font-title font-medium tracking-normal;
-  }
-
-  .gradient-text {
-    @apply bg-clip-text text-transparent;
-  }
-
-  .gradient-animated-text {
-    @apply gradient-text;
-    animation: background-slide 2.5s infinite linear;
-    background-size: 200%;
-  }
-
-  .text-vertex-animated-gradient-highlight {
-    @apply gradient-animated-text;
-    background-image: linear-gradient(
-      277deg,
-      #fff 0%,
-      #cd92ec 14.3%,
-      #85c5e0 84.72%,
-      #fff 100%
-    );
-  }
-
-  .text-vertex-gradient-highlight {
-    @apply gradient-text;
-    background-image: linear-gradient(
-      277deg,
-      #fff 1.88%,
-      #cd92ec 36.3%,
-      #85c5e0 74.72%
-    );
-  }
-
-  .text-sonic-animated-gradient-highlight {
-    @apply gradient-animated-text;
-    background-image: linear-gradient(
-      277deg,
-      #fff 0%,
-      #ff711b 14.3%,
-      #85c5e0 84.72%,
-      #fff 100%
-    );
-  }
-
-  .text-sonic-gradient-highlight {
-    @apply gradient-text;
-    background-image: linear-gradient(
-      277deg,
-      #fff 1.88%,
-      #ff711b 36.3%,
-      #85c5e0 74.72%
-    );
   }
 }

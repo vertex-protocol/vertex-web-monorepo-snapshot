@@ -24,6 +24,7 @@ export function StakingV1PositionCard({
   return (
     <StakingCard titleContent="Position">
       <ValueWithLabel.Vertical
+        sizeVariant="lg"
         label="Amount Staked"
         value={amountStaked}
         numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
@@ -40,11 +41,7 @@ export function StakingV1PositionCard({
           'lg:flex-row lg:items-center lg:justify-between',
         )}
       >
-        <Pill
-          colorVariant="warning"
-          sizeVariant="xs"
-          borderRadiusVariant="base"
-        >
+        <Pill colorVariant="warning" sizeVariant="xs" borderRadiusVariant="sm">
           <Icons.WarningCircle className="size-4" /> V1 staking no longer earns
           rewards.
         </Pill>

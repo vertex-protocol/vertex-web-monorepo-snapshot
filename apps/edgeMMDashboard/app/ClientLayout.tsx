@@ -10,6 +10,7 @@ import {
 import {
   EVMContextProvider,
   getPrimaryChain,
+  REACT_QUERY_CONFIG,
   useWagmiConfig,
   VertexClientContextProvider,
   VertexMetadataContextProvider,
@@ -20,7 +21,13 @@ import { useState } from 'react';
 import { Chain } from 'viem/chains';
 import { WagmiProvider } from 'wagmi';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: REACT_QUERY_CONFIG.defaultQueryStaleTime,
+    },
+  },
+});
 
 const DEFAULT_PRIMARY_CHAIN_ENV = 'arbitrum' as ChainEnv;
 
@@ -36,7 +43,10 @@ export function ClientLayout({ children }: WithChildren) {
     DEFAULT_PRIMARY_CHAIN_ENV,
   );
 
-  const wagmiConfig = useWagmiConfig({ supportedChains: SUPPORTED_CHAINS });
+  const wagmiConfig = useWagmiConfig({
+    supportedChains: SUPPORTED_CHAINS,
+    supportedChainEnvs: SUPPORTED_CHAIN_ENVS,
+  });
 
   return (
     <QueryClientProvider client={queryClient}>

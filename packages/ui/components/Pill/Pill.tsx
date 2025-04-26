@@ -3,11 +3,10 @@ import {
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS } from '../../consts';
 import { BorderRadiusVariant, SizeVariant } from '../../types';
 
 type PillSizeVariant = Extract<SizeVariant, 'xs' | 'sm'>;
-type PillBorderRadiusVariant = Extract<BorderRadiusVariant, 'base' | 'full'>;
+type PillBorderRadiusVariant = Extract<BorderRadiusVariant, 'sm' | 'full'>;
 
 export interface PillProps extends WithChildren<WithClassnames> {
   colorVariant:
@@ -31,7 +30,7 @@ export function Pill({
   const colorClassNames = {
     positive: 'text-positive bg-positive-muted',
     warning: `text-warning bg-warning-muted`,
-    accent: `text-accent ${COMMON_TRANSPARENCY_COLORS.bgAccent}`,
+    accent: `text-accent bg-overlay-accent`,
     negative: 'text-negative bg-negative-muted',
     primary: 'text-text-primary bg-surface-2',
     tertiary: 'text-text-tertiary bg-surface-1',
@@ -43,14 +42,14 @@ export function Pill({
   }[sizeVariant];
 
   const roundedClassName = {
-    base: 'rounded',
+    sm: 'rounded-sm',
     full: 'rounded-full',
   }[borderRadiusVariant];
 
   return (
     <div
       className={mergeClassNames(
-        'flex items-center gap-1 whitespace-nowrap px-2.5 leading-none',
+        'flex items-center gap-1 px-2.5 leading-none whitespace-nowrap',
         colorClassNames,
         sizeClassNames,
         roundedClassName,

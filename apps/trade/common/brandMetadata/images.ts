@@ -9,10 +9,12 @@ import vertexBrandBg from 'client/assets/brand/vertex-brand-bg.webp';
 import vertexBrandIcon from 'client/assets/brand/vertex-brand-icon.svg';
 import vertexLogo from 'client/assets/brand/vertex-logo.svg';
 import vertexMonochromeIcon from 'client/assets/brand/vertex-monochrome-icon.svg';
+import vertex3dLogo from 'client/assets/brand/vertex-3d-logo.png';
 import axelarLogo from 'client/assets/partners/axelar-logo.svg';
 import elixirLogo from 'client/assets/partners/elixir-logo.svg';
 import skateLogo from 'client/assets/partners/skatefi-logo.svg';
 import squidLogo from 'client/assets/partners/squid-logo.svg';
+import vlpSquareIcon from 'client/assets/vlp/vlp-square-icon.svg';
 import { clientEnv } from 'common/environment/clientEnv';
 
 const BRAND_IMAGES = {
@@ -53,4 +55,9 @@ export const BLITZ_SPECIFIC_IMAGES = {
   blastGoldIcon,
   blastLogo,
   blitzBrandBg,
+};
+
+export const VERTEX_SPECIFIC_IMAGES = {
+  vlpSquareIcon,
+  vertex3dLogo,
 };

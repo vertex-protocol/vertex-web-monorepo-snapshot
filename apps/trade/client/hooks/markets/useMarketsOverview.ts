@@ -3,6 +3,7 @@ import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
+  REACT_QUERY_CONFIG,
   useEVMContext,
 } from '@vertex-protocol/react-client';
 import {
@@ -15,7 +16,6 @@ import { StaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 import { useAllMarketsStats } from 'client/hooks/markets/useAllMarketsStats';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
-import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
 
 interface MarketsOverviewData {
   totalCumulativeVolumeUsd: BigDecimal;
@@ -70,7 +70,7 @@ export function useMarketsOverview() {
         // Find hottest market based on daily primary quote volume
         if (pastDayVolumeInPrimaryQuote?.gt(maxDailyVolume)) {
           maxDailyVolume = pastDayVolumeInPrimaryQuote;
-          hottestMarket = allMarketsStaticData.all[productId];
+          hottestMarket = allMarketsStaticData?.allMarkets[productId];
         }
       },
     );

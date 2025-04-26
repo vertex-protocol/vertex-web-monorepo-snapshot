@@ -38,7 +38,7 @@ export function ProductSelect({
       onOpenChange={onOpenChange}
     >
       <div className="flex flex-col gap-y-1">
-        <Label>Market</Label>
+        <Label sizeVariant="lg">Market</Label>
         <Select.Trigger
           // min-w is used to prevent layout shifts.
           className="min-w-32"

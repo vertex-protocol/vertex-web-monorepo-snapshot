@@ -1,24 +1,26 @@
+import { useQueryIpBlockStatus } from '@vertex-protocol/react-client';
 import { GEOBLOCKED_COUNTRY_NAMES } from '@vertex-protocol/web-common';
-import { BaseDialog, LinkButton } from '@vertex-protocol/web-ui';
+import { BaseDialog, Card, LinkButton } from '@vertex-protocol/web-ui';
 import { VERTEX_EXTERNAL_LINKS } from 'client/config/links';
-import { useIsGeolocationBlocked } from 'client/hooks/useIsGeolocationBlocked';
 import { noop } from 'lodash';
 import Link from 'next/link';
 
 export function LocationRestrictedDialog() {
-  const { data: isGeolocationBlocked } = useIsGeolocationBlocked();
+  const { data: ipBlockStatus } = useQueryIpBlockStatus();
+
+  const isBlocked = ipBlockStatus === 'blocked';
 
   return (
-    <BaseDialog.Container onOpenChange={noop} open={!!isGeolocationBlocked}>
+    <BaseDialog.Container onOpenChange={noop} open={isBlocked}>
       <BaseDialog.Title>Restricted Territory</BaseDialog.Title>
       <BaseDialog.Body className="text-xs">
         <p>
-          It appears that you are accessing from a Restricted Territory.
-          Unfortunately, we are not able to support users from the following
-          Restricted Territories at this time:
+          It appears that you are accessing from a Restricted Territory. We are
+          not able to support users from the following Restricted Territories at
+          this time:
         </p>
-        <p className="text-text-tertiary bg-surface-1 rounded p-4">
-          {GEOBLOCKED_COUNTRY_NAMES.map((name) => {
+        <Card className="bg-surface-1 p-4">
+          {GEOBLOCKED_COUNTRY_NAMES.sanctioned.map((name) => {
             return (
               <span key={name}>
                 {name}
@@ -26,7 +28,7 @@ export function LocationRestrictedDialog() {
               </span>
             );
           })}
-        </p>
+        </Card>
         <p>
           Please refer to our{' '}
           <LinkButton

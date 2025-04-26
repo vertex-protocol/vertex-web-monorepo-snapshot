@@ -1,5 +1,5 @@
-import { BrandName } from '@vertex-protocol/web-ui';
 import { SENSITIVE_DATA } from 'common/environment/sensitiveData';
+import { BrandName } from 'common/environment/types';
 
 export const MICROSOFT_CLARITY_ANALYTICS_ID_BY_BRAND_NAME: Record<
   BrandName,

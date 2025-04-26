@@ -4,6 +4,7 @@ import {
   removeDecimals,
 } from '@vertex-protocol/client';
 import { useVertexMetadataContext } from '@vertex-protocol/react-client';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { useSubaccountNames } from 'client/context/subaccount/hooks/useSubaccountNames';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { usePrimaryQuotePriceUsd } from 'client/hooks/markets/usePrimaryQuotePriceUsd';
@@ -11,7 +12,6 @@ import { AnnotatedSubaccountSummary } from 'client/hooks/query/subaccount/subacc
 import { useSubaccountSummary } from 'client/hooks/query/subaccount/subaccountSummary/useSubaccountSummary';
 import { useMaxWithdrawableAmount } from 'client/hooks/query/subaccount/useMaxWithdrawableAmount';
 import { useSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSubaccountSigningPreference';
-import { SUBACCOUNT_QUOTE_TRANSFER_FEE } from 'client/modules/subaccounts/consts';
 import { SubaccountProfile } from 'client/modules/subaccounts/types';
 import { useMemo } from 'react';
 
@@ -91,7 +91,7 @@ export function useSubaccountQuoteTransferFormData({
       return maxWithdrawable;
     }
 
-    return removeDecimals(maxWithdrawable).plus(SUBACCOUNT_QUOTE_TRANSFER_FEE);
+    return removeDecimals(maxWithdrawable).plus(SEQUENCER_FEE_AMOUNT_USDC);
   })();
 
   const senderSigningPreference =

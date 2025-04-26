@@ -1,17 +1,13 @@
-import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { useSubaccountCountIndicators } from 'client/hooks/subaccount/useSubaccountCountIndicators';
 import { PORTFOLIO_SUBROUTES, ROUTES } from 'client/modules/app/consts/routes';
 import { PortfolioNavItem } from 'client/pages/Portfolio/components/navigation/types';
+import { clientEnv } from 'common/environment/clientEnv';
 import { usePathname } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
 export function usePortfolioNavItems() {
-  const {
-    primaryChainMetadata: { isTestnet },
-  } = useVertexMetadataContext();
   const pathname = usePathname();
-  const { numOpenOrders, numPerpPositions, numLpPositions } =
-    useSubaccountCountIndicators();
+  const { numOpenOrders, numPerpPositions } = useSubaccountCountIndicators();
 
   const getIsSelected = useCallback(
     (route: string) => {
@@ -39,12 +35,6 @@ export function usePortfolioNavItems() {
         associatedCount: numPerpPositions,
       },
       {
-        label: 'Pools',
-        href: PORTFOLIO_SUBROUTES.pools,
-        selected: getIsSelected(ROUTES.portfolio.pools),
-        associatedCount: numLpPositions,
-      },
-      {
         label: 'Open Orders',
         href: PORTFOLIO_SUBROUTES.orders,
         selected: getIsSelected(ROUTES.portfolio.orders),
@@ -61,7 +51,7 @@ export function usePortfolioNavItems() {
         selected: getIsSelected(ROUTES.portfolio.history),
       },
     ];
-    if (isTestnet) {
+    if (clientEnv.isTestnetDataEnv) {
       navItems.push({
         label: 'Faucet',
         href: PORTFOLIO_SUBROUTES.faucet,
@@ -69,11 +59,5 @@ export function usePortfolioNavItems() {
       });
     }
     return navItems;
-  }, [
-    getIsSelected,
-    isTestnet,
-    numLpPositions,
-    numOpenOrders,
-    numPerpPositions,
-  ]);
+  }, [getIsSelected, numOpenOrders, numPerpPositions]);
 }

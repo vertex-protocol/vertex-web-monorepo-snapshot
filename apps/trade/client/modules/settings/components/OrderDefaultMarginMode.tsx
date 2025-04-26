@@ -1,18 +1,11 @@
 import { WithClassnames } from '@vertex-protocol/web-common';
 import { SegmentedControl } from '@vertex-protocol/web-ui';
-import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { MarginModeType } from 'client/modules/localstorage/userSettings/types/tradingSettings';
 import { useSavedUserSettings } from 'client/modules/localstorage/userSettings/useSavedUserSettings';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { useCallback } from 'react';
 
 export function OrderDefaultMarginMode() {
-  const { isIsoMarginEnabled } = useEnabledFeatures();
-
-  if (!isIsoMarginEnabled) {
-    return null;
-  }
-
   return (
     <div className="flex flex-col gap-y-3">
       <DefinitionTooltip

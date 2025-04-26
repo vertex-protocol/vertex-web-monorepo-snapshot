@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { get, sortBy } from 'lodash';
 import { BigDecimals } from '@vertex-protocol/client';
 import { getMarketName } from 'client/utils/getMarketName';
-import { useQueryAllMarkets24HrFundingRates } from 'client/hooks/query/useQueryAllMarkets24HrFundingRates';
+import { useQueryAllMarkets24hFundingRates } from 'client/hooks/query/useQueryAllMarkets24hFundingRates';
 import { useAllEdgePerpMarkets } from 'client/pages/MainPage/components/OpenInterestFundingAndLiquidationsTabContent/hooks/useAllEdgePerpMarkets';
 
 export function useEdgeTopFundingRatesCardData() {
@@ -14,7 +14,7 @@ export function useEdgeTopFundingRatesCardData() {
   const {
     data: allMarketsFundingRatesData,
     isLoading: isLoadingAllMarketsFundingRatesData,
-  } = useQueryAllMarkets24HrFundingRates();
+  } = useQueryAllMarkets24hFundingRates();
 
   const mappedData = useMemo(() => {
     if (!allEdgePerpMarketsData || !allMarketsFundingRatesData) {

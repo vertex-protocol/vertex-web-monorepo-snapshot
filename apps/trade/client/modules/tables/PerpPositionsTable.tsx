@@ -14,10 +14,8 @@ import { useIsDesktop } from 'client/hooks/ui/breakpoints';
 import { usePushTradePage } from 'client/hooks/ui/navigation/usePushTradePage';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
-import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CloseAllPositionsHeaderCell } from 'client/modules/tables/cells/CloseAllPositionsHeaderCell';
-import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { MarketInfoWithSideCell } from 'client/modules/tables/cells/MarketInfoWithSideCell';
 import { NumberCell } from 'client/modules/tables/cells/NumberCell';
 import { PerpMarginLeverageCell } from 'client/modules/tables/cells/PerpMarginLeverageCell';
@@ -45,7 +43,6 @@ export function PerpPositionsTable({
   marketFilter,
   hasBackground,
 }: WithClassnames<Props>) {
-  const { isIsoMarginEnabled } = useEnabledFeatures();
   const { show } = useDialog();
   const isDesktop = useIsDesktop();
   const pushTradePage = usePushTradePage();
@@ -58,31 +55,10 @@ export function PerpPositionsTable({
   const disableClosePosition = !isConnected;
 
   const columns: ColumnDef<PerpPositionsTableItem, any>[] = useMemo(() => {
-    const marginLeverageColumn = columnHelper.display({
-      id: 'marginLeverage',
-      header: ({ header }) => (
-        <HeaderCell header={header}>Margin/Leverage</HeaderCell>
-      ),
-      cell: (context) => {
-        const { margin, isoSubaccountName } = context.row.original;
-
-        return (
-          <PerpMarginLeverageCell
-            margin={margin}
-            isoSubaccountName={isoSubaccountName}
-          />
-        );
-      },
-      enableSorting: false,
-      meta: {
-        cellContainerClassName: 'w-36',
-      },
-    });
-
     return [
       columnHelper.accessor('marketInfo', {
         header: ({ header }) => (
-          <HeaderCell header={header}>Market / Side</HeaderCell>
+          <HeaderCell header={header}>Market/Side</HeaderCell>
         ),
         cell: (context) => (
           <MarketInfoWithSideCell
@@ -117,26 +93,29 @@ export function PerpPositionsTable({
           cellContainerClassName: 'w-28',
         },
       }),
-      ...(isIsoMarginEnabled ? [marginLeverageColumn] : []),
       columnHelper.accessor('margin', {
         header: ({ header }) => (
-          <HeaderCell definitionTooltipId="perpPositionsMargin" header={header}>
-            Margin
+          <HeaderCell
+            header={header}
+            definitionTooltipId="perpPositionsMarginLeverage"
+          >
+            Margin/Leverage
           </HeaderCell>
         ),
         cell: (context) => {
+          const margin = context.getValue<PerpPositionsTableItem['margin']>();
+          const { isoSubaccountName } = context.row.original;
+
           return (
-            <CurrencyCell
-              value={
-                context.getValue<PerpPositionsTableItem['margin']>()
-                  .crossMarginUsedUsd
-              }
+            <PerpMarginLeverageCell
+              margin={margin}
+              isoSubaccountName={isoSubaccountName}
             />
           );
         },
-        sortingFn: getKeyedBigDecimalSortFn('crossMarginUsedUsd'),
+        enableSorting: false,
         meta: {
-          cellContainerClassName: 'w-24',
+          cellContainerClassName: 'w-36',
         },
       }),
       columnHelper.accessor('averageEntryPrice', {
@@ -334,7 +313,7 @@ export function PerpPositionsTable({
         },
       }),
     ];
-  }, [disableClosePosition, isIsoMarginEnabled, show]);
+  }, [disableClosePosition, show]);
 
   const onRowClicked = (row: Row<PerpPositionsTableItem>) => {
     if (isDesktop || !isConnected) {

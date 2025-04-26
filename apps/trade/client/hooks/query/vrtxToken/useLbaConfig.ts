@@ -23,7 +23,7 @@ export function useLbaConfig() {
         throw new QueryDisabledError();
       }
 
-      return vertexClient.context.contracts.vrtxLba.getConfig();
+      return vertexClient.context.contracts.vrtxLba.read.getConfig();
     },
     enabled: !disabled,
     // No refetching needed as LBA config is immutable

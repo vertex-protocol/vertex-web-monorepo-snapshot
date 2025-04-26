@@ -1,198 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import './base.css';
+@import '@vertex-protocol/web-ui/styles/ui-kit-styles.css';
 
 @layer base {
-  button:focus,
-  a:focus {
-    @apply outline-none;
-  }
-
-  button:focus-visible,
-  a:focus-visible {
-    @apply outline-none;
-  }
-
-  button:focus:not(:focus-visible),
-  a:focus:not(:focus-visible) {
-    @apply shadow-none outline-none;
-  }
-
-  .motion-button-gradient {
-    @apply relative overflow-clip text-white transition-all duration-300;
-  }
-
-  .motion-button-gradient:hover {
-    @apply text-white;
-  }
-
-  .motion-button-bg {
-    @apply relative overflow-clip;
-  }
-
-  .motion-button-bg::before {
-    @apply absolute inset-0 bg-repeat opacity-0 grayscale;
-    content: '';
-    background-image: url('../public/img/glow-effect.png');
-    background-size: 100%;
-    background-position: -10% 0;
-    animation: glowing-gray 7s linear infinite;
-  }
-
-  .motion-button-gradient::before {
-    @apply absolute inset-0 left-[-20px] z-[1] bg-repeat opacity-0 grayscale transition-all duration-300;
-    content: '';
-    background-image: url('../public/img/glow-effect.png');
-    background-size: 50%;
-    background-position: -10% 0;
-    animation: glowing-gray 7s linear infinite;
-  }
-
-  .motion-button-gradient:hover::before {
-    @apply left-0 opacity-50;
-  }
-
-  .launch-button-gradient {
-    @apply relative overflow-clip text-white transition-all duration-300;
-  }
-
-  .launch-button-gradient:hover {
-    @apply text-white;
-  }
-
-  .launch-button-bg {
-    @apply relative overflow-clip;
-  }
-
-  .launch-button-bg::before {
-    @apply absolute inset-0 bg-repeat brightness-200 contrast-150;
-    content: '';
-    background-image: url('../public/img/glow-effect.png');
-    background-size: 200%;
-    background-position: -10% 0;
-    animation: glowing 7s linear infinite;
-  }
-
-  .launch-button-gradient::before {
-    @apply absolute inset-0 left-[-20px] z-[1] bg-repeat opacity-10 transition-all duration-300;
-    content: '';
-    animation: glowing 7s linear infinite;
-    background-image: url('../public/img/glow-effect.png');
-    background-size: 100%;
-    background-position: -10% 0;
-    filter: brightness(1) contrast(1);
-  }
-
-  .launch-button-gradient:hover::before {
-    @apply left-0 opacity-50;
-  }
-
-  @media (max-width: 768px) {
-    .launch-button-gradient::before {
-      @apply opacity-50;
-    }
-  }
-
-  @keyframes glowing {
-    0% {
-      filter: blur(0) brightness(1.5) contrast(1);
-      background-position: 40% 45%;
-      background-size: 100%;
-    }
-    25% {
-      filter: blur(10px) brightness(1.5) contrast(1);
-      background-position: 30% 80%;
-      background-size: 130%;
-    }
-    50% {
-      filter: blur(20px) brightness(1.5) contrast(1);
-      background-position: 45% 65%;
-      background-size: 150%;
-    }
-    75% {
-      filter: blur(10px) brightness(1.5) contrast(1);
-      background-position: 60% 30%;
-      background-size: 125%;
-    }
-    100% {
-      filter: blur(0) brightness(1.5) contrast(1);
-      background-position: 40% 45%;
-      background-size: 100%;
-    }
-  }
-
-  @keyframes glowing-gray {
-    0% {
-      filter: blur(5px), brightness(1), grayscale(100%);
-      background-position: 20% 25%;
-      background-size: 120%;
-    }
-    25% {
-      filter: blur(10px), brightness(1), grayscale(100%);
-      background-position: 30% 60%;
-      background-size: 130%;
-    }
-    50% {
-      filter: blur(20px), brightness(1), grayscale(100%);
-      background-position: 25% 50%;
-      background-size: 140%;
-    }
-    75% {
-      filter: blur(10px), brightness(1), grayscale(100%);
-      background-position: 40% 30%;
-      background-size: 135%;
-    }
-    100% {
-      filter: blur(5px), brightness(1), grayscale(100%);
-      background-position: 20% 25%;
-      background-size: 120%;
-    }
-  }
-
-  .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    @apply hidden;
-  }
-
-  #vrtx-lottie #circle {
-    filter: blur(20px);
-  }
-
   img {
     @apply pointer-events-none select-none;
     -webkit-user-drag: none;
   }
-}
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  button:focus,
+  a:focus {
+    @apply outline-hidden;
   }
 
-  .container-custom {
-    @apply mx-auto px-4;
-    max-width: 1200px;
+  button:focus-visible,
+  a:focus-visible {
+    @apply outline-hidden;
   }
 
-  @media (min-width: 640px) {
-    .container-custom {
-      @apply px-8;
-    }
+  button:focus:not(:focus-visible),
+  a:focus:not(:focus-visible) {
+    @apply shadow-none outline-hidden;
   }
 
-  .text-linear-header {
-    @apply bg-header-linear bg-clip-text text-transparent;
-  }
-
-  .text-gradient {
-    @apply bg-text-gradient bg-clip-text text-transparent;
-  }
-
-  .button-shadow {
-    box-shadow: '0px -2px 7px 0px rgba(114, 116, 120, 0.25), 0px 2px 5px 0px rgba(0, 0, 0, 0.90)';
+  #vrtx-lottie #circle {
+    filter: blur(20px);
   }
 }

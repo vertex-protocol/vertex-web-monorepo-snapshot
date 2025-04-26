@@ -1,0 +1,61 @@
+.notifi-tooltip-container {
+  display: inline-block;
+  position: relative;
+  height: 1rem;
+  width: 1rem;
+  margin-left: 4px;
+  background-color: transparent !important;
+}
+
+.notifi-tooltip-content {
+  padding: 0.7rem;
+  border-radius: 6px;
+  background-color: var(--notifi-target-list-tooltip-bg);
+  border: 1px solid var(--notifi-target-list-item-tooltip-content-border);
+  width: 18rem;
+  position: absolute;
+  display: none;
+  text-align: left;
+  z-index: 3;
+  color: var(--notifi-target-list-item-tooltip-content-text);
+  font-size: 0.8rem;
+}
+
+.notifi-tooltip-content > a {
+  color: var(--tooltip-content-a-text);
+}
+
+.notifi-tooltip-icon:hover ~ .notifi-tooltip-content.top-right,
+.notifi-tooltip-content.top-right:hover {
+  top: 1.5rem;
+  right: -5rem;
+  display: block;
+}
+
+.notifi-tooltip-icon:hover ~ .notifi-tooltip-content.top-left,
+.notifi-tooltip-content.top-left:hover {
+  top: 1.5rem;
+  left: -5rem;
+  display: block;
+}
+
+.notifi-tooltip-icon:hover ~ .notifi-tooltip-content.bottom-right,
+.notifi-tooltip-content.bottom-right:hover {
+  bottom: 1.5rem;
+  right: -5rem;
+  display: block;
+}
+
+.notifi-tooltip-icon:hover ~ .notifi-tooltip-content.bottom-left,
+.notifi-tooltip-content.bottom-left:hover {
+  bottom: 1.5rem;
+  left: -5rem;
+  display: block;
+}
+.notifi-tooltip-icon:hover {
+  color: var(--notifi-target-list-item-tooltip-icon-color-hover);
+}
+
+.notifi-tooltip-icon {
+  margin-bottom: -5px;
+}

@@ -4,7 +4,7 @@ import {
   WithClassnames,
 } from '@vertex-protocol/web-common';
 import { Card, Divider } from '@vertex-protocol/web-ui';
-import { VaultHeader } from 'client/modules/vaults/components/VaultHeader';
+import { VaultHeader } from 'client/modules/skateVaults/components/VaultHeader';
 import { ReactNode } from 'react';
 
 export interface VaultCardProps extends WithClassnames {

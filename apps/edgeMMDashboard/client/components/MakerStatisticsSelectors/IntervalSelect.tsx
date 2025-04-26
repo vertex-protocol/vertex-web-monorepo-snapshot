@@ -39,7 +39,7 @@ export function IntervalSelect({
       onOpenChange={onOpenChange}
     >
       <div className="flex flex-col gap-y-1">
-        <Label>Interval</Label>
+        <Label sizeVariant="lg">Interval</Label>
         <Select.Trigger
           // min-w is used to prevent layout shifts
           className="min-w-32"

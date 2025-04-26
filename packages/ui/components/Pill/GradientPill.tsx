@@ -1,26 +1,57 @@
 import {
+  joinClassNames,
   mergeClassNames,
   WithChildren,
   WithClassnames,
 } from '@vertex-protocol/web-common';
-import { COMMON_TRANSPARENCY_COLORS } from '../../consts';
+import { IconComponent } from '../Icons';
+
+interface Props extends WithChildren<WithClassnames> {
+  colorVariant: 'alt' | 'info' | 'accent' | 'warning';
+  icon?: IconComponent;
+}
 
 export function GradientPill({
   children,
   className,
-}: WithChildren<WithClassnames>) {
+  colorVariant,
+  icon: Icon,
+}: Props) {
+  const gradientBorderStopColorClassName = {
+    alt: 'to-accent-alt',
+    info: 'to-accent-info',
+    accent: 'to-accent',
+    warning: 'to-accent-warning',
+  }[colorVariant];
+
+  const textColorClassName = {
+    alt: 'text-accent-alt',
+    info: 'text-accent-info',
+    accent: 'text-accent',
+    warning: 'text-accent-warning',
+  }[colorVariant];
+
   return (
     <div
-      className={mergeClassNames(
-        // Using `2px` less padding on the left to make the italicized text look more centered
-        'text-3xs h-max px-2 py-0.5 pr-2.5',
-        'border',
-        COMMON_TRANSPARENCY_COLORS.borderAccent,
-        'bg-surface-1 text-accent rounded font-bold italic',
-        className,
+      className={joinClassNames(
+        'rounded-sm p-px',
+        'from-overlay-divider bg-linear-to-r',
+        gradientBorderStopColorClassName,
       )}
     >
-      {children}
+      <div
+        className={mergeClassNames(
+          'text-3xs h-max px-2 py-0.5',
+          'bg-surface-1 flex items-center gap-x-0.5 rounded-[3px]',
+          // Using `2px` less padding on the left when an icon is preset to make the icon and text look more centered
+          !!Icon && 'pl-1.5',
+          textColorClassName,
+          className,
+        )}
+      >
+        {!!Icon && <Icon fill="currentColor" />}
+        {children}
+      </div>
     </div>
   );
 }

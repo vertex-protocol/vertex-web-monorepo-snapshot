@@ -10,10 +10,13 @@
   },
   "private": true,
   "dependencies": {
+    "tailwind-merge": "3.2.0"
+  },
+  "peerDependencies": {
     "ahooks": "*",
     "jotai": "*",
     "react": "*",
-    "tailwind-merge": "^2.6.0"
+    "zod": "*"
   },
   "devDependencies": {
     "eslint": "*",

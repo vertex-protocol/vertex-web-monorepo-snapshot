@@ -5,13 +5,14 @@ import {
   EXPORT_HISTORY_QUERY_PAGE_SIZE,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
-import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
+import { updateProgressFrac } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
   ExportHistoryTradeItem,
   GetExportHistoryDataParams,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
+import { last } from 'lodash';
 
 export async function getExportHistoryTradesData(
   params: GetExportHistoryDataParams,
@@ -29,9 +30,6 @@ export async function getExportHistoryTradesData(
       maxTimestampInclusive: millisecondsToSeconds(params.endTimeMillis),
       limit: EXPORT_HISTORY_QUERY_PAGE_SIZE,
       startCursor,
-      // Only fetch non-isolated events to avoid duplication with isolated events
-      // Cross account events include the isolated transfers as well
-      isolated: false,
     };
 
     const matchEventsResponse =
@@ -40,7 +38,7 @@ export async function getExportHistoryTradesData(
       );
 
     for (const event of matchEventsResponse.events) {
-      const staticMarketData = allMarketsStaticData.all[event.productId];
+      const staticMarketData = allMarketsStaticData.allMarkets[event.productId];
       const staticQuoteData = allMarketsStaticData.quotes[event.productId];
 
       if (!staticMarketData || !staticQuoteData) {
@@ -59,14 +57,14 @@ export async function getExportHistoryTradesData(
       }
 
       items.push({
-        time: formatExportHistoryTimestamp(tableItem.timestampMillis),
+        time: new Date(tableItem.timestampMillis),
         marketName: tableItem.marketInfo.marketName,
         orderType: tableItem.orderType,
         marginModeType: tableItem.marginModeType,
-        amount: tableItem.filledAmount.toString(),
-        avgPrice: tableItem.filledPrice.toString(),
-        fee: tableItem.tradeFeeQuote.toString(),
-        total: tableItem.tradeTotalCost.toString(),
+        amount: tableItem.filledAmount,
+        avgPrice: tableItem.filledPrice,
+        fee: tableItem.tradeFeeQuote,
+        total: tableItem.tradeTotalCost,
       });
     }
 
@@ -76,6 +74,8 @@ export async function getExportHistoryTradesData(
     if (!matchEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    updateProgressFrac(params, context, last(items)?.time);
 
     // Reduce chance of rate limiting.
     await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);

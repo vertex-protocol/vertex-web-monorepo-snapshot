@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { toBigDecimal } from '@vertex-protocol/utils';
+import { ChainEnv } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
@@ -7,7 +7,7 @@ import {
   useIsChainEnvType,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
-import { ChainEnv } from '@vertex-protocol/client';
+import { toBigDecimal } from '@vertex-protocol/utils';
 
 export function tokenClaimDeadlinesQueryKey(chainEnv?: ChainEnv) {
   return createQueryKey('tokenClaimDeadlines', chainEnv);
@@ -33,7 +33,7 @@ export function useTokenClaimDeadlines() {
       }
 
       const baseResponse =
-        await vertexClient.context.contracts.vrtxAirdrop.getClaimingDeadlines();
+        await vertexClient.context.contracts.vrtxAirdrop.read.getClaimingDeadlines();
 
       return baseResponse.map((deadline) => toBigDecimal(deadline));
     },

@@ -1,7 +1,7 @@
-import { Token } from '@vertex-protocol/react-client';
 import {
   formatNumber,
   PresetNumberFormatSpecifier,
+  Token,
 } from '@vertex-protocol/react-client';
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { Icons } from '@vertex-protocol/web-ui';
@@ -31,7 +31,7 @@ export function SubaccountQuoteTransferOverviewCards({
         currentSubaccount={currentSubaccount}
         primaryQuoteToken={primaryQuoteToken}
       />
-      <TransferArrowIcon className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+      <TransferArrowIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
       <SubaccountOverviewCard
         subaccount={recipientSubaccount}
         currentSubaccount={currentSubaccount}
@@ -53,7 +53,7 @@ function SubaccountOverviewCard({
   primaryQuoteToken,
 }: SubaccountOverviewCardProps) {
   return (
-    <div className="bg-surface-1 text-text-primary flex flex-col gap-y-3 rounded p-3">
+    <div className="bg-surface-1 text-text-primary flex flex-col gap-y-3 rounded-sm p-3">
       <div className="flex items-center justify-center gap-x-2">
         <ProfileAvatarIcon
           avatar={subaccount.profile.avatar}
@@ -81,7 +81,7 @@ function TransferArrowIcon({ className }: WithClassnames) {
   return (
     <div
       className={joinClassNames(
-        'border-stroke bg-surface-2 rounded border p-1',
+        'border-stroke bg-surface-2 rounded-sm border p-1',
         className,
       )}
     >

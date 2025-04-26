@@ -23,21 +23,19 @@ const OVERVIEW_CHART_TABS: PortfolioChartTab<OverviewChartTabID>[] = [
 ];
 
 interface Props {
-  fundsAvailableBounded: BigDecimal | undefined;
+  fundsAvailableBoundedUsd: BigDecimal | undefined;
+  isolatedUnrealizedPnlUsd: BigDecimal | undefined;
+  isolatedTotalNetMarginUsd: BigDecimal | undefined;
   portfolioValueUsd: BigDecimal | undefined;
   liquidationRiskFractionBounded: BigDecimal | undefined;
-  marginUsageFractionBounded: BigDecimal | undefined;
-  fundsUntilLiquidationBounded: BigDecimal | undefined;
-  accountLeverage: BigDecimal | undefined;
 }
 
 export function OverviewHeroSection({
-  fundsAvailableBounded,
+  isolatedUnrealizedPnlUsd,
   liquidationRiskFractionBounded,
   portfolioValueUsd,
-  marginUsageFractionBounded,
-  fundsUntilLiquidationBounded,
-  accountLeverage,
+  fundsAvailableBoundedUsd,
+  isolatedTotalNetMarginUsd,
 }: Props) {
   const {
     chartData,
@@ -57,11 +55,10 @@ export function OverviewHeroSection({
           portfolioValueUsd={portfolioValueUsd}
         />
         <OverviewHeroMetricsItems
-          fundsAvailable={fundsAvailableBounded}
+          fundsAvailableBoundedUsd={fundsAvailableBoundedUsd}
+          isolatedTotalNetMarginUsd={isolatedTotalNetMarginUsd}
+          isolatedUnrealizedPnlUsd={isolatedUnrealizedPnlUsd}
           liquidationRiskFraction={liquidationRiskFractionBounded}
-          marginUsageFraction={marginUsageFractionBounded}
-          fundsUntilLiquidation={fundsUntilLiquidationBounded}
-          accountLeverage={accountLeverage}
         />
       </PortfolioHeroSection.MetricsPane>
       <PortfolioHeroSection.Chart

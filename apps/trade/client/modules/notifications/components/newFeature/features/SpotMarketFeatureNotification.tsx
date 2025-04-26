@@ -46,7 +46,7 @@ export function SpotMarketFeatureNotification({
     onDismiss();
   };
 
-  const metadata = allMarketsStaticData?.spot[productId]?.metadata;
+  const metadata = allMarketsStaticData?.spotMarkets[productId]?.metadata;
 
   if (!metadata) {
     return null;

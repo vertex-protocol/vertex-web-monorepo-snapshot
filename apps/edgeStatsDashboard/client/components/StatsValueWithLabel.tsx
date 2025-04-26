@@ -31,7 +31,7 @@ export function StatsValueWithLabel({ label, ...unionProps }: Props) {
       <Label className="text-text-secondary font-medium" sizeVariant="sm">
         {label}
       </Label>
-      <Value className="font-semibold" sizeVariant="lg">
+      <Value className="font-semibold" sizeVariant="xl">
         {valueContent}
       </Value>
     </div>

@@ -1,4 +1,4 @@
-import { BigDecimal } from '@vertex-protocol/client';
+import { BigDecimal, VLP_PRODUCT_ID } from '@vertex-protocol/client';
 import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import {
@@ -16,9 +16,11 @@ import {
 import { SpotMoreActionsDropdownMenu } from 'client/components/SpotMoreActionsDropdownMenu';
 import { useShowDialogForProduct } from 'client/hooks/ui/navigation/useShowDialogForProduct';
 import { useIsConnected } from 'client/hooks/util/useIsConnected';
+import { ROUTES } from 'client/modules/app/consts/routes';
 import { useDialog } from 'client/modules/app/dialogs/hooks/useDialog';
 import { useEnabledFeatures } from 'client/modules/envSpecificContent/hooks/useEnabledFeatures';
 import { getTableButtonOnClickHandler } from 'client/modules/tables/utils/getTableButtonOnClickHandler';
+import { useRouter } from 'next/navigation';
 
 interface SpotActionButtonCellProps extends TableCellProps {
   productId: number;
@@ -36,13 +38,14 @@ export function SpotActionButtonCell({
   const isConnected = useIsConnected();
   const showDialogForProduct = useShowDialogForProduct();
   const { show } = useDialog();
+  const { push } = useRouter();
   const { protocolTokenMetadata } = useVertexMetadataContext();
-  const { isStakeActionEnabled } = useEnabledFeatures();
+  const { isStakeActionEnabled, isVlpEnabled } = useEnabledFeatures();
 
-  const isDepositRepayStakeDisabled = !isConnected;
-  const isWithdrawOrBorrowDisabled = !isConnected;
+  const disableActions = !isConnected;
   const showStake =
     isStakeActionEnabled && productId === protocolTokenMetadata.productId;
+  const showVlp = isVlpEnabled && productId === VLP_PRODUCT_ID;
 
   return (
     <TableCell
@@ -50,6 +53,16 @@ export function SpotActionButtonCell({
       {...rest}
     >
       <div className="flex gap-x-2 px-2">
+        {showVlp && (
+          <PrimaryButton
+            size="xs"
+            className="w-24"
+            onClick={getTableButtonOnClickHandler(() => push(ROUTES.vlp))}
+            disabled={disableActions}
+          >
+            VLP Page
+          </PrimaryButton>
+        )}
         {showStake && (
           <PrimaryButton
             size="xs"
@@ -57,7 +70,7 @@ export function SpotActionButtonCell({
             onClick={getTableButtonOnClickHandler(() =>
               show({ type: 'stake_v2_vrtx', params: {} }),
             )}
-            disabled={isDepositRepayStakeDisabled}
+            disabled={disableActions}
           >
             Stake
           </PrimaryButton>
@@ -72,7 +85,7 @@ export function SpotActionButtonCell({
               productId,
             });
           })}
-          disabled={isDepositRepayStakeDisabled}
+          disabled={disableActions}
         />
         <ResponsiveActionButton
           label="Withdraw"
@@ -84,7 +97,7 @@ export function SpotActionButtonCell({
               productId,
             });
           })}
-          disabled={isWithdrawOrBorrowDisabled}
+          disabled={disableActions}
         />
         <SpotMoreActionsDropdownMenu
           productId={productId}

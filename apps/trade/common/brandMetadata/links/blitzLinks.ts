@@ -20,10 +20,10 @@ export const BLITZ_COMMON_LINKS = {
   discord: 'https://discord.gg/blitzexchange',
   docs: 'https://docs.blitz.exchange/',
   faq: 'https://docs.blitz.exchange/basics/faqs',
-  faqFeesDocs: 'https://docs.blitz.exchange/basics/fees',
   fastWithdrawalsLearnMore: `https://docs.blitz.exchange/tutorials/fast-withdrawals`,
-  // Blitz hacken uses the same link as Vertex
   hacken: 'https://hackenproof.com/company/vertex-protocol/programs',
+  // Blitz hacken uses the same link as Vertex
+  isolatedDocs: 'https://docs.blitz.exchange/basics/isolated-margin',
   lpDocs: 'https://docs.blitz.exchange/basics/blitz-dex-technical-stack',
   maintenanceWindowDocs:
     'https://docs.blitz.exchange/resources-and-links/maintenance-windows-and-status',
@@ -31,8 +31,6 @@ export const BLITZ_COMMON_LINKS = {
   multipleSubaccountsDocs:
     'https://docs.blitz.exchange/tutorials/multiple-accounts',
   privacyPolicy: 'https://blitz.exchange/docs/PrivacyPolicy.pdf',
-  productSpecDocs:
-    'https://docs.blitz.exchange/basics/perpetual-and-spot-market-specifications',
   // Referral page is Vertex specific for now, but leaving this here until there is referral docs for Blitz
   referralDocs:
     'https://vertex-protocol.gitbook.io/docs/community-token-and-dao/referrals',
@@ -40,10 +38,6 @@ export const BLITZ_COMMON_LINKS = {
   spreadDocs:
     'https://docs.blitz.exchange/basics/subaccounts-isolated-margin-and-health#special-cases-spreads-lps-and-large-positions',
   termsOfUse: 'https://blitz.exchange/docs/TermsOfUse.pdf',
-  tpslDocs:
-    'https://docs.blitz.exchange/tutorials/tp-sl-and-stop-market-orders',
   tutorials: 'https://docs.blitz.exchange/tutorials/getting-started',
   twitter: 'https://twitter.com/tradeonblitz',
-  wrapEth:
-    'https://app.uniswap.org/explore/tokens/blast/0x4300000000000000000000000000000000000004',
 };

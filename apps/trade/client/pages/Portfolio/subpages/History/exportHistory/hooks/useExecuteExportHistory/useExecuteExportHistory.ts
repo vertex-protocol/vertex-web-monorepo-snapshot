@@ -13,8 +13,11 @@ import { EXPORT_HISTORY_HEADINGS_BY_TYPE } from 'client/pages/Portfolio/subpages
 import { getExportHistoryCollateralData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryCollateralData';
 import { getExportHistoryLiquidationsData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryLiquidationsData';
 import { getExportHistoryLpData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryLpData';
+import { getExportHistoryVlpData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryVlpData';
 import { getExportHistoryRealizedPnlData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryRealizedPnlData';
 import { getExportHistoryTradesData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryTradesData';
+import { getExportHistoryFundingData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryFundingData';
+import { getExportHistoryInterestData } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/getExportHistoryInterestData';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
 import { GetExportHistoryDataParams } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 import {
@@ -27,7 +30,9 @@ import { useCallback } from 'react';
 /**
  * Hook to retrieve historical data and download it as a CSV
  */
-export function useExecuteExportHistory() {
+export function useExecuteExportHistory(
+  setProgressFrac: (frac: number) => void,
+) {
   const { getSubaccountProfile } = useSubaccountContext();
   const { data: allMarketsStaticData } = useAllMarketsStaticData();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
@@ -39,10 +44,12 @@ export function useExecuteExportHistory() {
         context: ValidExecuteContext,
       ) => {
         if (!allMarketsStaticData) {
-          throw Error('No market data available');
+          throw new Error('No market data available');
         }
 
         console.log('Exporting history', toPrintableObject(params));
+
+        setProgressFrac(0);
 
         const getDataContext: GetExportHistoryDataContext = {
           allMarketsStaticData,
@@ -50,6 +57,7 @@ export function useExecuteExportHistory() {
           vertexClient: context.vertexClient,
           subaccount: context.subaccount,
           getSubaccountProfile,
+          setProgressFrac,
         };
 
         const data: CsvDataItem[] = await (() => {
@@ -66,10 +74,18 @@ export function useExecuteExportHistory() {
               return getExportHistoryTradesData(params, getDataContext);
             case 'lp':
               return getExportHistoryLpData(params, getDataContext);
+            case 'vlp':
+              return getExportHistoryVlpData(params, getDataContext);
             case 'liquidations':
               return getExportHistoryLiquidationsData(params, getDataContext);
+            case 'funding':
+              return getExportHistoryFundingData(params, getDataContext);
+            case 'interest':
+              return getExportHistoryInterestData(params, getDataContext);
           }
         })();
+
+        setProgressFrac(1);
 
         downloadCsv(
           data,
@@ -82,7 +98,12 @@ export function useExecuteExportHistory() {
 
         return data;
       },
-      [allMarketsStaticData, getSubaccountProfile, primaryQuotePriceUsd],
+      [
+        allMarketsStaticData,
+        getSubaccountProfile,
+        primaryQuotePriceUsd,
+        setProgressFrac,
+      ],
     ),
   );
 

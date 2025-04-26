@@ -1,4 +1,4 @@
-import { BrandName } from '@vertex-protocol/web-ui';
+import { BrandName } from 'common/environment/types';
 
 declare const envBrandName: BrandName;
 

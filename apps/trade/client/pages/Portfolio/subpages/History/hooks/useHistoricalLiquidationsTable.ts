@@ -163,7 +163,8 @@ export function getHistoricalLiquidationsTableItem({
   allMarketsStaticData,
   primaryQuotePriceUsd,
 }: GetHistoricalLiquidationsTableItemParams): HistoricalLiquidationsTableItem | null {
-  const primaryQuoteToken = allMarketsStaticData.primaryQuote.metadata.token;
+  const primaryQuoteToken =
+    allMarketsStaticData.primaryQuoteProduct.metadata.token;
   const { lps, spot, quote, perp, timestamp } = event;
   const liquidatedBalanceTypes: Set<HistoricalLiquidatedBalanceType> =
     new Set();
@@ -172,7 +173,8 @@ export function getHistoricalLiquidationsTableItem({
   const decomposedLps = lps
     .map((decomposedLp): HistoricalLiquidationDecomposedLp | null => {
       const productId = decomposedLp.indexerEvent.productId;
-      const metadataForProduct = allMarketsStaticData.all[productId]?.metadata;
+      const metadataForProduct =
+        allMarketsStaticData.allMarkets[productId]?.metadata;
 
       if (!metadataForProduct) {
         console.warn(
@@ -218,7 +220,7 @@ export function getHistoricalLiquidationsTableItem({
   let spotLiquidation: HistoricalLiquidationsTableItem['spot'];
   if (spot) {
     const marketMetadata =
-      allMarketsStaticData.spot[spot.indexerEvent.productId]?.metadata;
+      allMarketsStaticData.spotMarkets[spot.indexerEvent.productId]?.metadata;
 
     if (!marketMetadata) {
       console.warn(
@@ -253,7 +255,7 @@ export function getHistoricalLiquidationsTableItem({
   let perpLiquidation: HistoricalLiquidationsTableItem['perp'];
   if (perp) {
     const marketMetadata =
-      allMarketsStaticData.perp[perp.indexerEvent.productId]?.metadata;
+      allMarketsStaticData.perpMarkets[perp.indexerEvent.productId]?.metadata;
     if (!marketMetadata) {
       console.warn(
         `[getHistoricalLiquidationsTableItem] Invalid liquidated event - perp market ${perp.indexerEvent.productId} not found.`,

@@ -12,8 +12,9 @@ export function ValueEndElement({
   const endElementSizeClassNames = {
     xs: 'text-xs',
     sm: 'text-xs',
-    base: 'text-sm',
-    lg: 'text-base',
+    base: 'text-base',
+    lg: 'text-sm',
+    xl: 'text-base',
   }[sizeVariant];
 
   // Line-height has no effect on inline elements such as `span`, so we wrap children in a `div` here for consistency

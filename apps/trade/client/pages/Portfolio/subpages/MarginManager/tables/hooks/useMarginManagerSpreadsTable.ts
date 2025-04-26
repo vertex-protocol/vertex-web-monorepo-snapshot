@@ -35,7 +35,8 @@ export function useMarginManagerSpreadsTable() {
 
     return spreadBalances
       .map((spread): MarginManagerSpreadTableItem | undefined => {
-        const marketStaticData = marketsStaticData?.perp[spread.perpProductId];
+        const marketStaticData =
+          marketsStaticData?.perpMarkets[spread.perpProductId];
 
         // return if no market static data or if basis amount is zero
         if (!marketStaticData || spread.basisAmount.isZero()) {

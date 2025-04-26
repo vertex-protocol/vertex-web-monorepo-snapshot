@@ -4,11 +4,7 @@ import {
   WithClassnames,
   WithRef,
 } from '@vertex-protocol/web-common';
-import {
-  COMMON_TRANSPARENCY_COLORS,
-  CompactInput,
-  CompactInputProps,
-} from '@vertex-protocol/web-ui';
+import { CompactInput, CompactInputProps } from '@vertex-protocol/web-ui';
 import {
   AssetSelectProps,
   CollateralAssetSelect,
@@ -47,10 +43,7 @@ export function CollateralSelectInput({
       inputContainerClassName={joinClassNames('pl-0', className)}
       startElement={
         <CollateralAssetSelect
-          className={joinClassNames(
-            'h-full w-max min-w-24 border-r',
-            COMMON_TRANSPARENCY_COLORS.border,
-          )}
+          className="border-overlay-divider h-full w-max min-w-24 border-r"
           disabled={disableSelect}
           availableProducts={availableProducts}
           selectedProduct={selectedProduct}

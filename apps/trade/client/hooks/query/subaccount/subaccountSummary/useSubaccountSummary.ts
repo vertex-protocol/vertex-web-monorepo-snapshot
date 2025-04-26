@@ -80,7 +80,6 @@ export function useSubaccountSummary({
     ),
     queryFn,
     enabled: !disabled,
-    // Refetch logic should handle query updates
-    refetchInterval: subaccountOwner ? 30000 : undefined,
+    refetchInterval: subaccountOwner ? 5000 : undefined,
   });
 }

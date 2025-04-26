@@ -1,7 +1,7 @@
 import { useVertexMetadataContext } from '@vertex-protocol/react-client';
 import { DiscList } from '@vertex-protocol/web-ui';
 import { CollapsibleInfoCard } from 'client/components/CollapsibleInfoCard';
-import { SLOW_MODE_FEE_AMOUNT_USDC } from 'client/hooks/subaccount/useSlowModeFeeAllowance';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { clientEnv } from 'common/environment/clientEnv';
 
 export function SlowModeSettingsInfoCollapsible() {
@@ -25,7 +25,7 @@ export function SlowModeSettingsInfoCollapsible() {
         <DiscList.Item>
           Enabling 1CT with a new key requires a 1-time fee of{' '}
           <span className="text-text-primary font-bold">
-            {SLOW_MODE_FEE_AMOUNT_USDC} {primaryQuoteToken.symbol}
+            {SEQUENCER_FEE_AMOUNT_USDC} {primaryQuoteToken.symbol}
           </span>
           . The fee is deducted from your wallet, not{' '}
           {clientEnv.brandMetadata.displayName} account.

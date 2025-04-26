@@ -1,9 +1,6 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import {
-  COMMON_TRANSPARENCY_COLORS,
-  ScrollShadowsContainer,
-  SearchBar,
-} from '@vertex-protocol/web-ui';
+import { ScrollShadowsContainer, SearchBar } from '@vertex-protocol/web-ui';
+import { MarketCategoryFilter } from 'client/components/MarketCategoryFilter/MarketCategoryFilter';
 import { Footer } from 'client/modules/commandCenter/components/Footer';
 import { BalancesGroup } from 'client/modules/commandCenter/components/groups/BalancesGroup';
 import { MarketsGroup } from 'client/modules/commandCenter/components/groups/MarketsGroup';
@@ -11,7 +8,6 @@ import { NavItemsGroup } from 'client/modules/commandCenter/components/groups/Na
 import { PositionsGroup } from 'client/modules/commandCenter/components/groups/PositionsGroup';
 import { NoResultsMessage } from 'client/modules/commandCenter/components/NoResultsMessage';
 import { useCommandCenter } from 'client/modules/commandCenter/hooks/useCommandCenter';
-import { MarketCategoryFilter } from 'client/components/MarketCategoryFilter/MarketCategoryFilter';
 import { Command } from 'cmdk';
 
 export function CommandCenter({ className }: WithClassnames) {
@@ -41,8 +37,8 @@ export function CommandCenter({ className }: WithClassnames) {
       {/* our own here to isolate them for styling. */}
       <div
         className={joinClassNames(
-          'flex h-[80vh] flex-col divide-y lg:h-[600px]',
-          COMMON_TRANSPARENCY_COLORS.divide,
+          'flex h-[80vh] flex-col lg:h-150',
+          'divide-overlay-divider divide-y',
         )}
       >
         <div className="flex flex-col gap-y-3 p-2 lg:p-4">
@@ -74,9 +70,7 @@ export function CommandCenter({ className }: WithClassnames) {
               // Force the inner wrapping element to always take up full height so we can
               // vertically center other elements (e.g. no results msg).
               '*:h-full',
-              // The color should be kept in sync with COMMON_TRANSPARENCY_COLORS.divide. Unfortunately, we can't use
-              // the constant here because interpolation with a pseudoselector won't be picked up by Tailwind JIT
-              '*:divide-overlay-divider/10 *:divide-y',
+              '*:divide-overlay-divider *:divide-y',
             )}
           >
             <PositionsGroup

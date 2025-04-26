@@ -31,7 +31,7 @@ export function SpotLeverageOnDisclosure() {
       <div
         className={joinClassNames(
           'absolute inset-0',
-          'cursor-not-allowed backdrop-blur-sm',
+          'cursor-not-allowed backdrop-blur-xs',
           // This needs a slight z-index adjustment to be above all
           // the elements in the form
           OVERLAY_Z_INDEX,

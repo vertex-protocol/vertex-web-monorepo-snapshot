@@ -1,3 +1,4 @@
+import { AccountWithPrivateKey } from '@vertex-protocol/client';
 import { useEVMContext } from '@vertex-protocol/react-client';
 import { WithChildren } from '@vertex-protocol/web-common';
 import { SUBACCOUNT_LIMIT } from 'client/context/subaccount/consts';
@@ -12,10 +13,10 @@ import {
 } from 'client/context/subaccount/types';
 import { LinkedSignerSync } from 'client/modules/singleSignatureSessions/components/LinkedSignerSync';
 import { useSavedSubaccountSigningPreference } from 'client/modules/singleSignatureSessions/hooks/useSavedSubaccountSigningPreference';
+import { SubaccountSigningPreference } from 'client/modules/singleSignatureSessions/types';
 import { PRIMARY_SUBACCOUNT_NAME } from 'client/modules/subaccounts/consts';
 import { useSavedSubaccountSettings } from 'client/modules/subaccounts/hooks/useSavedSubaccountSettings';
 import { getDefaultSubaccountProfile } from 'client/modules/subaccounts/utils/getDefaultSubaccountProfile';
-import { Wallet } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /**
@@ -26,7 +27,6 @@ export function SubaccountContextProvider({ children }: WithChildren) {
     connectionStatus,
     primaryChain: { id: primaryChainId },
     primaryChainEnv,
-    disconnect: baseDisconnect,
   } = useEVMContext();
 
   /**
@@ -75,24 +75,25 @@ export function SubaccountContextProvider({ children }: WithChildren) {
    * Signing preferences
    */
 
-  // Authorized signer for the current session - not persisted
-  const [sessionAuthorizedSigner, setSessionAuthorizedSigner] =
-    useState<Wallet>();
+  // Authorized linked signer for the current session - not persisted
+  const [linkedSignerForSession, setLinkedSignerForSession] =
+    useState<AccountWithPrivateKey>();
 
-  // Clear session signer on subaccount changes
+  // Clear session linked signer on subaccount changes
   useEffect(() => {
-    setSessionAuthorizedSigner(undefined);
+    setLinkedSignerForSession(undefined);
   }, [currentSubaccount]);
 
   const {
     signingPreference: savedSigningPreference,
     didLoadPersistedValue: didLoadSigningPreferencePersistedValue,
     saveSigningPreference,
-    clearPrivateKeyIfSaved,
   } = useSavedSubaccountSigningPreference(currentSubaccount.name);
 
   // Consolidate signing preference with any session state
-  const signingPreference = useMemo(() => {
+  const signingPreference = useMemo(():
+    | SubaccountSigningPreference
+    | undefined => {
     if (!savedSigningPreference) {
       return;
     }
@@ -101,10 +102,10 @@ export function SubaccountContextProvider({ children }: WithChildren) {
     }
     return {
       ...savedSigningPreference,
-      authorizedWallet:
-        savedSigningPreference.authorizedWallet ?? sessionAuthorizedSigner,
+      linkedSigner:
+        savedSigningPreference.linkedSigner ?? linkedSignerForSession,
     };
-  }, [savedSigningPreference, sessionAuthorizedSigner]);
+  }, [savedSigningPreference, linkedSignerForSession]);
 
   // Update fn for signing preference changes
   const updateSigningPreference = useCallback<UpdateSigningPreferenceFn>(
@@ -113,26 +114,20 @@ export function SubaccountContextProvider({ children }: WithChildren) {
         saveSigningPreference({
           type: 'sign_always',
         });
-        setSessionAuthorizedSigner(undefined);
+        setLinkedSignerForSession(undefined);
       } else {
         saveSigningPreference({
           type: 'sign_once',
           rememberMe: newValue.rememberMe,
           privateKey: newValue.rememberMe
-            ? newValue.authorizedWallet.privateKey
+            ? newValue.linkedSigner?.privateKey
             : undefined,
         });
-        setSessionAuthorizedSigner(newValue.authorizedWallet);
+        setLinkedSignerForSession(newValue.linkedSigner);
       }
     },
     [saveSigningPreference],
   );
-
-  const disconnect = useCallback(() => {
-    clearPrivateKeyIfSaved();
-    setSessionAuthorizedSigner(undefined);
-    baseDisconnect();
-  }, [baseDisconnect, clearPrivateKeyIfSaved]);
 
   const data: SubaccountContextData = useMemo(() => {
     return {
@@ -147,7 +142,6 @@ export function SubaccountContextProvider({ children }: WithChildren) {
         didLoadPersistedValue: didLoadSigningPreferencePersistedValue,
         update: updateSigningPreference,
       },
-      disconnect,
     };
   }, [
     currentSubaccount,
@@ -159,7 +153,6 @@ export function SubaccountContextProvider({ children }: WithChildren) {
     signingPreference,
     didLoadSigningPreferencePersistedValue,
     updateSigningPreference,
-    disconnect,
   ]);
 
   return (

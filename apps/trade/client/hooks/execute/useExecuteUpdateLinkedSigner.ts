@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { AccountWithPrivateKey } from '@vertex-protocol/client';
 import { subaccountToHex } from '@vertex-protocol/contracts';
 import { logExecuteError } from 'client/hooks/execute/util/logExecuteError';
 import {
@@ -7,7 +8,6 @@ import {
 } from 'client/hooks/execute/util/useExecuteInValidContext';
 import { useRefetchQueries } from 'client/hooks/execute/util/useRefetchQueries';
 import { subaccountLinkedSignerQueryKey } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
-import { Wallet } from 'ethers';
 import { useCallback } from 'react';
 import { zeroAddress } from 'viem';
 
@@ -18,8 +18,8 @@ interface Params {
   revoke: boolean;
 }
 
-// If a linked signer is authorized, returns the wallet. if revoking, returns undefined
-type Data = Wallet | undefined;
+// Returns the linked signer if authorizing, returns undefined if revoking
+type Data = AccountWithPrivateKey | undefined;
 
 export function useExecuteUpdateLinkedSigner() {
   const refetchQueries = useRefetchQueries(REFETCH_QUERY_KEYS);
@@ -27,7 +27,7 @@ export function useExecuteUpdateLinkedSigner() {
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (params: Params, context: ValidExecuteContext): Promise<Data> => {
-        // Query the current linked signer, if this matches with the wallet, then skip authorization
+        // Query the current linked signer, if this matches with the account, then skip authorization
         const currentLinkedSigner =
           await context.vertexClient.subaccount.getSubaccountLinkedSignerWithRateLimit(
             {
@@ -68,30 +68,31 @@ export function useExecuteUpdateLinkedSigner() {
          */
 
         // Create the linked signer, this requires a signature
-        const linkedSignerWallet =
+        const standardLinkedSigner =
           await context.vertexClient.subaccount.createStandardLinkedSigner(
             context.subaccount.name,
           );
+
         if (
           currentLinkedSignerAddress ===
-          linkedSignerWallet.address.toLowerCase()
+          standardLinkedSigner.account.address.toLowerCase()
         ) {
           console.debug(
             '[useExecuteCreateLinkedSigner] Skipping authorization, linked signer already matches',
           );
-          return linkedSignerWallet;
+          return standardLinkedSigner;
         }
 
         // Authorize the linked signer
         await context.vertexClient.subaccount.linkSigner({
           signer: subaccountToHex({
-            subaccountOwner: linkedSignerWallet.address,
+            subaccountOwner: standardLinkedSigner.account.address,
             subaccountName: '',
           }),
           subaccountName: context.subaccount.name,
         });
 
-        return linkedSignerWallet;
+        return standardLinkedSigner;
       },
       [],
     ),

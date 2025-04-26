@@ -23,8 +23,7 @@ export function useExecuteUnstakeVrtx() {
     useCallback(
       async (params: VrtxTokenAmountParams, context: ValidExecuteContext) => {
         console.log('Unstaking VRTX', params);
-        const txResponse = await context.vertexClient.rewards.unstake(params);
-        return txResponse.hash;
+        return context.vertexClient.rewards.unstake(params);
       },
       [],
     ),

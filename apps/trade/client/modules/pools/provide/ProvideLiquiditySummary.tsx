@@ -3,7 +3,7 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { BigDecimal } from '@vertex-protocol/utils';
-import { Summary } from 'client/components/Summary';
+import { LpDialogActionSummary } from 'client/modules/pools/components/LpDialogActionSummary';
 
 interface Props {
   lpValueUsd: BigDecimal | undefined;
@@ -19,29 +19,28 @@ export function ProvideLiquiditySummary({
   quoteSymbol,
 }: Props) {
   return (
-    <Summary.Container>
-      <Summary.Item
+    <LpDialogActionSummary.Container>
+      <LpDialogActionSummary.Item
         label="Provide:"
         value={lpValueUsd}
         numberFormatSpecifier={PresetNumberFormatSpecifier.CURRENCY_2DP}
         defaultValue={0}
         valueEndElement="Liquidity"
       />
-      <Summary.Item
+      <LpDialogActionSummary.Item
         label="Est. Received:"
         value={lpAmount}
         numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_AUTO}
         defaultValue={0}
         valueEndElement="LP Tokens"
       />
-      <Summary.Item
+      <LpDialogActionSummary.Item
         label="Gas Fee:"
         definitionTooltipId="gasFee"
         value={feeAmount}
-        defaultValue={0}
-        numberFormatSpecifier={CustomNumberFormatSpecifier.NUMBER_PRECISE}
+        numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
         valueEndElement={quoteSymbol}
       />
-    </Summary.Container>
+    </LpDialogActionSummary.Container>
   );
 }

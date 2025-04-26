@@ -2,13 +2,10 @@ import { ChainEnv } from '@vertex-protocol/client';
 import {
   AnnotatedPerpMarket,
   AnnotatedSpotMarket,
+  EdgeChainEnv,
 } from '@vertex-protocol/react-client';
 
-type EdgeChainEnv = 'edge';
-
 export type ChartTimespanDays = 7 | 30 | 90;
-
-export type ChainEnvWithEdge = ChainEnv | EdgeChainEnv;
 
 // This is important such that we can label Spot markets with their associated `chainEnv`.
 interface EdgeSpotMetadata {

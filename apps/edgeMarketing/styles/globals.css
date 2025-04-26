@@ -1,10 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@config "../tailwind.config.ts";
 
 @layer base {
   body {
-    background-color: #fff;
-    color: #000;
+    @apply bg-white text-black;
   }
 }

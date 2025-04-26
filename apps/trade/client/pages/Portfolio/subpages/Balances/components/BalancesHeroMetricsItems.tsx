@@ -1,16 +1,15 @@
 import { PresetNumberFormatSpecifier } from '@vertex-protocol/react-client';
-import { WithClassnames } from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
 import { ValueWithLabelProps } from 'client/components/ValueWithLabel/types';
 import { SubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/types';
 import { PortfolioHeroMetricsPane } from 'client/pages/Portfolio/components/PortfolioHeroMetricsPane';
-import { signDependentValue } from '@vertex-protocol/react-client';
+import { getSignDependentColorClassName } from 'client/utils/ui/getSignDependentColorClassName';
 import { useMemo } from 'react';
 
 export function BalancesHeroMetricsItems({
-  className,
   overview,
-}: WithClassnames<{ overview?: SubaccountOverview }>) {
+}: {
+  overview?: SubaccountOverview;
+}) {
   const aprItems = useMemo(
     () =>
       [
@@ -20,13 +19,8 @@ export function BalancesHeroMetricsItems({
           },
           label: 'Net APR',
           value: overview?.spot.averageAPRFraction,
-          valueClassName: signDependentValue(
+          valueClassName: getSignDependentColorClassName(
             overview?.spot.averageAPRFraction,
-            {
-              positive: 'text-positive',
-              negative: 'text-negative',
-              zero: 'text-text-primary',
-            },
           ),
           numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
         },
@@ -38,17 +32,15 @@ export function BalancesHeroMetricsItems({
           value: overview?.spot.totalNetInterestCumulativeUsd,
           numberFormatSpecifier:
             PresetNumberFormatSpecifier.SIGNED_CURRENCY_2DP,
-          valueClassName: signDependentValue(
+          valueClassName: getSignDependentColorClassName(
             overview?.spot.totalNetInterestCumulativeUsd,
-            {
-              positive: 'text-positive',
-              negative: 'text-negative',
-              zero: 'text-text-primary',
-            },
           ),
         },
       ] satisfies ValueWithLabelProps[],
-    [overview],
+    [
+      overview?.spot.averageAPRFraction,
+      overview?.spot.totalNetInterestCumulativeUsd,
+    ],
   );
 
   const balancesItems = useMemo(
@@ -64,36 +56,18 @@ export function BalancesHeroMetricsItems({
         },
         {
           tooltip: {
-            id: 'balancesTotalDepositAPR',
-          },
-          label: 'Deposit APR',
-          value: overview?.spot.averageDepositAPRFraction,
-          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-        },
-        {
-          tooltip: {
             id: 'balancesTotalBorrows',
           },
           label: 'Borrows',
-          value: overview?.spot.totalBorrowsValueUsd.abs(),
+          value: overview?.spot.totalBorrowsValueUsd,
           numberFormatSpecifier: PresetNumberFormatSpecifier.CURRENCY_2DP,
         },
-        {
-          tooltip: {
-            id: 'balancesTotalBorrowAPR',
-          },
-          label: 'Borrow APR',
-          value: overview?.spot.averageBorrowAPRFraction,
-          numberFormatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
-        },
       ] satisfies ValueWithLabelProps[],
-    [overview],
+    [overview?.spot.totalDepositsValueUsd, overview?.spot.totalBorrowsValueUsd],
   );
+
   return (
-    <PortfolioHeroMetricsPane.Items
-      className={className}
-      childContainerClassNames="flex flex-col gap-y-0.5"
-    >
+    <PortfolioHeroMetricsPane.ItemsGroup header="Totals">
       {aprItems.map(
         (
           { tooltip, label, value, numberFormatSpecifier, valueClassName },
@@ -109,7 +83,6 @@ export function BalancesHeroMetricsItems({
           />
         ),
       )}
-      <Divider />
       {balancesItems.map(
         ({ tooltip, label, value, numberFormatSpecifier }, index) => (
           <PortfolioHeroMetricsPane.ValueWithLabel
@@ -121,6 +94,6 @@ export function BalancesHeroMetricsItems({
           />
         ),
       )}
-    </PortfolioHeroMetricsPane.Items>
+    </PortfolioHeroMetricsPane.ItemsGroup>
   );
 }

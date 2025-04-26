@@ -26,7 +26,7 @@ export function useUserRiskWarningState(): UserRiskWarningState | undefined {
     return 'extreme_liquidation_risk';
   }
 
-  if (overview?.fundsAvailableBounded.lt(0.01)) {
+  if (overview?.fundsAvailableBoundedUsd.lt(0.01)) {
     return 'no_funds_available';
   }
 

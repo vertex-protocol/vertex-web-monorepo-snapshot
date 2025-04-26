@@ -1,12 +1,13 @@
 import type { ActionSuccessDialogParams } from 'client/modules/app/dialogs/ActionSuccessDialog';
 import type { EditOrderViaChartDialogProps } from 'client/modules/app/dialogs/EditOrderViaChartDialog';
-import type { DepositDialogParams } from 'client/modules/collateral/deposit/components/DepositDialog';
+import type { DirectDepositDialogParams } from 'client/modules/collateral/deposit/components/DirectDepositDialog';
 import type { FastWithdrawDialogParams } from 'client/modules/collateral/fastWithdraw/components/FastWithdrawDialog';
 import type { RepayDialogParams } from 'client/modules/collateral/repay/RepayDialog';
 import type { WithdrawDialogParams } from 'client/modules/collateral/withdraw/components/WithdrawDialog';
 import type { ProvideLiquidityDialogParams } from 'client/modules/pools/provide/ProvideLiquidityDialog';
 import type { WithdrawLiquidityDialogParams } from 'client/modules/pools/withdraw/WithdrawLiquidityDialog';
 import type { ClaimTradingRewardsDialogParams } from 'client/modules/rewards/dialogs/ClaimTradingRewardsDialog/types';
+import type { SkateVaultDialogParams } from 'client/modules/skateVaults/dialogs/types';
 import type { PerpPnlSocialSharingDialogParams } from 'client/modules/socialSharing/PerpPnlSocialSharingDialog';
 import type { EditSubaccountProfileDialogParams } from 'client/modules/subaccounts/components/dialogs/EditSubaccountProfileDialog/EditSubaccountProfileDialog';
 import type { SubaccountQuoteTransferDialogParams } from 'client/modules/subaccounts/components/dialogs/SubaccountQuoteTransferDialog/SubaccountQuoteTransferDialog';
@@ -19,13 +20,13 @@ import type { PerpPositionDetailsDialogParams } from 'client/modules/tables/deta
 import type { PreLiquidationDetailsDialogParams } from 'client/modules/tables/detailDialogs/PreLiquidationDetailsDialog/types';
 import type { RealizedPnlDetailsDialogParams } from 'client/modules/tables/detailDialogs/RealizedPnlDetailsDialog';
 import type { SpotBalanceDetailsDialogParams } from 'client/modules/tables/detailDialogs/SpotBalanceDetailsDialog';
+import type { SpotMoneyMarketDetailsDialogParams } from 'client/modules/tables/detailDialogs/SpotMoneyMarketDetailsDialog/SpotMoneyMarketDetailsDialog';
 import type { ClosePositionDialogParams } from 'client/modules/trading/closePosition/ClosePositionDialog';
 import type { IsolatedAdjustMarginDialogParams } from 'client/modules/trading/components/dialogs/IsolatedAdjustMarginDialog/IsolatedAdjustMarginDialog';
 import type { TpSlDialogParams } from 'client/modules/trading/tpsl/tpslDialog/TpSlDialog';
 import type { UtmCampaignDialogParams } from 'client/modules/utm/dialogs/UtmCampaignDialog/UtmCampaignDialog';
-import type { SkateVaultDialogParams } from 'client/modules/vaults/dialogs/types';
-import type { PerpLeverageDialogParams } from 'client/pages/PerpTrading/components/PerpLeverageDialog/PerpLeverageDialog';
 import type { PerpMarginModeDialogParams } from 'client/pages/PerpTrading/components/PerpMarginModeDialog/PerpMarginModeDialog';
+import type { ExportHistoryDialogParams } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 import type { EmptyObject } from 'type-fest';
 
 export type DialogParams =
@@ -33,8 +34,21 @@ export type DialogParams =
       type: 'location_restricted';
       params: EmptyObject;
     }
+  // Connection flow is: Connect -> Terms of Use -> Key Features
   | {
       type: 'connect';
+      params: EmptyObject;
+    }
+  | {
+      type: 'connect_custom_wallet';
+      params: EmptyObject;
+    }
+  | {
+      type: 'terms_of_use';
+      params: EmptyObject;
+    }
+  | {
+      type: 'key_features';
       params: EmptyObject;
     }
   | {
@@ -79,7 +93,7 @@ export type DialogParams =
     }
   | {
       type: 'deposit';
-      params: DepositDialogParams;
+      params: DirectDepositDialogParams;
     }
   | {
       type: 'withdraw';
@@ -110,10 +124,6 @@ export type DialogParams =
       params: TpSlDialogParams;
     }
   | {
-      type: 'perp_leverage';
-      params: PerpLeverageDialogParams;
-    }
-  | {
       type: 'perp_margin_mode';
       params: PerpMarginModeDialogParams;
     }
@@ -132,6 +142,10 @@ export type DialogParams =
   | {
       type: 'spot_balance_details';
       params: SpotBalanceDetailsDialogParams;
+    }
+  | {
+      type: 'spot_money_market_details';
+      params: SpotMoneyMarketDetailsDialogParams;
     }
   | {
       type: 'open_engine_order_details';
@@ -255,6 +269,14 @@ export type DialogParams =
     }
   | {
       type: 'export_history';
+      params: ExportHistoryDialogParams;
+    }
+  | {
+      type: 'provide_vlp_liquidity';
+      params: EmptyObject;
+    }
+  | {
+      type: 'redeem_vlp_liquidity';
       params: EmptyObject;
     };
 

@@ -1,6 +1,5 @@
 import { joinClassNames } from '@vertex-protocol/web-common';
 import {
-  COMMON_TRANSPARENCY_COLORS,
   ScrollShadowsContainer,
   SecondaryButton,
 } from '@vertex-protocol/web-ui';
@@ -35,10 +34,10 @@ export function SocialSharingThemeSelector({
               <SecondaryButton
                 key={id}
                 className={joinClassNames(
-                  'bg-surface-1 flex w-28 flex-col divide-y border p-0',
-                  COMMON_TRANSPARENCY_COLORS.divide,
+                  'bg-surface-1 flex w-28 flex-col border p-0',
+                  'divide-overlay-divider divide-y',
                   selectedTheme === theme
-                    ? 'border-accent bg-surface-2'
+                    ? 'border-primary bg-surface-2'
                     : 'border-transparent',
                 )}
                 onClick={() => setTheme(theme)}

@@ -1,7 +1,7 @@
 'use client';
 
 import { joinClassNames } from '@vertex-protocol/web-common';
-import { ExternalLink } from 'client/components/Link/Link';
+import { ExternalLink } from 'client/components/Link/ExternalLink';
 import ArbitrumChain from 'client/icons/chains/ArbitrumChain';
 import BaseChain from 'client/icons/chains/BaseChain';
 import BlastChain from 'client/icons/chains/BlastChain';

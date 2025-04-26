@@ -1,6 +1,5 @@
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
 import { CardButton, Value } from '@vertex-protocol/web-ui';
-import { PrivateContent } from 'client/modules/privacy/components/PrivateContent';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
 import { DefinitionTooltipID } from 'client/modules/tooltips/DefinitionTooltip/definitionTooltipConfig';
 import Link from 'next/link';
@@ -8,7 +7,7 @@ import { ReactNode } from 'react';
 
 interface Props extends WithClassnames {
   href: string;
-  title: string;
+  title: ReactNode;
   value: ReactNode;
   pill: ReactNode;
   isPrivate: boolean;
@@ -46,9 +45,13 @@ export function OverviewInfoCardButton({
         </DefinitionTooltip>
         {pill}
       </div>
-      <PrivateContent isPrivate={isPrivate}>
-        <Value className={valueClassName}>{value}</Value>
-      </PrivateContent>
+      <Value
+        sizeVariant="lg"
+        className={valueClassName}
+        isValuePrivate={isPrivate}
+      >
+        {value}
+      </Value>
     </CardButton>
   );
 }

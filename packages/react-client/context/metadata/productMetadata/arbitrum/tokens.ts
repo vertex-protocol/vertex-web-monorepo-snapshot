@@ -2,7 +2,8 @@ import { arbitrum, arbitrumSepolia } from 'viem/chains';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { TOKEN_ICONS } from '../tokenIcons';
 import { Token } from '../types';
-import { VRTX_TOKEN_INFO } from '../vertexTokenInfo';
+import { VLP_TOKEN_INFO } from '../vlpTokenInfo';
+import { VRTX_TOKEN_INFO } from '../vrtxTokenInfo';
 
 const arbSepoliaChainId = arbitrumSepolia.id;
 const arbOneChainId = arbitrum.id;
@@ -66,6 +67,14 @@ export const WSTETH_ARB_SEPOLIA: Token = {
   icon: TOKEN_ICONS.wstEth,
 };
 
+export const VLP_ARB_SEPOLIA: Token = {
+  address: '0xEDBDC11D27287B8E62374Eca90e01f0cC86B3cb8',
+  chainId: arbSepoliaChainId,
+  tokenDecimals: 18,
+  symbol: VLP_TOKEN_INFO.symbol,
+  icon: TOKEN_ICONS.vlp,
+};
+
 /**
  * Arbitrum One
  */
@@ -119,7 +128,7 @@ export const VRTX_ARB_ONE: Token = {
 
 export const WSTETH_ARB_ONE: Token = {
   address: '0x5979D7b546E38E414F7E9822514be443A4800529',
-  chainId: arbSepoliaChainId,
+  chainId: arbOneChainId,
   tokenDecimals: 18,
   symbol: 'wstETH',
   icon: TOKEN_ICONS.wstEth,

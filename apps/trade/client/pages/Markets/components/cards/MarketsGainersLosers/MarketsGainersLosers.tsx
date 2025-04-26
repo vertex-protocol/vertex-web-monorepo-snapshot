@@ -64,7 +64,7 @@ function Item({
 
   return (
     <MarketsCardItemButton
-      href={productTradingLinks?.[productId].link}
+      href={productTradingLinks?.[productId]?.link}
       label={
         <>
           <Image src={iconSrc} alt={marketName} className="size-4" />

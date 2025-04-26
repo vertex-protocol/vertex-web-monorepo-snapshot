@@ -6,7 +6,6 @@ import {
 } from '@radix-ui/react-tabs';
 import { WithClassnames, joinClassNames } from '@vertex-protocol/web-common';
 import {
-  COMMON_TRANSPARENCY_COLORS,
   Divider,
   Icons,
   TextButton,
@@ -52,10 +51,10 @@ export function TradingSidebar({
   const tabBorderClasses =
     'after:bg-stroke relative after:absolute after:right-0 after:top-0 after:h-full after:w-0.5';
   const tabBorderAnimationClasses =
-    'after:transform-gpu after:rounded-sm after:duration-200';
+    'after:transform-gpu after:rounded-xs after:duration-200';
   const inactiveTabAnimationClasses = 'after:scale-y-0';
   const activeTabClasses =
-    'data-[state=active]:after:bg-accent data-[state=active]:text-text-primary data-[state=active]:after:scale-y-100';
+    'data-[state=active]:after:bg-primary data-[state=active]:text-text-primary data-[state=active]:after:scale-y-100';
 
   return (
     <TabsRoot
@@ -73,10 +72,9 @@ export function TradingSidebar({
           <div
             className={joinClassNames(
               // `overflow-hidden` here to keep the product filter tabs from overflowing
-              'flex-1 overflow-hidden',
+              'border-overlay-divider flex-1 overflow-hidden',
               isSidebarOnRight ? 'border-r' : 'border-l',
               isTradingSidebarOpen ? 'flex flex-col gap-y-0.5' : 'hidden',
-              COMMON_TRANSPARENCY_COLORS.border,
             )}
           >
             <TradingSidebarWatchlistTabButtons

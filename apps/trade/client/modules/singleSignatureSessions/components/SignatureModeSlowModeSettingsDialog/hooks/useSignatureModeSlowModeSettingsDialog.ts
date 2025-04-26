@@ -1,15 +1,20 @@
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/client';
+import {
+  AccountWithPrivateKey,
+  QUOTE_PRODUCT_ID,
+} from '@vertex-protocol/client';
 import { useVertexMetadataContext } from '@vertex-protocol/react-client';
-import { asyncResult, removeDecimals } from '@vertex-protocol/utils';
+import {
+  asyncResult,
+  getValidatedHex,
+  removeDecimals,
+} from '@vertex-protocol/utils';
+import { SEQUENCER_FEE_AMOUNT_USDC } from 'client/consts/sequencerFee';
 import { useSubaccountContext } from 'client/context/subaccount/SubaccountContext';
 import { useExecuteSlowModeUpdateLinkedSigner } from 'client/hooks/execute/useExecuteSlowModeUpdateLinkedSigner';
 import { useAllDepositableTokenBalances } from 'client/hooks/query/subaccount/useAllDepositableTokenBalances';
 import { useSubaccountLinkedSigner } from 'client/hooks/query/subaccount/useSubaccountLinkedSigner';
 import { useOnChainTransactionState } from 'client/hooks/query/useOnChainTransactionState';
-import {
-  SLOW_MODE_FEE_AMOUNT_USDC,
-  useSlowModeFeeAllowance,
-} from 'client/hooks/subaccount/useSlowModeFeeAllowance';
+import { useSlowModeFeeAllowance } from 'client/hooks/subaccount/useSlowModeFeeAllowance';
 import { useRunWithDelayOnCondition } from 'client/hooks/util/useRunWithDelayOnCondition';
 import { useNotificationManagerContext } from 'client/modules/notifications/NotificationManagerContext';
 import {
@@ -20,10 +25,11 @@ import {
   UseSignatureModeSlowModeSettingsDialog,
 } from 'client/modules/singleSignatureSessions/components/SignatureModeSlowModeSettingsDialog/hooks/types';
 import { watchFormError } from 'client/utils/form/watchFormError';
-import { Wallet } from 'ethers';
+import { reject } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { isHex, zeroAddress } from 'viem';
+import { Hex, isHex, zeroAddress } from 'viem';
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 
 export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowModeSettingsDialog {
   const { dispatchNotification } = useNotificationManagerContext();
@@ -61,7 +67,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
       return '';
     }
 
-    return current.authorizedWallet?.privateKey ?? '';
+    return current.linkedSigner?.privateKey ?? '';
   })();
   const form = useForm<SignatureModeSlowModeSettingsFormValues>({
     defaultValues: {
@@ -87,15 +93,15 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
     },
     [],
   );
-  const validSingleSignatureWallet = useMemo(() => {
+  const validSingleSignatureAccount = useMemo(() => {
     if (isValidPrivateKey(privateKey)) {
-      return new Wallet(privateKey);
+      return privateKeyToAccount(privateKey);
     }
   }, [privateKey]);
 
   // Handler for setting a random private key
   const setRandomPrivateKey = useCallback(() => {
-    form.setValue('privateKey', Wallet.createRandom().privateKey, {
+    form.setValue('privateKey', generatePrivateKey(), {
       shouldTouch: true,
       shouldValidate: true,
     });
@@ -119,7 +125,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
       currentServerLinkedSigner?.signer.toLowerCase();
     const localStorageLinkedSignerAddress = (() => {
       if (signingPreference.current?.type === 'sign_once') {
-        return signingPreference.current.authorizedWallet?.address.toLowerCase();
+        return signingPreference.current.linkedSigner?.account.address.toLowerCase();
       }
       return zeroAddress;
     })();
@@ -136,11 +142,11 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
     }
 
     // Case when user wants to turn on 1CT
-    if (!validSingleSignatureWallet) {
+    if (!validSingleSignatureAccount) {
       return;
     }
     const singleSignatureWalletAddress =
-      validSingleSignatureWallet.address.toLowerCase();
+      validSingleSignatureAccount.address.toLowerCase();
     if (serverLinkedSignerAddress !== singleSignatureWalletAddress) {
       return requiresApproval ? 'requires_fee_approval' : 'execute_slow_mode';
     }
@@ -152,7 +158,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
     requiresApproval,
     selectedMode,
     signingPreference,
-    validSingleSignatureWallet,
+    validSingleSignatureAccount,
   ]);
 
   const formError = useMemo(():
@@ -166,7 +172,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
       removeDecimals(
         depositableTokenBalances?.[QUOTE_PRODUCT_ID],
         primaryQuoteTokenDecimals,
-      )?.lt(SLOW_MODE_FEE_AMOUNT_USDC)
+      )?.lt(SEQUENCER_FEE_AMOUNT_USDC)
     ) {
       return 'insufficient_balance_for_fee';
     }
@@ -182,7 +188,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
     useMemo((): SignatureModeSlowModeSettingsActionButtonState => {
       // If sign once, then we need a valid private key, if sign always, then form is always valid
       const hasRequiredFormData =
-        selectedMode === 'sign_always' || !!validSingleSignatureWallet;
+        selectedMode === 'sign_always' || !!validSingleSignatureAccount;
 
       // Not executing slow mode tx is a heuristic that we're just saving and not executing
       const isSaveSuccess =
@@ -215,7 +221,7 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
       selectedMode,
       slowModeTxState.type,
       userAction,
-      validSingleSignatureWallet,
+      validSingleSignatureAccount,
     ]);
 
   const onSubmitForm = useCallback(
@@ -234,25 +240,34 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
         return;
       }
 
-      // This is just an alternative to try/catch - creating `new Wallet` throws if private key is invalid (which also occurs if it's empty for switching to sign-always)
-      const [linkedSignerWallet] = await asyncResult(
-        new Promise<Wallet | undefined>((resolve) => {
+      // This is just an alternative to try/catch, privateKeyToAccount will throw if invalid
+      const [linkedSigner] = await asyncResult(
+        new Promise<AccountWithPrivateKey | undefined>((resolve) => {
           if (values.selectedMode === 'sign_always') {
             resolve(undefined);
             return;
           }
-          resolve(new Wallet(values.privateKey));
+
+          try {
+            const privateKey = getValidatedHex(values.privateKey);
+            resolve({
+              privateKey,
+              account: privateKeyToAccount(privateKey),
+            });
+          } catch (err: any) {
+            reject(err);
+          }
         }),
       );
-      if (values.selectedMode === 'sign_once' && !linkedSignerWallet) {
+      if (values.selectedMode === 'sign_once' && !linkedSigner) {
         console.warn(
-          "[useSignatureModeSlowModeSettingsDialog] Couldn't derive linked signer wallet from private key input",
+          "[useSignatureModeSlowModeSettingsDialog] Couldn't derive linked signer account from private key input",
         );
         return;
       }
 
       const updateResult = executeSlowModeUpdateLinkedSigner.mutateAsync({
-        wallet: linkedSignerWallet ?? null,
+        account: linkedSigner?.account ?? null,
       });
 
       const [, mutationError] = await asyncResult(updateResult);
@@ -274,10 +289,10 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
       }
 
       // Now update local state
-      if (values.selectedMode === 'sign_once' && linkedSignerWallet) {
+      if (values.selectedMode === 'sign_once' && linkedSigner) {
         signingPreference.update({
           type: 'sign_once',
-          authorizedWallet: linkedSignerWallet,
+          linkedSigner: linkedSigner,
           // Always remember for now - otherwise this feature gets super annoying
           rememberMe: true,
         });
@@ -309,6 +324,6 @@ export function useSignatureModeSlowModeSettingsDialog(): UseSignatureModeSlowMo
   };
 }
 
-function isValidPrivateKey(input: string): boolean {
+function isValidPrivateKey(input: string): input is Hex {
   return isHex(input) && input.length === 66;
 }

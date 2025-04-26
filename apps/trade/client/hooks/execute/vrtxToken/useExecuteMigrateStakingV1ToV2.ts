@@ -22,8 +22,7 @@ const REFETCH_QUERY_KEYS: string[][] = [
 export function useExecuteMigrateStakingV1ToV2() {
   const mutationFn = useExecuteInValidContext(
     useCallback(async (_: EmptyObject, context) => {
-      const txResponse = await context.vertexClient.rewards.migrateStakingV2();
-      return txResponse.hash;
+      return await context.vertexClient.rewards.migrateStakingV2();
     }, []),
   );
 

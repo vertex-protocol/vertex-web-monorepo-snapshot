@@ -19,7 +19,7 @@ export function useOrderFilledNotification(data: OrderFillNotificationData) {
     totalAmount,
   } = data;
 
-  const market = marketsStaticData?.all[productId];
+  const market = marketsStaticData?.allMarkets[productId];
 
   return useMemo(() => {
     if (!market) {

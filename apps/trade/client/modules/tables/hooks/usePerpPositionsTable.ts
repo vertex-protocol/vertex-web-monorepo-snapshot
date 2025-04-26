@@ -72,7 +72,8 @@ export function usePerpPositionsTable({ marketFilter }: Params) {
           filteredProductIds.includes(balance.productId),
       )
       .map((position): PerpPositionsTableItem => {
-        const staticMarketData = staticMarketsData?.perp[position.productId];
+        const staticMarketData =
+          staticMarketsData?.perpMarkets[position.productId];
         const reduceOnlyOrders = reduceOnlyOrdersData?.[position?.productId];
         const tpSlOrders = !!position.iso
           ? reduceOnlyOrders?.iso
@@ -139,7 +140,7 @@ export function usePerpPositionsTable({ marketFilter }: Params) {
     primaryQuotePriceUsd,
     primaryQuoteSymbol,
     reduceOnlyOrdersData,
-    staticMarketsData?.perp,
+    staticMarketsData?.perpMarkets,
   ]);
 
   return {

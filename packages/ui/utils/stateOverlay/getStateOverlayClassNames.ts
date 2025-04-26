@@ -52,17 +52,13 @@ export function getStateOverlayClassNames({
     return active ? 'before:bg-overlay-hover' : 'hover:before:bg-overlay-hover';
   })();
 
-  const opacityClassNames = disabled
-    ? 'before:opacity-50'
-    : 'before:opacity-[.07]';
-
   const roundedClassName = (() => {
     if (!borderRadiusVariant) {
       return;
     }
 
     return {
-      base: 'before:rounded',
+      xs: 'before:rounded-xs',
       sm: 'before:rounded-sm',
       md: 'before:rounded-md',
       lg: 'before:rounded-lg',
@@ -73,7 +69,6 @@ export function getStateOverlayClassNames({
   return mergeClassNames(
     baseClassNames,
     stateClassNames,
-    opacityClassNames,
     roundedClassName,
     stateClassNameOverrides,
   );

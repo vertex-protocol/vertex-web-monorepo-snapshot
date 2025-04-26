@@ -1,17 +1,17 @@
+import AbstractChain from 'client/icons/chains/AbstractChain';
 import ArbitrumChain from 'client/icons/chains/ArbitrumChain';
 import BaseChain from 'client/icons/chains/BaseChain';
 import BlastChain from 'client/icons/chains/BlastChain';
 import MantleChain from 'client/icons/chains/MantleChain';
 import SeiChain from 'client/icons/chains/SeiChain';
 import SonicChain from 'client/icons/chains/SonicChain';
-import React from 'react';
 
 export const HERO_TEXTS = [
   {
     element: 'h1' as const,
     text: 'Trade Crypto with an Edge',
     className:
-      'text-header-1 md:text-header-0 font-radioGrotesk mb-2 text-white',
+      'text-header-1 md:text-header-0 font-radio-grotesk mb-2 text-white',
   },
   {
     element: 'p' as const,
@@ -45,5 +45,9 @@ export const NETWORKS = [
   {
     name: 'Sonic',
     icon: <SonicChain size={14} />,
+  },
+  {
+    name: 'Abstract',
+    icon: <AbstractChain size={14} />,
   },
 ];

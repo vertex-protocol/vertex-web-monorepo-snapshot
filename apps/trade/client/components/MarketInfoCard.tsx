@@ -48,8 +48,8 @@ export function MarketInfoCard({
         'transition',
         // Using `cursor-default` to prevent the cursor from rapidly changing when hovering over different elements of the card.
         'cursor-default',
-        // Applying a rounded border to the container so that when the backdrop flashes, it isn't as rigid.
-        'rounded',
+        // Applying a rounded-sm border to the container so that when the backdrop flashes, it isn't as rigid.
+        'rounded-sm',
         flashClassName,
         className,
       )}

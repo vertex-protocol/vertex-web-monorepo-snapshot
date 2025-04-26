@@ -5,12 +5,12 @@ import { aggregatePieChartOtherItems } from 'client/utils/aggregatePieChartOther
 import { getSpotMarketTokenName } from 'client/utils/getSpotMarketTokenName';
 
 export function createPieChartDataForSpotProducts(
-  allEdgeSpotMarketsData: EdgeAnnotatedSpotMarket[],
+  allEdgeSpotProductsData: EdgeAnnotatedSpotMarket[],
   getValue: (market: EdgeAnnotatedSpotMarket) => BigDecimal,
 ) {
   let maxItemValue: BigDecimal = BigDecimals.ZERO;
 
-  const items = allEdgeSpotMarketsData
+  const items = allEdgeSpotProductsData
     .map((market) => {
       const value = getValue(market);
 

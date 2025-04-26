@@ -3,7 +3,6 @@ import { PerpPnlSocialSharingDialog } from 'client/modules/socialSharing/PerpPnl
 import { CloseAllPositionsDialog } from 'client/modules/trading/closeAllPositions/CloseAllPositionsDialog';
 import { ClosePositionDialog } from 'client/modules/trading/closePosition/ClosePositionDialog';
 import { TpSlDialog } from 'client/modules/trading/tpsl/tpslDialog/TpSlDialog';
-import { PerpLeverageDialog } from 'client/pages/PerpTrading/components/PerpLeverageDialog/PerpLeverageDialog';
 import { PerpMarginModeDialog } from 'client/pages/PerpTrading/components/PerpMarginModeDialog/PerpMarginModeDialog';
 
 export function PerpDialogs() {
@@ -16,9 +15,6 @@ export function PerpDialogs() {
           productId={currentDialog.params.productId}
           isoSubaccountName={currentDialog.params.isoSubaccountName}
         />
-      )}
-      {currentDialog?.type === 'perp_leverage' && (
-        <PerpLeverageDialog {...currentDialog.params} />
       )}
       {currentDialog?.type === 'perp_margin_mode' && (
         <PerpMarginModeDialog {...currentDialog.params} />

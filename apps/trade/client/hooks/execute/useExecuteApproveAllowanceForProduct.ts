@@ -32,9 +32,7 @@ export function useExecuteApproveAllowanceForProduct() {
           ),
         ];
 
-        const txResponse =
-          await context.vertexClient.spot.approveAllowance(params);
-        return txResponse.hash;
+        return context.vertexClient.spot.approveAllowance(params);
       },
       [],
     ),

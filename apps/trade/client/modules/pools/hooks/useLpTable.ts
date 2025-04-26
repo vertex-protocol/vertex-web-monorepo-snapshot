@@ -35,11 +35,7 @@ export interface LpTableItem {
   unrealizedPnl: BigDecimal | undefined;
 }
 
-export function useLpTable({
-  showZeroBalances,
-}: {
-  showZeroBalances?: boolean;
-}): QueryState<LpTableItem[]> {
+export function useLpTable(): QueryState<LpTableItem[]> {
   const { getIsHiddenMarket } = useVertexMetadataContext();
   const { data: staticMarketData } = useAllMarketsStaticData();
   const { filteredMarkets, isLoading: loadingMarkets } = useFilteredMarkets({
@@ -52,7 +48,7 @@ export function useLpTable({
   const { data: indexerSnapshot } = useSubaccountIndexerSnapshot();
   const primaryQuotePriceUsd = usePrimaryQuotePriceUsd();
 
-  const quoteMetadata = staticMarketData?.primaryQuote;
+  const quoteMetadata = staticMarketData?.primaryQuoteProduct;
 
   const mappedData = useMemo((): LpTableItem[] => {
     // Default all other values to 0, markets data are derived from same endpoint
@@ -117,15 +113,8 @@ export function useLpTable({
     getIsHiddenMarket,
   ]);
 
-  const filteredMappedData = useMemo(() => {
-    if (showZeroBalances) {
-      return mappedData;
-    }
-    return mappedData.filter((item) => item.amounts.lpAmount?.gt(0));
-  }, [mappedData, showZeroBalances]);
-
   return {
-    data: filteredMappedData,
+    data: mappedData,
     isLoading: loadingMarkets,
   };
 }

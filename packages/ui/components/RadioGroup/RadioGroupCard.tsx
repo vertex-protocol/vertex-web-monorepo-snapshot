@@ -26,9 +26,9 @@ export function RadioGroupCard<TIdentifier extends string>({
     <RadioGroupItem asChild {...radioGroupProps}>
       <CardButton
         className={mergeClassNames(
-          'flex flex-col items-stretch gap-y-2',
-          'text-left text-sm',
-          active ? 'bg-surface-2 border-accent' : 'bg-surface-1',
+          'flex-col items-stretch gap-y-2',
+          'p-3 text-left',
+          active ? 'bg-surface-2 border-primary' : 'bg-surface-1',
           className,
         )}
         disabled={disabled}

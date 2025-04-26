@@ -4,7 +4,7 @@ import {
   EXPORT_HISTORY_QUERY_DELAY_MILLIS,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
-import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
+import { updateProgressFrac } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
   ExportHistoryLpItem,
   GetExportHistoryDataParams,
@@ -12,6 +12,7 @@ import {
 import { getHistoricalLpEventsTableItem } from 'client/pages/Portfolio/subpages/History/hooks/useHistoricalLpEventsTable';
 import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
+import { last } from 'lodash';
 
 export async function getExportHistoryLpData(
   params: GetExportHistoryDataParams,
@@ -43,7 +44,7 @@ export async function getExportHistoryLpData(
 
     for (const event of lpEventsResponse.events) {
       const productId = event.baseSnapshot.market.productId;
-      const staticMarketData = allMarketsStaticData.all[productId];
+      const staticMarketData = allMarketsStaticData.allMarkets[productId];
 
       if (!staticMarketData) {
         continue;
@@ -53,7 +54,8 @@ export async function getExportHistoryLpData(
         event,
         staticMarketData,
         primaryQuotePriceUsd,
-        primaryQuoteToken: allMarketsStaticData.primaryQuote.metadata.token,
+        primaryQuoteToken:
+          allMarketsStaticData.primaryQuoteProduct.metadata.token,
       });
 
       // Check timestamp
@@ -62,11 +64,11 @@ export async function getExportHistoryLpData(
       }
 
       items.push({
-        time: formatExportHistoryTimestamp(tableItem.timestampMillis),
-        primaryQuoteAmountDelta: tableItem.amountChanges.quoteAmount.toString(),
+        time: new Date(tableItem.timestampMillis),
+        primaryQuoteAmountDelta: tableItem.amountChanges.quoteAmount,
         baseAsset: tableItem.metadata.base.symbol,
-        baseAssetAmountDelta: tableItem.amountChanges.baseAmount.toString(),
-        lpAmountDelta: tableItem.lpAmount.toString(),
+        baseAssetAmountDelta: tableItem.amountChanges.baseAmount,
+        lpAmountDelta: tableItem.lpAmount,
       });
     }
 
@@ -76,6 +78,8 @@ export async function getExportHistoryLpData(
     if (!lpEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    updateProgressFrac(params, context, last(items)?.time);
 
     // Reduce chance of rate limiting.
     await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);

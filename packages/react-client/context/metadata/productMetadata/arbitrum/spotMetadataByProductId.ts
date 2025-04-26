@@ -1,7 +1,8 @@
-import { QUOTE_PRODUCT_ID } from '@vertex-protocol/contracts';
+import { QUOTE_PRODUCT_ID, VLP_PRODUCT_ID } from '@vertex-protocol/contracts';
 import { KNOWN_PRODUCT_IDS } from '../knownProductIds';
 import { PRIMARY_QUOTE_SYMBOLS } from '../primaryQuoteSymbols';
 import { SpotProductMetadata } from '../types';
+import { VLP_TOKEN_INFO } from '../vlpTokenInfo';
 import {
   ARB_ARB_ONE,
   ARB_ARB_SEPOLIA,
@@ -9,6 +10,7 @@ import {
   USDC_ARB_SEPOLIA,
   USDT_ARB_ONE,
   USDT_ARB_SEPOLIA,
+  VLP_ARB_SEPOLIA,
   VRTX_ARB_ONE,
   VRTX_ARB_SEPOLIA,
   WBTC_ARB_ONE,
@@ -66,6 +68,12 @@ export const ARB_TESTNET_SPOT_METADATA_BY_PRODUCT_ID: Record<
   149: {
     token: WSTETH_ARB_SEPOLIA,
     marketName: `wstETH-${PRIMARY_QUOTE_SYMBOLS.usdc}`,
+    quoteProductId: QUOTE_PRODUCT_ID,
+    marketCategories: new Set(['spot']),
+  },
+  [VLP_PRODUCT_ID]: {
+    token: VLP_ARB_SEPOLIA,
+    marketName: VLP_TOKEN_INFO.symbol,
     quoteProductId: QUOTE_PRODUCT_ID,
     marketCategories: new Set(['spot']),
   },

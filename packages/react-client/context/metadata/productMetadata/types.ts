@@ -5,6 +5,7 @@ import {
   SpotBalanceWithProduct,
   SpotMarket,
 } from '@vertex-protocol/contracts';
+import { Address } from 'viem';
 import { TokenIconMetadata } from './tokenIcons';
 
 export interface SharedProductMetadata {
@@ -15,7 +16,7 @@ export interface SharedProductMetadata {
 
 export interface Token {
   tokenDecimals: number; // Backend / contracts normalize to the same decimal places, so we have to track the decimals of the underlying token separately
-  address: string;
+  address: Address;
   chainId: number;
   symbol: string;
   icon: TokenIconMetadata;

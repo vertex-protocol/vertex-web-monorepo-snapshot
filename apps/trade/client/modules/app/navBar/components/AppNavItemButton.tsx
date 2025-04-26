@@ -20,14 +20,14 @@ export function AppNavItemButton({
   ...rest
 }: AppNavItemButtonProps) {
   const stateOverlayClassNames = getStateOverlayClassNames({
-    borderRadiusVariant: 'base',
+    borderRadiusVariant: 'sm',
     disabled: rest.disabled,
   });
 
   return (
     <Button
       className={mergeClassNames(
-        'title-text group flex items-center justify-start gap-x-1 rounded px-3',
+        'title-text group flex items-center justify-start gap-x-1 rounded-sm px-3',
         active
           ? 'text-text-primary'
           : 'text-text-tertiary hover:text-text-primary data-[state="open"]:text-text-primary',

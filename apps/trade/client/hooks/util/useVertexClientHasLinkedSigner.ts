@@ -18,5 +18,5 @@ export function useVertexClientHasLinkedSigner() {
 export function getVertexClientHasLinkedSigner(
   vertexClient: VertexClient | undefined,
 ) {
-  return vertexClient?.context.linkedSigner != null;
+  return vertexClient?.context.linkedSignerWalletClient != null;
 }

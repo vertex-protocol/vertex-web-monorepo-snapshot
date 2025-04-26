@@ -25,7 +25,7 @@ export function useExecuteBurnLp() {
   const mutationFn = useExecuteInValidContext(
     useCallback(
       async (
-        params: Pick<BurnLpParams, 'amount' | 'productId'>,
+        params: Omit<BurnLpParams, 'subaccountName'>,
         context: ValidExecuteContext,
       ) => {
         console.log('Burning LP', params);

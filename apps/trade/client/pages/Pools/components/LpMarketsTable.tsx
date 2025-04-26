@@ -1,3 +1,5 @@
+'use client';
+
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/table-core';
 import { useVertexMetadataContext } from '@vertex-protocol/react-client';
@@ -6,7 +8,6 @@ import {
   PresetNumberFormatSpecifier,
 } from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { Divider } from '@vertex-protocol/web-ui';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
 import { DataTable } from 'client/components/DataTable/DataTable';
 import { bigDecimalSortFn } from 'client/components/DataTable/utils/sortingFns';
@@ -27,9 +28,7 @@ const columnHelper = createColumnHelper<LpTableItem>();
 
 export function LpMarketsTable({ className }: WithClassnames) {
   const { primaryQuoteToken } = useVertexMetadataContext();
-  const { data: pools, isLoading } = useLpTable({
-    showZeroBalances: true,
-  });
+  const { data: pools, isLoading } = useLpTable();
 
   const { show } = useDialog();
   const isDesktop = useIsDesktop();
@@ -94,15 +93,6 @@ export function LpMarketsTable({ className }: WithClassnames) {
         sortingFn: bigDecimalSortFn,
         meta: {
           cellContainerClassName: 'w-40',
-        },
-      }),
-      // Border column
-      columnHelper.display({
-        id: 'border',
-        header: () => <Divider vertical />,
-        cell: () => <Divider vertical />,
-        meta: {
-          cellContainerClassName: 'px-4 py-3',
         },
       }),
       columnHelper.accessor('valueUsd', {

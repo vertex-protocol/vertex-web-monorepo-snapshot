@@ -1,41 +1,25 @@
-import { joinClassNames, WithChildren } from '@vertex-protocol/web-common';
+import { WithChildren } from '@vertex-protocol/web-common';
 import { TooltipPortalRoot, Z_INDEX } from '@vertex-protocol/web-ui';
+import { AppRootLayout } from 'app/AppRootLayout';
 import { ClientLayout } from 'app/ClientLayout';
 import { AppBottomSheet } from 'client/modules/app/AppBottomSheet';
 import { AppFooter } from 'client/modules/app/AppFooter';
-import { AbstractLaunchPromoBanner } from 'client/modules/app/components/banners/AbstractLaunchPromoBanner/AbstractLaunchPromoBanner';
-import { AbstractUpvoteDiscoverPromoBanner } from 'client/modules/app/components/banners/AbstractUpvoteDiscoverPromoBanner';
+import { AppBanners } from 'client/modules/app/components/banners/AppBanners';
 import { AppNavBar } from 'client/modules/app/navBar/AppNavBar';
 import { BRAND_SEO_METADATA } from 'common/brandMetadata/seoInfo';
 import { clientEnv } from 'common/environment/clientEnv';
-import { FONTS } from 'common/theme/fonts';
 import { Metadata, Viewport } from 'next';
+
+// Style imports
+import 'styles/globals.css';
 
 export default function AppLayout({ children }: WithChildren) {
   return (
-    <html
-      lang="en"
-      className={joinClassNames(
-        FONTS.default.className,
-        FONTS.default.variable,
-        FONTS.title.variable,
-        // Blitz fonts are very wide, so compress letter spacing
-        clientEnv.base.brandName === 'blitz' && 'tracking-tighter',
-        //To achieve app-like overscroll behavior, we need to set `overscroll-none` on
-        //both `html` for Chrome and `body` for Safari.
-        'overscroll-none antialiased',
-      )}
-    >
-      <body
-        className={joinClassNames(
-          'flex h-svh flex-col',
-          'bg-background text-text-secondary',
-          'overflow-hidden overscroll-none',
-        )}
-      >
-        <ClientLayout>
-          <AbstractLaunchPromoBanner className="border-stroke border-b" />
-          <AbstractUpvoteDiscoverPromoBanner className="border-stroke border-b" />
+    <AppRootLayout>
+      <ClientLayout>
+        {/*This div is needed for the app to work with Funkit - they inject a global div as a child of the `body`, which messes with layout*/}
+        <div className="flex h-svh flex-col overflow-hidden">
+          <AppBanners />
           <AppNavBar className={Z_INDEX.navbar} />
           <div
             // Hide horizontal overflow to ensure that tables never expand fully, but allow vertical scrolling
@@ -45,10 +29,10 @@ export default function AppLayout({ children }: WithChildren) {
           </div>
           <AppFooter className="hidden lg:flex" />
           <AppBottomSheet />
-        </ClientLayout>
-        <TooltipPortalRoot />
-      </body>
-    </html>
+        </div>
+      </ClientLayout>
+      <TooltipPortalRoot />
+    </AppRootLayout>
   );
 }
 

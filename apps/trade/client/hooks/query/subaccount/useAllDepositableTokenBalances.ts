@@ -1,17 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
-import { ChainEnv, IERC20__factory } from '@vertex-protocol/client';
+import { ChainEnv, ERC20_ABI } from '@vertex-protocol/client';
 import {
   createQueryKey,
   QueryDisabledError,
   useEVMContext,
   usePrimaryChainPublicClient,
 } from '@vertex-protocol/react-client';
-import { BigDecimal, toBigDecimal } from '@vertex-protocol/utils';
+import {
+  BigDecimal,
+  getValidatedAddress,
+  toBigDecimal,
+} from '@vertex-protocol/utils';
 import { useAllMarkets } from 'client/hooks/query/markets/allMarkets/useAllMarkets';
 import { QueryState } from 'client/types/QueryState';
 
 import { useMemo } from 'react';
-import { Address } from 'viem';
 
 export function allDepositableTokenBalancesQueryKey(
   chainEnv?: ChainEnv,
@@ -37,21 +40,10 @@ export function useAllDepositableTokenBalances(): QueryState<Data> {
   } = useEVMContext();
   const { data: allMarkets } = useAllMarkets();
 
-  const spotProducts = useMemo(
-    () => {
-      if (allMarkets == null) {
-        return [];
-      }
-      return [
-        allMarkets.primaryQuoteProduct,
-        ...Object.values(allMarkets.spotMarkets),
-      ];
-    },
-    // Product IDs don't really change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [allMarkets == null],
-  );
-  const disabled = spotProducts.length === 0 || !address || !publicClient;
+  const spotProducts = useMemo(() => {
+    return Object.values(allMarkets?.spotProducts ?? {});
+  }, [allMarkets?.spotProducts]);
+  const disabled = !spotProducts.length || !address || !publicClient;
 
   const queryFn = async (): Promise<Data | undefined> => {
     if (disabled) {
@@ -65,8 +57,8 @@ export function useAllDepositableTokenBalances(): QueryState<Data> {
       contracts: spotProducts.map((spotProduct) => {
         return {
           functionName: 'balanceOf',
-          address: spotProduct.product.tokenAddr as Address,
-          abi: IERC20__factory.abi,
+          address: getValidatedAddress(spotProduct.product.tokenAddr),
+          abi: ERC20_ABI,
           args: [address],
         };
       }),

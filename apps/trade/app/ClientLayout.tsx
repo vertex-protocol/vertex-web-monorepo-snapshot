@@ -2,15 +2,16 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { REACT_QUERY_CONFIG } from '@vertex-protocol/react-client';
 import { WithChildren } from '@vertex-protocol/web-common';
-import { AppDataProviders } from 'client/context/appData/AppDataProviders';
 import { ExodusWalletProvider } from 'client/context/ExodusWalletProvider';
-import { GatedAppAccessContextProvider } from 'client/context/gatedAppAccess/GatedAppAccessContext';
 import { AnalyticsContextProvider } from 'client/modules/analytics/AnalyticsContextProvider';
 import { CookieNoticeBanner } from 'client/modules/analytics/CookieNoticeBanner';
 import { GoogleAnalytics } from 'client/modules/analytics/GoogleAnalytics';
 import { MicrosoftClarityAnalytics } from 'client/modules/analytics/MicrosoftClarityAnalytics';
+import { AppDataProviders } from 'client/modules/app/appData/AppDataProviders';
 import { AppDialogs } from 'client/modules/app/AppDialogs';
+import { GatedAppAccessListener } from 'client/modules/app/gatedAppAccess/GatedAppAccessListener';
 import { OpenCommandCenterOnKeyPressListener } from 'client/modules/commandCenter/components/OpenCommandCenterOnKeyPressListener';
 import { NotificationManagerContextProvider } from 'client/modules/notifications/NotificationManagerContextProvider';
 import { FuulReferralsProvider } from 'client/modules/referrals/fuul/FuulReferralsContext';
@@ -22,16 +23,10 @@ import { UtmQueryParamsListener } from 'client/modules/utm/UtmQueryParamsListene
 import { Provider as JotaiProvider } from 'jotai';
 import { Suspense } from 'react';
 
-// Style imports
-import 'styles/globals.css';
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Stale time determines when a new component mount should trigger a refresh. By default this is 0,
-      // which results in repeated fetches if a query is used in multiple components.
-      // We usually specify query refreshes manually, so we set this to a higher value to avoid unnecessary fetches.
-      staleTime: 30000,
+      staleTime: REACT_QUERY_CONFIG.defaultQueryStaleTime,
     },
   },
 });
@@ -40,33 +35,32 @@ export function ClientLayout({ children }: WithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
-        {/* 
+        {/*
         Suspense boundary needed for `AppDataProviders` since it is using `useSearchParams` to avoid forcing
         the whole site into client-side rendering.
-        See https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout 
+        See https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
         */}
         <ExodusWalletProvider>
           <Suspense>
             <AppDataProviders>
-              <GatedAppAccessContextProvider>
-                <FuulReferralsProvider>
-                  <NotificationManagerContextProvider>
-                    <AnalyticsContextProvider>
-                      <GoogleAnalytics />
-                      {children}
-                      <AppDialogs />
-                      <OrderFillQueryRefetchListener />
-                      <SentryConfigManager />
-                      <MicrosoftClarityAnalytics />
-                      <TpSlPositionChangeListener />
-                      <UtmQueryParamsListener />
-                      <ReferralCodeListener />
-                      <CookieNoticeBanner />
-                      <OpenCommandCenterOnKeyPressListener />
-                    </AnalyticsContextProvider>
-                  </NotificationManagerContextProvider>
-                </FuulReferralsProvider>
-              </GatedAppAccessContextProvider>
+              <FuulReferralsProvider>
+                <NotificationManagerContextProvider>
+                  <AnalyticsContextProvider>
+                    <GoogleAnalytics />
+                    {children}
+                    <AppDialogs />
+                    <GatedAppAccessListener />
+                    <OrderFillQueryRefetchListener />
+                    <SentryConfigManager />
+                    <MicrosoftClarityAnalytics />
+                    <TpSlPositionChangeListener />
+                    <UtmQueryParamsListener />
+                    <ReferralCodeListener />
+                    <CookieNoticeBanner />
+                    <OpenCommandCenterOnKeyPressListener />
+                  </AnalyticsContextProvider>
+                </NotificationManagerContextProvider>
+              </FuulReferralsProvider>
             </AppDataProviders>
           </Suspense>
         </ExodusWalletProvider>

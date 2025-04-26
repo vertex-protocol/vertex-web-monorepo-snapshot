@@ -1,3 +1,4 @@
+import { XrpWalletRequestRejectedError } from 'client/context/xrp/XrpWalletRequestRejectedError';
 import { UserRejectedRequestError } from 'viem';
 
 /**
@@ -10,7 +11,9 @@ export function isUserDeniedError(err?: any): boolean {
     err?.cause instanceof UserRejectedRequestError ||
     // Wagmi clients returned from `useWalletClient` / `usePublicClient`
     // wrap under a nested `cause.cause`.
-    err?.cause?.cause instanceof UserRejectedRequestError
+    err?.cause?.cause instanceof UserRejectedRequestError ||
+    // Custom error for rejected XRPL transactions
+    err instanceof XrpWalletRequestRejectedError
   ) {
     return true;
   }

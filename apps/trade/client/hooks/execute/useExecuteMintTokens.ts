@@ -19,11 +19,10 @@ export function useExecuteMintTokens({ decimals }: { decimals: number }) {
       async (params: { productId: number }, context: ValidExecuteContext) => {
         const amount = params.productId === QUOTE_PRODUCT_ID ? 95 : 10;
 
-        const txResponse = await context.vertexClient.spot._mintMockERC20({
+        return context.vertexClient.spot._mintMockERC20({
           productId: params.productId,
           amount: roundToString(addDecimals(amount, decimals), 0),
         });
-        return txResponse.hash;
       },
       [decimals],
     ),

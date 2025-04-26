@@ -1,8 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { joinClassNames } from '@vertex-protocol/web-common';
 import { NUMBER_VARIANTS } from 'client/components/Hero/motionVariants';
+import { motion } from 'framer-motion';
 
 interface Props {
   value: string;
@@ -18,7 +18,7 @@ export function HeroMetricColumn({
   custom,
 }: Props) {
   const columnClass = 'flex flex-col items-start justify-between md:min-w-24';
-  const headerClass = 'text-header-2 md:text-header-1 font-radioGrotesk';
+  const headerClass = 'text-header-2 md:text-header-1 font-radio-grotesk';
   const darkGrayTextClass = 'text-body-dark-gray text-body-13';
   const animateGradientBgClass =
     'bg-[linear-gradient(277deg,#fff,#FFF,#FFF,#CD92EC,#85C5E0,#fff)] bg-[length:200%_auto]';

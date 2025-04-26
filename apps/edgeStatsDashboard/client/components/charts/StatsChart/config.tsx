@@ -1,3 +1,6 @@
+import { StatsChartDataItem } from 'client/components/charts/StatsChart/types';
+import { getEdgeStatsColorVar } from 'client/theme/colorVars';
+import { range } from 'lodash';
 import { ComponentProps, ComponentPropsWithoutRef } from 'react';
 import {
   AreaProps,
@@ -14,9 +17,6 @@ import {
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent';
 import { Dot } from 'recharts/types/shape/Dot';
-import { EDGE_COLORS } from '@vertex-protocol/web-ui';
-import { range } from 'lodash';
-import { StatsChartDataItem } from 'client/components/charts/StatsChart/types';
 
 export const CHART_XAXIS_DEFAULTS: Omit<XAxisProps, 'ref'> = {
   dataKey: (data: StatsChartDataItem) => data.currentTimestampMillis,
@@ -24,10 +24,14 @@ export const CHART_XAXIS_DEFAULTS: Omit<XAxisProps, 'ref'> = {
   scale: 'time',
   domain: ['auto', 'auto'],
   minTickGap: 30,
-  tick: { fontSize: 10, fontWeight: 500, color: EDGE_COLORS.overlay.divider },
+  tick: {
+    fontSize: 10,
+    fontWeight: 500,
+    color: getEdgeStatsColorVar('overlay-divider'),
+  },
   axisLine: false,
   tickLine: false,
-  stroke: EDGE_COLORS.text.secondary,
+  stroke: getEdgeStatsColorVar('text-secondary'),
   tickMargin: 8,
   height: 20,
   tickCount: 10,
@@ -36,10 +40,14 @@ export const CHART_XAXIS_DEFAULTS: Omit<XAxisProps, 'ref'> = {
 };
 
 export const CHART_YAXIS_DEFAULTS: Omit<YAxisProps, 'ref'> = {
-  tick: { fontSize: 10, fontWeight: 500, color: EDGE_COLORS.overlay.divider },
+  tick: {
+    fontSize: 10,
+    fontWeight: 500,
+    color: getEdgeStatsColorVar('overlay-divider'),
+  },
   axisLine: false,
   tickLine: false,
-  stroke: EDGE_COLORS.text.secondary,
+  stroke: getEdgeStatsColorVar('text-secondary'),
   minTickGap: 25,
   width: 44,
   tickCount: 6,
@@ -50,7 +58,7 @@ export const CHART_YAXIS_DEFAULTS: Omit<YAxisProps, 'ref'> = {
 
 export const CHART_TOOLTIP_DEFAULTS: TooltipProps<ValueType, NameType> = {
   cursor: {
-    stroke: EDGE_COLORS.stroke.DEFAULT,
+    stroke: getEdgeStatsColorVar('stroke'),
     strokeWidth: 1,
   },
 };
@@ -58,7 +66,7 @@ export const CHART_TOOLTIP_DEFAULTS: TooltipProps<ValueType, NameType> = {
 export const CHART_GRID_DEFAULTS: ComponentPropsWithoutRef<
   typeof CartesianGrid
 > = {
-  stroke: EDGE_COLORS.stroke.DEFAULT,
+  stroke: getEdgeStatsColorVar('stroke'),
   // Removes first and last line of the grid.
   syncWithTicks: true,
   opacity: 0.6,
@@ -70,7 +78,7 @@ export const CHART_GRID_DEFAULTS: ComponentPropsWithoutRef<
 
 const CHART_DOT_DEFAULTS: ComponentProps<typeof Dot> = {
   strokeWidth: 0.5,
-  stroke: EDGE_COLORS.text.tertiary,
+  stroke: getEdgeStatsColorVar('text-tertiary'),
 };
 
 export const AREA_CHART_DEFAULTS: Omit<AreaProps, 'dataKey' | 'ref'> = {

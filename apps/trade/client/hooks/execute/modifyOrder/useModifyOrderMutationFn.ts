@@ -1,5 +1,7 @@
 import {
   BigDecimal,
+  EngineOrder,
+  EnginePlaceIsolatedOrderResult,
   getOrderDigest,
   getTriggerOrderNonce,
 } from '@vertex-protocol/client';
@@ -57,7 +59,7 @@ export function useModifyOrderMutationFn() {
           verifyingAddr: orderbookAddresses[params.productId],
           slippageSettings,
           priceIncrement:
-            marketDataByProductId?.all[params.productId]?.priceIncrement,
+            marketDataByProductId?.allMarkets[params.productId]?.priceIncrement,
           marketPrice,
         });
       }
@@ -106,11 +108,6 @@ async function cancelAndPlaceOrder({
       `Could not find order with digest ${modifyOrderParams.digest}.`,
     );
   }
-  if (getIsIsoEngineOrder(currentOrder)) {
-    throw new Error(
-      'Modifying isolated order is not supported. Please cancel and place a new order.',
-    );
-  }
 
   // Validate the new order price.
   // The function throws an error if the price is invalid.
@@ -119,6 +116,19 @@ async function cancelAndPlaceOrder({
     newPrice: modifyOrderParams.newPrice,
     isLongOrder: currentOrder.totalAmount.isPositive(),
   });
+
+  // backend does not support cancel_and_place for isolated orders yet
+  // workaround by cancelling _then_ placing the order separately
+  if (getIsIsoEngineOrder(currentOrder)) {
+    const result = await cancelThenPlaceIsolatedOrder({
+      modifyOrderParams,
+      currentOrder,
+      getRecvTime,
+      context,
+      marketPrice,
+    });
+    return { digest: result.data.digest };
+  }
 
   const nonce = getOrderNonce(recvTime);
   const result = await context.vertexClient.market.cancelAndPlace({
@@ -143,6 +153,43 @@ async function cancelAndPlaceOrder({
     },
   });
   return { digest: result.data.digest };
+}
+
+interface CancelThenPlaceIsolatedOrderParams extends CancelAndPlaceOrderParams {
+  currentOrder: EngineOrder;
+}
+
+async function cancelThenPlaceIsolatedOrder({
+  modifyOrderParams,
+  currentOrder,
+  getRecvTime,
+  context,
+}: CancelThenPlaceIsolatedOrderParams): Promise<EnginePlaceIsolatedOrderResult> {
+  await context.vertexClient.market.cancelOrders({
+    subaccountOwner: context.subaccount.address,
+    subaccountName: context.subaccount.name,
+    chainId: context.subaccount.chainId,
+    productIds: [modifyOrderParams.productId],
+    digests: [modifyOrderParams.digest],
+  });
+
+  const recvTime = await getRecvTime();
+  const nonce = getOrderNonce(recvTime);
+  return context.vertexClient.market.placeIsolatedOrder({
+    chainId: context.subaccount.chainId,
+    productId: modifyOrderParams.productId,
+    order: {
+      subaccountOwner: context.subaccount.address,
+      subaccountName: context.subaccount.name,
+      expiration: currentOrder.expiration,
+      price: modifyOrderParams.newPrice,
+      amount: currentOrder.unfilledAmount,
+      // margin is required for isolated orders, we do check getIsIsoEngineOrder
+      // before calling cancelThenPlaceIsolatedOrder so it is safe to assert here
+      margin: currentOrder.margin!,
+    },
+    nonce,
+  });
 }
 
 interface CancelAndPlaceTriggerOrderParams {

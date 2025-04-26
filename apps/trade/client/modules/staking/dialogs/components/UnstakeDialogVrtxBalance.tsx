@@ -18,7 +18,7 @@ export function UnstakeDialogVrtxBalance({
     <ValueWithLabel.Vertical
       className="items-center"
       label="Your Staked Balance"
-      sizeVariant="lg"
+      sizeVariant="xl"
       valueClassName="flex items-center gap-x-1.5"
       valueContent={
         <>

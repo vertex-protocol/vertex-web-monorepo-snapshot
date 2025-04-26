@@ -4,22 +4,24 @@ import {
 } from '@vertex-protocol/react-client';
 import { ChartTooltip } from 'client/components/ChartTooltip';
 import {
+  AREA_CHART_DEFAULTS,
+  CHART_GRID_DEFAULTS,
+  CHART_TOOLTIP_DEFAULTS,
+  CHART_XAXIS_DEFAULTS,
+  CHART_YAXIS_DEFAULTS,
+} from 'client/modules/charts/config';
+import { currencyAxisFormatter } from 'client/modules/charts/utils/axisFormatters';
+import { getTradeAppColorVar } from 'client/modules/theme/colorVars';
+import {
   PortfolioChartTooltip,
   PortfolioChartTooltipBodyRenderFn,
 } from 'client/pages/Portfolio/charts/components/PortfolioChartTooltip';
-import {
-  AREA_CHART_DEFAULTS,
-  PORTFOLIO_CHART_GRADIENT_URLS,
-  PORTFOLIO_CHART_GRID_DEFAULTS,
-  PORTFOLIO_CHART_TOOLTIP_DEFAULTS,
-  PORTFOLIO_CHART_XAXIS_DEFAULTS,
-  PORTFOLIO_CHART_YAXIS_DEFAULTS,
-} from 'client/pages/Portfolio/charts/consts';
-import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
+import { PORTFOLIO_CHART_GRADIENT_URLS } from 'client/pages/Portfolio/charts/consts';
 import { usePortfolioChartXAxisFormatter } from 'client/pages/Portfolio/charts/hooks/usePortfolioChartXAxisFormatter';
-import { ChartComponentProps } from 'client/pages/Portfolio/charts/types';
-import { currencyAxisFormatter } from 'client/pages/Portfolio/charts/utils/axisFormatters';
-import { COLORS } from 'common/theme/colors';
+import {
+  PortfolioChartComponentProps,
+  PortfolioChartDataItem,
+} from 'client/pages/Portfolio/charts/types';
 import {
   Area,
   CartesianGrid,
@@ -65,44 +67,41 @@ const renderTooltipContent: PortfolioChartTooltipBodyRenderFn = ({
 export function PortfolioBalancesDepositsBorrowsChart({
   data,
   isPrivate,
-}: ChartComponentProps) {
+}: PortfolioChartComponentProps) {
   const xAxisFormatter = usePortfolioChartXAxisFormatter();
 
   return (
     <ResponsiveContainer>
       <ComposedChart data={data}>
-        <CartesianGrid {...PORTFOLIO_CHART_GRID_DEFAULTS} />
+        <CartesianGrid {...CHART_GRID_DEFAULTS} />
         <Tooltip
-          {...PORTFOLIO_CHART_TOOLTIP_DEFAULTS}
+          {...CHART_TOOLTIP_DEFAULTS}
           content={<PortfolioChartTooltip renderBody={renderTooltipContent} />}
         />
-        <XAxis
-          {...PORTFOLIO_CHART_XAXIS_DEFAULTS}
-          tickFormatter={xAxisFormatter}
-        />
+        <XAxis {...CHART_XAXIS_DEFAULTS} tickFormatter={xAxisFormatter} />
         <YAxis
-          {...PORTFOLIO_CHART_YAXIS_DEFAULTS}
+          {...CHART_YAXIS_DEFAULTS}
           tickFormatter={currencyAxisFormatter}
           hide={isPrivate}
         />
         <Area
           {...AREA_CHART_DEFAULTS}
           fill={PORTFOLIO_CHART_GRADIENT_URLS.deposits}
-          stroke={COLORS.positive.DEFAULT}
+          stroke={getTradeAppColorVar('positive')}
           dataKey={depositsDataKey}
           activeDot={{
-            stroke: COLORS.positive.DEFAULT,
-            fill: COLORS.surface.card,
+            stroke: getTradeAppColorVar('positive'),
+            fill: getTradeAppColorVar('surface-card'),
           }}
         />
         <Area
           {...AREA_CHART_DEFAULTS}
           fill={PORTFOLIO_CHART_GRADIENT_URLS.borrows}
-          stroke={COLORS.accent.DEFAULT}
+          stroke={getTradeAppColorVar('accent')}
           dataKey={borrowsDataKey}
           activeDot={{
-            stroke: COLORS.accent.DEFAULT,
-            fill: COLORS.surface.card,
+            stroke: getTradeAppColorVar('accent'),
+            fill: getTradeAppColorVar('surface-card'),
           }}
         />
       </ComposedChart>

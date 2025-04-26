@@ -36,9 +36,7 @@ export function MobilePortfolioSubNavMenu({ className }: WithClassnames) {
           >
             {label}
             {!!associatedCount && (
-              <CounterPill className="bg-surface-2">
-                {associatedCount.toFixed()}
-              </CounterPill>
+              <CounterPill>{associatedCount.toFixed()}</CounterPill>
             )}
           </TabButton>
         );

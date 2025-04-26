@@ -37,18 +37,13 @@ export function useMaxWithdrawableAmount(params: Params) {
   const { currentSubaccount } = useSubaccountContext();
   const vertexClient = usePrimaryChainVertexClient();
 
-  const subaccountName = params.subaccountName
-    ? params.subaccountName
-    : currentSubaccount.name;
+  const subaccountName = params.subaccountName ?? currentSubaccount.name;
 
   const productId = params.productId ?? 0;
   const spotLeverage = params.spotLeverage ?? false;
 
   const disabled =
-    !currentSubaccount.address ||
-    !subaccountName ||
-    !vertexClient ||
-    params.disabled;
+    !currentSubaccount.address || !vertexClient || params.disabled;
 
   return useQuery({
     queryKey: maxWithdrawableQueryKey(

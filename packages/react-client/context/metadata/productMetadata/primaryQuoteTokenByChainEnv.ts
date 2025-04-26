@@ -1,6 +1,7 @@
 import { ChainEnv } from '@vertex-protocol/client';
 import { USDC_ABSTRACT, USDC_ABSTRACT_TESTNET } from './abstract';
 import { USDC_ARB_ONE, USDC_ARB_SEPOLIA } from './arbitrum';
+import { USDC_AVAX, USDC_AVAX_TESTNET } from './avax';
 import { USDC_BASE, USDC_BASE_SEPOLIA } from './base';
 import { HONEY_BERACHAIN, HONEY_BERACHAIN_TESTNET } from './berachain';
 import { USDB_BLAST, USDB_BLAST_SEPOLIA } from './blast';
@@ -13,6 +14,8 @@ import { Token } from './types';
 export const PRIMARY_QUOTE_TOKEN_BY_CHAIN_ENV: Record<ChainEnv, Token> = {
   abstract: USDC_ABSTRACT,
   abstractTestnet: USDC_ABSTRACT_TESTNET,
+  avax: USDC_AVAX,
+  avaxTestnet: USDC_AVAX_TESTNET,
   arbitrum: USDC_ARB_ONE,
   arbitrumTestnet: USDC_ARB_SEPOLIA,
   base: USDC_BASE,

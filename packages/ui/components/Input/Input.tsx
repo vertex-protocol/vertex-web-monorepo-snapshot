@@ -66,7 +66,7 @@ function Container({
       return 'border-negative';
     }
 
-    return ['border-transparent', !readOnly && 'focus-within:border-accent'];
+    return ['border-transparent', !readOnly && 'focus-within:border-primary'];
   })();
 
   return (

@@ -22,7 +22,7 @@ export function useTvlOverviewData() {
     const edgeMarketSnapshotAtNow =
       marketSnapshotsAtHistoricalTimesData.now.edge;
     const edgeMarketSnapshotAt24h =
-      marketSnapshotsAtHistoricalTimesData['24hr'].edge;
+      marketSnapshotsAtHistoricalTimesData['24h'].edge;
 
     const avgOraclePricesByProductId = getAverageOraclePricesByProductId(
       edgeMarketSnapshotAtNow?.oraclePrices,

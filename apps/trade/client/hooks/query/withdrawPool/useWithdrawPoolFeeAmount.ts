@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import {
   BigDecimal,
   ChainEnv,
-  QUOTE_PRODUCT_ID,
   toBigDecimal,
+  toBigInt,
 } from '@vertex-protocol/client';
 import {
   createQueryKey,
@@ -11,6 +11,8 @@ import {
   useEVMContext,
   usePrimaryChainVertexClient,
 } from '@vertex-protocol/react-client';
+import { getStaticMarketDataForProductId } from 'client/hooks/markets/marketsStaticData/getStaticMarketDataForProductId';
+import { SpotStaticMarketData } from 'client/hooks/markets/marketsStaticData/types';
 import { useAllMarketsStaticData } from 'client/hooks/markets/marketsStaticData/useAllMarketsStaticData';
 
 export function withdrawPoolFeeAmountQueryKey(
@@ -45,19 +47,18 @@ export function useWithdrawPoolFeeAmount({ productId, amount }: Params) {
       }
 
       const tokenAddress =
-        productId === QUOTE_PRODUCT_ID
-          ? allMarketsStaticData?.primaryQuote.metadata.token.address
-          : allMarketsStaticData?.spot[productId]?.metadata.token.address;
+        getStaticMarketDataForProductId<SpotStaticMarketData>(
+          productId,
+          allMarketsStaticData,
+        )?.metadata.token.address;
 
       if (!tokenAddress) {
         throw new Error('Token address not found');
       }
 
       const baseResponse =
-        await vertexClient.context.contracts.withdrawPool.fastWithdrawalFeeAmount(
-          tokenAddress,
-          productId,
-          amount.toFixed(0),
+        await vertexClient.context.contracts.withdrawPool.read.fastWithdrawalFeeAmount(
+          [tokenAddress, productId, toBigInt(amount)],
         );
 
       return toBigDecimal(baseResponse);

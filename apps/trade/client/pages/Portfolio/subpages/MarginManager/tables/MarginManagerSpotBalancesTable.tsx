@@ -1,18 +1,21 @@
 'use client';
 
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { CustomNumberFormatSpecifier } from '@vertex-protocol/react-client';
+import {
+  CustomNumberFormatSpecifier,
+  signDependentValue,
+} from '@vertex-protocol/react-client';
 import { WithClassnames } from '@vertex-protocol/web-common';
-import { DataTable } from 'client/components/DataTable/DataTable';
 import { HeaderCell } from 'client/components/DataTable/cells/HeaderCell';
+import { DataTable } from 'client/components/DataTable/DataTable';
 import {
   bigDecimalSortFn,
   getKeyedBigDecimalSortFn,
 } from 'client/components/DataTable/utils/sortingFns';
-import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { AmountWithSymbolCell } from 'client/modules/tables/cells/AmountWithSymbolCell';
 import { CurrencyCell } from 'client/modules/tables/cells/CurrencyCell';
 import { TitleHeaderCell } from 'client/modules/tables/cells/TitleHeaderCell';
+import { EmptyTablePlaceholder } from 'client/modules/tables/EmptyTablePlaceholder';
 import { CalculatorIconHeaderCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/CalculatorIconHeaderCell';
 import { MarginManagerActionsCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginManagerActionsCell';
 import { MarginWeightCell } from 'client/pages/Portfolio/subpages/MarginManager/tables//cells/MarginWeightCell';
@@ -23,7 +26,6 @@ import {
   MarginManagerSpotBalanceTableItem,
   useMarginManagerSpotBalancesTable,
 } from 'client/pages/Portfolio/subpages/MarginManager/tables//hooks/useMarginManagerSpotBalancesTable';
-import { signDependentValue } from '@vertex-protocol/react-client';
 import { useMemo } from 'react';
 
 const columnHelper = createColumnHelper<MarginManagerSpotBalanceTableItem>();

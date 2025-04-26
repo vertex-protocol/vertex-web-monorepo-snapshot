@@ -1,9 +1,9 @@
-import { EDGE_COLORS } from '@vertex-protocol/web-ui';
 import { largeCurrencyNumberAbbreviatedAxisFormatter } from 'client/components/charts/axisFormatters';
 import { StatsChart } from 'client/components/charts/StatsChart/StatsChart';
 import { StatsSection } from 'client/components/StatsSection';
 import { useChartTimeframe } from 'client/hooks/useChartTimeframe';
 import { useEdgeSpotPerpVolumeChartsSectionData } from 'client/pages/MainPage/components/VolumesTabContent/EdgeSpotPerpVolumeChartsSection/useEdgeSpotPerpVolumeChartsSectionData';
+import { getEdgeStatsColorVar } from 'client/theme/colorVars';
 import { startCase } from 'lodash';
 
 export function EdgeSpotPerpVolumeChartsSection() {
@@ -58,7 +58,7 @@ export function EdgeSpotPerpVolumeChartsSection() {
             yAxisId: 'left',
           },
           totalVolumeUsd: {
-            color: EDGE_COLORS['chart-fill'].DEFAULT,
+            color: getEdgeStatsColorVar('chart-fill'),
             dataKey: 'totalVolumeUsd',
             label: 'Cum. Total Vol.',
             hasTooltipTopDivider: true,

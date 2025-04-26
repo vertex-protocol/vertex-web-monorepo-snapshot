@@ -83,7 +83,7 @@ function AppSettingsButton({ className }: WithClassnames) {
     <TextButton
       colorVariant="secondary"
       className={joinClassNames(
-        'text-text-tertiary rounded p-1.5',
+        'text-text-tertiary rounded-sm p-1.5',
         isConnected && 'hover:bg-surface-2 hover:text-text-secondary',
         className,
       )}

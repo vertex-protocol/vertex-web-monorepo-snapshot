@@ -1,10 +1,8 @@
 import {
-  useVertexMetadataContext,
-  VRTX_TOKEN_INFO,
-} from '@vertex-protocol/react-client';
-import {
   formatNumber,
   PresetNumberFormatSpecifier,
+  useVertexMetadataContext,
+  VRTX_TOKEN_INFO,
 } from '@vertex-protocol/react-client';
 import { removeDecimals } from '@vertex-protocol/utils';
 import { Pill } from '@vertex-protocol/web-ui';
@@ -38,24 +36,24 @@ export function OverviewInfoVrtxCardButton({ isPrivate }: Props) {
   return (
     <OverviewInfoCardButton
       href={ROUTES.staking}
-      title={`${VRTX_TOKEN_INFO.symbol} Staked`}
+      title={
+        <span className="text-vertex-gradient-highlight">
+          {VRTX_TOKEN_INFO.symbol} Staked
+        </span>
+      }
       value={
         <>
-          <div className="flex items-center gap-x-1">
-            <Image
-              src={VRTX_TOKEN_INFO.icon.asset}
-              alt={VRTX_TOKEN_INFO.symbol}
-              className="h-auto w-4"
-            />
-            <span>
-              {formatNumber(currentStakingBalance, {
-                formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
-              })}
-            </span>
-          </div>
+          <Image
+            src={VRTX_TOKEN_INFO.icon.asset}
+            alt={VRTX_TOKEN_INFO.symbol}
+            className="h-auto w-4"
+          />
+          {formatNumber(currentStakingBalance, {
+            formatSpecifier: PresetNumberFormatSpecifier.NUMBER_2DP,
+          })}
         </>
       }
-      valueClassName="gap-x-2 items-end"
+      valueClassName="gap-x-2 items-center"
       pill={
         <Pill colorVariant="accent" sizeVariant="xs">
           APR:

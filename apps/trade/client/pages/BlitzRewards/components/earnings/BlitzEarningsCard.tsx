@@ -18,7 +18,7 @@ export function BlitzEarningsCard({
   return (
     <div
       className={joinClassNames(
-        'from-stroke via-stroke overflow-hidden bg-gradient-to-br',
+        'from-stroke via-stroke overflow-hidden bg-linear-to-br',
         CARD_ROUNDED_CLASSNAMES,
         colorVariant === 'blast' ? 'to-accent-blast' : 'to-accent',
         'p-px',

@@ -1,12 +1,7 @@
 'use client';
 
 import { joinClassNames, WithClassnames } from '@vertex-protocol/web-common';
-import {
-  Card,
-  COMMON_TRANSPARENCY_COLORS,
-  Icons,
-  TextButton,
-} from '@vertex-protocol/web-ui';
+import { Card, Icons, TextButton } from '@vertex-protocol/web-ui';
 import { NewPill } from 'client/components/NewPill';
 import { useIsEnabledForBrand } from 'client/modules/envSpecificContent/hooks/useIsEnabledForBrand';
 import { useShowUserDisclosure } from 'client/modules/localstorage/userState/useShowUserDisclosure';
@@ -24,11 +19,9 @@ export function BlitzSkateRewardsDisclosure({ className }: WithClassnames) {
   return (
     <Card
       className={joinClassNames(
-        'relative',
+        'bg-overlay-accent border-overlay-accent relative',
         'flex flex-col items-start gap-y-3',
         'p-4 text-xs lg:text-sm',
-        COMMON_TRANSPARENCY_COLORS.borderAccent,
-        COMMON_TRANSPARENCY_COLORS.bgAccent,
         className,
       )}
     >
@@ -51,7 +44,7 @@ export function BlitzSkateRewardsDisclosure({ className }: WithClassnames) {
         colorVariant="secondary"
         startIcon={<Icons.X />}
         onClick={dismiss}
-        className="absolute right-3 top-3 p-1"
+        className="absolute top-3 right-3 p-1"
       />
     </Card>
   );

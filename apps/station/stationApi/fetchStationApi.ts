@@ -15,7 +15,7 @@ export async function fetchStationApi<TReqBody, TData>(
   const responseJson: StationApiResponse<TData> = await response.json();
 
   if (responseJson.status !== 'success') {
-    throw Error(`Request failed: ${JSON.stringify(responseJson)}`);
+    throw new Error(`Request failed: ${JSON.stringify(responseJson)}`);
   }
 
   return responseJson.data;

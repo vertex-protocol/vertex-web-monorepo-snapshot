@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import './base.css';
+@import '@vertex-protocol/web-ui/styles/ui-kit-styles.css';
 
 @layer base {
   /*Remove default outline that occurs on focus of different elements*/
@@ -10,37 +9,20 @@
   img,
   ul,
   a {
-    @apply outline-none focus:outline-none active:outline-none;
+    @apply outline-hidden focus:outline-hidden active:outline-hidden;
   }
 
   ::-webkit-scrollbar {
-    @apply h-1 w-1 rounded-2xl bg-transparent;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    @apply bg-surface-card h-1 w-1;
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    @apply bg-stroke rounded-2xl;
+    @apply bg-stroke/50 rounded-2xl;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-surface-2;
-  }
-}
-
-@layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-    @apply hidden;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    @apply bg-stroke;
   }
 }

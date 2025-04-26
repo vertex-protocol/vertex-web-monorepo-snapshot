@@ -65,7 +65,7 @@ function Feature({
 }) {
   return (
     <div className="text-text-secondary flex items-center gap-x-2">
-      <div className="bg-surface-2 rounded p-1">
+      <div className="bg-surface-2 rounded-sm p-1">
         <Icon size={16} />
       </div>
       <span>{description}</span>

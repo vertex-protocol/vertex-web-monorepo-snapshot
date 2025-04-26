@@ -60,7 +60,7 @@ export function FeaturesSection() {
           variants={containerVariants}
         >
           <motion.div
-            className="font-radioGrotesk"
+            className="font-radio-grotesk"
             variants={containerVariants}
           >
             <BlurRevealText
@@ -116,7 +116,7 @@ export function FeaturesSection() {
               </LaunchAppButton>
             </motion.div>
             <motion.p
-              className="text-body-gray text-body-14 mb-4 mt-8"
+              className="text-body-gray text-body-14 mt-8 mb-4"
               variants={itemVariants}
               whileInView="visible"
               viewport={{ once: true, amount: 0.1 }}

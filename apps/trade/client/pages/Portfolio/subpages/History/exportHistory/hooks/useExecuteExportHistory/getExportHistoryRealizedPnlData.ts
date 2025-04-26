@@ -7,13 +7,14 @@ import {
   EXPORT_HISTORY_QUERY_DELAY_MILLIS,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/consts';
 import { GetExportHistoryDataContext } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/types';
-import { formatExportHistoryTimestamp } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
+import { updateProgressFrac } from 'client/pages/Portfolio/subpages/History/exportHistory/hooks/useExecuteExportHistory/utils';
 import {
   ExportHistoryRealizedPnlItem,
   GetExportHistoryDataParams,
 } from 'client/pages/Portfolio/subpages/History/exportHistory/types';
 import { delay } from 'client/utils/delay';
 import { millisecondsToSeconds } from 'date-fns';
+import { last } from 'lodash';
 
 export async function getExportHistoryRealizedPnlData(
   params: GetExportHistoryDataParams,
@@ -50,7 +51,7 @@ export async function getExportHistoryRealizedPnlData(
         continue;
       }
 
-      const staticMarketData = allMarketsStaticData.all[event.productId];
+      const staticMarketData = allMarketsStaticData.allMarkets[event.productId];
       const staticQuoteData = allMarketsStaticData.quotes[event.productId];
 
       if (!staticMarketData || !staticQuoteData) {
@@ -70,17 +71,17 @@ export async function getExportHistoryRealizedPnlData(
       }
 
       items.push({
-        time: formatExportHistoryTimestamp(tableItem.timestampMillis),
+        time: new Date(tableItem.timestampMillis),
         marketName: tableItem.marketInfo.marketName,
         preEventBalanceAmount: removeDecimals(
           realizedPnlEvent.preEventBalanceAmount,
-        ).toString(),
+        ),
         marginModeType: tableItem.marginModeType,
-        entryPrice: tableItem.entryPrice.toString(),
-        exitPrice: tableItem.exitPrice.toString(),
-        filledAmountAbs: tableItem.filledAmountAbs.toString(),
+        entryPrice: tableItem.entryPrice,
+        exitPrice: tableItem.exitPrice,
+        filledAmountAbs: tableItem.filledAmountAbs,
         // Use non-USD adjusted values for PnL - should make it easier for scripts to calculate balance changes
-        pnl: removeDecimals(realizedPnlEvent.realizedPnl).toString(),
+        pnl: removeDecimals(realizedPnlEvent.realizedPnl),
       });
     }
 
@@ -90,6 +91,8 @@ export async function getExportHistoryRealizedPnlData(
     if (!matchEventsResponse.meta.hasMore || !startCursor) {
       break;
     }
+
+    updateProgressFrac(params, context, last(items)?.time);
 
     // Reduce chance of rate limiting.
     await delay(EXPORT_HISTORY_QUERY_DELAY_MILLIS);

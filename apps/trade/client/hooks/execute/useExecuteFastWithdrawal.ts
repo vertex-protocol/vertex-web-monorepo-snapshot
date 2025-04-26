@@ -31,13 +31,9 @@ export function useExecuteFastWithdrawal() {
             { idx: params.submissionIndex },
           );
 
-        const txResponse =
-          await context.vertexClient.context.contracts.withdrawPool.submitFastWithdrawal(
-            idx,
-            txBytes,
-            signatures,
-          );
-        return txResponse.hash;
+        return context.vertexClient.context.contracts.withdrawPool.write.submitFastWithdrawal(
+          [idx, txBytes, signatures],
+        );
       },
       [],
     ),

@@ -6,7 +6,7 @@ import {
   TableCell,
   TableCellProps,
 } from 'client/components/DataTable/cells/TableCell';
-import { SignOfValuePill } from 'client/pages/Portfolio/subpages/MarginManager/components/SignOfValuePill';
+import { SignOfValuePill } from 'client/components/SignOfValuePill';
 import { MarginWeightMetrics } from 'client/pages/Portfolio/subpages/MarginManager/types';
 
 interface Props extends TableCellProps {

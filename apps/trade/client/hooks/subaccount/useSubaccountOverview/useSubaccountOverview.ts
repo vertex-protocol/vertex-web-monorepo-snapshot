@@ -16,7 +16,7 @@ import { useSubaccountIndexerSnapshot } from 'client/hooks/subaccount/useSubacco
 import { getSubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/getSubaccountOverview';
 import { SubaccountOverview } from 'client/hooks/subaccount/useSubaccountOverview/types';
 import { QueryState } from 'client/types/QueryState';
-import { REACT_QUERY_CONFIG } from 'client/utils/reactQueryConfig';
+import { REACT_QUERY_CONFIG } from '@vertex-protocol/react-client';
 
 function subaccountOverviewQueryKey(
   subaccount: AppSubaccount,

@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+@config '../tailwind.config.ts';
+
+@utility text-shadow-pink {
+  text-shadow: 0px 0px 10px #ff0075;
+  -webkit-text-stroke-width: 1;
+  -webkit-text-stroke-color: #931d53;
+}
+
+@utility no-scrollbar {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    @apply hidden;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

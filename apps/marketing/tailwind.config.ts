@@ -1,6 +1,5 @@
-import type { Config } from 'tailwindcss';
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     './components/**/*.{js,ts,jsx,tsx}',
     './app/**/*.{js,ts,jsx,tsx}',
@@ -12,6 +11,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'radio-grotesk': ['var(--font-radio-grotesk)', 'sans-serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
+      },
       colors: {
         card: '#151317',
         'card-alt': '#151317',
@@ -35,10 +38,6 @@ const config: Config = {
         red: '#EA435C',
         green: '#4DE587',
       },
-      fontFamily: {
-        sans: ['var(--font-inter)', 'sans-serif'],
-        radioGrotesk: ['var(--font-radiogrotesk)', 'sans-serif'],
-      },
       fontSize: {
         'header-0': ['64px', { lineHeight: '1.1', letterSpacing: '-0.5px' }],
         'header-1': ['48px', { lineHeight: '1.1', letterSpacing: '-0.5px' }],
@@ -58,9 +57,12 @@ const config: Config = {
           'linear-gradient(90deg, rgba(222, 216, 231, 0.99) 0%, #DED8E7 43.62%, rgba(222, 216, 231, 0.50) 142.52%)',
         'button-gradient':
           'linear-gradient(172deg, rgba(94, 94, 94, 0.7) 25.7%, rgba(34, 34, 36, 0.7) 59.2%)',
-        card: 'linear-gradient(90deg, #19171C 11.27%, #0C0C0D 115.64%)',
-        chain: 'linear-gradient(272deg, #1E1D22 -113.07%, #111113 75.93%);',
-        table: 'linear-gradient(164deg, #19171C -31.85%, #0C0C0D 72.16%);',
+        'card-gradient':
+          'linear-gradient(90deg, #19171C 11.27%, #0C0C0D 115.64%)',
+        'chain-gradient':
+          'linear-gradient(272deg, #1E1D22 -113.07%, #111113 75.93%);',
+        'table-gradient':
+          'linear-gradient(164deg, #19171C -31.85%, #0C0C0D 72.16%);',
       },
       borderColor: {
         'new-website-overlay-8': 'rgba(222, 216, 231, 0.08)',
@@ -97,5 +99,3 @@ const config: Config = {
     },
   },
 };
-
-export default config;

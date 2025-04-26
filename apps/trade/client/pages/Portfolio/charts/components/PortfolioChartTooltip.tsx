@@ -1,6 +1,6 @@
 import { ChartTooltip } from 'client/components/ChartTooltip';
 import { PortfolioChartDataItem } from 'client/pages/Portfolio/charts/types';
-import { first } from 'lodash';
+import { getTooltipPayloadData } from 'client/utils/charts/getTooltipPayloadData';
 import { ReactNode } from 'react';
 import { TooltipProps } from 'recharts';
 import {
@@ -18,9 +18,8 @@ interface Props extends TooltipProps<ValueType, NameType> {
 }
 
 export function PortfolioChartTooltip({ active, payload, renderBody }: Props) {
-  // Payload is an array of displayed data points, each datapoint has a nested `payload` property of type FundingChartItem
   const originalDataPayload: PortfolioChartDataItem | undefined =
-    first(payload)?.payload;
+    getTooltipPayloadData(payload);
 
   if (!active || !originalDataPayload) {
     return null;

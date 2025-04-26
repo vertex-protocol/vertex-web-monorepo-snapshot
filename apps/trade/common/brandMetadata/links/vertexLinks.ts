@@ -4,18 +4,19 @@ export const VERTEX_SPECIFIC_LINKS = {
     'https://aerodrome.finance/deposit?token0=0x4200000000000000000000000000000000000006&token1=0xFB0c734Fc3008683c5efF45bcf8128836C4D97D0&type=-1',
   blitzApp: 'https://app.blitz.exchange',
   blitzTestnetApp: 'https://testnet.blitz.exchange',
+  brotradeApp: 'https://app.bro.trade',
   fuulReferralsDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/referral-program-new',
   rewardsDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/trade-and-earn-rewards-program',
-  seiSeason6RewardsDocs: `https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-sei/trading-rewards#sei-season-6-trading-rewards`,
   sonicApp: 'https://www.soniclabs.com/',
   sonicGemsDocs:
+    'https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-sonic/trading-rewards',
+  sonicIncentivesDocs:
     'https://docs.vertexprotocol.com/getting-started/vertex-edge/vertex-on-sonic/trading-rewards',
   stakeVrtxDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/the-vertex-lba/stake-vrtx',
   transporterBridge: 'https://app.transporter.io/?token=VRTX',
-  vestingScheduleGraphic: '/rewards/lba-vesting-schedule.png',
   vrtxExchanges: {
     bybit: 'https://www.bybit.com/en/trade/spot/VRTX/USDT',
     traderJoe:
@@ -54,9 +55,9 @@ export const VERTEX_COMMON_LINKS = {
   discord: 'https://discord.gg/vertexprotocol',
   docs: 'https://docs.vertexprotocol.com/getting-started/overview',
   faq: 'https://docs.vertexprotocol.com/basics/faqs',
-  faqFeesDocs: 'https://docs.vertexprotocol.com/basics/fees',
   fastWithdrawalsLearnMore: `https://docs.vertexprotocol.com/tutorials/fast-withdrawals`,
   hacken: 'https://hackenproof.com/company/vertex-protocol/programs',
+  isolatedDocs: 'https://docs.vertexprotocol.com/basics/isolated-margin',
   lpDocs: 'https://docs.vertexprotocol.com/basics/hybrid-orderbook-amm-design',
   maintenanceWindowDocs:
     'https://docs.vertexprotocol.com/more/maintenance-windows-and-status',
@@ -64,17 +65,12 @@ export const VERTEX_COMMON_LINKS = {
   multipleSubaccountsDocs:
     'https://docs.vertexprotocol.com/tutorials/multiple-accounts',
   privacyPolicy: 'https://vertexprotocol.com/docs/PrivacyPolicy.pdf',
-  productSpecDocs:
-    'https://docs.vertexprotocol.com/basics/perpetual-and-spot-market-specifications',
   referralDocs:
     'https://docs.vertexprotocol.com/community-and-tokenomics/referrals',
   spotTradingLearnMore: 'https://docs.vertexprotocol.com/tutorials/spot',
   spreadDocs:
     'https://docs.vertexprotocol.com/basics/subaccounts-isolated-margin-and-health#special-cases-spreads-lps-and-large-positions',
   termsOfUse: 'https://vertexprotocol.com/docs/TermsOfUse.pdf',
-  tpslDocs: 'https://docs.vertexprotocol.com/tutorials/tp-sl-and-stop-market',
   tutorials: 'https://docs.vertexprotocol.com/tutorials/quick-start',
   twitter: 'https://twitter.com/vertex_protocol',
-  wrapEth:
-    'https://app.uniswap.org/explore/tokens/arbitrum/0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
 };

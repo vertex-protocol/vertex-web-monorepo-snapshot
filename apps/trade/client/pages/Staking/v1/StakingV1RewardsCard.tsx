@@ -31,12 +31,14 @@ export function StakingV1RewardsCard({
         )}
       >
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Rewards Claimable"
           value={accountUsdcRewardsClaimable}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}
           valueEndElement="USDC"
         />
         <ValueWithLabel.Vertical
+          sizeVariant="lg"
           label="Rewards Earned"
           value={accountUsdcRewardsEarned}
           numberFormatSpecifier={PresetNumberFormatSpecifier.NUMBER_2DP}

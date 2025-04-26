@@ -27,7 +27,7 @@ export function useProvideLiquidityValidators({
         return 'invalid_input';
       }
       if (maxBaseLpAmount && maxBaseLpAmount?.lt(val)) {
-        return 'max_mint_exceeded';
+        return 'max_exceeded';
       }
     },
     [maxBaseLpAmount],
@@ -44,7 +44,7 @@ export function useProvideLiquidityValidators({
         return 'invalid_input';
       }
       if (maxQuoteLpAmount && maxQuoteLpAmount?.lt(val)) {
-        return 'max_mint_exceeded';
+        return 'max_exceeded';
       }
     },
     [maxQuoteLpAmount],

@@ -24,13 +24,13 @@ export function HistoryTabsDropdown({
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <SecondaryButton
-          className="text-text-tertiary rounded p-0.5 lg:p-1"
+          className="text-text-tertiary rounded-sm p-0.5 lg:p-1"
           startIcon={<Icons.DotsThreeVertical className="text-sm lg:text-lg" />}
         />
       </DropdownMenu.Trigger>
       {/* Using `Portal` here so it doesn't conflict with the scroll shadows mask. */}
       <DropdownMenu.Portal>
-        <DropdownMenu.Content sideOffset={4} side="top" align="end" asChild>
+        <DropdownMenu.Content sideOffset={4} side="bottom" align="end" asChild>
           <DropdownUi.Content className="gap-y-px">
             {OPTIONAL_HISTORY_TABS.map(({ label, id }) => (
               <DropdownButton

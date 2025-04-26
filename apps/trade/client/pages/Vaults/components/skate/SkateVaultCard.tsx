@@ -7,8 +7,8 @@ import { WithClassnames } from '@vertex-protocol/web-common';
 import { LinkButton, Value } from '@vertex-protocol/web-ui';
 import { ValueWithLabel } from 'client/components/ValueWithLabel/ValueWithLabel';
 import { BrandSpecificContent } from 'client/modules/envSpecificContent/BrandSpecificContent';
+import { SkateVaultMetadata } from 'client/modules/skateVaults/consts';
 import { DefinitionTooltip } from 'client/modules/tooltips/DefinitionTooltip/DefinitionTooltip';
-import { SkateVaultMetadata } from 'client/modules/vaults/consts';
 import { useSkateVaultCard } from 'client/pages/Vaults/components/skate/hooks/useSkateVaultCard';
 import { SkateVaultActionButtons } from 'client/pages/Vaults/components/skate/SkateVaultActionButtons';
 import { VaultCard } from 'client/pages/Vaults/components/VaultCard';
@@ -48,7 +48,7 @@ export function SkateVaultCard({
       vaultInfoContent={
         <>
           <div className="flex items-end justify-between">
-            <Value endElement="APY" sizeVariant="lg">
+            <Value endElement="APY" sizeVariant="xl">
               {formatNumber(vaultApy, {
                 formatSpecifier: PresetNumberFormatSpecifier.PERCENTAGE_2DP,
               })}

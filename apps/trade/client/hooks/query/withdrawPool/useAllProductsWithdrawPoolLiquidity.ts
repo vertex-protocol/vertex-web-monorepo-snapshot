@@ -49,8 +49,8 @@ export function useAllProductsWithdrawPoolLiquidity() {
         throw new QueryDisabledError();
       }
       const baseResponse =
-        await vertexClient.context.contracts.withdrawPool.checkProductBalances(
-          productIds,
+        await vertexClient.context.contracts.withdrawPool.read.checkProductBalances(
+          [productIds],
         );
 
       const withdrawPoolLiquidityByProductId: Record<number, BigDecimal> = {};
